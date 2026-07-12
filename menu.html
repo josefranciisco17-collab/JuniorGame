@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
+
+  <title>JuniorGame</title>
+
+  <link rel="stylesheet" href="css/menu.css">
+</head>
+
+<body>
+
+  <main class="menu-page">
+
+    <section class="menu-card">
+
+      <div class="menu-logo">
+        <img
+          src="Fondos-JuniorGame/usuario1.png"
+          alt="Perro protagonista de JuniorGame"
+          draggable="false"
+        >
+      </div>
+
+      <header class="menu-header">
+        <h1>JuniorGame</h1>
+        <p>Atrapa todos los huesos</p>
+      </header>
+
+      <nav class="menu-buttons">
+
+        <a
+          class="menu-button play-button"
+          href="index.html"
+        >
+          <span class="button-icon">▶</span>
+          <span>Jugar</span>
+        </a>
+
+        <a
+          class="menu-button shop-button"
+          href="tienda.html"
+        >
+          <span class="button-icon">🛍️</span>
+          <span>Tienda</span>
+        </a>
+
+        <button
+          id="recordsButton"
+          class="menu-button secondary-button"
+          type="button"
+        >
+          <span class="button-icon">🏆</span>
+          <span>Récords</span>
+        </button>
+
+        <button
+          id="settingsButton"
+          class="menu-button secondary-button"
+          type="button"
+        >
+          <span class="button-icon">⚙️</span>
+          <span>Ajustes</span>
+        </button>
+
+      </nav>
+
+      <footer class="menu-footer">
+        <p>JFAM &amp; Co. Game Studios</p>
+        <span>Versión inicial 1.0</span>
+      </footer>
+
+    </section>
+
+    <div
+      id="comingSoonModal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+    >
+
+      <div class="modal-card">
+
+        <button
+          id="closeModalButton"
+          class="modal-close"
+          type="button"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+
+        <h2 id="modalTitle">Próximamente</h2>
+
+        <p>
+          Esta sección estará disponible en una próxima actualización.
+        </p>
+
+        <button
+          id="acceptModalButton"
+          class="modal-accept"
+          type="button"
+        >
+          Entendido
+        </button>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="js/menu.js"></script>
+
+</body>
+</html>

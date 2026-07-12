@@ -18,62 +18,67 @@
 
   <main class="menu-page">
 
-    <section class="menu-card">
+    <div class="menu-overlay"></div>
 
-      <div class="menu-logo">
-        <img
-          src="Fondos-JuniorGame/Estrella.png"
-          alt="Perro protagonista de JuniorGame"
-          draggable="false"
-        >
+    <section class="menu-content">
+
+      <div class="game-logo">
+        <span class="logo-top">JUNIOR</span>
+        <span class="logo-bottom">GAME</span>
+        <span class="logo-bone">🦴</span>
       </div>
-
-      <header class="menu-header">
-        <h1>JuniorGame</h1>
-        <p>Atrapa todos los huesos</p>
-      </header>
 
       <nav class="menu-buttons">
 
         <a
-          class="menu-button play-button"
+          class="wood-button play-button"
           href="game.html"
         >
-          <span class="button-icon">▶</span>
-          <span>Jugar</span>
-        </a>
-
-        <a
-          class="menu-button shop-button"
-          href="tienda.html"
-        >
-          <span class="button-icon">🛍️</span>
-          <span>Tienda</span>
+          <span class="button-icon">🐾</span>
+          <span>JUGAR</span>
         </a>
 
         <button
           id="recordsButton"
-          class="menu-button secondary-button"
+          class="wood-button"
           type="button"
         >
           <span class="button-icon">🏆</span>
-          <span>Récords</span>
+          <span>RÉCORDS</span>
         </button>
 
         <button
           id="settingsButton"
-          class="menu-button secondary-button"
+          class="wood-button"
           type="button"
         >
           <span class="button-icon">⚙️</span>
-          <span>Ajustes</span>
+          <span>AJUSTES</span>
+        </button>
+
+        <button
+          id="howToPlayButton"
+          class="wood-button"
+          type="button"
+        >
+          <span class="button-icon">ℹ️</span>
+          <span>CÓMO JUGAR</span>
+        </button>
+
+        <button
+          id="exitButton"
+          class="wood-button"
+          type="button"
+        >
+          <span class="button-icon">🚪</span>
+          <span>SALIR</span>
         </button>
 
       </nav>
 
       <footer class="menu-footer">
-        <p>JFAM &amp; Co. Game Studios</p>
-        <span>Versión inicial 1.0</span>
+        <span>JFAM &amp; Co. Game Studios</span>
+        <span>Versión 1.0</span>
       </footer>
 
     </section>
@@ -99,7 +104,7 @@
 
         <h2 id="modalTitle">Próximamente</h2>
 
-        <p>
+        <p id="modalText">
           Esta sección estará disponible en una próxima actualización.
         </p>
 

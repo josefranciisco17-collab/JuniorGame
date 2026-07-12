@@ -4,13 +4,13 @@ window.JuniorBones = {
   huesoActual: null,
   tiempoAnterior: performance.now(),
 
-  velocidadMinima: 95,
-  velocidadMaxima: 125,
+  velocidadMinima: 140,
+  velocidadMaxima: 180,
 
   esperaMinima: 900,
   esperaMaxima: 1500,
 
-  tamanoHueso: 105,
+  tamanoHueso: 140,
 
   temporizadorNuevoHueso: null,
 

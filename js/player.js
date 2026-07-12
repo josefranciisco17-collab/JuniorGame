@@ -9,6 +9,8 @@ window.JuniorPlayer = {
   moviendoDerecha: false,
   saltando: false,
 
+  ultimaDireccion: "izquierda",
+
   velocidadMovimiento: 260,
   fuerzaSalto: 620,
   gravedad: 1550,
@@ -49,8 +51,12 @@ window.JuniorPlayer = {
     this.velocidadVertical = 0;
     this.saltando = false;
 
-perro.src =
-    window.JuniorGame.rutas.perroIzquierda;
+    this.moviendoIzquierda = false;
+    this.moviendoDerecha = false;
+    this.ultimaDireccion = "izquierda";
+
+    perro.src =
+      window.JuniorGame.rutas.perroIzquierda;
 
     perro.style.left = `${this.posicionX}px`;
     perro.style.bottom = `${this.sueloBase}px`;
@@ -63,42 +69,43 @@ perro.src =
     );
   },
 
+  activarIzquierda(estado) {
+    this.moviendoIzquierda = estado;
 
+    if (estado) {
+      this.ultimaDireccion = "izquierda";
+    }
 
+    const perro = this.obtenerPerro();
 
-activarIzquierda(estado) {
-  this.moviendoIzquierda = estado;
+    if (
+      estado &&
+      perro &&
+      !this.saltando
+    ) {
+      perro.src =
+        window.JuniorGame.rutas.perroIzquierda;
+    }
+  },
 
-  const perro = this.obtenerPerro();
+  activarDerecha(estado) {
+    this.moviendoDerecha = estado;
 
-  if (
-    estado &&
-    perro &&
-    !this.saltando
-  ) {
-    perro.src =
-      window.JuniorGame.rutas.perroIzquierda;
-  }
-},
+    if (estado) {
+      this.ultimaDireccion = "derecha";
+    }
 
+    const perro = this.obtenerPerro();
 
-
-activarDerecha(estado) {
-  this.moviendoDerecha = estado;
-
-  const perro = this.obtenerPerro();
-
-  if (
-    estado &&
-    perro &&
-    !this.saltando
-  ) {
-    perro.src =
-      window.JuniorGame.rutas.perroDerecha;
-  }
-},
-
-
+    if (
+      estado &&
+      perro &&
+      !this.saltando
+    ) {
+      perro.src =
+        window.JuniorGame.rutas.perroDerecha;
+    }
+  },
 
   saltar() {
     const juego = window.JuniorGame;
@@ -121,7 +128,16 @@ activarDerecha(estado) {
     this.saltando = true;
     this.velocidadVertical = this.fuerzaSalto;
 
-    perro.src = juego.rutas.perroSalto;
+    if (
+      this.moviendoDerecha ||
+      this.ultimaDireccion === "derecha"
+    ) {
+      perro.src =
+        juego.rutas.perroSaltoDerecha;
+    } else {
+      perro.src =
+        juego.rutas.perroSaltoIzquierda;
+    }
   },
 
   actualizarMovimientoHorizontal(deltaTime) {
@@ -135,11 +151,15 @@ activarDerecha(estado) {
     if (this.moviendoIzquierda) {
       this.posicionX -=
         this.velocidadMovimiento * deltaTime;
+
+      this.ultimaDireccion = "izquierda";
     }
 
     if (this.moviendoDerecha) {
       this.posicionX +=
         this.velocidadMovimiento * deltaTime;
+
+      this.ultimaDireccion = "derecha";
     }
 
     const limiteDerecho =
@@ -157,7 +177,11 @@ activarDerecha(estado) {
     const perro = this.obtenerPerro();
     const juego = window.JuniorGame;
 
-    if (!perro || !juego || !this.saltando) {
+    if (
+      !perro ||
+      !juego ||
+      !this.saltando
+    ) {
       return;
     }
 
@@ -172,11 +196,13 @@ activarDerecha(estado) {
       this.velocidadVertical = 0;
       this.saltando = false;
 
-if (this.moviendoDerecha) {
-    perro.src = juego.rutas.perroDerecha;
-} else {
-    perro.src = juego.rutas.perroIzquierda;
-}
+      if (this.ultimaDireccion === "derecha") {
+        perro.src =
+          juego.rutas.perroDerecha;
+      } else {
+        perro.src =
+          juego.rutas.perroIzquierda;
+      }
     }
 
     perro.style.bottom =

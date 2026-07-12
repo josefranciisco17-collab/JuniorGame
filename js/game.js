@@ -24,13 +24,18 @@ window.JuniorGame = {
   },
 
 
-rutas: {
-    perroIzquierda: "Fondos-JuniorGame/usuario1.png",
-    perroDerecha: "Fondos-JuniorGame/usuarioizquierda.png",
-    perroSalto: "Fondos-JuniorGame/usuario2.png",
-    huesoNormal: "Fondos-JuniorGame/hueso.png",
-    huesoDorado: "Fondos-JuniorGame/huesodorado.png"
 },
+
+
+rutas: {
+  perroIzquierda: "Fondos-JuniorGame/usuario1.png",
+  perroDerecha: "Fondos-JuniorGame/usuarioizquierda.png",
+  perroSaltoIzquierda: "Fondos-JuniorGame/usuario2.png",
+  perroSaltoDerecha: "Fondos-JuniorGame/usuario3.png",
+  huesoNormal: "Fondos-JuniorGame/hueso.png",
+  huesoDorado: "Fondos-JuniorGame/huesodorado.png"
+},
+
 
   configurarElementos() {
     this.elementos.juego = document.getElementById("game");

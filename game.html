@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
+
+  <title>JuniorGame - Juego</title>
+
+  <link rel="stylesheet" href="css/game.css">
+</head>
+
+<body>
+
+  <main id="game">
+
+    <header class="game-hud">
+
+      <div class="score-box">
+        <img
+          src="Fondos-JuniorGame/hueso.png"
+          alt="Hueso"
+          draggable="false"
+        >
+
+        <span id="score">0</span>
+      </div>
+
+      <div class="lives" id="lives">
+        <span>❤️</span>
+        <span>❤️</span>
+        <span>❤️</span>
+      </div>
+
+      <a
+        class="home-button"
+        href="index.html"
+        aria-label="Volver al menú"
+      >
+        🏠
+      </a>
+
+    </header>
+
+    <section id="gameArea" class="game-area">
+
+      <div id="boneLayer" class="bone-layer"></div>
+
+      <img
+        id="dog"
+        class="dog"
+        src="Fondos-JuniorGame/usuario1.png"
+        alt="Perro del juego"
+        draggable="false"
+      >
+
+    </section>
+
+    <nav class="controls">
+
+      <button
+        id="leftButton"
+        class="control-button movement-button"
+        type="button"
+        aria-label="Mover a la izquierda"
+      >
+        ◀
+      </button>
+
+      <button
+        id="jumpButton"
+        class="control-button jump-button"
+        type="button"
+        aria-label="Saltar"
+      >
+        ▲
+        <span>SALTAR</span>
+      </button>
+
+      <button
+        id="rightButton"
+        class="control-button movement-button"
+        type="button"
+        aria-label="Mover a la derecha"
+      >
+        ▶
+      </button>
+
+    </nav>
+
+  </main>
+
+  <script src="js/game.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/controls.js"></script>
+  <script src="js/bones.js"></script>
+  <script src="js/ui.js"></script>
+
+</body>
+</html>

@@ -74,32 +74,78 @@ a {
     max(18px, env(safe-area-inset-bottom));
 }
 
-.game-logo {
-  position: relative;
 
-  width: min(88vw, 390px);
-  min-height: 155px;
+.game-logo{
+    width:92%;
+    max-width:620px;
+    margin:30px auto 60px;
+    text-align:center;
+}
 
-  margin-top: 8px;
-  margin-bottom: 22px;
+.logo-paw-top{
+    font-size:34px;
+    margin-bottom:-12px;
+}
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.logo-title{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:2px;
+}
 
-  padding: 18px 26px;
+.logo-junior{
+    font-size:72px;
+    font-weight:900;
+    color:#f6b32f;
+    text-shadow:
+        0 2px 0 #7b4300,
+        0 5px 0 #5a2f00,
+        0 8px 12px rgba(0,0,0,.45);
+}
 
-  border: 5px solid #5b2b0d;
-  border-radius: 26px;
+.logo-o{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
 
-  background:
-    linear-gradient(
-      180deg,
-      #d79a4c 0%,
-      #b56e2b 45%,
-      #874514 100%
-    );
+.logo-o-letter{
+    font-size:72px;
+    font-weight:900;
+    color:#f6b32f;
+    text-shadow:
+        0 2px 0 #7b4300,
+        0 5px 0 #5a2f00,
+        0 8px 12px rgba(0,0,0,.45);
+}
+
+.logo-o-paw{
+    position:absolute;
+    font-size:26px;
+}
+
+.logo-game{
+    margin-top:-8px;
+    font-size:56px;
+    font-weight:900;
+    color:#fff7df;
+    letter-spacing:4px;
+    text-shadow:
+        0 2px 0 #5d3a16,
+        0 5px 0 #43250d,
+        0 8px 10px rgba(0,0,0,.45);
+}
+
+.logo-decoration{
+    margin-top:6px;
+    display:flex;
+    justify-content:center;
+    gap:18px;
+    font-size:28px;
+}
+
 
   box-shadow:
     inset 0 4px 0 rgba(255, 255, 255, 0.22),
@@ -182,42 +228,46 @@ a {
   margin-bottom: auto;
 }
 
+
 .wood-button {
   position: relative;
 
-  width: 100%;
-  min-height: 62px;
+  width: 82%;
+  max-width: 410px;
+  min-height: 68px;
+
+  margin: 0 auto;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 16px;
 
-  padding: 14px 22px;
+  padding: 14px 28px;
 
   text-decoration: none;
 
   color: #fff8df;
-  font-size: clamp(19px, 5vw, 24px);
+  font-size: clamp(20px, 5.5vw, 27px);
   font-weight: 900;
   letter-spacing: 1px;
 
-  border: 4px solid #5c290a;
-  border-radius: 18px;
+  border: 4px solid #4a230b;
+  border-radius: 14px;
 
   background:
     linear-gradient(
       180deg,
-      #c9873e 0%,
-      #a95d22 52%,
-      #7d3b10 100%
+      #b86b2b 0%,
+      #8d4719 48%,
+      #65300d 100%
     );
 
   box-shadow:
-    inset 0 3px 0 rgba(255, 255, 255, 0.2),
-    inset 0 -5px 0 rgba(75, 27, 3, 0.28),
-    0 6px 0 #4d2007,
-    0 10px 20px rgba(0, 0, 0, 0.3);
+    inset 0 3px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -5px 0 rgba(53, 20, 4, 0.42),
+    0 5px 0 #3d1905,
+    0 9px 18px rgba(0, 0, 0, 0.34);
 
   cursor: pointer;
   touch-action: manipulation;
@@ -430,9 +480,17 @@ a {
     font-size: clamp(24px, 7vw, 36px);
   }
 
-  .menu-buttons {
-    gap: 9px;
-  }
+
+.menu-buttons {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  margin-top: auto;
+  margin-bottom: auto;
+}
 
   .wood-button {
     min-height: 52px;

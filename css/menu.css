@@ -1,113 +1,753 @@
-"use strict";
+/* =========================================
+   JUNIORGAME - MENU PRINCIPAL
+   PARTE 1 DE ESTILOS
+========================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("menuModal");
-  const modalTitle = document.getElementById("modalTitle");
-  const modalText = document.getElementById("modalText");
-  const modalIcon = document.getElementById("modalIcon");
+:root {
+  --madera-clara: #c98038;
+  --madera-media: #9c501c;
+  --madera-oscura: #65300d;
+  --borde-madera: #4b2108;
+  --sombra-madera: #351403;
 
-  const closeModalButton =
-    document.getElementById("closeModalButton");
+  --amarillo-logo: #ffb72d;
+  --crema-logo: #fff4d5;
+}
 
-  const acceptModalButton =
-    document.getElementById("acceptModalButton");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 
-  const recordsButton =
-    document.getElementById("recordsButton");
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 
-  const settingsButton =
-    document.getElementById("settingsButton");
+  user-select: none;
+  -webkit-user-select: none;
+}
 
-  const howToPlayButton =
-    document.getElementById("howToPlayButton");
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 
-  const exitButton =
-    document.getElementById("exitButton");
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
-  function abrirModal({
-    titulo,
-    texto,
-    icono
-  }) {
-    if (
-      !modal ||
-      !modalTitle ||
-      !modalText ||
-      !modalIcon
-    ) {
-      return;
-    }
+  background: #251207;
+}
 
-    modalTitle.textContent = titulo;
-    modalText.textContent = texto;
-    modalIcon.textContent = icono;
+button,
+a {
+  font: inherit;
+}
 
-    modal.classList.remove("hidden");
+button {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.menu-page {
+  position: relative;
+
+  width: 100%;
+  max-width: 520px;
+
+  height: 100vh;
+  height: 100dvh;
+
+  margin: 0 auto;
+  overflow: hidden;
+
+  background-image:
+    url("../Fondos-JuniorGame/granja.png");
+
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.menu-darkness {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(5, 24, 22, 0.04) 0%,
+      rgba(31, 16, 5, 0.08) 55%,
+      rgba(25, 10, 2, 0.3) 100%
+    );
+
+  pointer-events: none;
+}
+
+.menu-content {
+  position: relative;
+  z-index: 5;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding:
+    max(16px, env(safe-area-inset-top))
+    16px
+    max(13px, env(safe-area-inset-bottom));
+}
+
+/* =========================================
+   LETRERO PRINCIPAL
+========================================= */
+
+.game-logo {
+  position: relative;
+  flex: 0 0 auto;
+
+  width: min(92vw, 420px);
+  min-height: 190px;
+
+  margin: 5px auto 23px;
+  padding: 25px 28px 19px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 5px solid var(--borde-madera);
+  border-radius: 32px;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 27px,
+      rgba(68, 24, 3, 0.14) 28px,
+      rgba(68, 24, 3, 0.14) 31px
+    ),
+    linear-gradient(
+      180deg,
+      #c57a34 0%,
+      #a35720 51%,
+      #70330d 100%
+    );
+
+  box-shadow:
+    inset 0 4px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -9px 0 rgba(48, 16, 2, 0.32),
+    0 8px 0 var(--sombra-madera),
+    0 17px 29px rgba(0, 0, 0, 0.34);
+}
+
+.game-logo::before {
+  content: "";
+
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  top: 50%;
+
+  height: 3px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(76, 28, 4, 0.34),
+      transparent
+    );
+}
+
+.logo-screw {
+  position: absolute;
+  top: 19px;
+
+  width: 18px;
+  height: 18px;
+
+  border: 3px solid #555;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #f1f1f1,
+      #909090 48%,
+      #454545 100%
+    );
+
+  box-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.4);
+}
+
+.logo-screw-left {
+  left: 18px;
+}
+
+.logo-screw-right {
+  right: 18px;
+}
+
+.logo-leaf {
+  position: absolute;
+  top: -15px;
+
+  font-size: 31px;
+  line-height: 1;
+
+  filter:
+    drop-shadow(0 3px 2px rgba(0, 0, 0, 0.34));
+}
+
+.logo-leaf-left {
+  left: 25px;
+  transform: rotate(-25deg);
+}
+
+.logo-leaf-right {
+  right: 25px;
+  transform: scaleX(-1) rotate(-25deg);
+}
+
+.logo-top-paw {
+  position: absolute;
+  top: -27px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  font-size: 43px;
+  line-height: 1;
+
+  filter:
+    drop-shadow(0 4px 1px rgba(63, 23, 4, 0.52));
+}
+
+/* =========================================
+   TITULO JUNIOR GAME
+========================================= */
+
+.logo-title{
+  position:relative;
+  z-index:3;
+
+  width:100%;
+
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+
+  gap:0;
+
+  white-space:nowrap;
+
+  line-height:.9;
+}
+
+.logo-letter{
+
+  display:inline-block;
+
+  font-size:clamp(48px,12vw,72px);
+
+  font-weight:1000;
+
+  letter-spacing:-2px;
+
+  color:var(--amarillo-logo);
+
+  text-shadow:
+      0 2px 0 #b76808,
+      0 5px 0 #7a3e00,
+      0 9px 10px rgba(0,0,0,.35);
+}
+
+.logo-o{
+
+  position:relative;
+
+  display:inline-flex;
+
+  align-items:center;
+  justify-content:center;
+}
+
+.logo-o-paw{
+
+  position:absolute;
+
+  font-size:22px;
+
+  transform:translateY(2px);
+
+  line-height:1;
+}
+
+.logo-game{
+
+  position:relative;
+
+  z-index:3;
+
+  margin-top:10px;
+
+  color:var(--crema-logo);
+
+  font-size:clamp(38px,9vw,55px);
+
+  font-weight:1000;
+
+  letter-spacing:2px;
+
+  text-shadow:
+      0 3px 0 #7e5733,
+      0 6px 0 #4b2a10,
+      0 10px 12px rgba(0,0,0,.4);
+}
+
+/* =========================================
+   HUESO Y HUELLAS
+========================================= */
+
+.logo-decoration{
+
+  position:relative;
+
+  z-index:3;
+
+  margin-top:10px;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  gap:18px;
+}
+
+.logo-small-paw{
+
+  font-size:22px;
+
+  filter:
+      drop-shadow(0 2px 1px rgba(0,0,0,.35));
+}
+
+.logo-bone{
+
+  font-size:36px;
+
+  transform:rotate(-5deg);
+
+  filter:
+      drop-shadow(0 3px 1px rgba(0,0,0,.35));
+}
+
+
+/* =========================================
+   BOTONES DEL MENÚ
+========================================= */
+
+.menu-buttons {
+  flex: 1 1 auto;
+
+  width: 100%;
+  max-width: 320px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+
+  margin: 0 auto;
+}
+
+.wood-button {
+  position: relative;
+
+  width: 100%;
+  min-height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  padding: 10px 18px;
+
+  color: #fff8df;
+  text-decoration: none;
+
+  border: 4px solid var(--borde-madera);
+  border-radius: 16px;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 16px,
+      rgba(69, 23, 2, 0.12) 17px,
+      rgba(69, 23, 2, 0.12) 19px
+    ),
+    linear-gradient(
+      180deg,
+      var(--madera-clara) 0%,
+      var(--madera-media) 50%,
+      var(--madera-oscura) 100%
+    );
+
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.17),
+    inset 0 -5px 0 rgba(54, 18, 2, 0.32),
+    0 6px 0 var(--sombra-madera),
+    0 10px 15px rgba(0, 0, 0, 0.27);
+
+  cursor: pointer;
+  touch-action: manipulation;
+
+  transition:
+    transform 0.12s ease,
+    filter 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.wood-button::before,
+.wood-button::after {
+  content: "";
+
+  position: absolute;
+  top: 50%;
+
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #6d2c08,
+      #381203
+    );
+
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+
+  transform: translateY(-50%);
+}
+
+.wood-button::before {
+  left: 14px;
+}
+
+.wood-button::after {
+  right: 14px;
+}
+
+.button-icon {
+  font-size: 25px;
+  line-height: 1;
+
+  filter:
+    drop-shadow(0 2px 1px rgba(0, 0, 0, 0.35));
+}
+
+.button-text {
+  min-width: 150px;
+
+  text-align: center;
+
+  font-size: clamp(17px, 4.8vw, 22px);
+  font-weight: 1000;
+  letter-spacing: 0.7px;
+
+  text-shadow:
+    0 2px 0 rgba(83, 33, 4, 0.7);
+}
+
+.wood-button:active {
+  transform:
+    translateY(5px)
+    scale(0.985);
+
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.13),
+    inset 0 -2px 0 rgba(54, 18, 2, 0.24),
+    0 1px 0 var(--sombra-madera),
+    0 5px 8px rgba(0, 0, 0, 0.24);
+}
+
+@media (hover: hover) {
+  .wood-button:hover {
+    filter: brightness(1.08);
+  }
+}
+
+/* =========================================
+   PIE DEL MENÚ
+========================================= */
+
+.menu-footer {
+  flex: 0 0 auto;
+
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+
+  margin-top: 14px;
+
+  color: #fff7df;
+  text-align: center;
+
+  font-size: 12px;
+  line-height: 1.2;
+
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.88);
+}
+
+.menu-footer strong {
+  font-size: 13px;
+}
+
+
+/* =========================================
+   VENTANA EMERGENTE
+========================================= */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 22px;
+
+  background:
+    rgba(31, 14, 3, 0.77);
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-card {
+  position: relative;
+
+  width: 100%;
+  max-width: 335px;
+
+  padding: 29px 23px 23px;
+
+  color: #fff6db;
+  text-align: center;
+
+  border: 4px solid var(--borde-madera);
+  border-radius: 23px;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 21px,
+      rgba(62, 20, 2, 0.13) 22px,
+      rgba(62, 20, 2, 0.13) 24px
+    ),
+    linear-gradient(
+      180deg,
+      #bd712f,
+      #71330d
+    );
+
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.17),
+    0 8px 0 var(--sombra-madera),
+    0 23px 42px rgba(0, 0, 0, 0.43);
+}
+
+.modal-close {
+  position: absolute;
+  top: 7px;
+  right: 11px;
+
+  width: 39px;
+  height: 39px;
+
+  color: #fff5d6;
+  font-size: 30px;
+  font-weight: 900;
+
+  border: 0;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.modal-icon {
+  margin-bottom: 7px;
+  font-size: 42px;
+}
+
+.modal-card h2 {
+  margin-bottom: 12px;
+
+  font-size: 27px;
+  font-weight: 1000;
+
+  text-shadow:
+    0 3px 0 #542006;
+}
+
+.modal-card p {
+  margin-bottom: 21px;
+
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.modal-accept {
+  width: 100%;
+
+  padding: 13px;
+
+  color: #fff7dc;
+  font-size: 16px;
+  font-weight: 1000;
+
+  border: 3px solid var(--borde-madera);
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #d68b40,
+      #874313
+    );
+
+  box-shadow:
+    0 5px 0 var(--sombra-madera);
+
+  cursor: pointer;
+}
+
+.modal-accept:active {
+  transform: translateY(4px);
+
+  box-shadow:
+    0 1px 0 var(--sombra-madera);
+}
+
+/* =========================================
+   AJUSTES PARA PANTALLAS BAJAS
+========================================= */
+
+@media (max-height: 780px) {
+  .menu-content {
+    padding-top:
+      max(10px, env(safe-area-inset-top));
+
+    padding-bottom:
+      max(9px, env(safe-area-inset-bottom));
   }
 
-  function cerrarModal() {
-    if (!modal) {
-      return;
-    }
-
-    modal.classList.add("hidden");
+  .game-logo {
+    min-height: 166px;
+    margin-bottom: 17px;
+    padding-top: 20px;
+    padding-bottom: 13px;
   }
 
-  recordsButton?.addEventListener("click", () => {
-    abrirModal({
-      titulo: "Récords",
-      texto:
-        "Muy pronto podrás consultar tus mejores puntuaciones.",
-      icono: "🏆"
-    });
-  });
+  .logo-letter {
+    font-size: clamp(43px, 11vw, 62px);
+  }
 
-  settingsButton?.addEventListener("click", () => {
-    abrirModal({
-      titulo: "Ajustes",
-      texto:
-        "Muy pronto podrás configurar sonidos, música y controles.",
-      icono: "⚙️"
-    });
-  });
+  .logo-game {
+    margin-top: 9px;
+    font-size: clamp(34px, 8vw, 47px);
+  }
 
-  howToPlayButton?.addEventListener("click", () => {
-    abrirModal({
-      titulo: "Cómo jugar",
-      texto:
-        "Usa las flechas para mover al perro. Presiona Saltar para atrapar los huesos. Evita perder tus tres vidas.",
-      icono: "ℹ️"
-    });
-  });
+  .logo-decoration {
+    margin-top: 8px;
+  }
 
-  exitButton?.addEventListener("click", () => {
-    abrirModal({
-      titulo: "Salir",
-      texto:
-        "Puedes cerrar esta pestaña o regresar usando el botón de tu navegador.",
-      icono: "🚪"
-    });
-  });
+  .logo-bone {
+    font-size: 31px;
+  }
 
-  closeModalButton?.addEventListener(
-    "click",
-    cerrarModal
-  );
+  .logo-small-paw {
+    font-size: 18px;
+  }
 
-  acceptModalButton?.addEventListener(
-    "click",
-    cerrarModal
-  );
+  .menu-buttons {
+    gap: 10px;
+  }
 
-  modal?.addEventListener("click", (evento) => {
-    if (evento.target === modal) {
-      cerrarModal();
-    }
-  });
+  .wood-button {
+    min-height: 51px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
 
-  document.addEventListener("keydown", (evento) => {
-    if (evento.key === "Escape") {
-      cerrarModal();
-    }
-  });
-});
+  .button-icon {
+    font-size: 22px;
+  }
+
+  .button-text {
+    font-size: clamp(16px, 4.3vw, 19px);
+  }
+
+  .menu-footer {
+    margin-top: 9px;
+    font-size: 11px;
+  }
+
+  .menu-footer strong {
+    font-size: 12px;
+  }
+}
+
+/* =========================================
+   AJUSTES PARA PANTALLAS ANGOSTAS
+========================================= */
+
+@media (max-width: 350px) {
+  .game-logo {
+    width: 94%;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .logo-letter {
+    font-size: 46px;
+  }
+
+  .logo-game {
+    font-size: 37px;
+  }
+
+  .menu-buttons {
+    max-width: 290px;
+  }
+
+  .button-text {
+    min-width: 130px;
+  }
+}

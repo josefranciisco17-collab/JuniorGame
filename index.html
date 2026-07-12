@@ -1,42 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0,
-    maximum-scale=1.0, user-scalable=no,
-    viewport-fit=cover"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
   >
 
-  <meta name="theme-color" content="#40200d">
+  <meta name="theme-color" content="#2b1609">
 
   <title>JuniorGame</title>
 
-  <link rel="stylesheet" href="css/menu.css?v=10">
+  <link
+    rel="stylesheet"
+    href="css/menu.css?v=20"
+  >
 </head>
 
 <body>
 
   <main class="menu-page">
 
-    <div class="menu-shade" aria-hidden="true"></div>
+    <div
+      class="menu-darkness"
+      aria-hidden="true"
+    ></div>
 
     <section class="menu-content">
 
       <!-- LETRERO PRINCIPAL -->
       <header class="game-logo">
 
-        <span class="logo-screw logo-screw-left"></span>
-        <span class="logo-screw logo-screw-right"></span>
+        <span
+          class="logo-screw logo-screw-left"
+          aria-hidden="true"
+        ></span>
 
-        <span class="logo-leaves logo-leaves-left">🍃</span>
-        <span class="logo-leaves logo-leaves-right">🍃</span>
+        <span
+          class="logo-screw logo-screw-right"
+          aria-hidden="true"
+        ></span>
 
-        <div class="logo-paw-top">🐾</div>
+        <span
+          class="logo-leaf logo-leaf-left"
+          aria-hidden="true"
+        >
+          🍃
+        </span>
 
-        <div class="logo-title" aria-label="Junior">
+        <span
+          class="logo-leaf logo-leaf-right"
+          aria-hidden="true"
+        >
+          🍃
+        </span>
+
+        <div
+          class="logo-top-paw"
+          aria-hidden="true"
+        >
+          🐾
+        </div>
+
+        <div
+          class="logo-title"
+          aria-label="Junior"
+        >
+
           <span class="logo-letter">J</span>
           <span class="logo-letter">U</span>
           <span class="logo-letter">N</span>
@@ -44,31 +76,54 @@
 
           <span class="logo-o">
             <span class="logo-letter">O</span>
-            <span class="logo-o-paw">🐾</span>
+
+            <span
+              class="logo-o-paw"
+              aria-hidden="true"
+            >
+              🐾
+            </span>
           </span>
 
           <span class="logo-letter">R</span>
+
         </div>
 
-        <div class="logo-game">GAME</div>
+        <div class="logo-game">
+          GAME
+        </div>
 
-        <div class="logo-bottom-decoration">
-          <span class="small-paw">🐾</span>
+        <div
+          class="logo-decoration"
+          aria-hidden="true"
+        >
+          <span class="logo-small-paw">🐾</span>
           <span class="logo-bone">🦴</span>
-          <span class="small-paw">🐾</span>
+          <span class="logo-small-paw">🐾</span>
         </div>
 
       </header>
 
-      <!-- BOTONES -->
-      <nav class="menu-buttons" aria-label="Menú principal">
+      <!-- BOTONES DEL MENÚ -->
+      <nav
+        class="menu-buttons"
+        aria-label="Menú principal"
+      >
 
         <a
           class="wood-button play-button"
           href="game.html"
         >
-          <span class="button-icon">🐾</span>
-          <span class="button-text">JUGAR</span>
+          <span
+            class="button-icon"
+            aria-hidden="true"
+          >
+            🐾
+          </span>
+
+          <span class="button-text">
+            JUGAR
+          </span>
         </a>
 
         <button
@@ -76,8 +131,16 @@
           class="wood-button"
           type="button"
         >
-          <span class="button-icon">🏆</span>
-          <span class="button-text">RÉCORDS</span>
+          <span
+            class="button-icon"
+            aria-hidden="true"
+          >
+            🏆
+          </span>
+
+          <span class="button-text">
+            RÉCORDS
+          </span>
         </button>
 
         <button
@@ -85,8 +148,16 @@
           class="wood-button"
           type="button"
         >
-          <span class="button-icon">⚙️</span>
-          <span class="button-text">AJUSTES</span>
+          <span
+            class="button-icon"
+            aria-hidden="true"
+          >
+            ⚙️
+          </span>
+
+          <span class="button-text">
+            AJUSTES
+          </span>
         </button>
 
         <button
@@ -94,8 +165,16 @@
           class="wood-button"
           type="button"
         >
-          <span class="button-icon">ℹ️</span>
-          <span class="button-text">CÓMO JUGAR</span>
+          <span
+            class="button-icon"
+            aria-hidden="true"
+          >
+            ℹ️
+          </span>
+
+          <span class="button-text">
+            CÓMO JUGAR
+          </span>
         </button>
 
         <button
@@ -103,20 +182,36 @@
           class="wood-button"
           type="button"
         >
-          <span class="button-icon">🚪</span>
-          <span class="button-text">SALIR</span>
+          <span
+            class="button-icon"
+            aria-hidden="true"
+          >
+            🚪
+          </span>
+
+          <span class="button-text">
+            SALIR
+          </span>
         </button>
 
       </nav>
 
+      <!-- PIE DEL MENÚ -->
       <footer class="menu-footer">
-        <strong>JFAM &amp; Co. Game Studios</strong>
-        <span>Versión 1.0</span>
+
+        <strong>
+          JFAM &amp; Co. Game Studios
+        </strong>
+
+        <span>
+          Versión 1.0
+        </span>
+
       </footer>
 
     </section>
 
-    <!-- VENTANA INFORMATIVA -->
+    <!-- VENTANA EMERGENTE -->
     <div
       id="menuModal"
       class="modal hidden"
@@ -131,14 +226,22 @@
           id="closeModalButton"
           class="modal-close"
           type="button"
-          aria-label="Cerrar"
+          aria-label="Cerrar ventana"
         >
           ×
         </button>
 
-        <div id="modalIcon" class="modal-icon">🐾</div>
+        <div
+          id="modalIcon"
+          class="modal-icon"
+          aria-hidden="true"
+        >
+          🐾
+        </div>
 
-        <h2 id="modalTitle">Próximamente</h2>
+        <h2 id="modalTitle">
+          Próximamente
+        </h2>
 
         <p id="modalText">
           Esta sección estará disponible próximamente.
@@ -158,7 +261,8 @@
 
   </main>
 
-  <script src="js/menu.js?v=10"></script>
+  <script src="js/menu.js?v=20"></script>
 
 </body>
+
 </html>

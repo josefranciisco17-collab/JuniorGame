@@ -1,28 +1,110 @@
 "use strict";
 
-const recordsButton = document.getElementById("recordsButton");
-const settingsButton = document.getElementById("settingsButton");
+document.addEventListener("DOMContentLoaded", () => {
 
-const comingSoonModal = document.getElementById("comingSoonModal");
-const closeModalButton = document.getElementById("closeModalButton");
-const acceptModalButton = document.getElementById("acceptModalButton");
+  const modal =
+    document.getElementById("menuModal");
 
-function openComingSoonModal() {
-  comingSoonModal.classList.remove("hidden");
-}
+  const modalTitle =
+    document.getElementById("modalTitle");
 
-function closeComingSoonModal() {
-  comingSoonModal.classList.add("hidden");
-}
+  const modalText =
+    document.getElementById("modalText");
 
-recordsButton.addEventListener("click", openComingSoonModal);
-settingsButton.addEventListener("click", openComingSoonModal);
+  const modalIcon =
+    document.getElementById("modalIcon");
 
-closeModalButton.addEventListener("click", closeComingSoonModal);
-acceptModalButton.addEventListener("click", closeComingSoonModal);
+  const closeButton =
+    document.getElementById("closeModalButton");
 
-comingSoonModal.addEventListener("click", (event) => {
-  if (event.target === comingSoonModal) {
-    closeComingSoonModal();
+  const acceptButton =
+    document.getElementById("acceptModalButton");
+
+  function mostrarModal(icono, titulo, texto) {
+
+    modalIcon.textContent = icono;
+    modalTitle.textContent = titulo;
+    modalText.textContent = texto;
+
+    modal.classList.remove("hidden");
   }
+
+  function cerrarModal() {
+    modal.classList.add("hidden");
+  }
+
+  document
+    .getElementById("recordsButton")
+    .addEventListener("click", () => {
+
+      mostrarModal(
+        "🏆",
+        "Récords",
+        "Próximamente podrás guardar tus mejores puntuaciones."
+      );
+
+    });
+
+  document
+    .getElementById("settingsButton")
+    .addEventListener("click", () => {
+
+      mostrarModal(
+        "⚙️",
+        "Ajustes",
+        "Aquí podrás configurar música, sonidos y controles."
+      );
+
+    });
+
+  document
+    .getElementById("howToPlayButton")
+    .addEventListener("click", () => {
+
+      mostrarModal(
+        "📖",
+        "Cómo jugar",
+        "Muévete con las flechas, salta para atrapar los huesos y evita perder tus vidas."
+      );
+
+    });
+
+  document
+    .getElementById("exitButton")
+    .addEventListener("click", () => {
+
+      mostrarModal(
+        "👋",
+        "Salir",
+        "Puedes cerrar la pestaña o regresar usando tu navegador."
+      );
+
+    });
+
+  closeButton.addEventListener(
+    "click",
+    cerrarModal
+  );
+
+  acceptButton.addEventListener(
+    "click",
+    cerrarModal
+  );
+
+  modal.addEventListener("click", (e) => {
+
+    if (e.target === modal) {
+      cerrarModal();
+    }
+
+  });
+
+  document.addEventListener("keydown", (e) => {
+
+    if (e.key === "Escape") {
+      cerrarModal();
+    }
+
+  });
+
 });

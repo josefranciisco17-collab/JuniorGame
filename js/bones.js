@@ -10,11 +10,12 @@ window.JuniorBones = {
   esperaMinima: 900,
   esperaMaxima: 1500,
 
+  tamanoHueso: 105,
+
   temporizadorNuevoHueso: null,
 
   iniciar() {
     this.tiempoAnterior = performance.now();
-
     this.programarSiguienteHueso();
 
     requestAnimationFrame(
@@ -54,7 +55,7 @@ window.JuniorBones = {
     }
 
     /*
-      Solo permitimos un hueso a la vez.
+      Solo puede existir un hueso a la vez.
     */
     if (this.huesoActual) {
       return;
@@ -72,38 +73,52 @@ window.JuniorBones = {
       ? juego.rutas.huesoDorado
       : juego.rutas.huesoNormal;
 
+    imagen.style.position = "absolute";
+    imagen.style.width = `${this.tamanoHueso}px`;
+    imagen.style.height = `${this.tamanoHueso}px`;
+    imagen.style.objectFit = "contain";
+    imagen.style.pointerEvents = "none";
+    imagen.style.zIndex = "10";
+
     capaHuesos.appendChild(imagen);
 
-    const anchoHueso = 80;
     const margen = 12;
 
     const limiteMaximo =
-      Math.max(
-        margen,
-        areaJuego.clientWidth - anchoHueso - margen
-      );
+      areaJuego.clientWidth -
+      this.tamanoHueso -
+      margen;
 
     const posicionX =
       margen +
       Math.random() *
-      (limiteMaximo - margen);
+      Math.max(
+        0,
+        limiteMaximo - margen
+      );
+
+    const posicionInicialY =
+      -this.tamanoHueso - 15;
 
     this.huesoActual = {
       elemento: imagen,
       x: posicionX,
-      y: -70,
+      y: posicionInicialY,
 
       velocidad:
         this.velocidadMinima +
         Math.random() *
-        (this.velocidadMaxima - this.velocidadMinima),
+        (
+          this.velocidadMaxima -
+          this.velocidadMinima
+        ),
 
       dorado: esDorado,
       atrapado: false
     };
 
     imagen.style.left = `${posicionX}px`;
-    imagen.style.top = "-70px";
+    imagen.style.top = `${posicionInicialY}px`;
   },
 
   actualizar(tiempoActual) {
@@ -189,13 +204,17 @@ window.JuniorBones = {
     const juego = window.JuniorGame;
     const areaJuego = juego?.elementos?.areaJuego;
 
-    if (!areaJuego || !this.huesoActual) {
+    if (
+      !areaJuego ||
+      !this.huesoActual
+    ) {
       return;
     }
 
     if (
       this.huesoActual.y >
-      areaJuego.clientHeight + 70
+      areaJuego.clientHeight +
+      this.tamanoHueso
     ) {
       const eraDorado =
         this.huesoActual.dorado;
@@ -204,7 +223,7 @@ window.JuniorBones = {
 
       /*
         El hueso normal resta una vida.
-        El dorado solo desaparece.
+        El hueso dorado solo desaparece.
       */
       if (!eraDorado) {
         juego.perderVida();
@@ -224,8 +243,11 @@ window.JuniorBones = {
   }
 };
 
-window.addEventListener("DOMContentLoaded", () => {
-  window.setTimeout(() => {
-    window.JuniorBones.iniciar();
-  }, 20);
-});
+window.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    window.setTimeout(() => {
+      window.JuniorBones.iniciar();
+    }, 20);
+  }
+);

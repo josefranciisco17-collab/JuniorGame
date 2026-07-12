@@ -74,7 +74,7 @@ window.JuniorBones = {
 
     capaHuesos.appendChild(imagen);
 
-    const anchoHueso = 52;
+    const anchoHueso = 80;
     const margen = 12;
 
     const limiteMaximo =

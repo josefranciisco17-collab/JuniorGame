@@ -645,3 +645,66 @@ a {
 .button-icon {
   font-size: 24px;
 }
+
+
+.logo-title {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 0.9;
+}
+
+.logo-word,
+.logo-o-letter {
+  font-size: clamp(54px, 13vw, 78px);
+  font-weight: 900;
+  color: #f6b32f;
+  letter-spacing: 0;
+
+  text-shadow:
+    0 3px 0 #8a4b00,
+    0 7px 0 #5a2f00,
+    0 10px 12px rgba(0, 0, 0, 0.4);
+}
+
+.logo-o {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-o-paw {
+  position: absolute;
+  font-size: 23px;
+  line-height: 1;
+  transform: translateY(2px);
+}
+
+.logo-game {
+  margin-top: 10px;
+  font-size: clamp(40px, 9vw, 58px);
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #fff7df;
+  line-height: 1;
+
+  text-shadow:
+    0 3px 0 #74502d,
+    0 7px 0 #43250d,
+    0 10px 12px rgba(0, 0, 0, 0.4);
+}
+
+.logo-decoration {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  font-size: 25px;
+  line-height: 1;
+}

@@ -180,13 +180,14 @@ a {
   position: absolute;
   width: 105px;
   height: 105px;
-
   object-fit: contain;
   pointer-events: none;
+  z-index: 10;
 
   filter:
     drop-shadow(0 4px 3px rgba(0, 0, 0, 0.35));
 }
+
 
 .controls {
   position: absolute;

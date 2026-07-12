@@ -1,59 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    content="width=device-width, initial-scale=1.0,
+    maximum-scale=1.0, user-scalable=no,
+    viewport-fit=cover"
   >
+
+  <meta name="theme-color" content="#40200d">
 
   <title>JuniorGame</title>
 
-<link rel="stylesheet" href="css/menu.css?v=3">
+  <link rel="stylesheet" href="css/menu.css?v=10">
 </head>
 
 <body>
 
   <main class="menu-page">
 
-    <div class="menu-overlay"></div>
+    <div class="menu-shade" aria-hidden="true"></div>
 
     <section class="menu-content">
 
+      <!-- LETRERO PRINCIPAL -->
+      <header class="game-logo">
 
-<div class="game-logo">
+        <span class="logo-screw logo-screw-left"></span>
+        <span class="logo-screw logo-screw-right"></span>
 
-  <div class="logo-title">
-    <span class="logo-word">JUNI</span>
+        <span class="logo-leaves logo-leaves-left">🍃</span>
+        <span class="logo-leaves logo-leaves-right">🍃</span>
 
-    <span class="logo-o">
-      <span class="logo-o-letter">O</span>
-      <span class="logo-o-paw">🐾</span>
-    </span>
+        <div class="logo-paw-top">🐾</div>
 
-    <span class="logo-word">R</span>
-  </div>
+        <div class="logo-title" aria-label="Junior">
+          <span class="logo-letter">J</span>
+          <span class="logo-letter">U</span>
+          <span class="logo-letter">N</span>
+          <span class="logo-letter">I</span>
 
-  <div class="logo-game">GAME</div>
+          <span class="logo-o">
+            <span class="logo-letter">O</span>
+            <span class="logo-o-paw">🐾</span>
+          </span>
 
-  <div class="logo-decoration">
-    <span>🐾</span>
-    <span>🦴</span>
-    <span>🐾</span>
-  </div>
+          <span class="logo-letter">R</span>
+        </div>
 
-</div>
+        <div class="logo-game">GAME</div>
 
-      <nav class="menu-buttons">
+        <div class="logo-bottom-decoration">
+          <span class="small-paw">🐾</span>
+          <span class="logo-bone">🦴</span>
+          <span class="small-paw">🐾</span>
+        </div>
+
+      </header>
+
+      <!-- BOTONES -->
+      <nav class="menu-buttons" aria-label="Menú principal">
 
         <a
           class="wood-button play-button"
           href="game.html"
         >
           <span class="button-icon">🐾</span>
-          <span>JUGAR</span>
+          <span class="button-text">JUGAR</span>
         </a>
 
         <button
@@ -62,7 +77,7 @@
           type="button"
         >
           <span class="button-icon">🏆</span>
-          <span>RÉCORDS</span>
+          <span class="button-text">RÉCORDS</span>
         </button>
 
         <button
@@ -71,7 +86,7 @@
           type="button"
         >
           <span class="button-icon">⚙️</span>
-          <span>AJUSTES</span>
+          <span class="button-text">AJUSTES</span>
         </button>
 
         <button
@@ -80,7 +95,7 @@
           type="button"
         >
           <span class="button-icon">ℹ️</span>
-          <span>CÓMO JUGAR</span>
+          <span class="button-text">CÓMO JUGAR</span>
         </button>
 
         <button
@@ -89,20 +104,21 @@
           type="button"
         >
           <span class="button-icon">🚪</span>
-          <span>SALIR</span>
+          <span class="button-text">SALIR</span>
         </button>
 
       </nav>
 
       <footer class="menu-footer">
-        <span>JFAM &amp; Co. Game Studios</span>
+        <strong>JFAM &amp; Co. Game Studios</strong>
         <span>Versión 1.0</span>
       </footer>
 
     </section>
 
+    <!-- VENTANA INFORMATIVA -->
     <div
-      id="comingSoonModal"
+      id="menuModal"
       class="modal hidden"
       role="dialog"
       aria-modal="true"
@@ -120,10 +136,12 @@
           ×
         </button>
 
+        <div id="modalIcon" class="modal-icon">🐾</div>
+
         <h2 id="modalTitle">Próximamente</h2>
 
         <p id="modalText">
-          Esta sección estará disponible en una próxima actualización.
+          Esta sección estará disponible próximamente.
         </p>
 
         <button
@@ -131,7 +149,7 @@
           class="modal-accept"
           type="button"
         >
-          Entendido
+          ENTENDIDO
         </button>
 
       </div>
@@ -140,8 +158,7 @@
 
   </main>
 
-  <script src="js/menu.js"></script>
+  <script src="js/menu.js?v=10"></script>
 
 </body>
-
 </html>

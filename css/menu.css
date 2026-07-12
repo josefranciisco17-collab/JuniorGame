@@ -1,710 +1,113 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-html,
-body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #1f1309;
-}
-
-button,
-a {
-  font-family: inherit;
-}
-
-.menu-page {
-  position: relative;
-  width: 100%;
-  height: 100dvh;
-  max-width: 520px;
-  margin: 0 auto;
-  overflow: hidden;
-
-  background-image:
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.08),
-      rgba(0, 0, 0, 0.22)
-    ),
-    url("../Fondos-JuniorGame/granja.png");
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.menu-overlay {
-  position: absolute;
-  inset: 0;
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255, 219, 143, 0.08),
-      rgba(78, 39, 11, 0.18)
-    );
-
-  pointer-events: none;
-}
-
-.menu-content {
-  position: relative;
-  z-index: 5;
-
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  padding:
-    max(24px, env(safe-area-inset-top))
-    22px
-    max(18px, env(safe-area-inset-bottom));
-}
-
-
-.game-logo {
-  position: relative;
-
-  width: 90%;
-  max-width: 400px;
-  min-height: 205px;
-
-  margin: 12px auto 24px;
-  padding: 26px 24px 24px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  border: 5px solid #4b2108;
-  border-radius: 30px;
-
-  background:
-    repeating-linear-gradient(
-      0deg,
-      rgba(58, 22, 3, 0.16) 0,
-      rgba(58, 22, 3, 0.16) 3px,
-      transparent 3px,
-      transparent 26px
-    ),
-    linear-gradient(
-      180deg,
-      #bc732f 0%,
-      #99501c 50%,
-      #6d310c 100%
-    );
-
-  box-shadow:
-    inset 0 4px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -8px 0 rgba(49, 17, 2, 0.34),
-    0 8px 0 #391503,
-    0 16px 28px rgba(0, 0, 0, 0.38);
-}
-
-
-  box-shadow:
-    inset 0 4px 0 rgba(255, 255, 255, 0.16),
-    inset 0 -8px 0 rgba(50, 18, 3, 0.34),
-    0 8px 0 #391604,
-    0 16px 28px rgba(0, 0, 0, 0.35);
-}
-
-
-.game-logo::before,
-.game-logo::after{
-    content:"";
-    position:absolute;
-    width:18px;
-    height:18px;
-    border-radius:50%;
-    background:#bdbdbd;
-    border:3px solid #555;
-    box-shadow: inset 0 2px 2px rgba(255,255,255,.5);
-}
-
-.game-logo::before{
-    left:18px;
-    top:18px;
-}
-
-.game-logo::after{
-    right:18px;
-    top:18px;
-}
-
-
-.logo-junior{
-    font-size: clamp(58px, 12vw, 76px);
-    font-weight:900;
-    color:#f6b32f;
-    text-shadow:
-        0 2px 0 #7b4300,
-        0 5px 0 #5a2f00,
-        0 8px 12px rgba(0,0,0,.45);
-}
-
-.logo-o{
-    position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.logo-o-letter{
-    font-size:72px;
-    font-weight:900;
-    color:#f6b32f;
-    text-shadow:
-        0 2px 0 #7b4300,
-        0 5px 0 #5a2f00,
-        0 8px 12px rgba(0,0,0,.45);
-}
-
-.logo-o-paw{
-    position:absolute;
-    font-size:26px;
-}
-
-.logo-game{
-    margin-top:-8px;
-    font-size: clamp(42px, 8vw, 54px);
-    font-weight:900;
-    color:#fff7df;
-    letter-spacing:4px;
-    text-shadow:
-        0 2px 0 #5d3a16,
-        0 5px 0 #43250d,
-        0 8px 10px rgba(0,0,0,.45);
-}
-
-.logo-decoration{
-    margin-top:6px;
-    display:flex;
-    justify-content:center;
-    gap:18px;
-    font-size:28px;
-}
-
-
-  box-shadow:
-    inset 0 4px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -7px 0 rgba(74, 31, 6, 0.35),
-    0 9px 0 #4e2309,
-    0 18px 30px rgba(0, 0, 0, 0.35);
-}
-
-.game-logo::before,
-.game-logo::after {
-  content: "";
-  position: absolute;
-  left: 18px;
-  right: 18px;
-  height: 3px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(82, 38, 8, 0.55),
-      transparent
-    );
-}
-
-.game-logo::before {
-  top: 39%;
-}
-
-.game-logo::after {
-  top: 69%;
-}
-
-.logo-top,
-.logo-bottom {
-  position: relative;
-  z-index: 2;
-
-  color: #fff4d7;
-  font-weight: 1000;
-  letter-spacing: 3px;
-  line-height: 0.95;
-
-  text-shadow:
-    0 3px 0 #6a2c09,
-    0 6px 8px rgba(0, 0, 0, 0.35);
-}
-
-.logo-top {
-  font-size: clamp(42px, 12vw, 66px);
-}
-
-.logo-bottom {
-  font-size: clamp(28px, 8vw, 44px);
-  margin-top: 8px;
-}
-
-
-.logo-bone {
-    position: absolute;
-    top: -18px;
-    right: 26px;
-
-    font-size: 48px;
-
-    transform: rotate(-18deg);
-
-    filter: drop-shadow(0 4px 0 rgba(73,30,5,.45));
-}
-
-
-.menu-buttons {
-  width: 100%;
-  max-width: 340px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-
-.wood-button {
-  position: relative;
-
-  width: 76%;
-  max-width: 340px;
-  min-height: 64px;
-
-  margin: 0 auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-
-  padding: 10px 22px;
-
-  text-decoration: none;
-
-  color: #fff8df;
-  font-size: clamp(18px, 4.5vw, 24px);
-  font-weight: 900;
-  letter-spacing: 1px;
-
-  border: 4px solid #4a230b;
-  border-radius: 18px;
-
-  background:
-    linear-gradient(
-      180deg,
-      #b86b2b 0%,
-      #8d4719 48%,
-      #65300d 100%
-    );
-
-  box-shadow:
-    inset 0 3px 0 rgba(255, 255, 255, 0.16),
-    inset 0 -5px 0 rgba(53, 20, 4, 0.42),
-    0 5px 0 #3d1905,
-    0 9px 18px rgba(0, 0, 0, 0.34);
-
-  cursor: pointer;
-  touch-action: manipulation;
-
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease,
-    filter 0.12s ease;
-}
-
-.wood-button::before,
-.wood-button::after {
-  content: "";
-  position: absolute;
-
-  width: 9px;
-  height: 9px;
-
-  top: 50%;
-  transform: translateY(-50%);
-
-  border-radius: 50%;
-
-  background: #3f1905;
-
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.2);
-}
-
-.wood-button::before {
-  left: 15px;
-}
-
-.wood-button::after {
-  right: 15px;
-}
-
-.wood-button:active {
-  transform: translateY(5px) scale(0.985);
-
-  box-shadow:
-    inset 0 3px 0 rgba(255, 255, 255, 0.14),
-    inset 0 -2px 0 rgba(75, 27, 3, 0.2),
-    0 1px 0 #4d2007,
-    0 5px 10px rgba(0, 0, 0, 0.25);
-}
-
-.wood-button:hover {
-  filter: brightness(1.05);
-}
-
-.play-button {
-  background:
-    linear-gradient(
-      180deg,
-      #d8994f 0%,
-      #b76d2b 50%,
-      #874513 100%
-    );
-}
-
-.button-icon {
-  font-size: 27px;
-  line-height: 1;
-}
-
-.menu-footer {
-  width: 100%;
-  max-width: 390px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-
-  margin-top: 14px;
-
-  color: #fff6dc;
-  font-size: 12px;
-  font-weight: 700;
-
-  text-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.75);
-}
-
-.modal {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 22px;
-
-  background: rgba(28, 13, 4, 0.76);
-  backdrop-filter: blur(6px);
-}
-
-.hidden {
-  display: none;
-}
-
-.modal-card {
-  position: relative;
-
-  width: 100%;
-  max-width: 340px;
-
-  padding: 32px 24px 24px;
-
-  text-align: center;
-
-  color: #fff7dc;
-
-  border: 4px solid #5c290a;
-  border-radius: 24px;
-
-  background:
-    linear-gradient(
-      180deg,
-      #ba7331,
-      #7a3a12
-    );
-
-  box-shadow:
-    inset 0 3px 0 rgba(255, 255, 255, 0.18),
-    0 10px 0 #4a1f07,
-    0 24px 45px rgba(0, 0, 0, 0.45);
-}
-
-.modal-card h2 {
-  margin-bottom: 14px;
-  font-size: 28px;
-
-  text-shadow:
-    0 3px 0 #542006;
-}
-
-.modal-card p {
-  margin-bottom: 22px;
-  line-height: 1.45;
-  font-size: 16px;
-}
-
-.modal-close {
-  position: absolute;
-  top: 8px;
-  right: 13px;
-
-  width: 38px;
-  height: 38px;
-
-  border: none;
-  background: transparent;
-
-  color: #fff7dc;
-  font-size: 31px;
-  font-weight: 900;
-
-  cursor: pointer;
-}
-
-.modal-accept {
-  width: 100%;
-
-  padding: 14px;
-
-  border: 3px solid #5c290a;
-  border-radius: 15px;
-
-  background:
-    linear-gradient(
-      180deg,
-      #d8994f,
-      #8b4615
-    );
-
-  color: #fff7dc;
-  font-size: 17px;
-  font-weight: 900;
-
-  box-shadow:
-    0 5px 0 #4a1f07;
-}
-
-.modal-accept:active {
-  transform: translateY(4px);
-  box-shadow:
-    0 1px 0 #4a1f07;
-}
-
-@media (max-height: 760px) {
-  .menu-content {
-    padding-top: max(12px, env(safe-area-inset-top));
-    padding-bottom: max(10px, env(safe-area-inset-bottom));
+"use strict";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("menuModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalText = document.getElementById("modalText");
+  const modalIcon = document.getElementById("modalIcon");
+
+  const closeModalButton =
+    document.getElementById("closeModalButton");
+
+  const acceptModalButton =
+    document.getElementById("acceptModalButton");
+
+  const recordsButton =
+    document.getElementById("recordsButton");
+
+  const settingsButton =
+    document.getElementById("settingsButton");
+
+  const howToPlayButton =
+    document.getElementById("howToPlayButton");
+
+  const exitButton =
+    document.getElementById("exitButton");
+
+  function abrirModal({
+    titulo,
+    texto,
+    icono
+  }) {
+    if (
+      !modal ||
+      !modalTitle ||
+      !modalText ||
+      !modalIcon
+    ) {
+      return;
+    }
+
+    modalTitle.textContent = titulo;
+    modalText.textContent = texto;
+    modalIcon.textContent = icono;
+
+    modal.classList.remove("hidden");
   }
 
-  .game-logo {
-    min-height: 120px;
-    margin-bottom: 12px;
+  function cerrarModal() {
+    if (!modal) {
+      return;
+    }
+
+    modal.classList.add("hidden");
   }
 
-  .logo-top {
-    font-size: clamp(34px, 10vw, 52px);
-  }
+  recordsButton?.addEventListener("click", () => {
+    abrirModal({
+      titulo: "Récords",
+      texto:
+        "Muy pronto podrás consultar tus mejores puntuaciones.",
+      icono: "🏆"
+    });
+  });
 
-  .logo-bottom {
-    font-size: clamp(24px, 7vw, 36px);
-  }
+  settingsButton?.addEventListener("click", () => {
+    abrirModal({
+      titulo: "Ajustes",
+      texto:
+        "Muy pronto podrás configurar sonidos, música y controles.",
+      icono: "⚙️"
+    });
+  });
 
+  howToPlayButton?.addEventListener("click", () => {
+    abrirModal({
+      titulo: "Cómo jugar",
+      texto:
+        "Usa las flechas para mover al perro. Presiona Saltar para atrapar los huesos. Evita perder tus tres vidas.",
+      icono: "ℹ️"
+    });
+  });
 
-.menu-buttons {
-  width: 100%;
+  exitButton?.addEventListener("click", () => {
+    abrirModal({
+      titulo: "Salir",
+      texto:
+        "Puedes cerrar esta pestaña o regresar usando el botón de tu navegador.",
+      icono: "🚪"
+    });
+  });
 
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  closeModalButton?.addEventListener(
+    "click",
+    cerrarModal
+  );
 
-  margin-top: auto;
-  margin-bottom: auto;
-}
+  acceptModalButton?.addEventListener(
+    "click",
+    cerrarModal
+  );
 
-  .wood-button {
-    min-height: 52px;
-    padding: 10px 18px;
-    font-size: 17px;
-  }
+  modal?.addEventListener("click", (evento) => {
+    if (evento.target === modal) {
+      cerrarModal();
+    }
+  });
 
-  .button-icon {
-    font-size: 22px;
-  }
-
-  .menu-footer {
-    margin-top: 8px;
-  }
-}
-
-
-.logo-title {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 2px;
-  line-height: 0.95;
-}
-
-.logo-junior {
-  font-size: clamp(58px, 12vw, 76px);
-  font-weight: 900;
-  letter-spacing: 2px;
-  color: #f6b32f;
-
-  text-shadow:
-    0 2px 0 #7b4300,
-    0 5px 0 #5a2f00,
-    0 8px 12px rgba(0, 0, 0, 0.45);
-}
-
-.logo-o {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo-o-letter {
-  font-size: clamp(58px, 12vw, 76px);
-  font-weight: 900;
-  color: #f6b32f;
-
-  text-shadow:
-    0 2px 0 #7b4300,
-    0 5px 0 #5a2f00,
-    0 8px 12px rgba(0, 0, 0, 0.45);
-}
-
-.logo-o-paw {
-  position: absolute;
-  font-size: 24px;
-}
-
-.logo-game {
-  margin-top: -4px;
-  font-size: clamp(42px, 8vw, 54px);
-  font-weight: 900;
-  letter-spacing: 3px;
-  color: #fff7df;
-
-  text-shadow:
-    0 2px 0 #5d3a16,
-    0 5px 0 #43250d,
-    0 8px 10px rgba(0, 0, 0, 0.45);
-}
-
-.logo-decoration {
-  margin-top: 6px;
-  display: flex;
-  justify-content: center;
-  gap: 18px;
-  font-size: 25px;
-}
-
-
-.menu-buttons {
-  max-width: 330px;
-  gap: 12px;
-  margin-top: 8px;
-  margin-bottom: auto;
-}
-
-.wood-button {
-  width: 100%;
-  max-width: 330px;
-  min-height: 58px;
-  padding: 9px 18px;
-  font-size: clamp(17px, 4.2vw, 22px);
-}
-
-.button-icon {
-  font-size: 24px;
-}
-
-
-.logo-title {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 0.9;
-}
-
-.logo-word,
-.logo-o-letter {
-  font-size: clamp(54px, 13vw, 78px);
-  font-weight: 900;
-  color: #f6b32f;
-  letter-spacing: 0;
-
-  text-shadow:
-    0 3px 0 #8a4b00,
-    0 7px 0 #5a2f00,
-    0 10px 12px rgba(0, 0, 0, 0.4);
-}
-
-.logo-o {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo-o-paw {
-  position: absolute;
-  font-size: 23px;
-  line-height: 1;
-  transform: translateY(2px);
-}
-
-.logo-game {
-  margin-top: 10px;
-  font-size: clamp(40px, 9vw, 58px);
-  font-weight: 900;
-  letter-spacing: 3px;
-  color: #fff7df;
-  line-height: 1;
-
-  text-shadow:
-    0 3px 0 #74502d,
-    0 7px 0 #43250d,
-    0 10px 12px rgba(0, 0, 0, 0.4);
-}
-
-.logo-decoration {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 22px;
-  font-size: 25px;
-  line-height: 1;
-}
+  document.addEventListener("keydown", (evento) => {
+    if (evento.key === "Escape") {
+      cerrarModal();
+    }
+  });
+});

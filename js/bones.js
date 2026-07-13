@@ -97,8 +97,9 @@ window.JuniorBones = {
         limiteMaximo - margen
       );
 
-    const posicionInicialY =
-      -this.tamanoHueso - 15;
+
+      const posicionInicialY =
+      -this.tamanoHueso + 10;
 
     this.huesoActual = {
       elemento: imagen,
@@ -157,6 +158,7 @@ window.JuniorBones = {
 
     this.huesoActual.y +=
       this.huesoActual.velocidad * deltaTime;
+
 
     this.huesoActual.elemento.style.top =
       `${this.huesoActual.y}px`;

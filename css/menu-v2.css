@@ -755,8 +755,8 @@ transition:
 .menu-dog{
     right: 8px;
     position:absolute;
-    bottom:38px;
-    left:auto;
+    bottom:-12px;
+    left:-18;
 
     width:138px;
     height:auto;

@@ -1,9 +1,6 @@
 "use strict";
 
-  .getElementById("shopButton")
-  .addEventListener("click", () => {
-  document.addEventListener("DOMContentLoaded", () => {
-
+document.addEventListener("DOMContentLoaded", () => {
   const modal =
     document.getElementById("menuModal");
 
@@ -22,7 +19,28 @@
   const acceptButton =
     document.getElementById("acceptModalButton");
 
-  function mostrarModal(icono, titulo, texto) {
+  const shopButton =
+    document.getElementById("shopButton");
+
+  const settingsButton =
+    document.getElementById("settingsButton");
+
+  const howToPlayButton =
+    document.getElementById("howToPlayButton");
+
+  function mostrarModal(
+    icono,
+    titulo,
+    texto
+  ) {
+    if (
+      !modal ||
+      !modalTitle ||
+      !modalText ||
+      !modalIcon
+    ) {
+      return;
+    }
 
     modalIcon.textContent = icono;
     modalTitle.textContent = titulo;
@@ -32,77 +50,63 @@
   }
 
   function cerrarModal() {
-    modal.classList.add("hidden");
+    modal?.classList.add("hidden");
   }
 
+  shopButton?.addEventListener(
+    "click",
+    () => {
+      window.location.href = "shop.html";
+    }
+  );
 
-document
-  .getElementById("shopButton")
-  .addEventListener("click", () => {
-    window.location.href = "shop.html";
-  });
-
-
-  document
-    .getElementById("settingsButton")
-    .addEventListener("click", () => {
-
+  settingsButton?.addEventListener(
+    "click",
+    () => {
       mostrarModal(
         "⚙️",
         "Ajustes",
         "Aquí podrás configurar música, sonidos y controles."
       );
+    }
+  );
 
-    });
-
-  document
-    .getElementById("howToPlayButton")
-    .addEventListener("click", () => {
-
+  howToPlayButton?.addEventListener(
+    "click",
+    () => {
       mostrarModal(
         "📖",
         "Cómo jugar",
         "Muévete con las flechas, salta para atrapar los huesos y evita perder tus vidas."
       );
+    }
+  );
 
-    });
-
-  document
-    .getElementById("exitButton")
-    .addEventListener("click", () => {
-
-      mostrarModal(
-        "👋",
-        "Salir",
-        "Puedes cerrar la pestaña o regresar usando tu navegador."
-      );
-
-    });
-
-  closeButton.addEventListener(
+  closeButton?.addEventListener(
     "click",
     cerrarModal
   );
 
-  acceptButton.addEventListener(
+  acceptButton?.addEventListener(
     "click",
     cerrarModal
   );
 
-  modal.addEventListener("click", (e) => {
-
-    if (e.target === modal) {
-      cerrarModal();
+  modal?.addEventListener(
+    "click",
+    (event) => {
+      if (event.target === modal) {
+        cerrarModal();
+      }
     }
+  );
 
-  });
-
-  document.addEventListener("keydown", (e) => {
-
-    if (e.key === "Escape") {
-      cerrarModal();
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Escape") {
+        cerrarModal();
+      }
     }
-
-  });
-
+  );
 });

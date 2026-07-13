@@ -214,3 +214,46 @@ window.addEventListener(
     }
   }
 );
+
+
+/* =========================================
+   SELECCIONAR PRODUCTO
+========================================= */
+
+const buyButtons =
+  document.querySelectorAll(".buy-button");
+
+buyButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const productCard =
+      button.closest(".shop-item");
+
+    if (!productCard) {
+      return;
+    }
+
+    const productId =
+      productCard.dataset.productId;
+
+    const type =
+      productCard.dataset.type;
+
+    const amount =
+      Number(productCard.dataset.amount);
+
+    const price =
+      Number(productCard.dataset.price);
+
+    mostrarMensaje(
+      `Elegiste ${amount} ${type} por $${price} MXN.`,
+      "success"
+    );
+
+    console.log({
+      productId,
+      type,
+      amount,
+      price
+    });
+  });
+});

@@ -725,10 +725,10 @@ transform: translateY(-2px) rotate(-5deg);
 .dog-wood{
   position:absolute;
 
-  right:-8px;
-  bottom:0;
+  right:-28px;
+  bottom:18;
 
-  width:165px;
+  width:220px;
   height:auto;
 
   border:0;

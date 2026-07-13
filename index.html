@@ -190,7 +190,7 @@
           </span>
 
           <span class="button-text">
-            SALIR
+            PERFIL
           </span>
         </button>
 
@@ -204,12 +204,170 @@
         </strong>
 
         <span>
-          Versión 1.0
+          Copyright &amp; Co.Studios 2026 S.A de C.V
         </span>
 
       </footer>
 
     </section>
+
+
+<!-- PERFIL DEL JUGADOR -->
+<div
+  id="profilePanel"
+  class="profile-panel hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="profileTitle"
+>
+  <div class="profile-backdrop"></div>
+
+  <section class="profile-card">
+
+    <button
+      id="closeProfileButton"
+      class="profile-close"
+      type="button"
+      aria-label="Cerrar perfil"
+    >
+      ×
+    </button>
+
+    <header class="profile-header">
+
+      <img
+        id="profilePhoto"
+        class="profile-photo"
+        src="Fondos-JuniorGame/Estrella.png"
+        alt="Foto del jugador"
+      >
+
+      <h2 id="profileTitle">PERFIL</h2>
+
+      <p id="profileName">Jugador</p>
+
+      <div class="profile-id-box">
+        <span>ID DEL JUGADOR</span>
+
+        <strong id="profilePlayerId">
+          JF-XXXXX
+        </strong>
+
+        <button
+          id="copyPlayerIdButton"
+          class="profile-copy-button"
+          type="button"
+        >
+          COPIAR ID
+        </button>
+      </div>
+
+    </header>
+
+    <div class="profile-stats">
+
+      <div class="profile-stat">
+        <span>❤️</span>
+        <small>Vidas</small>
+        <strong id="profileLives">3</strong>
+      </div>
+
+      <div class="profile-stat">
+        <span>🪙</span>
+        <small>Monedas</small>
+        <strong id="profileCoins">0</strong>
+      </div>
+
+      <div class="profile-stat">
+        <span>💎</span>
+        <small>Diamantes</small>
+        <strong id="profileDiamonds">0</strong>
+      </div>
+
+      <div class="profile-stat">
+        <span>⭐</span>
+        <small>Nivel</small>
+        <strong id="profileLevel">1</strong>
+      </div>
+
+      <div class="profile-stat">
+        <span>🏆</span>
+        <small>Récord</small>
+        <strong id="profileRecord">0</strong>
+      </div>
+
+      <div class="profile-stat">
+        <span>🦴</span>
+        <small>Huesos</small>
+        <strong id="profileBones">0</strong>
+      </div>
+
+    </div>
+
+    <div class="profile-details">
+
+      <p>
+        <span>Correo</span>
+        <strong id="profileEmail">
+          Sin correo
+        </strong>
+      </p>
+
+      <p>
+        <span>Registro</span>
+        <strong id="profileRegistration">
+          Sin fecha
+        </strong>
+      </p>
+
+    </div>
+
+    <div class="profile-actions">
+
+      <button
+        id="changePhotoButton"
+        class="profile-action-button"
+        type="button"
+      >
+        Cambiar foto
+      </button>
+
+      <button
+        id="changeNameButton"
+        class="profile-action-button"
+        type="button"
+      >
+        Cambiar nombre
+      </button>
+
+      <button
+        id="changePasswordButton"
+        class="profile-action-button"
+        type="button"
+      >
+        Cambiar contraseña
+      </button>
+
+      <button
+        id="logoutButton"
+        class="profile-action-button danger"
+        type="button"
+      >
+        Cerrar sesión
+      </button>
+
+    </div>
+
+    <p
+      id="profileMessage"
+      class="profile-message"
+      aria-live="polite"
+    ></p>
+
+  </section>
+</div>
+
+
 
     <!-- VENTANA EMERGENTE -->
     <div
@@ -271,6 +429,11 @@
 <script
   type="module"
   src="js/menu-auth.js?v=1"
+></script>
+
+<script
+  type="module"
+  src="js/profile.js?v=1"
 ></script>
 
   <script src="js/menu.js?v=20"></script>

@@ -758,3 +758,372 @@ transition:
 }
 
 
+
+
+/* =========================================
+   PERFIL DEL JUGADOR
+========================================= */
+
+.profile-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 18px;
+
+  overflow-y: auto;
+}
+
+.profile-panel.hidden {
+  display: none;
+}
+
+.profile-backdrop {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(25, 11, 3, 0.78);
+
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
+.profile-card {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  max-width: 390px;
+
+  margin: auto;
+  padding: 25px 20px 22px;
+
+  color: #fff4d8;
+
+  border: 5px solid var(--borde-madera);
+  border-radius: 28px;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 25px,
+      rgba(61, 20, 2, 0.13) 26px,
+      rgba(61, 20, 2, 0.13) 29px
+    ),
+    linear-gradient(
+      180deg,
+      #c37a35 0%,
+      #964819 52%,
+      #61290a 100%
+    );
+
+  box-shadow:
+    inset 0 4px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -8px 0 rgba(43, 13, 1, 0.32),
+    0 8px 0 #301003,
+    0 24px 48px rgba(0, 0, 0, 0.46);
+}
+
+.profile-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+
+  width: 40px;
+  height: 40px;
+
+  color: #fff5d6;
+  font-size: 31px;
+  font-weight: 900;
+
+  border: 0;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.profile-header {
+  text-align: center;
+}
+
+.profile-photo {
+  width: 104px;
+  height: 104px;
+
+  object-fit: cover;
+
+  border: 4px solid #4b2108;
+  border-radius: 50%;
+
+  background: rgba(255, 245, 218, 0.94);
+
+  box-shadow:
+    0 5px 0 #301003,
+    0 10px 18px rgba(0, 0, 0, 0.34);
+}
+
+.profile-header h2 {
+  margin-top: 12px;
+
+  color: #ffb62d;
+  font-size: 31px;
+  font-weight: 1000;
+  letter-spacing: 1px;
+
+  text-shadow:
+    0 2px 0 #b66807,
+    0 5px 0 #713800,
+    0 8px 10px rgba(0, 0, 0, 0.36);
+}
+
+.profile-header > p {
+  margin-top: 5px;
+
+  font-size: 18px;
+  font-weight: 900;
+
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.52);
+}
+
+.profile-id-box {
+  margin-top: 15px;
+  padding: 13px;
+
+  border: 3px solid var(--borde-madera);
+  border-radius: 16px;
+
+  background: rgba(69, 27, 5, 0.34);
+
+  box-shadow:
+    inset 0 3px 7px rgba(0, 0, 0, 0.22);
+}
+
+.profile-id-box span {
+  display: block;
+
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.profile-id-box strong {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #fff;
+  font-size: 25px;
+  letter-spacing: 2px;
+}
+
+.profile-copy-button {
+  margin-top: 10px;
+  padding: 8px 14px;
+
+  color: #fff7dc;
+  font-size: 13px;
+  font-weight: 900;
+
+  border: 3px solid var(--borde-madera);
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #d68b40,
+      #874313
+    );
+
+  box-shadow:
+    0 4px 0 #301003;
+
+  cursor: pointer;
+}
+
+.profile-copy-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #301003;
+}
+
+.profile-stats {
+  margin-top: 17px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.profile-stat {
+  min-height: 87px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 5px;
+
+  border: 3px solid var(--borde-madera);
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(204, 125, 55, 0.9),
+      rgba(112, 48, 12, 0.94)
+    );
+
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.13),
+    0 4px 0 #301003;
+}
+
+.profile-stat > span {
+  font-size: 24px;
+}
+
+.profile-stat small {
+  margin-top: 2px;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.profile-stat strong {
+  margin-top: 3px;
+
+  color: #fff;
+  font-size: 17px;
+}
+
+.profile-details {
+  margin-top: 17px;
+  padding: 12px 13px;
+
+  border: 3px solid var(--borde-madera);
+  border-radius: 14px;
+
+  background: rgba(54, 20, 3, 0.28);
+}
+
+.profile-details p {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  padding: 7px 0;
+}
+
+.profile-details p + p {
+  border-top: 1px solid rgba(255, 244, 216, 0.22);
+}
+
+.profile-details span {
+  font-size: 11px;
+  font-weight: 800;
+  opacity: 0.86;
+}
+
+.profile-details strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.profile-actions {
+  margin-top: 16px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.profile-action-button {
+  min-height: 47px;
+  padding: 8px 10px;
+
+  color: #fff8df;
+  font-size: 13px;
+  font-weight: 900;
+
+  border: 3px solid var(--borde-madera);
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #bd7130,
+      #72320d
+    );
+
+  box-shadow:
+    0 4px 0 #301003;
+
+  cursor: pointer;
+}
+
+.profile-action-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #301003;
+}
+
+.profile-action-button.danger {
+  background:
+    linear-gradient(
+      180deg,
+      #c75a45,
+      #76261d
+    );
+}
+
+.profile-message {
+  min-height: 19px;
+
+  margin-top: 13px;
+
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.profile-message.success {
+  color: #dcffdc;
+}
+
+.profile-message.error {
+  color: #ffd6d2;
+}
+
+@media (max-height: 760px) {
+  .profile-panel {
+    align-items: flex-start;
+  }
+
+  .profile-card {
+    margin-top: 8px;
+    margin-bottom: 18px;
+  }
+
+  .profile-photo {
+    width: 84px;
+    height: 84px;
+  }
+
+  .profile-header h2 {
+    font-size: 27px;
+  }
+
+  .profile-stats {
+    gap: 7px;
+  }
+
+  .profile-stat {
+    min-height: 78px;
+  }
+}

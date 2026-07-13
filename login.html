@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#2b1609">
+
+  <title>JuniorGame - Acceso</title>
+
+  <link rel="stylesheet" href="css/login.css?v=1">
+</head>
+
+<body>
+
+  <main class="login-page">
+
+    <div class="login-overlay"></div>
+
+    <section class="login-card">
+
+      <header class="login-header">
+
+        <img
+          class="login-dog"
+          src="Fondos-JuniorGame/Estrella.png"
+          alt="Estrella"
+          draggable="false"
+        >
+
+        <h1>JuniorGame</h1>
+
+        <p>
+          Inicia sesión o crea tu cuenta
+        </p>
+
+      </header>
+
+      <div class="login-tabs">
+
+        <button
+          id="loginTabButton"
+          class="tab-button active"
+          type="button"
+        >
+          Iniciar sesión
+        </button>
+
+        <button
+          id="registerTabButton"
+          class="tab-button"
+          type="button"
+        >
+          Crear cuenta
+        </button>
+
+      </div>
+
+      <form
+        id="loginForm"
+        class="auth-form"
+        novalidate
+      >
+
+        <label for="loginEmail">
+          Correo electrónico
+        </label>
+
+        <input
+          id="loginEmail"
+          name="email"
+          type="email"
+          autocomplete="email"
+          placeholder="correo@ejemplo.com"
+          required
+        >
+
+        <label for="loginPassword">
+          Contraseña
+        </label>
+
+        <input
+          id="loginPassword"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Tu contraseña"
+          minlength="6"
+          required
+        >
+
+        <button
+          class="primary-button"
+          type="submit"
+        >
+          ENTRAR
+        </button>
+
+        <button
+          id="forgotPasswordButton"
+          class="link-button"
+          type="button"
+        >
+          Olvidé mi contraseña
+        </button>
+
+      </form>
+
+      <form
+        id="registerForm"
+        class="auth-form hidden"
+        novalidate
+      >
+
+        <label for="registerName">
+          Nombre del jugador
+        </label>
+
+        <input
+          id="registerName"
+          name="name"
+          type="text"
+          autocomplete="name"
+          placeholder="Escribe tu nombre"
+          maxlength="30"
+          required
+        >
+
+        <label for="registerEmail">
+          Correo electrónico
+        </label>
+
+        <input
+          id="registerEmail"
+          name="email"
+          type="email"
+          autocomplete="email"
+          placeholder="correo@ejemplo.com"
+          required
+        >
+
+        <label for="registerPassword">
+          Contraseña
+        </label>
+
+        <input
+          id="registerPassword"
+          name="password"
+          type="password"
+          autocomplete="new-password"
+          placeholder="Mínimo 6 caracteres"
+          minlength="6"
+          required
+        >
+
+        <label for="registerPasswordConfirm">
+          Confirmar contraseña
+        </label>
+
+        <input
+          id="registerPasswordConfirm"
+          name="passwordConfirm"
+          type="password"
+          autocomplete="new-password"
+          placeholder="Repite la contraseña"
+          minlength="6"
+          required
+        >
+
+        <button
+          class="primary-button"
+          type="submit"
+        >
+          CREAR CUENTA
+        </button>
+
+      </form>
+
+      <p
+        id="authMessage"
+        class="auth-message"
+        aria-live="polite"
+      ></p>
+
+      <footer class="login-footer">
+        <span>JFAM &amp; Co. Game Studios</span>
+        <span>JuniorGame Production</span>
+      </footer>
+
+    </section>
+
+  </main>
+
+  <script
+    type="module"
+    src="js/auth.js?v=1"
+  ></script>
+
+</body>
+
+</html>

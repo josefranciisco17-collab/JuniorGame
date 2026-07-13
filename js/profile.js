@@ -69,8 +69,13 @@ const profileRegistration =
 const copyPlayerIdButton =
   document.getElementById("copyPlayerIdButton");
 
+  document.getElementById("changePhotoButton");
 const changePhotoButton =
   document.getElementById("changePhotoButton");
+
+
+const profilePhotoInput =
+  document.getElementById("profilePhotoInput");
 
 const changeNameButton =
   document.getElementById("changeNameButton");
@@ -568,10 +573,168 @@ changePasswordButton?.addEventListener(
 changePhotoButton?.addEventListener(
   "click",
   () => {
+    if (!profilePhotoInput) {
+      mostrarMensaje(
+        "No se encontró el selector de imagen.",
+        "error"
+      );
+
+      return;
+    }
+
+    profilePhotoInput.click();
+  }
+);
+
+
+/* =========================================
+   SUBIR FOTO A CLOUDINARY
+========================================= */
+
+profilePhotoInput?.addEventListener(
+  "change",
+  async () => {
+    const archivo =
+      profilePhotoInput.files?.[0];
+
+    if (!archivo) {
+      return;
+    }
+
+    if (!usuarioActual) {
+      mostrarMensaje(
+        "No hay una sesión activa.",
+        "error"
+      );
+
+      return;
+    }
+
+    const tiposPermitidos = [
+      "image/jpeg",
+      "image/png",
+      "image/webp"
+    ];
+
+    if (!tiposPermitidos.includes(archivo.type)) {
+      mostrarMensaje(
+        "Selecciona una imagen JPG, PNG o WEBP.",
+        "error"
+      );
+
+      profilePhotoInput.value = "";
+      return;
+    }
+
+    if (archivo.size > 5 * 1024 * 1024) {
+      mostrarMensaje(
+        "La imagen no debe pesar más de 5 MB.",
+        "error"
+      );
+
+      profilePhotoInput.value = "";
+      return;
+    }
+
+    changePhotoButton.disabled = true;
+    changePhotoButton.textContent = "SUBIENDO...";
+
     mostrarMensaje(
-      "La función para cambiar foto se agregará al configurar Firebase Storage.",
+      "Subiendo foto...",
       "success"
     );
+
+    try {
+      const formulario =
+        new FormData();
+
+      formulario.append(
+        "file",
+        archivo
+      );
+
+      formulario.append(
+        "upload_preset",
+        "juniorgame_profile"
+      );
+
+      formulario.append(
+        "folder",
+        "JuniorGame/profilePhotos"
+      );
+
+      const respuesta =
+        await fetch(
+          "https://api.cloudinary.com/v1_1/lyvgogxt/image/upload",
+          {
+            method: "POST",
+            body: formulario
+          }
+        );
+
+      if (!respuesta.ok) {
+        throw new Error(
+          "Cloudinary rechazó la imagen."
+        );
+      }
+
+      const resultado =
+        await respuesta.json();
+
+      const urlFoto =
+        resultado.secure_url;
+
+      if (!urlFoto) {
+        throw new Error(
+          "Cloudinary no devolvió la URL."
+        );
+      }
+
+      const referenciaUsuario =
+        doc(
+          db,
+          "users",
+          usuarioActual.uid
+        );
+
+      await updateDoc(
+        referenciaUsuario,
+        {
+          foto: urlFoto,
+          actualizadoEn: serverTimestamp()
+        }
+      );
+
+      profilePhoto.src = urlFoto;
+
+      datosActuales = {
+        ...datosActuales,
+        foto: urlFoto
+      };
+
+      mostrarMensaje(
+        "Foto actualizada correctamente.",
+        "success"
+      );
+
+    } catch (error) {
+      console.error(
+        "Error al subir la foto:",
+        error
+      );
+
+      mostrarMensaje(
+        "No se pudo subir la foto.",
+        "error"
+      );
+
+    } finally {
+      changePhotoButton.disabled = false;
+      changePhotoButton.textContent =
+        "Cambiar foto";
+
+      profilePhotoInput.value = "";
+    }
   }
 );
 
@@ -633,3 +796,6 @@ onAuthStateChanged(
     }
   }
 );
+
+
+

@@ -220,9 +220,9 @@ window.addEventListener(
    SELECCIONAR PRODUCTO
 ========================================= */
 
+
 const buyButtons =
   document.querySelectorAll(".buy-button");
-
 buyButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const productCard =

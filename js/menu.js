@@ -33,17 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("hidden");
   }
 
-  document
-    .getElementById("recordsButton")
-    .addEventListener("click", () => {
 
-      mostrarModal(
-        "🏆",
-        "Récords",
-        "Próximamente podrás guardar tus mejores puntuaciones."
-      );
+document
+  .getElementById("shopButton")
+  .addEventListener("click", () => {
 
-    });
+    mostrarModal(
+      "🛒",
+      "Tienda",
+      "La tienda estará disponible próximamente."
+    );
+
+  });
 
   document
     .getElementById("settingsButton")

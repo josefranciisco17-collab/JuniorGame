@@ -1,0 +1,710 @@
+:root {
+  --madera-clara: #c97b34;
+  --madera-media: #974718;
+  --madera-oscura: #5e290a;
+  --borde-madera: #421a05;
+  --crema: #fff4d8;
+  --dorado: #ffb62d;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #211006;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+.menu-page {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 auto;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.03),
+      rgba(0, 0, 0, 0.18)
+    ),
+    url("../Fondos-JuniorGame/granja.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.menu-darkness {
+  display: none;
+}
+
+.menu-content {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding:
+    max(14px, env(safe-area-inset-top))
+    16px
+    max(13px, env(safe-area-inset-bottom));
+}
+
+/* =========================================
+   LETRERO SUPERIOR DE MADERA
+========================================= */
+
+.game-logo {
+  position: relative;
+  flex: 0 0 auto;
+
+  width: min(88vw, 390px);
+  min-height: 175px;
+
+  margin: 8px auto 22px;
+  padding: 22px 24px 18px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 5px solid var(--borde-madera);
+  border-radius: 28px;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 26px,
+      rgba(61, 20, 2, 0.14) 27px,
+      rgba(61, 20, 2, 0.14) 30px
+    ),
+    linear-gradient(
+      180deg,
+      #c87a33 0%,
+      #984819 53%,
+      #60280a 100%
+    );
+
+  box-shadow:
+    inset 0 4px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -8px 0 rgba(43, 13, 1, 0.32),
+    0 7px 0 #311103,
+    0 15px 24px rgba(0, 0, 0, 0.34);
+}
+
+.game-logo::before {
+  content: "";
+
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 50%;
+
+  height: 3px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(70, 24, 3, 0.34),
+      transparent
+    );
+}
+
+.logo-screw {
+  position: absolute;
+  top: 17px;
+
+  width: 17px;
+  height: 17px;
+
+  border: 3px solid #555;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #eeeeee,
+      #8f8f8f 50%,
+      #404040 100%
+    );
+
+  box-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.4);
+}
+
+.logo-screw-left {
+  left: 17px;
+}
+
+.logo-screw-right {
+  right: 17px;
+}
+
+.logo-leaf {
+  position: absolute;
+  top: -13px;
+
+  font-size: 28px;
+  line-height: 1;
+
+  filter:
+    drop-shadow(0 3px 2px rgba(0, 0, 0, 0.32));
+}
+
+.logo-leaf-left {
+  left: 24px;
+  transform: rotate(-24deg);
+}
+
+.logo-leaf-right {
+  right: 24px;
+  transform: scaleX(-1) rotate(-24deg);
+}
+
+.logo-top-paw {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  font-size: 40px;
+  line-height: 1;
+
+  filter:
+    drop-shadow(0 4px 1px rgba(62, 22, 3, 0.5));
+}
+
+/* =========================================
+   TITULO JUNIOR GAME
+========================================= */
+
+.logo-title {
+  position: relative;
+  z-index: 3;
+
+  width: 100%;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
+
+  white-space: nowrap;
+  line-height: 0.9;
+}
+
+.logo-letter {
+  display: inline-block;
+
+  color: var(--dorado);
+
+  font-size: clamp(46px, 11vw, 67px);
+  font-weight: 1000;
+  letter-spacing: -2px;
+
+  text-shadow:
+    0 2px 0 #b86908,
+    0 5px 0 #743900,
+    0 9px 10px rgba(0, 0, 0, 0.36);
+}
+
+.logo-o {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-o-paw {
+  position: absolute;
+
+  font-size: clamp(17px, 4.8vw, 23px);
+  line-height: 1;
+
+  transform: translateY(2px);
+
+  filter:
+    drop-shadow(0 2px 1px rgba(70, 25, 3, 0.42));
+}
+
+.logo-game {
+  position: relative;
+  z-index: 3;
+
+  margin-top: 11px;
+
+  color: var(--crema);
+
+  font-size: clamp(36px, 8.5vw, 50px);
+  font-weight: 1000;
+  letter-spacing: 2px;
+  line-height: 0.95;
+
+  text-shadow:
+    0 3px 0 #84603b,
+    0 6px 0 #48270d,
+    0 10px 11px rgba(0, 0, 0, 0.38);
+}
+
+/* =========================================
+   HUESO Y HUELLAS DEL LETRERO
+========================================= */
+
+.logo-decoration {
+  position: relative;
+  z-index: 3;
+
+  margin-top: 9px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 17px;
+
+  line-height: 1;
+}
+
+.logo-small-paw {
+  font-size: 20px;
+
+  filter:
+    drop-shadow(0 2px 1px rgba(0, 0, 0, 0.34));
+}
+
+.logo-bone {
+  font-size: 33px;
+
+  transform: rotate(-5deg);
+
+  filter:
+    drop-shadow(0 3px 1px rgba(0, 0, 0, 0.36));
+}
+
+/* =========================================
+   BOTONES DE MADERA
+========================================= */
+
+.menu-buttons {
+  flex: 1 1 auto;
+
+  width: 100%;
+  max-width: 300px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 13px;
+
+  margin: 0 auto;
+}
+
+.wood-button {
+  position: relative;
+
+  width: 100%;
+  min-height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  padding: 8px 16px;
+
+  color: #fff8df;
+  text-decoration: none;
+
+  border: 4px solid var(--borde-madera);
+  border-radius: 15px;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 15px,
+      rgba(69, 23, 2, 0.12) 16px,
+      rgba(69, 23, 2, 0.12) 18px
+    ),
+    linear-gradient(
+      180deg,
+      var(--madera-clara) 0%,
+      var(--madera-media) 50%,
+      var(--madera-oscura) 100%
+    );
+
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -5px 0 rgba(54, 18, 2, 0.31),
+    0 5px 0 #301003,
+    0 9px 14px rgba(0, 0, 0, 0.26);
+
+  cursor: pointer;
+  touch-action: manipulation;
+
+  transition:
+    transform 0.12s ease,
+    filter 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.wood-button::before,
+.wood-button::after {
+  content: "";
+
+  position: absolute;
+  top: 50%;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #6d2c08,
+      #381203
+    );
+
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.24);
+
+  transform: translateY(-50%);
+}
+
+.wood-button::before {
+  left: 13px;
+}
+
+.wood-button::after {
+  right: 13px;
+}
+
+.button-icon {
+  font-size: 23px;
+  line-height: 1;
+
+  filter:
+    drop-shadow(0 2px 1px rgba(0, 0, 0, 0.34));
+}
+
+.button-text {
+  min-width: 138px;
+
+  text-align: center;
+
+  font-size: clamp(16px, 4.4vw, 20px);
+  font-weight: 1000;
+  letter-spacing: 0.6px;
+
+  text-shadow:
+    0 2px 0 rgba(83, 33, 4, 0.7);
+}
+
+.wood-button:active {
+  transform:
+    translateY(4px)
+    scale(0.985);
+
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -2px 0 rgba(54, 18, 2, 0.22),
+    0 1px 0 #301003,
+    0 4px 7px rgba(0, 0, 0, 0.23);
+}
+
+@media (hover: hover) {
+  .wood-button:hover {
+    filter: brightness(1.07);
+  }
+}
+
+/* =========================================
+   PIE DEL MENÚ
+========================================= */
+
+.menu-footer {
+  flex: 0 0 auto;
+
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+
+  margin-top: 12px;
+
+  color: #fff7df;
+  text-align: center;
+
+  font-size: 11px;
+  line-height: 1.2;
+
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.88);
+}
+
+.menu-footer strong {
+  font-size: 12px;
+}
+
+
+/* =========================================
+   VENTANA EMERGENTE
+========================================= */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 22px;
+
+  background: rgba(31, 14, 3, 0.77);
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-card {
+  position: relative;
+
+  width: 100%;
+  max-width: 325px;
+
+  padding: 28px 22px 22px;
+
+  color: #fff6db;
+  text-align: center;
+
+  border: 4px solid var(--borde-madera);
+  border-radius: 22px;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 21px,
+      rgba(62, 20, 2, 0.13) 22px,
+      rgba(62, 20, 2, 0.13) 24px
+    ),
+    linear-gradient(
+      180deg,
+      #bd712f,
+      #71330d
+    );
+
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.17),
+    0 8px 0 #301003,
+    0 22px 40px rgba(0, 0, 0, 0.42);
+}
+
+.modal-close {
+  position: absolute;
+  top: 7px;
+  right: 11px;
+
+  width: 38px;
+  height: 38px;
+
+  color: #fff5d6;
+  font-size: 29px;
+  font-weight: 900;
+
+  border: 0;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.modal-icon {
+  margin-bottom: 7px;
+  font-size: 40px;
+}
+
+.modal-card h2 {
+  margin-bottom: 12px;
+
+  font-size: 26px;
+  font-weight: 1000;
+
+  text-shadow:
+    0 3px 0 #542006;
+}
+
+.modal-card p {
+  margin-bottom: 20px;
+
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.modal-accept {
+  width: 100%;
+
+  padding: 13px;
+
+  color: #fff7dc;
+  font-size: 16px;
+  font-weight: 1000;
+
+  border: 3px solid var(--borde-madera);
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #d68b40,
+      #874313
+    );
+
+  box-shadow:
+    0 5px 0 #301003;
+
+  cursor: pointer;
+}
+
+.modal-accept:active {
+  transform: translateY(4px);
+
+  box-shadow:
+    0 1px 0 #301003;
+}
+
+/* =========================================
+   AJUSTES PARA PANTALLAS BAJAS
+========================================= */
+
+@media (max-height: 780px) {
+  .menu-content {
+    padding-top:
+      max(9px, env(safe-area-inset-top));
+
+    padding-bottom:
+      max(8px, env(safe-area-inset-bottom));
+  }
+
+  .game-logo {
+    min-height: 154px;
+    margin-bottom: 15px;
+    padding-top: 18px;
+    padding-bottom: 12px;
+  }
+
+  .logo-letter {
+    font-size: clamp(41px, 10.5vw, 59px);
+  }
+
+  .logo-game {
+    margin-top: 8px;
+    font-size: clamp(32px, 7.7vw, 44px);
+  }
+
+  .logo-decoration {
+    margin-top: 7px;
+  }
+
+  .logo-bone {
+    font-size: 28px;
+  }
+
+  .logo-small-paw {
+    font-size: 17px;
+  }
+
+  .menu-buttons {
+    max-width: 285px;
+    gap: 9px;
+  }
+
+  .wood-button {
+    min-height: 49px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .button-icon {
+    font-size: 21px;
+  }
+
+  .button-text {
+    font-size: clamp(15px, 4.1vw, 18px);
+  }
+
+  .menu-footer {
+    margin-top: 8px;
+    font-size: 10px;
+  }
+
+  .menu-footer strong {
+    font-size: 11px;
+  }
+}
+
+/* =========================================
+   AJUSTES PARA PANTALLAS ANGOSTAS
+========================================= */
+
+@media (max-width: 350px) {
+  .game-logo {
+    width: 94%;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .logo-letter {
+    font-size: 44px;
+  }
+
+  .logo-game {
+    font-size: 35px;
+  }
+
+  .menu-buttons {
+    max-width: 275px;
+  }
+
+  .button-text {
+    min-width: 122px;
+  }
+}
+
+

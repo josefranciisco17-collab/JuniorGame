@@ -1,6 +1,8 @@
 "use strict";
 
-document.addEventListener("DOMContentLoaded", () => {
+  .getElementById("shopButton")
+  .addEventListener("click", () => {
+  document.addEventListener("DOMContentLoaded", () => {
 
   const modal =
     document.getElementById("menuModal");
@@ -37,14 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
 document
   .getElementById("shopButton")
   .addEventListener("click", () => {
-
-    mostrarModal(
-      "🛒",
-      "Tienda",
-      "La tienda estará disponible próximamente."
-    );
-
+    window.location.href = "shop.html";
   });
+
 
   document
     .getElementById("settingsButton")

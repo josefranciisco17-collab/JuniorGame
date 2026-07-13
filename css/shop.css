@@ -1,0 +1,341 @@
+:root{
+  --wood1:#d18b45;
+  --wood2:#9d5522;
+  --wood3:#6d3210;
+  --woodBorder:#4a1f08;
+  --cream:#fff4d8;
+  --gold:#ffb62d;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#1d0d04;
+  color:#fff;
+}
+
+.shop-page{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+
+  background:
+  linear-gradient(rgba(0,0,0,.18),rgba(0,0,0,.35)),
+  url("../Fondos-JuniorGame/granja.png");
+
+  background-size:cover;
+  background-position:center;
+}
+
+.shop-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.15);
+  pointer-events:none;
+}
+
+.shop-card{
+
+  position:relative;
+  z-index:2;
+
+  width:100%;
+  max-width:430px;
+
+  border-radius:30px;
+
+  border:5px solid var(--woodBorder);
+
+  background:
+  repeating-linear-gradient(
+  0deg,
+  transparent 0,
+  transparent 26px,
+  rgba(0,0,0,.08) 27px,
+  rgba(0,0,0,.08) 30px),
+
+  linear-gradient(
+  180deg,
+  var(--wood1),
+  var(--wood2),
+  var(--wood3));
+
+  box-shadow:
+  inset 0 3px 0 rgba(255,255,255,.15),
+  inset 0 -6px 0 rgba(0,0,0,.25),
+  0 10px 30px rgba(0,0,0,.45);
+
+  padding:22px;
+}
+
+.shop-header{
+
+display:flex;
+align-items:center;
+gap:15px;
+
+margin-bottom:18px;
+
+}
+
+.shop-back{
+
+width:45px;
+height:45px;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+border-radius:50%;
+
+text-decoration:none;
+
+font-size:26px;
+
+background:#5b2a0d;
+
+color:white;
+
+border:3px solid var(--woodBorder);
+
+}
+
+.shop-title-wrap{
+
+display:flex;
+align-items:center;
+gap:10px;
+
+}
+
+.shop-icon{
+
+font-size:40px;
+
+}
+
+.shop-title-wrap h1{
+
+font-size:30px;
+
+color:var(--gold);
+
+text-shadow:
+0 2px 0 #a45b00,
+0 5px 8px rgba(0,0,0,.35);
+
+}
+
+.shop-title-wrap p{
+
+font-size:13px;
+color:#fff3d4;
+
+}
+
+.shop-balances{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:10px;
+
+margin-bottom:20px;
+
+}
+
+.balance-card{
+
+background:#7c3b15;
+
+border:3px solid var(--woodBorder);
+
+border-radius:16px;
+
+padding:12px;
+
+text-align:center;
+
+box-shadow:0 4px 0 #2e1102;
+
+}
+
+.balance-card span{
+
+font-size:26px;
+
+display:block;
+
+}
+
+.balance-card small{
+
+display:block;
+
+margin-top:5px;
+
+font-size:12px;
+
+}
+
+.balance-card strong{
+
+display:block;
+
+margin-top:4px;
+
+font-size:20px;
+
+color:var(--gold);
+
+}
+
+.shop-section{
+
+margin-top:20px;
+
+}
+
+.section-heading h2{
+
+font-size:20px;
+
+color:#fff5d8;
+
+}
+
+.section-heading p{
+
+font-size:12px;
+
+opacity:.9;
+
+margin-top:4px;
+
+margin-bottom:12px;
+
+}
+
+.shop-grid{
+
+display:grid;
+
+gap:12px;
+
+}
+
+.shop-item{
+
+background:#7d3b14;
+
+border-radius:18px;
+
+border:3px solid var(--woodBorder);
+
+padding:16px;
+
+text-align:center;
+
+box-shadow:0 4px 0 #2e1102;
+
+}
+
+.shop-item-icon{
+
+font-size:34px;
+
+margin-bottom:8px;
+
+}
+
+.shop-item h3{
+
+font-size:18px;
+
+}
+
+.shop-item p{
+
+font-size:12px;
+
+margin:7px 0 14px;
+
+}
+
+.shop-item button{
+
+width:100%;
+
+height:45px;
+
+border:none;
+
+border-radius:12px;
+
+font-weight:bold;
+
+background:#b56b32;
+
+color:white;
+
+}
+
+.shop-actions{
+
+margin-top:22px;
+
+display:grid;
+
+gap:10px;
+
+}
+
+.shop-action-button{
+
+height:50px;
+
+border:none;
+
+border-radius:14px;
+
+font-weight:bold;
+
+font-size:15px;
+
+background:#5f2d0f;
+
+color:white;
+
+}
+
+.shop-message{
+
+text-align:center;
+
+margin-top:15px;
+
+min-height:20px;
+
+}
+
+.shop-footer{
+
+margin-top:20px;
+
+text-align:center;
+
+font-size:12px;
+
+color:#ffe8bf;
+
+}

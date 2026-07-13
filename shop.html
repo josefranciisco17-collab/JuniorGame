@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#2b1609">
+
+  <title>JuniorGame - Tienda</title>
+
+  <link rel="stylesheet" href="css/shop.css?v=1">
+</head>
+
+<body>
+
+  <main class="shop-page">
+
+    <div class="shop-overlay"></div>
+
+    <section class="shop-card">
+
+      <header class="shop-header">
+
+        <a
+          class="shop-back"
+          href="index.html"
+          aria-label="Volver al menú"
+        >
+          ←
+        </a>
+
+        <div class="shop-title-wrap">
+          <span class="shop-icon">🛒</span>
+          <div>
+            <h1>TIENDA</h1>
+            <p>JuniorGame</p>
+          </div>
+        </div>
+
+      </header>
+
+      <section class="shop-balances">
+
+        <div class="balance-card">
+          <span>🪙</span>
+          <small>Monedas</small>
+          <strong id="shopCoins">0</strong>
+        </div>
+
+        <div class="balance-card">
+          <span>💎</span>
+          <small>Diamantes</small>
+          <strong id="shopDiamonds">0</strong>
+        </div>
+
+        <div class="balance-card">
+          <span>❤️</span>
+          <small>Vidas</small>
+          <strong id="shopLives">3</strong>
+        </div>
+
+      </section>
+
+      <section class="shop-section">
+
+        <div class="section-heading">
+          <h2>Paquetes de monedas</h2>
+          <p>Recarga tu saldo para comprar artículos.</p>
+        </div>
+
+        <div class="shop-grid">
+
+          <article class="shop-item">
+            <div class="shop-item-icon">🪙</div>
+            <h3>100 monedas</h3>
+            <p>Paquete inicial</p>
+            <button type="button" disabled>
+              Próximamente
+            </button>
+          </article>
+
+          <article class="shop-item">
+            <div class="shop-item-icon">🪙</div>
+            <h3>500 monedas</h3>
+            <p>Paquete jugador</p>
+            <button type="button" disabled>
+              Próximamente
+            </button>
+          </article>
+
+          <article class="shop-item">
+            <div class="shop-item-icon">🪙</div>
+            <h3>1,200 monedas</h3>
+            <p>Paquete premium</p>
+            <button type="button" disabled>
+              Próximamente
+            </button>
+          </article>
+
+        </div>
+
+      </section>
+
+      <section class="shop-section">
+
+        <div class="section-heading">
+          <h2>Paquetes de diamantes</h2>
+          <p>Moneda especial para compras exclusivas.</p>
+        </div>
+
+        <div class="shop-grid">
+
+          <article class="shop-item">
+            <div class="shop-item-icon">💎</div>
+            <h3>25 diamantes</h3>
+            <p>Paquete básico</p>
+            <button type="button" disabled>
+              Próximamente
+            </button>
+          </article>
+
+          <article class="shop-item">
+            <div class="shop-item-icon">💎</div>
+            <h3>100 diamantes</h3>
+            <p>Paquete avanzado</p>
+            <button type="button" disabled>
+              Próximamente
+            </button>
+          </article>
+
+          <article class="shop-item">
+            <div class="shop-item-icon">💎</div>
+            <h3>250 diamantes</h3>
+            <p>Paquete especial</p>
+            <button type="button" disabled>
+              Próximamente
+            </button>
+          </article>
+
+        </div>
+
+      </section>
+
+      <section class="shop-actions">
+
+        <button
+          id="redeemCodeButton"
+          class="shop-action-button"
+          type="button"
+        >
+          🎁 Canjear código
+        </button>
+
+        <button
+          id="purchaseHistoryButton"
+          class="shop-action-button"
+          type="button"
+        >
+          📜 Historial de compras
+        </button>
+
+      </section>
+
+      <p
+        id="shopMessage"
+        class="shop-message"
+        aria-live="polite"
+      ></p>
+
+      <footer class="shop-footer">
+        <span>JFAM &amp; Co. Game Studios</span>
+        <span>Tienda JuniorGame</span>
+      </footer>
+
+    </section>
+
+  </main>
+
+  <script
+    type="module"
+    src="js/shop.js?v=1"
+  ></script>
+
+</body>
+</html>

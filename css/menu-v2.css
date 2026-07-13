@@ -368,11 +368,12 @@ transform: translateY(-2px) rotate(-5deg);
 
   cursor: pointer;
   touch-action: manipulation;
+transform-origin: center;
 
-  transition:
-    transform 0.12s ease,
-    filter 0.12s ease,
-    box-shadow 0.12s ease;
+transition:
+  transform 0.14s ease-out,
+  box-shadow 0.14s ease-out,
+  filter 0.14s ease-out;
 }
 
 .wood-button::before,
@@ -429,17 +430,28 @@ transform: translateY(-2px) rotate(-5deg);
     0 2px 0 rgba(83, 33, 4, 0.7);
 }
 
-.wood-button:active {
-  transform:
-    translateY(4px)
-    scale(0.985);
+.wood-button:active{
 
-  box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -2px 0 rgba(54, 18, 2, 0.22),
-    0 1px 0 #301003,
-    0 4px 7px rgba(0, 0, 0, 0.23);
+    transform:
+        translateY(6px)
+        scale(.97);
+        rotate(1.5deg);
+
+    box-shadow:
+
+        inset 0 4px 6px rgba(0,0,0,.35),
+
+        inset 0 -2px 2px rgba(255,255,255,.10),
+
+        0 1px 0 #301003,
+
+        0 3px 6px rgba(0,0,0,.25);
+
+    filter:brightness(.92);
+
 }
+
+
 
 @media (hover: hover) {
   .wood-button:hover {

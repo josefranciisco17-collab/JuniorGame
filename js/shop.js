@@ -61,7 +61,7 @@ function mostrarMensaje(texto, tipo = "") {
 
 
 /* =========================================
-   NORMALIZAR NÚMEROS
+   NÚMEROS
 ========================================= */
 
 function obtenerNumero(valor, valorInicial = 0) {
@@ -111,6 +111,68 @@ function actualizarSaldos(datos = {}) {
 
 
 /* =========================================
+   BOTONES COMPRAR
+========================================= */
+
+document.addEventListener(
+  "click",
+  (evento) => {
+    const boton =
+      evento.target.closest(".buy-button");
+
+    if (!boton) {
+      return;
+    }
+
+    const tarjeta =
+      boton.closest(".shop-item");
+
+    if (!tarjeta) {
+      mostrarMensaje(
+        "No se pudo identificar el producto.",
+        "error"
+      );
+
+      return;
+    }
+
+    const productId =
+      tarjeta.dataset.productId || "";
+
+    const type =
+      tarjeta.dataset.type || "";
+
+    const amount =
+      obtenerNumero(
+        tarjeta.dataset.amount,
+        0
+      );
+
+    const price =
+      obtenerNumero(
+        tarjeta.dataset.price,
+        0
+      );
+
+    mostrarMensaje(
+      `Elegiste ${amount} ${type} por $${price} MXN.`,
+      "success"
+    );
+
+    console.log(
+      "Producto seleccionado:",
+      {
+        productId,
+        type,
+        amount,
+        price
+      }
+    );
+  }
+);
+
+
+/* =========================================
    BOTONES TEMPORALES
 ========================================= */
 
@@ -136,7 +198,7 @@ purchaseHistoryButton?.addEventListener(
 
 
 /* =========================================
-   SESIÓN Y FIRESTORE EN TIEMPO REAL
+   FIRESTORE EN TIEMPO REAL
 ========================================= */
 
 let detenerEscucha = null;
@@ -152,6 +214,12 @@ onAuthStateChanged(
       return;
     }
 
+    if (
+      typeof detenerEscucha === "function"
+    ) {
+      detenerEscucha();
+    }
+
     const referenciaUsuario =
       doc(
         db,
@@ -159,11 +227,6 @@ onAuthStateChanged(
         usuario.uid
       );
 
-    /*
-      onSnapshot mantiene la tienda actualizada
-      en tiempo real cuando cambian monedas,
-      diamantes o vidas en Firestore.
-    */
     detenerEscucha =
       onSnapshot(
         referenciaUsuario,
@@ -181,8 +244,6 @@ onAuthStateChanged(
             documentoUsuario.data();
 
           actualizarSaldos(datos);
-
-          mostrarMensaje("");
         },
         (error) => {
           console.error(
@@ -201,7 +262,7 @@ onAuthStateChanged(
 
 
 /* =========================================
-   LIMPIAR ESCUCHA AL SALIR
+   LIMPIAR ESCUCHA
 ========================================= */
 
 window.addEventListener(
@@ -214,46 +275,3 @@ window.addEventListener(
     }
   }
 );
-
-
-/* =========================================
-   SELECCIONAR PRODUCTO
-========================================= */
-
-
-const buyButtons =
-  document.querySelectorAll(".buy-button");
-buyButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const productCard =
-      button.closest(".shop-item");
-
-    if (!productCard) {
-      return;
-    }
-
-    const productId =
-      productCard.dataset.productId;
-
-    const type =
-      productCard.dataset.type;
-
-    const amount =
-      Number(productCard.dataset.amount);
-
-    const price =
-      Number(productCard.dataset.price);
-
-    mostrarMensaje(
-      `Elegiste ${amount} ${type} por $${price} MXN.`,
-      "success"
-    );
-
-    console.log({
-      productId,
-      type,
-      amount,
-      price
-    });
-  });
-});

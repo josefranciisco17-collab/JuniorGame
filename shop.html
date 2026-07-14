@@ -347,6 +347,70 @@
 
       </section>
 
+<!-- CONFIRMACIÓN DE COMPRA -->
+<div
+  id="purchaseModal"
+  class="purchase-modal hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="purchaseModalTitle"
+>
+  <div class="purchase-modal-backdrop"></div>
+
+  <section class="purchase-modal-card">
+
+    <button
+      id="closePurchaseModalButton"
+      class="purchase-modal-close"
+      type="button"
+      aria-label="Cerrar"
+    >
+      ×
+    </button>
+
+    <div
+      id="purchaseModalIcon"
+      class="purchase-modal-icon"
+    >
+      🪙
+    </div>
+
+    <h2 id="purchaseModalTitle">
+      Confirmar compra
+    </h2>
+
+    <p id="purchaseModalText">
+      Producto seleccionado
+    </p>
+
+    <strong id="purchaseModalPrice">
+      $0 MXN
+    </strong>
+
+    <div class="purchase-modal-actions">
+
+      <button
+        id="cancelPurchaseButton"
+        class="purchase-modal-button secondary"
+        type="button"
+      >
+        Cancelar
+      </button>
+
+      <button
+        id="confirmPurchaseButton"
+        class="purchase-modal-button"
+        type="button"
+      >
+        Continuar
+      </button>
+
+    </div>
+
+  </section>
+</div>
+
+
       <p
         id="shopMessage"
         class="shop-message"

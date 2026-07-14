@@ -275,3 +275,62 @@ window.addEventListener(
     }
   }
 );
+
+
+/* =========================================
+   MODAL DE CONFIRMACIÓN DE COMPRA
+========================================= */
+
+const purchaseModal = document.getElementById("purchaseModal");
+const purchaseClose = document.getElementById("purchaseClose");
+const purchaseCancel = document.getElementById("purchaseCancel");
+const purchaseConfirm = document.getElementById("purchaseConfirm");
+
+const purchaseDescription = document.getElementById("purchaseDescription");
+const purchasePrice = document.getElementById("purchasePrice");
+
+let selectedProduct = null;
+
+buyButtons.forEach((button) => {
+
+    button.addEventListener("click", () => {
+
+        const card = button.closest(".shop-item");
+
+        selectedProduct = {
+            id: card.dataset.productId,
+            type: card.dataset.type,
+            amount: card.dataset.amount,
+            price: card.dataset.price
+        };
+
+        purchaseDescription.textContent =
+            `${selectedProduct.amount} ${selectedProduct.type}`;
+
+        purchasePrice.textContent =
+            `$${selectedProduct.price} MXN`;
+
+        purchaseModal.classList.remove("hidden");
+
+    });
+
+});
+
+function cerrarCompra() {
+    purchaseModal.classList.add("hidden");
+}
+
+purchaseClose.addEventListener("click", cerrarCompra);
+
+purchaseCancel.addEventListener("click", cerrarCompra);
+
+purchaseConfirm.addEventListener("click", () => {
+
+    cerrarCompra();
+
+    mostrarMensaje(
+        `Elegiste ${selectedProduct.amount} ${selectedProduct.type} por $${selectedProduct.price} MXN.`,
+        "success"
+    );
+
+});

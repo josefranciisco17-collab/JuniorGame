@@ -282,12 +282,20 @@ window.addEventListener(
 ========================================= */
 
 const purchaseModal = document.getElementById("purchaseModal");
-const purchaseClose = document.getElementById("purchaseClose");
-const purchaseCancel = document.getElementById("purchaseCancel");
-const purchaseConfirm = document.getElementById("purchaseConfirm");
+const purchaseClose =
+  document.getElementById("closePurchaseModalButton");
 
-const purchaseDescription = document.getElementById("purchaseDescription");
-const purchasePrice = document.getElementById("purchasePrice");
+const purchaseCancel =
+  document.getElementById("cancelPurchaseButton");
+
+const purchaseConfirm =
+  document.getElementById("confirmPurchaseButton");
+
+const purchaseDescription =
+  document.getElementById("purchaseModalText");
+
+const purchasePrice =
+  document.getElementById("purchaseModalPrice");
 
 let selectedProduct = null;
 

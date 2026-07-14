@@ -1,5 +1,3 @@
-"use strict";
-
 import {
   auth,
   db
@@ -14,6 +12,9 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
+
+const API_URL =
+  "https://juniorgame-stripe.onrender.com";
 
 /* =========================================
    ELEMENTOS DE SALDOS
@@ -329,28 +330,40 @@ document.addEventListener(
    CONTINUAR COMPRA
 ========================================= */
 
-confirmPurchaseButton?.addEventListener(
-  "click",
-  () => {
-    if (!productoSeleccionado) {
-      return;
+
+confirmPurchaseButton?.addEventListener("click", async () => {
+  if (!productoSeleccionado) return;
+
+  try {
+    confirmPurchaseButton.disabled = true;
+    confirmPurchaseButton.textContent = "Conectando...";
+
+    const respuesta = await fetch(`${API_URL}/create-checkout-session`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        coins: productoSeleccionado.cantidad
+      })
+    });
+
+    const datos = await respuesta.json();
+
+    if (!respuesta.ok) {
+      throw new Error(datos.error || "No se pudo iniciar el pago.");
     }
 
-    purchaseModalTitle.textContent =
-      "Compra seleccionada";
+    window.location.href = datos.url;
 
-    purchaseModalText.textContent =
-      "El sistema de pago se conectará en el siguiente paso.";
-
-    purchaseModalPrice.textContent =
-      `${productoSeleccionado.cantidad} ${productoSeleccionado.tipo}`;
-
-    confirmPurchaseButton.textContent =
-      "Entendido";
-
-    productoSeleccionado = null;
+  } catch (error) {
+    console.error(error);
+    mostrarMensaje(error.message, "error");
+    confirmPurchaseButton.disabled = false;
+    confirmPurchaseButton.textContent = "Confirmar compra";
   }
-);
+});
+
 
 
 /* =========================================

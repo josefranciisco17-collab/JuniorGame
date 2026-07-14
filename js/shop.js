@@ -16,7 +16,7 @@ import {
 
 
 /* =========================================
-   ELEMENTOS DE LA TIENDA
+   ELEMENTOS DE SALDOS
 ========================================= */
 
 const shopCoins =
@@ -31,6 +31,11 @@ const shopLives =
 const shopMessage =
   document.getElementById("shopMessage");
 
+
+/* =========================================
+   BOTONES GENERALES
+========================================= */
+
 const redeemCodeButton =
   document.getElementById("redeemCodeButton");
 
@@ -39,10 +44,76 @@ const purchaseHistoryButton =
 
 
 /* =========================================
-   MENSAJES
+   ELEMENTOS DEL MODAL
 ========================================= */
 
-function mostrarMensaje(texto, tipo = "") {
+const purchaseModal =
+  document.getElementById("purchaseModal");
+
+const closePurchaseModalButton =
+  document.getElementById(
+    "closePurchaseModalButton"
+  );
+
+const cancelPurchaseButton =
+  document.getElementById(
+    "cancelPurchaseButton"
+  );
+
+const confirmPurchaseButton =
+  document.getElementById(
+    "confirmPurchaseButton"
+  );
+
+const purchaseModalIcon =
+  document.getElementById(
+    "purchaseModalIcon"
+  );
+
+const purchaseModalTitle =
+  document.getElementById(
+    "purchaseModalTitle"
+  );
+
+const purchaseModalText =
+  document.getElementById(
+    "purchaseModalText"
+  );
+
+const purchaseModalPrice =
+  document.getElementById(
+    "purchaseModalPrice"
+  );
+
+
+/* =========================================
+   ESTADO
+========================================= */
+
+let productoSeleccionado = null;
+let detenerEscucha = null;
+
+
+/* =========================================
+   UTILIDADES
+========================================= */
+
+function obtenerNumero(
+  valor,
+  valorInicial = 0
+) {
+  const numero = Number(valor);
+
+  return Number.isFinite(numero)
+    ? numero
+    : valorInicial;
+}
+
+
+function mostrarMensaje(
+  texto,
+  tipo = ""
+) {
   if (!shopMessage) {
     return;
   }
@@ -57,19 +128,6 @@ function mostrarMensaje(texto, tipo = "") {
   if (tipo) {
     shopMessage.classList.add(tipo);
   }
-}
-
-
-/* =========================================
-   NÚMEROS
-========================================= */
-
-function obtenerNumero(valor, valorInicial = 0) {
-  const numero = Number(valor);
-
-  return Number.isFinite(numero)
-    ? numero
-    : valorInicial;
 }
 
 
@@ -111,63 +169,186 @@ function actualizarSaldos(datos = {}) {
 
 
 /* =========================================
-   BOTONES COMPRAR
+   MODAL DE COMPRA
+========================================= */
+
+function abrirModalCompra(producto) {
+  if (
+    !purchaseModal ||
+    !purchaseModalIcon ||
+    !purchaseModalTitle ||
+    !purchaseModalText ||
+    !purchaseModalPrice ||
+    !confirmPurchaseButton
+  ) {
+    console.error(
+      "Faltan elementos del modal en shop.html."
+    );
+
+    return;
+  }
+
+  productoSeleccionado = producto;
+
+  purchaseModalIcon.textContent =
+    producto.tipo === "diamantes"
+      ? "💎"
+      : producto.tipo === "vidas"
+        ? "❤️"
+        : "🪙";
+
+  purchaseModalTitle.textContent =
+    "Confirmar compra";
+
+  purchaseModalText.textContent =
+    `${producto.cantidad} ${producto.tipo}`;
+
+  purchaseModalPrice.textContent =
+    `$${producto.precio} MXN`;
+
+  confirmPurchaseButton.textContent =
+    "Continuar";
+
+  purchaseModal.classList.remove(
+    "hidden"
+  );
+
+  document.body.style.overflow =
+    "hidden";
+}
+
+
+function cerrarModalCompra() {
+  purchaseModal?.classList.add(
+    "hidden"
+  );
+
+  document.body.style.overflow = "";
+
+  productoSeleccionado = null;
+
+  if (confirmPurchaseButton) {
+    confirmPurchaseButton.textContent =
+      "Continuar";
+  }
+}
+
+
+/* =========================================
+   DETECTAR PRODUCTO
 ========================================= */
 
 document.addEventListener(
   "click",
   (evento) => {
     const boton =
-      evento.target.closest(".buy-button");
+      evento.target.closest(
+        ".buy-button"
+      );
 
     if (!boton) {
       return;
     }
 
     const tarjeta =
-      boton.closest(".shop-item");
-
-    if (!tarjeta) {
-      mostrarMensaje(
-        "No se pudo identificar el producto.",
-        "error"
+      boton.closest(
+        ".shop-item"
       );
 
+    if (!tarjeta) {
       return;
     }
 
-    const productId =
-      tarjeta.dataset.productId || "";
+    const producto = {
+      id:
+        tarjeta.dataset.productId ||
+        "",
 
-    const type =
-      tarjeta.dataset.type || "";
+      tipo:
+        tarjeta.dataset.type ||
+        "producto",
 
-    const amount =
-      obtenerNumero(
-        tarjeta.dataset.amount,
-        0
-      );
+      cantidad:
+        obtenerNumero(
+          tarjeta.dataset.amount,
+          0
+        ),
 
-    const price =
-      obtenerNumero(
-        tarjeta.dataset.price,
-        0
-      );
+      precio:
+        obtenerNumero(
+          tarjeta.dataset.price,
+          0
+        )
+    };
 
-    mostrarMensaje(
-      `Elegiste ${amount} ${type} por $${price} MXN.`,
-      "success"
-    );
+    abrirModalCompra(producto);
+  }
+);
 
-    console.log(
-      "Producto seleccionado:",
-      {
-        productId,
-        type,
-        amount,
-        price
-      }
-    );
+
+/* =========================================
+   CERRAR MODAL
+========================================= */
+
+closePurchaseModalButton?.addEventListener(
+  "click",
+  cerrarModalCompra
+);
+
+cancelPurchaseButton?.addEventListener(
+  "click",
+  cerrarModalCompra
+);
+
+purchaseModal?.addEventListener(
+  "click",
+  (evento) => {
+    if (
+      evento.target ===
+        purchaseModal ||
+      evento.target.classList.contains(
+        "purchase-modal-backdrop"
+      )
+    ) {
+      cerrarModalCompra();
+    }
+  }
+);
+
+document.addEventListener(
+  "keydown",
+  (evento) => {
+    if (evento.key === "Escape") {
+      cerrarModalCompra();
+    }
+  }
+);
+
+
+/* =========================================
+   CONTINUAR COMPRA
+========================================= */
+
+confirmPurchaseButton?.addEventListener(
+  "click",
+  () => {
+    if (!productoSeleccionado) {
+      return;
+    }
+
+    purchaseModalTitle.textContent =
+      "Compra seleccionada";
+
+    purchaseModalText.textContent =
+      "El sistema de pago se conectará en el siguiente paso.";
+
+    purchaseModalPrice.textContent =
+      `${productoSeleccionado.cantidad} ${productoSeleccionado.tipo}`;
+
+    confirmPurchaseButton.textContent =
+      "Entendido";
+
+    productoSeleccionado = null;
   }
 );
 
@@ -180,7 +361,7 @@ redeemCodeButton?.addEventListener(
   "click",
   () => {
     mostrarMensaje(
-      "La función para canjear códigos estará disponible próximamente.",
+      "El canje de códigos estará disponible próximamente.",
       "success"
     );
   }
@@ -201,8 +382,6 @@ purchaseHistoryButton?.addEventListener(
    FIRESTORE EN TIEMPO REAL
 ========================================= */
 
-let detenerEscucha = null;
-
 onAuthStateChanged(
   auth,
   (usuario) => {
@@ -215,7 +394,8 @@ onAuthStateChanged(
     }
 
     if (
-      typeof detenerEscucha === "function"
+      typeof detenerEscucha ===
+      "function"
     ) {
       detenerEscucha();
     }
@@ -231,7 +411,9 @@ onAuthStateChanged(
       onSnapshot(
         referenciaUsuario,
         (documentoUsuario) => {
-          if (!documentoUsuario.exists()) {
+          if (
+            !documentoUsuario.exists()
+          ) {
             mostrarMensaje(
               "No se encontró el perfil del jugador.",
               "error"
@@ -240,14 +422,13 @@ onAuthStateChanged(
             return;
           }
 
-          const datos =
-            documentoUsuario.data();
-
-          actualizarSaldos(datos);
+          actualizarSaldos(
+            documentoUsuario.data()
+          );
         },
         (error) => {
           console.error(
-            "Error al leer la tienda:",
+            "Error al cargar la tienda:",
             error
           );
 
@@ -269,76 +450,10 @@ window.addEventListener(
   "beforeunload",
   () => {
     if (
-      typeof detenerEscucha === "function"
+      typeof detenerEscucha ===
+      "function"
     ) {
       detenerEscucha();
     }
   }
 );
-
-
-/* =========================================
-   MODAL DE CONFIRMACIÓN DE COMPRA
-========================================= */
-
-const purchaseModal = document.getElementById("purchaseModal");
-const purchaseClose =
-  document.getElementById("closePurchaseModalButton");
-
-const purchaseCancel =
-  document.getElementById("cancelPurchaseButton");
-
-const purchaseConfirm =
-  document.getElementById("confirmPurchaseButton");
-
-const purchaseDescription =
-  document.getElementById("purchaseModalText");
-
-const purchasePrice =
-  document.getElementById("purchaseModalPrice");
-
-let selectedProduct = null;
-
-buyButtons.forEach((button) => {
-
-    button.addEventListener("click", () => {
-
-        const card = button.closest(".shop-item");
-
-        selectedProduct = {
-            id: card.dataset.productId,
-            type: card.dataset.type,
-            amount: card.dataset.amount,
-            price: card.dataset.price
-        };
-
-        purchaseDescription.textContent =
-            `${selectedProduct.amount} ${selectedProduct.type}`;
-
-        purchasePrice.textContent =
-            `$${selectedProduct.price} MXN`;
-
-        purchaseModal.classList.remove("hidden");
-
-    });
-
-});
-
-function cerrarCompra() {
-    purchaseModal.classList.add("hidden");
-}
-
-purchaseClose.addEventListener("click", cerrarCompra);
-
-purchaseCancel.addEventListener("click", cerrarCompra);
-
-purchaseConfirm.addEventListener("click", () => {
-
-    cerrarCompra();
-
-    mostrarMensaje(
-        `Elegiste ${selectedProduct.amount} ${selectedProduct.type} por $${selectedProduct.price} MXN.`,
-        "success"
-    );
-
-});

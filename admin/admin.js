@@ -1,3 +1,4 @@
+"use strict";
 
 import {
   auth
@@ -9,6 +10,10 @@ import {
   getIdTokenResult,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+/* =======================================
+   ELEMENTOS DEL LOGIN
+======================================= */
 
 const adminLoginForm =
   document.getElementById("adminLoginForm");
@@ -25,7 +30,24 @@ const adminLoginButton =
 const adminLoginMessage =
   document.getElementById("adminLoginMessage");
 
+const loginView =
+  document.getElementById("loginView");
+
+const dashboardView =
+  document.getElementById("dashboardView");
+
+const logoutButton =
+  document.getElementById("logoutButton");
+
+/* =======================================
+   FUNCIONES DEL LOGIN
+======================================= */
+
 function mostrarMensaje(texto, tipo = "") {
+  if (!adminLoginMessage) {
+    return;
+  }
+
   adminLoginMessage.textContent = texto;
   adminLoginMessage.className = "login-message";
 
@@ -35,94 +57,137 @@ function mostrarMensaje(texto, tipo = "") {
 }
 
 function cambiarEstadoBoton(cargando) {
+  if (!adminLoginButton) {
+    return;
+  }
+
   adminLoginButton.disabled = cargando;
+
   adminLoginButton.textContent = cargando
     ? "VERIFICANDO..."
     : "Iniciar sesión";
 }
 
 async function comprobarAdministrador(usuario) {
-  const token =
-    await getIdTokenResult(usuario, true);
+  const token = await getIdTokenResult(usuario, true);
 
   return token.claims.admin === true;
 }
 
-adminLoginForm.addEventListener(
-  "submit",
-  async (event) => {
-    event.preventDefault();
+function mostrarDashboard() {
+  if (loginView) {
+    loginView.classList.add("hidden");
+  }
 
-    const email =
-      adminEmail.value.trim().toLowerCase();
+  if (dashboardView) {
+    dashboardView.classList.remove("hidden");
+  }
+}
 
-    const password =
-      adminPassword.value;
+function mostrarLogin() {
+  if (dashboardView) {
+    dashboardView.classList.add("hidden");
+  }
 
-    if (!email || !password) {
-      mostrarMensaje(
-        "Escribe tu correo y contraseña.",
-        "error"
-      );
+  if (loginView) {
+    loginView.classList.remove("hidden");
+  }
+}
 
-      return;
-    }
+/* =======================================
+   ENVÍO DEL FORMULARIO
+======================================= */
 
-    cambiarEstadoBoton(true);
-    mostrarMensaje("");
+if (adminLoginForm) {
+  adminLoginForm.addEventListener(
+    "submit",
+    async (event) => {
+      event.preventDefault();
 
-    try {
-      const credencial =
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+      const email =
+        adminEmail?.value.trim().toLowerCase() || "";
 
-      const esAdmin =
-        await comprobarAdministrador(
-          credencial.user
-        );
+      const password =
+        adminPassword?.value || "";
 
-      if (!esAdmin) {
-        await signOut(auth);
-
+      if (!email || !password) {
         mostrarMensaje(
-          "Esta cuenta no tiene permisos de administrador.",
+          "Escribe tu correo y contraseña.",
           "error"
         );
 
         return;
       }
 
-      mostrarMensaje(
-        "Acceso autorizado. Cuenta administradora verificada.",
-        "success"
-      );
+      cambiarEstadoBoton(true);
+      mostrarMensaje("");
 
-      /*
-        En la siguiente fase cambiaremos esto
-        por la redirección al dashboard.
-      */
+      try {
+        const credencial =
+          await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
 
-    } catch (error) {
-      console.error(error);
+        const esAdmin =
+          await comprobarAdministrador(
+            credencial.user
+          );
 
-      mostrarMensaje(
-        "Correo, contraseña o permisos incorrectos.",
-        "error"
-      );
+        if (!esAdmin) {
+          await signOut(auth);
 
-    } finally {
-      cambiarEstadoBoton(false);
+          mostrarMensaje(
+            "Esta cuenta no tiene permisos de administrador.",
+            "error"
+          );
+
+          return;
+        }
+
+        mostrarMensaje(
+          "Acceso autorizado. Cuenta administradora verificada.",
+          "success"
+        );
+
+        mostrarDashboard();
+      } catch (error) {
+        console.error(error);
+
+        mostrarMensaje(
+          "Correo, contraseña o permisos incorrectos.",
+          "error"
+        );
+      } finally {
+        cambiarEstadoBoton(false);
+      }
     }
-  }
-);
+  );
+}
+
+/* =======================================
+   CERRAR SESIÓN
+======================================= */
+
+if (logoutButton) {
+  logoutButton.addEventListener(
+    "click",
+    async () => {
+      await signOut(auth);
+    }
+  );
+}
+
+/* =======================================
+   ESTADO DE AUTENTICACIÓN
+======================================= */
 
 onAuthStateChanged(
   auth,
   async (usuario) => {
     if (!usuario) {
+      mostrarLogin();
       return;
     }
 
@@ -130,130 +195,120 @@ onAuthStateChanged(
       const esAdmin =
         await comprobarAdministrador(usuario);
 
-      if (esAdmin) {
-        mostrarMensaje(
-          "Sesión administrativa activa.",
-          "success"
-        );
-      } else {
+      if (!esAdmin) {
         await signOut(auth);
+        mostrarLogin();
+        return;
       }
 
+      mostrarDashboard();
     } catch (error) {
       console.error(error);
+      mostrarLogin();
     }
   }
 );
 
+/* =======================================
+   MÓDULO DE USUARIOS
+======================================= */
 
-const loginView = document.getElementById("loginView");
-const dashboardView = document.getElementById("dashboardView");
-const logoutButton = document.getElementById("logoutButton");
+const usersModal =
+  document.getElementById("usersModal");
 
-function mostrarDashboard() {
-  loginView.classList.add("hidden");
-  dashboardView.classList.remove("hidden");
-}
+const closeUsersBtn =
+  document.getElementById("closeUsersBtn");
 
-function mostrarLogin() {
-  dashboardView.classList.add("hidden");
-  loginView.classList.remove("hidden");
-}
+const refreshUsers =
+  document.getElementById("refreshUsers");
 
-logoutButton.addEventListener("click", async () => {
-  await signOut(auth);
-});
+const searchUser =
+  document.getElementById("searchUser");
 
-onAuthStateChanged(auth, async (usuario) => {
+const usersList =
+  document.getElementById("usersList");
 
-  if (!usuario) {
-    mostrarLogin();
+const usersModuleButton =
+  document.querySelector(
+    '[data-module="usuarios"]'
+  );
+
+function abrirUsuarios() {
+  if (!usersModal) {
     return;
   }
 
-  try {
-
-    const esAdmin = await comprobarAdministrador(usuario);
-
-    if (!esAdmin) {
-      await signOut(auth);
-      mostrarLogin();
-      return;
-    }
-
-    mostrarDashboard();
-
-  } catch (e) {
-    console.error(e);
-    mostrarLogin();
-  }
-
-});
-
-
-
-// =======================================
-// MÓDULO DE USUARIOS
-// =======================================
-
-const usersModal = document.getElementById("usersModal");
-const closeUsersBtn = document.getElementById("closeUsersBtn");
-const refreshUsers = document.getElementById("refreshUsers");
-const searchUser = document.getElementById("searchUser");
-const usersList = document.getElementById("usersList");
-
-  '[data-module="users"]'
-);
-
-const usersModuleButton = document.querySelector(
-  '[data-module="usuarios"]'
-);
-
-function abrirUsuarios() {
   usersModal.classList.remove("hidden");
 }
 
 function cerrarUsuarios() {
+  if (!usersModal) {
+    return;
+  }
+
   usersModal.classList.add("hidden");
 }
 
 if (usersModuleButton) {
-  usersModuleButton.addEventListener("click", abrirUsuarios);
+  usersModuleButton.addEventListener(
+    "click",
+    abrirUsuarios
+  );
 }
 
 if (closeUsersBtn) {
-  closeUsersBtn.addEventListener("click", cerrarUsuarios);
+  closeUsersBtn.addEventListener(
+    "click",
+    cerrarUsuarios
+  );
 }
 
 if (usersModal) {
-  usersModal.addEventListener("click", (event) => {
-    if (event.target === usersModal) {
-      cerrarUsuarios();
+  usersModal.addEventListener(
+    "click",
+    (event) => {
+      if (event.target === usersModal) {
+        cerrarUsuarios();
+      }
     }
-  });
+  );
 }
 
 if (refreshUsers) {
-  refreshUsers.addEventListener("click", () => {
-    usersList.innerHTML = `
-      <div class="loading">
-        Cargando usuarios...
-      </div>
-    `;
-  });
+  refreshUsers.addEventListener(
+    "click",
+    () => {
+      if (!usersList) {
+        return;
+      }
+
+      usersList.innerHTML = `
+        <div class="loading">
+          Cargando usuarios...
+        </div>
+      `;
+    }
+  );
 }
 
 if (searchUser) {
-  searchUser.addEventListener("input", () => {
-    const texto = searchUser.value.trim().toLowerCase();
+  searchUser.addEventListener(
+    "input",
+    () => {
+      const texto =
+        searchUser.value.trim().toLowerCase();
 
-    document
-      .querySelectorAll(".user-card")
-      .forEach((tarjeta) => {
-        const contenido = tarjeta.textContent.toLowerCase();
+      document
+        .querySelectorAll(".user-card")
+        .forEach((tarjeta) => {
+          const contenido =
+            tarjeta.textContent.toLowerCase();
 
-        tarjeta.style.display =
-          contenido.includes(texto) ? "" : "none";
-      });
-  });
+          tarjeta.style.display =
+            contenido.includes(texto)
+              ? ""
+              : "none";
+        });
+    }
+  );
 }

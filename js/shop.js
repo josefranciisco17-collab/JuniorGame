@@ -343,9 +343,15 @@ confirmPurchaseButton?.addEventListener("click", async () => {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
         coins: productoSeleccionado.cantidad
-      })
+})
+
+
+body: JSON.stringify({
+  coins: productoSeleccionado.cantidad,
+  uid: auth.currentUser.uid
+})
+
     });
 
     const datos = await respuesta.json();

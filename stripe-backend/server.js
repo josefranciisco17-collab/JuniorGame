@@ -25,8 +25,18 @@ const precios = {
   2000: 180000
 };
 
-const amount = precios[req.body.coins];
-const description = `${req.body.coins} monedas`;
+
+const { coins, uid } = req.body;
+
+if (!uid) {
+  return res.status(400).json({
+    error: "Falta el UID del jugador"
+  });
+}
+
+
+const amount = precios[coins];
+const description = `${coins} monedas`;
 
 if (!amount) {
   return res.status(400).json({ error: "Paquete inválido" });
@@ -37,7 +47,16 @@ if (!amount) {
       mode: "payment",
       line_items: [
         {
-          price_data: {
+
+
+client_reference_id: uid,
+
+metadata: {
+  uid: uid,
+  coins: String(coins)
+},
+
+      price_data: {
             currency: "mxn",
             product_data: {
               name: description,

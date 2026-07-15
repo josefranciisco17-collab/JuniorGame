@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -17,7 +16,11 @@
 </head>
 
 <body>
-  <main class="admin-login">
+  <!-- LOGIN -->
+  <main
+    id="loginView"
+    class="admin-login"
+  >
     <section class="login-card">
       <div class="login-logo">JG</div>
 
@@ -66,9 +69,164 @@
     </section>
   </main>
 
-  <script
-    type="module"
-    src="./admin.js"
-  ></script>
+  <!-- DASHBOARD -->
+  <main
+    id="dashboardView"
+    class="dashboard hidden"
+  >
+    <header class="dashboard-header">
+      <div>
+        <p class="dashboard-kicker">
+          JuniorGame
+        </p>
+
+        <h1>
+          Consola Administrativa
+        </h1>
+      </div>
+
+      <button
+        id="logoutButton"
+        class="logout-button"
+        type="button"
+      >
+        Cerrar sesión
+      </button>
+    </header>
+
+    <section class="welcome-card">
+      <h2>
+        Bienvenido
+      </h2>
+
+      <p>
+        Desde aquí podrás administrar usuarios,
+        recursos, compras y configuraciones del juego.
+      </p>
+    </section>
+
+    <section class="dashboard-grid">
+      <button
+        class="module-card"
+        data-module="usuarios"
+        type="button"
+      >
+        <span class="module-icon">👥</span>
+        <span class="module-title">Usuarios</span>
+        <span class="module-description">
+          Buscar y administrar jugadores
+        </span>
+      </button>
+
+      <button
+        class="module-card"
+        data-module="economia"
+        type="button"
+      >
+        <span class="module-icon">🪙</span>
+        <span class="module-title">Economía</span>
+        <span class="module-description">
+          Monedas, diamantes y vidas
+        </span>
+      </button>
+
+      <button
+        class="module-card"
+        data-module="stripe"
+        type="button"
+      >
+        <span class="module-icon">💳</span>
+        <span class="module-title">Pagos</span>
+        <span class="module-description">
+          Compras y transacciones Stripe
+        </span>
+      </button>
+
+      <button
+        class="module-card"
+        data-module="codigos"
+        type="button"
+      >
+        <span class="module-icon">🎟️</span>
+        <span class="module-title">Códigos</span>
+        <span class="module-description">
+          Crear códigos promocionales
+        </span>
+      </button>
+
+      <button
+        class="module-card"
+        data-module="anuncios"
+        type="button"
+      >
+        <span class="module-icon">📢</span>
+        <span class="module-title">Anuncios</span>
+        <span class="module-description">
+          Publicar noticias y avisos
+        </span>
+      </button>
+
+      <button
+        class="module-card"
+        data-module="configuracion"
+        type="button"
+      >
+        <span class="module-icon">⚙️</span>
+        <span class="module-title">Configuración</span>
+        <span class="module-description">
+          Seguridad y ajustes generales
+        </span>
+      </button>
+    </section>
+
+    <p
+      id="dashboardMessage"
+      class="dashboard-message"
+      aria-live="polite"
+    ></p>
+  </main>
+
+<!-- ========================= -->
+<!-- MODAL USUARIOS -->
+<!-- ========================= -->
+<div id="usersModal" class="modal hidden">
+
+  <div class="modal-content users-panel">
+
+    <div class="panel-header">
+      <h2>Usuarios</h2>
+
+      <button id="closeUsersBtn" class="close-btn">
+        ✕
+      </button>
+    </div>
+
+    <div class="users-toolbar">
+
+      <input
+        type="text"
+        id="searchUser"
+        placeholder="Buscar por nombre, correo o ID..."
+      >
+
+      <button id="refreshUsers">
+        Actualizar
+      </button>
+
+    </div>
+
+    <div id="usersList" class="users-list">
+
+      <div class="loading">
+        Cargando usuarios...
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script type="module"  src="./admin.js"></script>
 </body>
 </html>

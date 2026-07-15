@@ -209,3 +209,106 @@ onAuthStateChanged(
   }
 );
 
+/* =======================================
+   MÓDULO DE USUARIOS
+======================================= */
+
+const usersModal =
+  document.getElementById("usersModal");
+
+const closeUsersBtn =
+  document.getElementById("closeUsersBtn");
+
+const refreshUsers =
+  document.getElementById("refreshUsers");
+
+const searchUser =
+  document.getElementById("searchUser");
+
+const usersList =
+  document.getElementById("usersList");
+
+const usersModuleButton =
+  document.querySelector(
+    '[data-module="usuarios"]'
+  );
+
+function abrirUsuarios() {
+  if (!usersModal) {
+    return;
+  }
+
+  usersModal.classList.remove("hidden");
+}
+
+function cerrarUsuarios() {
+  if (!usersModal) {
+    return;
+  }
+
+  usersModal.classList.add("hidden");
+}
+
+if (usersModuleButton) {
+  usersModuleButton.addEventListener(
+    "click",
+    abrirUsuarios
+  );
+}
+
+if (closeUsersBtn) {
+  closeUsersBtn.addEventListener(
+    "click",
+    cerrarUsuarios
+  );
+}
+
+if (usersModal) {
+  usersModal.addEventListener(
+    "click",
+    (event) => {
+      if (event.target === usersModal) {
+        cerrarUsuarios();
+      }
+    }
+  );
+}
+
+if (refreshUsers) {
+  refreshUsers.addEventListener(
+    "click",
+    () => {
+      if (!usersList) {
+        return;
+      }
+
+      usersList.innerHTML = `
+        <div class="loading">
+          Cargando usuarios...
+        </div>
+      `;
+    }
+  );
+}
+
+if (searchUser) {
+  searchUser.addEventListener(
+    "input",
+    () => {
+      const texto =
+        searchUser.value.trim().toLowerCase();
+
+      document
+        .querySelectorAll(".user-card")
+        .forEach((tarjeta) => {
+          const contenido =
+            tarjeta.textContent.toLowerCase();
+
+          tarjeta.style.display =
+            contenido.includes(texto)
+              ? ""
+              : "none";
+        });
+    }
+  );
+}

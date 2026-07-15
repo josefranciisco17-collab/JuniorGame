@@ -1,0 +1,207 @@
+/* =======================================
+   MÓDULO DE USUARIOS
+======================================= */
+
+.users-list {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.user-card {
+  padding: 18px;
+  background: linear-gradient(
+    145deg,
+    #202020,
+    #171717
+  );
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+
+.user-card-top {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #2b3448;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #3ea6ff;
+    flex-shrink: 0;
+}
+
+.user-avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+
+.user-avatar-letter {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.user-main-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-main-info h3 {
+  margin: 0 0 4px;
+  color: #ffffff;
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.user-email {
+  margin: 0 0 8px;
+  color: #b8b8b8;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.user-jf-id {
+  display: inline-flex;
+  align-items: center;
+  min-height: 27px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(33, 150, 243, 0.14);
+  border: 1px solid rgba(33, 150, 243, 0.25);
+  color: #68b7ff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.user-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.user-stat {
+  padding: 13px 12px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.user-stat-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #919191;
+  font-size: 12px;
+}
+
+.user-stat strong {
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.user-card-footer {
+  margin-top: 15px;
+  padding-top: 13px;
+  border-top: 1px solid rgba(255, 255, 255, 0.075);
+}
+
+.user-uid {
+  display: block;
+  color: #737373;
+  font-size: 11px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.users-message {
+  padding: 35px 20px;
+  text-align: center;
+  color: #bdbdbd;
+  font-size: 15px;
+}
+
+.users-error {
+  color: #ff8a80;
+}
+
+@media (min-width: 720px) {
+  .users-list {
+    grid-template-columns: repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  }
+}
+
+@media (max-width: 420px) {
+  .users-list {
+    padding: 14px;
+  }
+
+  .user-card {
+    padding: 16px;
+  }
+
+  .user-avatar {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+  }
+
+  .user-avatar-letter {
+    font-size: 23px;
+  }
+
+  .user-main-info h3 {
+    font-size: 17px;
+  }
+}
+
+
+/* CORRECCIÓN DEFINITIVA DEL AVATAR */
+
+.user-card .user-card-top {
+  display: flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+}
+
+.user-card .user-avatar {
+  width: 72px !important;
+  height: 72px !important;
+  min-width: 72px !important;
+  max-width: 72px !important;
+  flex: 0 0 72px !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+}
+
+.user-card .user-avatar-image {
+  width: 72px !important;
+  height: 72px !important;
+  max-width: 72px !important;
+  max-height: 72px !important;
+  display: block !important;
+  object-fit: cover !important;
+  border-radius: 14px !important;
+}
+
+.user-card .user-main-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+}

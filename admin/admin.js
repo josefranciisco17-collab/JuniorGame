@@ -1,4 +1,3 @@
-"use strict";
 
 import {
   auth
@@ -145,3 +144,116 @@ onAuthStateChanged(
     }
   }
 );
+
+
+const loginView = document.getElementById("loginView");
+const dashboardView = document.getElementById("dashboardView");
+const logoutButton = document.getElementById("logoutButton");
+
+function mostrarDashboard() {
+  loginView.classList.add("hidden");
+  dashboardView.classList.remove("hidden");
+}
+
+function mostrarLogin() {
+  dashboardView.classList.add("hidden");
+  loginView.classList.remove("hidden");
+}
+
+logoutButton.addEventListener("click", async () => {
+  await signOut(auth);
+});
+
+onAuthStateChanged(auth, async (usuario) => {
+
+  if (!usuario) {
+    mostrarLogin();
+    return;
+  }
+
+  try {
+
+    const esAdmin = await comprobarAdministrador(usuario);
+
+    if (!esAdmin) {
+      await signOut(auth);
+      mostrarLogin();
+      return;
+    }
+
+    mostrarDashboard();
+
+  } catch (e) {
+    console.error(e);
+    mostrarLogin();
+  }
+
+});
+
+
+
+// =======================================
+// MÓDULO DE USUARIOS
+// =======================================
+
+const usersModal = document.getElementById("usersModal");
+const closeUsersBtn = document.getElementById("closeUsersBtn");
+const refreshUsers = document.getElementById("refreshUsers");
+const searchUser = document.getElementById("searchUser");
+const usersList = document.getElementById("usersList");
+
+  '[data-module="users"]'
+);
+
+const usersModuleButton = document.querySelector(
+  '[data-module="usuarios"]'
+);
+
+function abrirUsuarios() {
+  usersModal.classList.remove("hidden");
+}
+
+function cerrarUsuarios() {
+  usersModal.classList.add("hidden");
+}
+
+if (usersModuleButton) {
+  usersModuleButton.addEventListener("click", abrirUsuarios);
+}
+
+if (closeUsersBtn) {
+  closeUsersBtn.addEventListener("click", cerrarUsuarios);
+}
+
+if (usersModal) {
+  usersModal.addEventListener("click", (event) => {
+    if (event.target === usersModal) {
+      cerrarUsuarios();
+    }
+  });
+}
+
+if (refreshUsers) {
+  refreshUsers.addEventListener("click", () => {
+    usersList.innerHTML = `
+      <div class="loading">
+        Cargando usuarios...
+      </div>
+    `;
+  });
+}
+
+if (searchUser) {
+  searchUser.addEventListener("input", () => {
+    const texto = searchUser.value.trim().toLowerCase();
+
+    document
+      .querySelectorAll(".user-card")
+      .forEach((tarjeta) => {
+        const contenido = tarjeta.textContent.toLowerCase();
+
+        tarjeta.style.display =
+          contenido.includes(texto) ? "" : "none";
+      });
+  });
+}

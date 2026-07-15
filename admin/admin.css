@@ -270,3 +270,63 @@ color:#bbb;
 padding:40px;
 font-size:15px;
 }
+
+
+/* =======================================
+   CORRECCIÓN RESPONSIVE DEL BUSCADOR
+======================================= */
+
+.users-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+#searchUser {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: #242424;
+  color: #ffffff;
+  font-size: 15px;
+  outline: none;
+}
+
+#searchUser::placeholder {
+  color: #8f8f8f;
+}
+
+#searchUser:focus {
+  border-color: #2196f3;
+}
+
+#refreshUsers {
+  min-height: 48px;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .modal {
+    padding: 14px;
+  }
+
+  .modal-content {
+    max-height: 88vh;
+    border-radius: 16px;
+  }
+
+  .users-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  #refreshUsers {
+    width: 100%;
+  }
+}
+

@@ -1,0 +1,74 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#111827;
+    color:white;
+}
+
+header{
+    background:#1f2937;
+    padding:18px;
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+    border-bottom:2px solid #374151;
+}
+
+.container{
+    max-width:900px;
+    margin:25px auto;
+    padding:20px;
+}
+
+.card{
+    background:#1f2937;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 0 10px rgba(0,0,0,.3);
+}
+
+h2{
+    margin-bottom:15px;
+    color:#60a5fa;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    margin:8px 0;
+    border:none;
+    border-radius:8px;
+    background:#2563eb;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+    border:none;
+    background:#374151;
+    color:white;
+}
+
+#adminPanel{
+    display:none;
+}
+
+#loginBox{
+    max-width:420px;
+    margin:70px auto;
+}

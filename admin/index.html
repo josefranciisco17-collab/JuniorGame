@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>JuniorGame Admin</title>
+
+  <link
+    rel="stylesheet"
+    href="./admin.css"
+  />
+</head>
+
+<body>
+  <main class="admin-login">
+    <section class="login-card">
+      <div class="login-logo">JG</div>
+
+      <h1>Consola Admin</h1>
+
+      <p class="login-subtitle">
+        Administración de JuniorGame
+      </p>
+
+      <form id="adminLoginForm">
+        <label for="adminEmail">
+          Correo electrónico
+        </label>
+
+        <input
+          id="adminEmail"
+          type="email"
+          autocomplete="email"
+          required
+        />
+
+        <label for="adminPassword">
+          Contraseña
+        </label>
+
+        <input
+          id="adminPassword"
+          type="password"
+          autocomplete="current-password"
+          required
+        />
+
+        <button
+          id="adminLoginButton"
+          type="submit"
+        >
+          Iniciar sesión
+        </button>
+      </form>
+
+      <p
+        id="adminLoginMessage"
+        class="login-message"
+        aria-live="polite"
+      ></p>
+    </section>
+  </main>
+
+  <script
+    type="module"
+    src="./admin.js"
+  ></script>
+</body>
+</html>

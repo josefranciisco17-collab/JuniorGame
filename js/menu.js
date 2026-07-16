@@ -1,5 +1,14 @@
 "use strict";
 
+import {
+  auth
+} from "./firebase-config.js";
+
+import {
+  onAuthStateChanged,
+  getIdTokenResult
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const modal =
     document.getElementById("menuModal");
@@ -25,8 +34,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const settingsButton =
     document.getElementById("settingsButton");
 
-  const howToPlayButton =
     document.getElementById("howToPlayButton");
+    const howToPlayButton =
+
+    document.getElementById("howToPlayButton");
+
+const adminConsoleButton =
+  document.getElementById("adminConsoleButton");
 
   function mostrarModal(
     icono,
@@ -109,4 +123,48 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   );
+
+
+onAuthStateChanged(auth, async (usuario) => {
+  if (!adminConsoleButton) {
+    return;
+  }
+
+  if (!usuario) {
+    adminConsoleButton.classList.add("hidden");
+    return;
+  }
+
+  try {
+    const token =
+      await getIdTokenResult(usuario, true);
+
+    const esAdmin =
+      token.claims.admin === true;
+
+    adminConsoleButton.classList.toggle(
+      "hidden",
+      !esAdmin
+    );
+
+    if (esAdmin) {
+      adminConsoleButton.addEventListener(
+        "click",
+        () => {
+          window.location.href = "./admin/";
+        },
+        { once: true }
+      );
+    }
+  } catch (error) {
+    console.error(
+      "No se pudieron verificar los permisos:",
+      error
+    );
+
+    adminConsoleButton.classList.add("hidden");
+  }
 });
+
+});
+

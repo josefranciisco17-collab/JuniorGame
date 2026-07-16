@@ -567,3 +567,42 @@ onAuthStateChanged(
     }
   }
 );
+
+
+/* =======================================
+   MOSTRAR / OCULTAR CONTRASEÑA
+======================================= */
+
+document
+  .querySelectorAll(".toggle-password")
+  .forEach((boton) => {
+    boton.addEventListener("click", () => {
+      const targetId =
+        boton.dataset.target;
+
+      const input =
+        document.getElementById(targetId);
+
+      if (!input) {
+        return;
+      }
+
+      const mostrar =
+        input.type === "password";
+
+      input.type =
+        mostrar ? "text" : "password";
+
+      boton.innerHTML =
+        mostrar
+          ? "&#128064;"
+          : "&#128065;";
+
+      boton.setAttribute(
+        "aria-label",
+        mostrar
+          ? "Ocultar contraseña"
+          : "Mostrar contraseña"
+      );
+    });
+  });

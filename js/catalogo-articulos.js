@@ -19,8 +19,8 @@ export const CATEGORIAS_ROPA = [
 
 export const ARTICULOS = [
   { id: "sombrero-vaquero", tipo: "ropa", categoria: "sombreros", nombre: "Sombrero Vaquero",imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_cazador.png", precio: 0, rareza: "Común", posicion: { top: "3%", left: "50%", width: "38%", transform: "translateX(-50%)" } },
-  { id: "gorra-roja", tipo: "ropa", categoria: "sombreros", nombre: "Gorra Roja", icono: "🧢", precio: 0, rareza: "Común", posicion: { top: "4%", left: "50%", width: "34%", transform: "translateX(-50%)" } },
-  { id: "sombrero-fiesta", tipo: "ropa", categoria: "sombreros", nombre: "Sombrero de Fiesta", icono: "🥳", precio: 0, rareza: "Raro", posicion: { top: "2%", left: "50%", width: "35%", transform: "translateX(-50%)" } },
+  { id: "gorra-roja", tipo: "ropa", categoria: "sombreros", nombre: "Gorra Roja",imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_rojo.png", precio: 0, rareza: "Común", posicion: { top: "4%", left: "50%", width: "34%", transform: "translateX(-50%)" } },
+  { id: "sombrero-fiesta", tipo: "ropa", categoria: "sombreros", nombre: "Sombrero de Fiesta",imagen: "Fondos-JuniorGame/articulos/sombreros/corona_real.png", precio: 0, rareza: "Raro", posicion: { top: "2%", left: "50%", width: "35%", transform: "translateX(-50%)" } },
 
   { id: "lentes-negros", tipo: "ropa", categoria: "lentes", nombre: "Lentes Negros", icono: "🕶️", precio: 0, rareza: "Común", posicion: { top: "22%", left: "50%", width: "31%", transform: "translateX(-50%)" } },
   { id: "lentes-gamer", tipo: "ropa", categoria: "lentes", nombre: "Lentes Gamer", icono: "🥽", precio: 0, rareza: "Raro", posicion: { top: "21%", left: "50%", width: "32%", transform: "translateX(-50%)" } },

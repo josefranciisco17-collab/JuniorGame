@@ -18,7 +18,7 @@ export const CATEGORIAS_ROPA = [
 ];
 
 export const ARTICULOS = [
-  { id: "Gorro Callejero", tipo: "ropa", categoria: "sombreros", nombre: "Sombrero Vaquero",imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_cazador.png", precio: 0, rareza: "Común", posicion: { top: "3%", left: "50%", width: "38%", transform: "translateX(-50%)" } },
+  { id: "Gorro Callejero", tipo: "ropa", categoria: "sombreros", nombre: "Sombrero Vaquero",imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_cazador.png", precio: 0, rareza: "Común", posicion: { top: "21%", left: "50%", width: "34%", transform: "translateX(-50%)" } },
   { id: "gorra-roja", tipo: "ropa", categoria: "sombreros", nombre: "Gorra Roja",imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_rojo.png", precio: 0, rareza: "Común", posicion: { top: "4%", left: "50%", width: "34%", transform: "translateX(-50%)" } },
   { id: "Corona de la realeza", tipo: "ropa", categoria: "sombreros", nombre: "Sombrero de Fiesta",imagen: "Fondos-JuniorGame/articulos/sombreros/corona_real.png", precio: 0, rareza: "Raro", posicion: { top: "2%", left: "50%", width: "35%", transform: "translateX(-50%)" } },
 

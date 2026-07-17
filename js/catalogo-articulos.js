@@ -9,7 +9,7 @@
 */
 
 export const CATEGORIAS_ROPA = [
-  { id: "sombreros", nombre: "Sombreros", icono: "🎩", accion: "Probar sombrero" },
+  { id: "sombreros", nombre: "Gorras", icono: "🎩", accion: "Probar sombrero" },
   { id: "lentes", nombre: "Lentes", icono: "👓", accion: "Probar lentes" },
   { id: "panuelos", nombre: "Pañuelos", icono: "🧣", accion: "Probar pañuelo" },
   { id: "coronas", nombre: "Coronas", icono: "👑", accion: "Probar corona" },
@@ -18,9 +18,9 @@ export const CATEGORIAS_ROPA = [
 ];
 
 export const ARTICULOS = [
-  { id: "sombrero-vaquero", tipo: "ropa", categoria: "sombreros", nombre: "Sombrero Vaquero",imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_cazador.png", precio: 0, rareza: "Común", posicion: { top: "3%", left: "50%", width: "38%", transform: "translateX(-50%)" } },
+  { id: "Gorro Callejero", tipo: "ropa", categoria: "sombreros", nombre: "Sombrero Vaquero",imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_cazador.png", precio: 0, rareza: "Común", posicion: { top: "3%", left: "50%", width: "38%", transform: "translateX(-50%)" } },
   { id: "gorra-roja", tipo: "ropa", categoria: "sombreros", nombre: "Gorra Roja",imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_rojo.png", precio: 0, rareza: "Común", posicion: { top: "4%", left: "50%", width: "34%", transform: "translateX(-50%)" } },
-  { id: "sombrero-fiesta", tipo: "ropa", categoria: "sombreros", nombre: "Sombrero de Fiesta",imagen: "Fondos-JuniorGame/articulos/sombreros/corona_real.png", precio: 0, rareza: "Raro", posicion: { top: "2%", left: "50%", width: "35%", transform: "translateX(-50%)" } },
+  { id: "Corona de la realeza", tipo: "ropa", categoria: "sombreros", nombre: "Sombrero de Fiesta",imagen: "Fondos-JuniorGame/articulos/sombreros/corona_real.png", precio: 0, rareza: "Raro", posicion: { top: "2%", left: "50%", width: "35%", transform: "translateX(-50%)" } },
 
   { id: "lentes-negros", tipo: "ropa", categoria: "lentes", nombre: "Lentes Góticos",imagen: "Fondos-JuniorGame/articulos/lentes/lentes_goticos.png", precio: 0, rareza: "Común", posicion: { top: "22%", left: "50%", width: "31%", transform: "translateX(-50%)" } },
   { id: "lentes-gamer", tipo: "ropa", categoria: "lentes", nombre: "Lentes Gamer",imagen: "Fondos-JuniorGame/articulos/lentes/lentes_arcoiris.png", precio: 0, rareza: "Raro", posicion: { top: "21%", left: "50%", width: "32%", transform: "translateX(-50%)" } },

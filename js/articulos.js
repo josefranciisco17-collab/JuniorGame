@@ -150,7 +150,11 @@ function tarjetaArticulo(articulo) {
 
   return `
     <article class="item-card">
-      <div class="item-icon">${articulo.icono}</div>
+<div class="item-icon">
+${articulo.imagen
+? `<img src="${articulo.imagen}" class="item-image" alt="${articulo.nombre}">`
+: articulo.icono}
+</div>
       <h3>${articulo.nombre}</h3>
       ${descripcion}
       <div class="item-meta">

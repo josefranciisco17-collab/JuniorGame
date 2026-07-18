@@ -1,13 +1,15 @@
 {
-  "name": "stripe-backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "juniorgame-stripe-backend",
+  "version": "2.0.0",
+  "description": "Stripe Checkout y acreditación segura de diamantes en Firestore para JuniorGame",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "test": "node --check server.js"
   },
-  "keywords": [],
-  "author": "",
+  "engines": {
+    "node": ">=20"
+  },
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {

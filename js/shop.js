@@ -8,8 +8,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 import {
+  collection,
   doc,
-  onSnapshot
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 const API_URL =
@@ -50,6 +55,13 @@ const purchaseModalText =
 const purchaseModalPrice =
   document.getElementById("purchaseModalPrice");
 
+const historyModal = document.getElementById("historyModal");
+const closeHistoryModalButton =
+  document.getElementById("closeHistoryModalButton");
+const historyStatus = document.getElementById("historyStatus");
+const historyList = document.getElementById("historyList");
+
+
 let productoSeleccionado = null;
 let detenerEscucha = null;
 
@@ -87,6 +99,139 @@ function actualizarSaldos(datos = {}) {
     shopLives.textContent =
       String(obtenerNumero(datos.vidas, 3));
   }
+}
+
+
+function escaparHtml(valor = "") {
+  return String(valor)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function formatearDinero(montoCentavos, moneda = "mxn") {
+  return new Intl.NumberFormat("es-MX", {
+    style: "currency",
+    currency: String(moneda).toUpperCase()
+  }).format(obtenerNumero(montoCentavos, 0) / 100);
+}
+
+function formatearFecha(valor) {
+  if (!valor) return "Fecha no disponible";
+  const fecha = typeof valor.toDate === "function"
+    ? valor.toDate()
+    : new Date(valor);
+  if (Number.isNaN(fecha.getTime())) return "Fecha no disponible";
+  return new Intl.DateTimeFormat("es-MX", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(fecha);
+}
+
+function abreviarId(valor = "") {
+  const texto = String(valor);
+  return texto.length <= 18
+    ? texto
+    : `${texto.slice(0, 10)}…${texto.slice(-6)}`;
+}
+
+function renderizarHistorial(compras) {
+  if (!historyList || !historyStatus) return;
+  historyList.innerHTML = "";
+
+  if (compras.length === 0) {
+    historyStatus.textContent = "Todavía no tienes compras registradas.";
+    historyStatus.className = "history-status empty";
+    return;
+  }
+
+  historyStatus.textContent =
+    `${compras.length} compra${compras.length === 1 ? "" : "s"} encontrada${compras.length === 1 ? "" : "s"}.`;
+  historyStatus.className = "history-status success";
+
+  const fragmento = document.createDocumentFragment();
+
+  for (const compra of compras) {
+    const tarjeta = document.createElement("article");
+    tarjeta.className = "history-item";
+
+    const cantidad = obtenerNumero(compra.cantidad, 0);
+    const estado = compra.estado === "pagado"
+      ? "Completado"
+      : compra.estado || "Registrado";
+    const idCompra =
+      compra.stripeSessionId || compra.id || "Sin identificador";
+
+    tarjeta.innerHTML = `
+      <div class="history-item-top">
+        <div class="history-item-diamonds">
+          <span>💎</span>
+          <div>
+            <strong>${cantidad} diamantes</strong>
+            <small>${escaparHtml(formatearFecha(compra.creadoAt))}</small>
+          </div>
+        </div>
+        <span class="history-badge">${escaparHtml(estado)}</span>
+      </div>
+      <div class="history-item-details">
+        <div>
+          <small>Total pagado</small>
+          <strong>${escaparHtml(formatearDinero(compra.montoTotal, compra.moneda))}</strong>
+        </div>
+        <div>
+          <small>ID de compra</small>
+          <strong title="${escaparHtml(idCompra)}">${escaparHtml(abreviarId(idCompra))}</strong>
+        </div>
+      </div>
+    `;
+    fragmento.appendChild(tarjeta);
+  }
+
+  historyList.appendChild(fragmento);
+}
+
+async function abrirHistorialCompras() {
+  const usuario = auth.currentUser;
+
+  if (!usuario) {
+    mostrarMensaje("Inicia sesión para consultar tu historial.", "error");
+    return;
+  }
+
+  historyModal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+  historyStatus.textContent = "Cargando compras...";
+  historyStatus.className = "history-status loading";
+  historyList.innerHTML = "";
+
+  try {
+    const referencia = collection(
+      db, "users", usuario.uid, "purchaseHistory"
+    );
+    const consulta = query(
+      referencia,
+      orderBy("creadoAt", "desc"),
+      limit(50)
+    );
+    const resultado = await getDocs(consulta);
+    const compras = resultado.docs.map((documento) => ({
+      id: documento.id,
+      ...documento.data()
+    }));
+    renderizarHistorial(compras);
+  } catch (error) {
+    console.error("Error al cargar historial:", error);
+    historyStatus.textContent =
+      "No se pudo cargar el historial. Revisa las reglas de Firestore.";
+    historyStatus.className = "history-status error";
+  }
+}
+
+function cerrarHistorialCompras() {
+  historyModal?.classList.add("hidden");
+  document.body.style.overflow = "";
 }
 
 function abrirModalCompra(producto) {
@@ -173,6 +318,7 @@ purchaseModal?.addEventListener("click", (evento) => {
 document.addEventListener("keydown", (evento) => {
   if (evento.key === "Escape") {
     cerrarModalCompra();
+    cerrarHistorialCompras();
   }
 });
 
@@ -252,13 +398,22 @@ redeemCodeButton?.addEventListener("click", () => {
 
 purchaseHistoryButton?.addEventListener(
   "click",
-  () => {
-    mostrarMensaje(
-      "El historial de compras estará disponible próximamente.",
-      "success"
-    );
-  }
+  abrirHistorialCompras
 );
+
+closeHistoryModalButton?.addEventListener(
+  "click",
+  cerrarHistorialCompras
+);
+
+historyModal?.addEventListener("click", (evento) => {
+  if (
+    evento.target === historyModal ||
+    evento.target.classList.contains("history-modal-backdrop")
+  ) {
+    cerrarHistorialCompras();
+  }
+});
 
 function revisarResultadoPago() {
   const parametros =

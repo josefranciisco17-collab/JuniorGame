@@ -12,7 +12,7 @@
 
   <title>JuniorGame - Tienda</title>
 
-  <link rel="stylesheet" href="css/shop.css?v=1">
+  <link rel="stylesheet" href="css/shop.css?v=2">
 </head>
 
 <body>
@@ -240,48 +240,7 @@
         </div>
 
       </section>
-
-      <section class="shop-section">
-
-        <div class="section-heading">
-          <h2>Paquetes de diamantes</h2>
-          <p>Moneda especial para compras exclusivas.</p>
-        </div>
-
-        <div class="shop-grid">
-
-          <article class="shop-item">
-            <div class="shop-item-icon">💎</div>
-            <h3>25 diamantes</h3>
-            <p>Paquete básico</p>
-            <button type="button" disabled>
-              Próximamente
-            </button>
-          </article>
-
-          <article class="shop-item">
-            <div class="shop-item-icon">💎</div>
-            <h3>100 diamantes</h3>
-            <p>Paquete avanzado</p>
-            <button type="button" disabled>
-              Próximamente
-            </button>
-          </article>
-
-          <article class="shop-item">
-            <div class="shop-item-icon">💎</div>
-            <h3>250 diamantes</h3>
-            <p>Paquete especial</p>
-            <button type="button" disabled>
-              Próximamente
-            </button>
-          </article>
-
-        </div>
-
-      </section>
-
-      <section class="shop-actions">
+<section class="shop-actions">
 
         <button
           id="redeemCodeButton"
@@ -365,6 +324,28 @@
 </div>
 
 
+<!-- HISTORIAL DE COMPRAS -->
+<div id="historyModal" class="history-modal hidden" role="dialog"
+  aria-modal="true" aria-labelledby="historyModalTitle">
+  <div class="history-modal-backdrop"></div>
+  <section class="history-modal-card">
+    <button id="closeHistoryModalButton" class="history-modal-close"
+      type="button" aria-label="Cerrar historial">×</button>
+    <div class="history-modal-header">
+      <span class="history-modal-icon">📜</span>
+      <div>
+        <h2 id="historyModalTitle">Historial de compras</h2>
+        <p>Tus compras de diamantes</p>
+      </div>
+    </div>
+    <div id="historyStatus" class="history-status" aria-live="polite">
+      Cargando compras...
+    </div>
+    <div id="historyList" class="history-list"></div>
+  </section>
+</div>
+
+
       <p
         id="shopMessage"
         class="shop-message"
@@ -382,7 +363,7 @@
 
   <script
     type="module"
-    src="js/shop.js?v=1"
+    src="js/shop.js?v=2"
   ></script>
 
 </body>

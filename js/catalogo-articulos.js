@@ -112,7 +112,7 @@ export const ARTICULOS = [
     categoria: "sombreros",
     nombre: "Sombrero Cazador",
     imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_cazador.png",
-    precio: 0,
+    precio: 120,
     rareza: "Común",
     posicion: posicionSombrero()
   },
@@ -122,7 +122,7 @@ export const ARTICULOS = [
     categoria: "sombreros",
     nombre: "Gorra Roja",
     imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_rojo.png",
-    precio: 0,
+    precio: 60,
     rareza: "Común",
     posicion: posicionSombrero({
       top: "18%",
@@ -135,7 +135,7 @@ export const ARTICULOS = [
     categoria: "sombreros",
     nombre: "Sombrero Emo",
     imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_emo.png",
-    precio: 0,
+    precio: 180,
     rareza: "Épico",
     posicion: posicionSombrero({
       top: "15%",
@@ -148,7 +148,7 @@ export const ARTICULOS = [
     categoria: "sombreros",
     nombre: "Sombrero Gótico",
     imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_gotico.png",
-    precio: 0,
+    precio: 180,
     rareza: "Épico",
     posicion: posicionSombrero({
       top: "15%",
@@ -161,7 +161,7 @@ export const ARTICULOS = [
     categoria: "sombreros",
     nombre: "Sombrero Floral",
     imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_floral.png",
-    precio: 0,
+    precio: 200,
     rareza: "Raro",
     posicion: posicionSombrero({
       top: "16%",
@@ -174,7 +174,7 @@ export const ARTICULOS = [
     categoria: "sombreros",
     nombre: "Sombrero Rosa",
     imagen: "Fondos-JuniorGame/articulos/sombreros/sombrero_rosa.png",
-    precio: 0,
+    precio: 200,
     rareza: "Raro",
     posicion: posicionSombrero({
       top: "16%",
@@ -191,7 +191,7 @@ export const ARTICULOS = [
     categoria: "lentes",
     nombre: "Lentes Redondos",
     imagen: "Fondos-JuniorGame/articulos/lentes/lentes_redondos.png",
-    precio: 0,
+    precio: 80,
     rareza: "Común",
     posicion: posicionLentes({
       top: "30%",
@@ -204,7 +204,7 @@ export const ARTICULOS = [
     categoria: "lentes",
     nombre: "Lentes Góticos",
     imagen: "Fondos-JuniorGame/articulos/lentes/lentes_goticos.png",
-    precio: 0,
+    precio: 120,
     rareza: "Raro",
     posicion: posicionLentes({
       top: "30%",
@@ -217,7 +217,7 @@ export const ARTICULOS = [
     categoria: "lentes",
     nombre: "Lentes Arcoíris",
     imagen: "Fondos-JuniorGame/articulos/lentes/lentes_arcoiris.png",
-    precio: 0,
+    precio: 170,
     rareza: "Épico",
     posicion: posicionLentes({
       top: "30%",
@@ -234,7 +234,7 @@ export const ARTICULOS = [
     categoria: "panuelos",
     nombre: "Pañuelo Rojo",
     icono: "🧣",
-    precio: 0,
+    precio: 40,
     rareza: "Común",
     posicion: { ...POSICION_PANUELO }
   },
@@ -244,7 +244,7 @@ export const ARTICULOS = [
     categoria: "panuelos",
     nombre: "Pañuelo Azul",
     icono: "🧣",
-    precio: 0,
+    precio: 50,
     rareza: "Común",
     posicion: { ...POSICION_PANUELO }
   },
@@ -258,7 +258,7 @@ export const ARTICULOS = [
     categoria: "mochilas",
     nombre: "Mochila Escolar",
     icono: "🎒",
-    precio: 0,
+    precio: 250,
     rareza: "Común",
     posicion: { ...POSICION_MOCHILA }
   },
@@ -268,7 +268,7 @@ export const ARTICULOS = [
     categoria: "mochilas",
     nombre: "Mochila Aventurera",
     icono: "🎒",
-    precio: 0,
+    precio: 250,
     rareza: "Raro",
     posicion: {
       ...POSICION_MOCHILA,
@@ -285,7 +285,7 @@ export const ARTICULOS = [
     categoria: "zapatos",
     nombre: "Tenis Deportivos",
     icono: "👟",
-    precio: 0,
+    precio: 300,
     rareza: "Común",
     posicion: { ...POSICION_ZAPATOS }
   },
@@ -295,7 +295,7 @@ export const ARTICULOS = [
     categoria: "zapatos",
     nombre: "Botas Vaqueras",
     icono: "🥾",
-    precio: 0,
+    precio: 350,
     rareza: "Raro",
     posicion: { ...POSICION_ZAPATOS }
   },
@@ -309,7 +309,7 @@ export const ARTICULOS = [
     categoria: "skins",
     nombre: "Pelaje Marrón",
     icono: "🐕",
-    precio: 0,
+    precio: 150,
     rareza: "Común",
     filtro: "none"
   },
@@ -319,7 +319,7 @@ export const ARTICULOS = [
     categoria: "skins",
     nombre: "Pelaje Gris",
     icono: "🐺",
-    precio: 0,
+    precio: 160,
     rareza: "Raro",
     filtro: "grayscale(1) brightness(.9)"
   },
@@ -329,7 +329,7 @@ export const ARTICULOS = [
     categoria: "skins",
     nombre: "Pelaje Dorado",
     icono: "✨",
-    precio: 0,
+    precio: 170,
     rareza: "Legendario",
     filtro: "sepia(.8) saturate(1.8) hue-rotate(350deg) brightness(1.12)"
   },
@@ -339,7 +339,7 @@ export const ARTICULOS = [
     categoria: "skins",
     nombre: "Pelaje Nieve",
     icono: "❄️",
-    precio: 0,
+    precio: 180,
     rareza: "Épico",
     filtro: "grayscale(.7) brightness(1.35) contrast(.85)"
   },
@@ -353,7 +353,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Escudo Canino",
     icono: "🛡️",
-    precio: 0,
+    precio: 80,
     rareza: "Común",
     duracion: 20,
     descripcion: "Protege al perro de un impacto durante la partida."
@@ -364,7 +364,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Imán de Huesos",
     icono: "🧲",
-    precio: 0,
+    precio: 150,
     rareza: "Raro",
     duracion: 30,
     descripcion: "Atrae automáticamente los huesos cercanos."
@@ -375,7 +375,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Súper Salto",
     icono: "🦘",
-    precio: 0,
+    precio: 170,
     rareza: "Común",
     duracion: 25,
     descripcion: "Permite saltar más alto durante unos segundos."
@@ -386,7 +386,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Tiempo Lento",
     icono: "⏳",
-    precio: 0,
+    precio: 200,
     rareza: "Épico",
     duracion: 15,
     descripcion: "Reduce temporalmente la velocidad del escenario."
@@ -397,7 +397,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Detector de Fragmentos",
     icono: "💠",
-    precio: 0,
+    precio: 230,
     rareza: "Legendario",
     duracion: 40,
     descripcion: "Aumenta la posibilidad de encontrar fragmentos de diamante."
@@ -408,7 +408,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Modo Fantasma",
     icono: "👻",
-    precio: 0,
+    precio: 140,
     rareza: "Épico",
     duracion: 20,
     descripcion: "Permite atravesar obstáculos sin perder vidas."
@@ -419,7 +419,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Frenesí Canino",
     icono: "🔥",
-    precio: 0,
+    precio: 190,
     rareza: "Legendario",
     duracion: 15,
     descripcion: "Destruye obstáculos automáticamente durante el efecto."
@@ -430,7 +430,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Precisión",
     icono: "🎯",
-    precio: 0,
+    precio: 70,
     rareza: "Raro",
     duracion: 30,
     descripcion: "Amplía el área para atrapar objetos especiales."
@@ -441,7 +441,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Corazón Extra",
     icono: "❤️",
-    precio: 0,
+    precio: 80,
     rareza: "Raro",
     duracion: 0,
     descripcion: "Entrega una vida adicional para la siguiente partida."
@@ -452,7 +452,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Suerte Legendaria",
     icono: "🌈",
-    precio: 0,
+    precio: 130,
     rareza: "Mítico",
     duracion: 20,
     descripcion: "Aumenta temporalmente la aparición de objetos raros."
@@ -463,7 +463,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Huesos Dobles",
     icono: "✖️2",
-    precio: 0,
+    precio: 240,
     rareza: "Épico",
     duracion: 30,
     descripcion: "Cada hueso atrapado cuenta como dos."
@@ -474,7 +474,7 @@ export const ARTICULOS = [
     categoria: "poderes",
     nombre: "Impulso",
     icono: "⚡",
-    precio: 0,
+    precio: 80,
     rareza: "Raro",
     duracion: 20,
     descripcion: "Aumenta la velocidad y el ritmo de la partida."

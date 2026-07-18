@@ -53,9 +53,11 @@ const PACKAGES = Object.freeze({
   2500: 99900
 });
 
+const FRONTEND_ORIGIN =
+  new URL(FRONTEND_URL).origin;
+
 const allowedOrigins = new Set([
-  FRONTEND_URL,
-  `${FRONTEND_URL}/`,
+  FRONTEND_ORIGIN,
   "http://localhost:5500",
   "http://127.0.0.1:5500"
 ]);

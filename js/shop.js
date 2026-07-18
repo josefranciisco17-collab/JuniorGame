@@ -343,12 +343,12 @@ confirmPurchaseButton?.addEventListener("click", async () => {
       headers: {
         "Content-Type": "application/json"
       },
-        coins: productoSeleccionado.cantidad
+        diamonds: productoSeleccionado.cantidad
 })
 
 
 body: JSON.stringify({
-  coins: productoSeleccionado.cantidad,
+  diamonds: productoSeleccionado.cantidad,
   uid: auth.currentUser.uid
 })
 

@@ -61,9 +61,25 @@ const closeHistoryModalButton =
 const historyStatus = document.getElementById("historyStatus");
 const historyList = document.getElementById("historyList");
 
+const diamondRewardModal =
+  document.getElementById("diamondRewardModal");
+
+const closeDiamondRewardButton =
+  document.getElementById("closeDiamondRewardButton");
+
+const acceptDiamondRewardButton =
+  document.getElementById("acceptDiamondRewardButton");
+
+const diamondRewardAmount =
+  document.getElementById("diamondRewardAmount");
+
+
 
 let productoSeleccionado = null;
 let detenerEscucha = null;
+
+const PENDING_PURCHASE_KEY =
+  "juniorGamePendingDiamondPurchase";
 
 function obtenerNumero(valor, valorInicial = 0) {
   const numero = Number(valor);
@@ -101,6 +117,174 @@ function actualizarSaldos(datos = {}) {
   }
 }
 
+
+
+function guardarCompraPendiente(producto) {
+  try {
+    localStorage.setItem(
+      PENDING_PURCHASE_KEY,
+      JSON.stringify({
+        cantidad: obtenerNumero(producto.cantidad, 0),
+        productId: producto.id || "",
+        creadoAt: Date.now()
+      })
+    );
+  } catch (error) {
+    console.warn(
+      "No se pudo guardar la compra pendiente:",
+      error
+    );
+  }
+}
+
+function obtenerCompraPendiente() {
+  try {
+    const valor =
+      localStorage.getItem(PENDING_PURCHASE_KEY);
+
+    if (!valor) {
+      return null;
+    }
+
+    const compra = JSON.parse(valor);
+    const edad = Date.now() -
+      obtenerNumero(compra.creadoAt, 0);
+
+    if (
+      edad < 0 ||
+      edad > 1000 * 60 * 60 * 24
+    ) {
+      localStorage.removeItem(
+        PENDING_PURCHASE_KEY
+      );
+      return null;
+    }
+
+    return compra;
+  } catch (error) {
+    console.warn(
+      "No se pudo leer la compra pendiente:",
+      error
+    );
+    return null;
+  }
+}
+
+function limpiarCompraPendiente() {
+  try {
+    localStorage.removeItem(
+      PENDING_PURCHASE_KEY
+    );
+  } catch (error) {
+    console.warn(
+      "No se pudo limpiar la compra pendiente:",
+      error
+    );
+  }
+}
+
+function reproducirSonidoRecompensa() {
+  try {
+    const AudioContextClass =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+      return;
+    }
+
+    const contexto =
+      new AudioContextClass();
+
+    const notas = [
+      { frecuencia: 523.25, inicio: 0.00 },
+      { frecuencia: 659.25, inicio: 0.11 },
+      { frecuencia: 783.99, inicio: 0.22 },
+      { frecuencia: 1046.50, inicio: 0.34 }
+    ];
+
+    for (const nota of notas) {
+      const oscilador =
+        contexto.createOscillator();
+
+      const ganancia =
+        contexto.createGain();
+
+      oscilador.type = "sine";
+      oscilador.frequency.value =
+        nota.frecuencia;
+
+      ganancia.gain.setValueAtTime(
+        0.0001,
+        contexto.currentTime + nota.inicio
+      );
+
+      ganancia.gain.exponentialRampToValueAtTime(
+        0.18,
+        contexto.currentTime + nota.inicio + 0.02
+      );
+
+      ganancia.gain.exponentialRampToValueAtTime(
+        0.0001,
+        contexto.currentTime + nota.inicio + 0.32
+      );
+
+      oscilador.connect(ganancia);
+      ganancia.connect(contexto.destination);
+
+      oscilador.start(
+        contexto.currentTime + nota.inicio
+      );
+
+      oscilador.stop(
+        contexto.currentTime + nota.inicio + 0.34
+      );
+    }
+
+    window.setTimeout(() => {
+      contexto.close().catch(() => {});
+    }, 1100);
+  } catch (error) {
+    console.warn(
+      "El navegador bloqueó el sonido:",
+      error
+    );
+  }
+}
+
+function mostrarRecompensaDiamantes(cantidad) {
+  if (
+    !diamondRewardModal ||
+    !diamondRewardAmount
+  ) {
+    return;
+  }
+
+  diamondRewardAmount.textContent =
+    `+${obtenerNumero(cantidad, 0)} diamantes`;
+
+  diamondRewardModal.classList.remove(
+    "hidden"
+  );
+
+  document.body.style.overflow =
+    "hidden";
+
+  window.setTimeout(
+    reproducirSonidoRecompensa,
+    180
+  );
+}
+
+function cerrarRecompensaDiamantes() {
+  diamondRewardModal?.classList.add(
+    "hidden"
+  );
+
+  document.body.style.overflow = "";
+
+  limpiarCompraPendiente();
+}
 
 function escaparHtml(valor = "") {
   return String(valor)
@@ -319,6 +503,7 @@ document.addEventListener("keydown", (evento) => {
   if (evento.key === "Escape") {
     cerrarModalCompra();
     cerrarHistorialCompras();
+    cerrarRecompensaDiamantes();
   }
 });
 
@@ -372,6 +557,10 @@ confirmPurchaseButton?.addEventListener(
         );
       }
 
+      guardarCompraPendiente(
+        productoSeleccionado
+      );
+
       window.location.assign(datos.url);
     } catch (error) {
       console.error(error);
@@ -415,18 +604,51 @@ historyModal?.addEventListener("click", (evento) => {
   }
 });
 
+closeDiamondRewardButton?.addEventListener(
+  "click",
+  cerrarRecompensaDiamantes
+);
+
+acceptDiamondRewardButton?.addEventListener(
+  "click",
+  cerrarRecompensaDiamantes
+);
+
+diamondRewardModal?.addEventListener(
+  "click",
+  (evento) => {
+    if (
+      evento.target === diamondRewardModal ||
+      evento.target.classList.contains(
+        "diamond-reward-backdrop"
+      )
+    ) {
+      cerrarRecompensaDiamantes();
+    }
+  }
+);
+
 function revisarResultadoPago() {
   const parametros =
     new URLSearchParams(window.location.search);
 
   if (parametros.get("success") === "1") {
+    const compraPendiente =
+      obtenerCompraPendiente();
+
     mostrarMensaje(
-      "Pago recibido. Tus diamantes se acreditarán automáticamente.",
+      "Pago recibido. Tus diamantes fueron acreditados.",
       "success"
+    );
+
+    mostrarRecompensaDiamantes(
+      compraPendiente?.cantidad || 0
     );
   }
 
   if (parametros.get("cancel") === "1") {
+    limpiarCompraPendiente();
+
     mostrarMensaje(
       "La compra fue cancelada.",
       "error"

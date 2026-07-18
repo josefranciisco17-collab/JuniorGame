@@ -12,7 +12,7 @@
 
   <title>JuniorGame - Tienda</title>
 
-  <link rel="stylesheet" href="css/shop.css?v=2">
+  <link rel="stylesheet" href="css/shop.css?v=3">
 </head>
 
 <body>
@@ -324,6 +324,60 @@
 </div>
 
 
+
+<!-- RECOMPENSA DE DIAMANTES -->
+<div
+  id="diamondRewardModal"
+  class="diamond-reward-modal hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="diamondRewardTitle"
+>
+  <div class="diamond-reward-backdrop"></div>
+
+  <section class="diamond-reward-card">
+    <div class="diamond-reward-rays"></div>
+
+    <button
+      id="closeDiamondRewardButton"
+      class="diamond-reward-close"
+      type="button"
+      aria-label="Cerrar recompensa"
+    >
+      ×
+    </button>
+
+    <div class="diamond-reward-gems" aria-hidden="true">
+      <span>💎</span>
+      <span>✨</span>
+      <span>💎</span>
+      <span>✨</span>
+    </div>
+
+    <div class="diamond-reward-icon">💎</div>
+
+    <h2 id="diamondRewardTitle">
+      ¡Compra completada!
+    </h2>
+
+    <strong id="diamondRewardAmount">
+      +0 diamantes
+    </strong>
+
+    <p>
+      Tus diamantes ya fueron agregados a tu cuenta.
+    </p>
+
+    <button
+      id="acceptDiamondRewardButton"
+      class="diamond-reward-button"
+      type="button"
+    >
+      Recibir recompensa
+    </button>
+  </section>
+</div>
+
 <!-- HISTORIAL DE COMPRAS -->
 <div id="historyModal" class="history-modal hidden" role="dialog"
   aria-modal="true" aria-labelledby="historyModalTitle">
@@ -363,7 +417,7 @@
 
   <script
     type="module"
-    src="js/shop.js?v=2"
+    src="js/shop.js?v=3"
   ></script>
 
 </body>

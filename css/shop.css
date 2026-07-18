@@ -595,3 +595,286 @@ color:#ffe8bf;
 @media(max-width:380px){
   .history-item-details{grid-template-columns:1fr}
 }
+
+
+/* =========================================
+   RECOMPENSA DE DIAMANTES
+========================================= */
+
+.diamond-reward-modal{
+  position:fixed;
+  inset:0;
+  z-index:11000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.diamond-reward-modal.hidden{
+  display:none;
+}
+
+.diamond-reward-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(10,4,1,.82);
+  backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px);
+}
+
+.diamond-reward-card{
+  position:relative;
+  z-index:2;
+  width:100%;
+  max-width:380px;
+  overflow:hidden;
+  padding:34px 24px 27px;
+  text-align:center;
+  color:#fff;
+  border:5px solid #4a1f08;
+  border-radius:30px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 26px,
+      rgba(62,22,4,.13) 27px,
+      rgba(62,22,4,.13) 30px
+    ),
+    linear-gradient(
+      180deg,
+      #dc9147,
+      #9c4a17 55%,
+      #622406
+    );
+  box-shadow:
+    inset 0 4px 0 rgba(255,255,255,.2),
+    inset 0 -8px 0 rgba(43,12,1,.34),
+    0 9px 0 #2f1003,
+    0 24px 60px rgba(0,0,0,.58);
+  animation:
+    rewardCardIn .62s
+    cubic-bezier(.18,.89,.32,1.28)
+    both;
+}
+
+.diamond-reward-rays{
+  position:absolute;
+  inset:-55%;
+  opacity:.28;
+  background:
+    repeating-conic-gradient(
+      from 0deg,
+      rgba(255,235,124,.95) 0deg 8deg,
+      transparent 8deg 22deg
+    );
+  animation:rewardRays 14s linear infinite;
+  pointer-events:none;
+}
+
+.diamond-reward-close{
+  position:absolute;
+  z-index:4;
+  top:8px;
+  right:12px;
+  width:40px;
+  height:40px;
+  border:0;
+  background:transparent;
+  color:#fff;
+  font-size:32px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.diamond-reward-icon{
+  position:relative;
+  z-index:3;
+  font-size:88px;
+  filter:
+    drop-shadow(0 8px 7px rgba(0,0,0,.28))
+    drop-shadow(0 0 18px rgba(73,211,255,.72));
+  animation:
+    rewardDiamond 1.15s
+    ease-in-out infinite alternate;
+}
+
+.diamond-reward-card h2{
+  position:relative;
+  z-index:3;
+  margin-top:4px;
+  color:#ffca43;
+  font-size:30px;
+  font-weight:900;
+  text-shadow:
+    0 3px 0 #a55a00,
+    0 7px 12px rgba(0,0,0,.38);
+}
+
+.diamond-reward-card>strong{
+  position:relative;
+  z-index:3;
+  display:block;
+  margin-top:14px;
+  color:#fff;
+  font-size:35px;
+  font-weight:900;
+  text-shadow:
+    0 3px 0 rgba(60,20,2,.75),
+    0 0 15px rgba(72,220,255,.42);
+  animation:rewardAmount .72s .28s both;
+}
+
+.diamond-reward-card>p{
+  position:relative;
+  z-index:3;
+  margin:13px auto 0;
+  max-width:285px;
+  color:#fff0d0;
+  font-size:15px;
+  line-height:1.45;
+}
+
+.diamond-reward-button{
+  position:relative;
+  z-index:3;
+  width:100%;
+  min-height:54px;
+  margin-top:22px;
+  border:3px solid #4a1f08;
+  border-radius:15px;
+  background:
+    linear-gradient(
+      180deg,
+      #e39b4c,
+      #9b4917
+    );
+  color:#fff9e5;
+  font-size:16px;
+  font-weight:900;
+  box-shadow:0 5px 0 #2f1003;
+  cursor:pointer;
+}
+
+.diamond-reward-button:active{
+  transform:translateY(3px);
+  box-shadow:0 2px 0 #2f1003;
+}
+
+.diamond-reward-gems span{
+  position:absolute;
+  z-index:3;
+  pointer-events:none;
+  animation:rewardSparkle 1.65s ease-in-out infinite;
+}
+
+.diamond-reward-gems span:nth-child(1){
+  top:78px;
+  left:35px;
+  font-size:25px;
+}
+
+.diamond-reward-gems span:nth-child(2){
+  top:54px;
+  right:48px;
+  font-size:27px;
+  animation-delay:.3s;
+}
+
+.diamond-reward-gems span:nth-child(3){
+  top:178px;
+  right:29px;
+  font-size:20px;
+  animation-delay:.55s;
+}
+
+.diamond-reward-gems span:nth-child(4){
+  top:194px;
+  left:42px;
+  font-size:23px;
+  animation-delay:.8s;
+}
+
+@keyframes rewardCardIn{
+  0%{
+    opacity:0;
+    transform:
+      translateY(45px)
+      scale(.72)
+      rotate(-2deg);
+  }
+  70%{
+    opacity:1;
+    transform:
+      translateY(-8px)
+      scale(1.04)
+      rotate(1deg);
+  }
+  100%{
+    opacity:1;
+    transform:
+      translateY(0)
+      scale(1)
+      rotate(0);
+  }
+}
+
+@keyframes rewardRays{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+@keyframes rewardDiamond{
+  from{
+    transform:
+      translateY(0)
+      scale(1);
+  }
+  to{
+    transform:
+      translateY(-8px)
+      scale(1.08);
+  }
+}
+
+@keyframes rewardAmount{
+  0%{
+    opacity:0;
+    transform:scale(.35);
+  }
+  70%{
+    opacity:1;
+    transform:scale(1.16);
+  }
+  100%{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+@keyframes rewardSparkle{
+  0%,100%{
+    opacity:.25;
+    transform:
+      scale(.75)
+      rotate(-8deg);
+  }
+  50%{
+    opacity:1;
+    transform:
+      scale(1.25)
+      rotate(10deg);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .diamond-reward-card,
+  .diamond-reward-rays,
+  .diamond-reward-icon,
+  .diamond-reward-card>strong,
+  .diamond-reward-gems span{
+    animation:none;
+  }
+}

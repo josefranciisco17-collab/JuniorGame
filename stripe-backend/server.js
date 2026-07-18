@@ -3,7 +3,16 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const Stripe = require("stripe");
-const admin = require("firebase-admin");
+const {
+  initializeApp,
+  applicationDefault,
+  getApps
+} = require("firebase-admin/app");
+
+const {
+  getFirestore,
+  FieldValue
+} = require("firebase-admin/firestore");
 
 const {
   STRIPE_SECRET_KEY,
@@ -25,13 +34,13 @@ if (!GOOGLE_APPLICATION_CREDENTIALS) {
   throw new Error("Falta GOOGLE_APPLICATION_CREDENTIALS.");
 }
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault()
+if (getApps().length === 0) {
+  initializeApp({
+    credential: applicationDefault()
   });
 }
 
-const db = admin.firestore();
+const db = getFirestore();
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 const app = express();
 
@@ -243,9 +252,9 @@ async function creditDiamonds(event) {
     }
 
     transaction.update(userRef, {
-      diamantes: admin.firestore.FieldValue.increment(diamonds),
+      diamantes: FieldValue.increment(diamonds),
       ultimaCompraAt:
-        admin.firestore.FieldValue.serverTimestamp()
+        FieldValue.serverTimestamp()
     });
 
     transaction.set(purchaseRef, {
@@ -259,7 +268,7 @@ async function creditDiamonds(event) {
       moneda: session.currency || "mxn",
       estado: "pagado",
       creadoAt:
-        admin.firestore.FieldValue.serverTimestamp()
+        FieldValue.serverTimestamp()
     });
 
     transaction.set(eventRef, {
@@ -268,7 +277,7 @@ async function creditDiamonds(event) {
       uid,
       diamonds,
       processedAt:
-        admin.firestore.FieldValue.serverTimestamp()
+        FieldValue.serverTimestamp()
     });
   });
 

@@ -238,25 +238,41 @@ configurarMusicaFondo() {
 
 
 configurarBotonesModal() {
-  this.elementos.botonJugarOtraVez?.addEventListener(
-    "click",
+  const botonReiniciar =
+    this.elementos.botonJugarOtraVez;
+
+  const botonMenu =
+    this.elementos.botonVolverMenu;
+
+  botonReiniciar?.addEventListener(
+    "pointerdown",
     () => {
       window.AudioFX?.boton();
-
-      window.setTimeout(() => {
-        window.location.reload();
-      }, 120);
     }
   );
 
-  this.elementos.botonVolverMenu?.addEventListener(
+  botonReiniciar?.addEventListener(
     "click",
     () => {
-      window.AudioFX?.boton();
+      window.setTimeout(() => {
+        window.location.reload();
+      }, 400);
+    }
+  );
 
+  botonMenu?.addEventListener(
+    "pointerdown",
+    () => {
+      window.AudioFX?.boton();
+    }
+  );
+
+  botonMenu?.addEventListener(
+    "click",
+    () => {
       window.setTimeout(() => {
         window.location.href = "index.html";
-      }, 120);
+      }, 400);
     }
   );
 },

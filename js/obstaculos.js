@@ -182,12 +182,13 @@ tipos: [
 
     areaJuego.appendChild(elemento);
 
-    this.obstaculoActual = {
+this.obstaculoActual = {
       elemento,
       tipo: tipo.nombre,
       x: posicionX,
       y: posicionY,
-      golpeado: false,
+      tamano: tipo.tamano,
+       golpeado: false,
 
       velocidad:
         this.velocidadMinima +

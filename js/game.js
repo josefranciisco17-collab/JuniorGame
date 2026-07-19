@@ -269,7 +269,7 @@ window.JuniorGame = {
         firebaseConfig,
         firestore
       ] = await Promise.all([
-        import("./firebase-config.js"),
+        import("./js/firebase-config.js"),
         import(
           "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"
         )

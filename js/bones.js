@@ -10,7 +10,7 @@ window.JuniorBones = {
   esperaMinima: 900,
   esperaMaxima: 1500,
 
-  tamanoHueso: 140,
+  tamanoHueso: 95,
 
   temporizadorNuevoHueso: null,
 

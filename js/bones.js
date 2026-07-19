@@ -209,15 +209,30 @@ const colision =
       return;
     }
 
-    this.huesoActual.atrapado = true;
 
-    const puntos =
-      this.huesoActual.dorado ? 10 : 1;
 
-    juego.actualizarPuntos(puntos);
 
-    this.eliminarHueso();
+this.huesoActual.atrapado = true;
+
+const esDorado =
+  this.huesoActual.dorado;
+
+const puntos =
+  esDorado ? 10 : 1;
+
+
+if (esDorado) {
+  window.AudioFX?.huesoDorado();
+} else {
+  window.AudioFX?.huesoBlanco();
+}
+
+juego.actualizarPuntos(puntos);
+
+this.eliminarHueso();
+
   },
+
 
   revisarSalidaPantalla() {
     const juego = window.JuniorGame;
@@ -235,20 +250,31 @@ const colision =
       areaJuego.clientHeight +
       this.tamanoHueso
     ) {
-      const eraDorado =
-        this.huesoActual.dorado;
 
-      this.eliminarHueso();
 
-      /*
-        El hueso normal resta una vida.
-        El hueso dorado solo desaparece.
-      */
-      if (!eraDorado) {
-        juego.perderVida();
-      }
-    }
-  },
+
+const eraDorado =
+  this.huesoActual.dorado;
+
+/*
+  El hueso llegó al suelo sin ser atrapado.
+*/
+window.AudioFX?.huesoCaido();
+
+this.eliminarHueso();
+
+/*
+  El hueso normal resta una vida.
+  El hueso dorado solo desaparece.
+*/
+if (!eraDorado) {
+  juego.perderVida();
+}
+}
+},
+
+
+
 
   eliminarHueso() {
     if (!this.huesoActual) {

@@ -392,3 +392,76 @@ a {
     transform:translateY(4px);
     box-shadow:none;
 }
+
+
+.level-box {
+  position: absolute;
+  top: 118px;
+  left: 28px;
+  width: 198px;
+  padding: 8px 12px 10px;
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(86, 42, 12, 0.96),
+      rgba(52, 24, 7, 0.96)
+    );
+
+  border: 4px solid #f3a93b;
+  border-radius: 22px;
+
+  box-shadow:
+    0 5px 0 #7a3008,
+    0 8px 14px rgba(0, 0, 0, 0.35);
+
+  z-index: 20;
+}
+
+.level-text {
+  margin-bottom: 6px;
+
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
+
+  text-shadow:
+    0 2px 2px rgba(0, 0, 0, 0.75);
+}
+
+.level-progress {
+  width: 100%;
+  height: 13px;
+  overflow: hidden;
+
+  background: rgba(0, 0, 0, 0.55);
+
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.65);
+}
+
+.level-progress-fill {
+  width: 0%;
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ffe55c,
+      #ffbd24,
+      #ff8a00
+    );
+
+  border-radius: inherit;
+
+  box-shadow:
+    inset 0 2px 2px rgba(255, 255, 255, 0.65),
+    0 0 8px rgba(255, 189, 36, 0.75);
+
+  transition: width 0.35s ease;
+}

@@ -29,6 +29,29 @@ window.SistemaNiveles = {
       this.mostrarAvisoNivel();
     }
 
+
+const textoNivel =
+    document.getElementById("levelNumber");
+
+const barraNivel =
+    document.getElementById("levelProgress");
+
+if (textoNivel) {
+    textoNivel.textContent =
+        this.nivelActual;
+}
+
+if (barraNivel) {
+    const progreso =
+        puntos % this.puntosPorNivel;
+
+    const porcentaje =
+        (progreso / this.puntosPorNivel) * 100;
+
+    barraNivel.style.width =
+        porcentaje + "%";
+}
+
     return this.nivelActual;
   },
 

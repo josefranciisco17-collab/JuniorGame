@@ -555,9 +555,6 @@
       reproducir("huesoCaido");
     },
 
-    boton() {
-      reproducir("boton");
-    },
 
     victoria() {
       reproducir("victoria");

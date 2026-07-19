@@ -18,20 +18,23 @@ window.SistemaObstaculos = {
   velocidadMinima: 220,
   velocidadMaxima: 300,
 
-  tipos: [
-    {
-      nombre: "piedra",
-      simbolo: "🪨"
-    },
-    {
-      nombre: "caja",
-      simbolo: "📦"
-    },
-    {
-      nombre: "tronco",
-      simbolo: "🪵"
-    }
-  ],
+tipos: [
+  {
+    nombre: "piedra",
+    simbolo: "🪨",
+    tamano: 40
+  },
+  {
+    nombre: "caja",
+    simbolo: "📦",
+    tamano: 44
+  },
+  {
+    nombre: "tronco",
+    simbolo: "🪵",
+    tamano: 52
+  }
+],
 
   iniciar() {
     if (this.activo) {
@@ -134,10 +137,10 @@ window.SistemaObstaculos = {
       "absolute";
 
     elemento.style.width =
-      `${this.tamano}px`;
+      `${tipo.tamano}px`;
 
     elemento.style.height =
-      `${this.tamano}px`;
+      `${tipo.tamano}px`;
 
     elemento.style.display =
       "flex";
@@ -161,7 +164,7 @@ window.SistemaObstaculos = {
       Math.max(
         0,
         areaJuego.clientWidth -
-        this.tamano
+        tipo.tamano
       );
 
     const posicionX =
@@ -169,7 +172,7 @@ window.SistemaObstaculos = {
       anchoDisponible;
 
     const posicionY =
-      -this.tamano - 10;
+      -tipo.tamano - 10;
 
     elemento.style.left =
       `${posicionX}px`;
@@ -343,7 +346,7 @@ window.SistemaObstaculos = {
     if (
       this.obstaculoActual.y >
       areaJuego.clientHeight +
-      this.tamano
+      this.obstaculoActual.tamano
     ) {
       this.eliminarObstaculo();
     }

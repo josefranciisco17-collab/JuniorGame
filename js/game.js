@@ -161,7 +161,52 @@ window.JuniorGame = {
     this.actualizarVidas();
     this.configurarBotonInicio();
     this.configurarBotonesModal();
+    this.configurarMusicaFondo();
   },
+
+
+configurarMusicaFondo() {
+  let musicaIniciada = false;
+
+  const iniciarMusica = () => {
+    if (
+      musicaIniciada ||
+      this.estado.terminado
+    ) {
+      return;
+    }
+
+    musicaIniciada = true;
+    window.AudioFX?.reproducirMusica();
+
+    document.removeEventListener(
+      "pointerdown",
+      iniciarMusica
+    );
+
+    document.removeEventListener(
+      "touchstart",
+      iniciarMusica
+    );
+  };
+
+  document.addEventListener(
+    "pointerdown",
+    iniciarMusica,
+    {
+      passive: true
+    }
+  );
+
+  document.addEventListener(
+    "touchstart",
+    iniciarMusica,
+    {
+      passive: true
+    }
+  );
+},
+
 
   prepararPerro() {
     const perro = this.elementos.perro;

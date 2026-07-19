@@ -303,7 +303,13 @@ configurarBotonesModal() {
 
     this.elementos.marcador.textContent =
       String(this.estado.puntos);
-  },
+
+    if (window.SistemaNiveles) {
+    window.SistemaNiveles.actualizarNivel(
+    this.estado.puntos
+     );
+   }
+ },
 
   perderVida() {
     if (

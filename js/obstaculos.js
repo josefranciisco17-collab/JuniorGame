@@ -79,9 +79,14 @@ tipos: [
       clearTimeout(this.temporizador);
     }
 
-    const espera =
-      2500 + Math.random() * 2000;
+    const multiplicadorFrecuencia =
+    window.SistemaNiveles
+        ? window.SistemaNiveles.obtenerMultiplicadorFrecuencia()
+        : 1;
 
+    const espera =
+    (2500 + Math.random() * 2000) *
+    multiplicadorFrecuencia;
     this.temporizador = setTimeout(() => {
 
       const juego = window.JuniorGame;
@@ -182,6 +187,11 @@ tipos: [
 
     areaJuego.appendChild(elemento);
 
+const multiplicadorVelocidad =
+    window.SistemaNiveles
+        ? window.SistemaNiveles.obtenerMultiplicadorVelocidad()
+        : 1;
+
 this.obstaculoActual = {
       elemento,
       tipo: tipo.nombre,
@@ -191,12 +201,14 @@ this.obstaculoActual = {
        golpeado: false,
 
       velocidad:
+        (
         this.velocidadMinima +
         Math.random() *
         (
-          this.velocidadMaxima -
-          this.velocidadMinima
+            this.velocidadMaxima -
+            this.velocidadMinima
         )
+    ) * multiplicadorVelocidad
     };
   },
 

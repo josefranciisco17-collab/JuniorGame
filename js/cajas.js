@@ -1,10 +1,8 @@
 "use strict";
 
 /*
-  ============================================================
   JuniorGame - Cajas sorpresa flotantes
-  Archivo: js/cajas.js
-  ============================================================
+  Versión robusta e independiente.
 
   Aparición:
   - Nivel 5
@@ -13,25 +11,25 @@
   Premios:
   - 20 monedas
   - 2 diamantes
-  - 1 vida (máximo 10 durante la partida)
+  - 1 vida (máximo 10 por partida)
   - 1 escudo
 */
 
 window.SistemaCajas = {
   activo: false,
   cajaActual: null,
-  nivelesEntregados: new Set(),
-  colaNiveles: [],
-  ultimoTiempo: 0,
-  anteriorTopPerro: null,
+  nivelesProcesados: new Set(),
+  temporizadorRevision: null,
   temporizadorRetiro: null,
-  ultimoNivelDetectado: 1,
+  cuadroAnimacion: null,
+  topPerroAnterior: null,
+  tiempoAnimacion: 0,
 
   configuracion: {
-    tamano: 70,
-    duracionVisible: 13000,
-    amplitudFlotacion: 8,
-    velocidadFlotacion: 2.25,
+    tamano: 72,
+    duracionVisible: 15000,
+    amplitudFlotacion: 7,
+    velocidadFlotacion: 0.004,
     premios: [
       { tipo: "monedas", peso: 60, cantidad: 20, icono: "🪙", texto: "+20 monedas" },
       { tipo: "diamantes", peso: 20, cantidad: 2, icono: "💎", texto: "+2 diamantes" },
@@ -41,117 +39,118 @@ window.SistemaCajas = {
   },
 
   iniciar() {
-    if (this.activo) {
-      return;
-    }
+    if (this.activo) return;
 
     this.activo = true;
-    this.ultimoTiempo = performance.now();
-    this.ultimoNivelDetectado = 1;
+    this.nivelesProcesados.clear();
+    this.topPerroAnterior = null;
 
     /*
-      La caja ya no depende únicamente de niveles.js.
-      También revisa directamente el nivel actual para evitar que
-      una carga tardía, caché o cambio rápido de nivel omita el aviso.
+      Revisamos el nivel periódicamente. De esta forma la caja no depende
+      del orden de carga de niveles.js ni de una sola notificación.
     */
-    this.sincronizarNivelActual();
+    this.temporizadorRevision = window.setInterval(() => {
+      this.revisarNivelActual();
+    }, 250);
 
-    requestAnimationFrame(
+    this.cuadroAnimacion = requestAnimationFrame(
       this.actualizar.bind(this)
     );
+
+    /* Primera revisión inmediata. */
+    this.revisarNivelActual();
   },
 
   detener() {
     this.activo = false;
-    this.colaNiveles.length = 0;
+
+    if (this.temporizadorRevision) {
+      clearInterval(this.temporizadorRevision);
+      this.temporizadorRevision = null;
+    }
 
     if (this.temporizadorRetiro) {
       clearTimeout(this.temporizadorRetiro);
       this.temporizadorRetiro = null;
     }
 
+    if (this.cuadroAnimacion) {
+      cancelAnimationFrame(this.cuadroAnimacion);
+      this.cuadroAnimacion = null;
+    }
+
     this.eliminarCaja();
-  },
-
-  obtenerNivelActual() {
-    const nivelSistema = Number(
-      window.SistemaNiveles?.nivelActual
-    );
-
-    if (Number.isFinite(nivelSistema) && nivelSistema >= 1) {
-      return Math.floor(nivelSistema);
-    }
-
-    const puntos = Math.max(
-      0,
-      Math.floor(
-        Number(window.JuniorGame?.estado?.puntos) || 0
-      )
-    );
-
-    const puntosPorNivel = Math.max(
-      1,
-      Math.floor(
-        Number(window.SistemaNiveles?.puntosPorNivel) || 10
-      )
-    );
-
-    return Math.min(
-      100,
-      Math.floor(puntos / puntosPorNivel) + 1
-    );
-  },
-
-  sincronizarNivelActual() {
-    const nivelActual = this.obtenerNivelActual();
-    const desde = Math.max(2, this.ultimoNivelDetectado + 1);
-
-    for (let nivel = desde; nivel <= nivelActual; nivel += 1) {
-      this.notificarNivel(nivel);
-    }
-
-    this.ultimoNivelDetectado = Math.max(
-      this.ultimoNivelDetectado,
-      nivelActual
-    );
   },
 
   esNivelConCaja(nivel) {
     const numero = Math.floor(Number(nivel) || 0);
-    return numero === 5 || (numero >= 10 && numero <= 100 && numero % 10 === 0);
+    return numero === 5 || (
+      numero >= 10 &&
+      numero <= 100 &&
+      numero % 10 === 0
+    );
   },
 
-  notificarNivel(nivel) {
-    const numero = Math.floor(Number(nivel) || 0);
+  obtenerNivelActual() {
+    const nivelDelSistema = Number(
+      window.SistemaNiveles?.nivelActual
+    );
 
-    if (
-      !this.esNivelConCaja(numero) ||
-      this.nivelesEntregados.has(numero) ||
-      this.colaNiveles.includes(numero)
-    ) {
-      return;
+    if (Number.isFinite(nivelDelSistema) && nivelDelSistema >= 1) {
+      return Math.floor(nivelDelSistema);
     }
 
-    this.colaNiveles.push(numero);
-    this.intentarCrearSiguiente();
+    const puntos = Math.max(
+      0,
+      Math.floor(Number(window.JuniorGame?.estado?.puntos) || 0)
+    );
+
+    const puntosPorNivel = Math.max(
+      1,
+      Math.floor(Number(window.SistemaNiveles?.puntosPorNivel) || 10)
+    );
+
+    return Math.min(100, Math.floor(puntos / puntosPorNivel) + 1);
   },
 
-  intentarCrearSiguiente() {
+  revisarNivelActual() {
     const juego = window.JuniorGame;
 
     if (
       !this.activo ||
-      this.cajaActual ||
-      this.colaNiveles.length === 0 ||
       !juego?.estado?.iniciado ||
-      juego.estado.pausado ||
       juego.estado.terminado
     ) {
       return;
     }
 
-    const nivel = this.colaNiveles.shift();
-    this.crearCaja(nivel);
+    const nivelActual = this.obtenerNivelActual();
+
+    if (
+      this.esNivelConCaja(nivelActual) &&
+      !this.nivelesProcesados.has(nivelActual) &&
+      !this.cajaActual
+    ) {
+      this.crearCaja(nivelActual);
+    }
+  },
+
+  /* Compatibilidad con niveles.js. */
+  notificarNivel(nivel) {
+    const numero = Math.floor(Number(nivel) || 0);
+
+    if (
+      this.activo &&
+      this.esNivelConCaja(numero) &&
+      !this.nivelesProcesados.has(numero) &&
+      !this.cajaActual
+    ) {
+      window.setTimeout(() => {
+        if (!this.cajaActual && !this.nivelesProcesados.has(numero)) {
+          this.crearCaja(numero);
+        }
+      }, 120);
+    }
   },
 
   crearCaja(nivel) {
@@ -159,154 +158,154 @@ window.SistemaCajas = {
     const area = juego?.elementos?.areaJuego;
     const perro = juego?.elementos?.perro;
 
-    if (!area || !perro || this.cajaActual) {
+    if (
+      !this.activo ||
+      !area ||
+      !perro ||
+      this.cajaActual ||
+      juego.estado.terminado
+    ) {
       return;
     }
+
+    /* Reservamos el nivel desde este momento para impedir duplicados. */
+    this.nivelesProcesados.add(nivel);
 
     const tamano = this.configuracion.tamano;
     const rectArea = area.getBoundingClientRect();
     const rectPerro = perro.getBoundingClientRect();
 
-    const margen = 18;
-    const anchoDisponible = Math.max(0, area.clientWidth - tamano - margen * 2);
-    const x = margen + Math.random() * anchoDisponible;
+    const perroCentroLocal =
+      rectPerro.left - rectArea.left + rectPerro.width / 2;
 
     /*
-      La altura se calcula usando la posición real del perro.
-      Queda por encima de su cabeza, pero dentro del alcance del salto.
+      La caja aparece cerca del perro para garantizar que sea alcanzable,
+      pero con una variación lateral para que siga siendo un reto.
     */
-    const topPerroLocal = rectPerro.top - rectArea.top;
-    const yBase = Math.max(
-      118,
+    const desplazamiento = (Math.random() * 150) - 75;
+    const margen = 18;
+    const x = Math.max(
+      margen,
       Math.min(
-        area.clientHeight - 245,
-        topPerroLocal - tamano - 34
+        area.clientWidth - tamano - margen,
+        perroCentroLocal - tamano / 2 + desplazamiento
+      )
+    );
+
+    const topPerroLocal = rectPerro.top - rectArea.top;
+    const alturaSobreCabeza = Math.max(62, rectPerro.height * 0.34);
+    const yBase = Math.max(
+      125,
+      Math.min(
+        area.clientHeight - 250,
+        topPerroLocal - tamano - alturaSobreCabeza
       )
     );
 
     const elemento = document.createElement("div");
     elemento.className = "surprise-box surprise-box-enter";
     elemento.setAttribute("aria-hidden", "true");
+    elemento.dataset.nivel = String(nivel);
     elemento.innerHTML = `
       <span class="surprise-box-glow"></span>
       <span class="surprise-box-body">🎁</span>
       <span class="surprise-box-level">N${nivel}</span>
     `;
 
-    elemento.style.left = `${x}px`;
-    elemento.style.top = `${yBase}px`;
+    /* Estilos esenciales en línea para que sea visible aun con caché CSS. */
+    Object.assign(elemento.style, {
+      position: "absolute",
+      left: `${x}px`,
+      top: `${yBase}px`,
+      width: `${tamano}px`,
+      height: `${tamano}px`,
+      zIndex: "18",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      pointerEvents: "none"
+    });
+
     area.appendChild(elemento);
 
     this.cajaActual = {
       elemento,
       nivel,
-      x,
       yBase,
-      y: yBase,
-      tamano,
-      tiempo: 0,
       abierta: false
     };
 
-    this.anteriorTopPerro = rectPerro.top;
+    this.topPerroAnterior = rectPerro.top;
+    this.tiempoAnimacion = performance.now();
 
     requestAnimationFrame(() => {
       elemento.classList.remove("surprise-box-enter");
     });
 
     this.temporizadorRetiro = window.setTimeout(() => {
-      if (this.cajaActual && !this.cajaActual.abierta) {
-        this.cajaActual.elemento.classList.add("surprise-box-exit");
-        window.setTimeout(() => {
-          this.eliminarCaja();
-          this.intentarCrearSiguiente();
-        }, 450);
+      const caja = this.cajaActual;
+
+      if (caja && !caja.abierta) {
+        caja.elemento.classList.add("surprise-box-exit");
+        window.setTimeout(() => this.eliminarCaja(), 400);
       }
     }, this.configuracion.duracionVisible);
   },
 
   actualizar(tiempoActual) {
-    if (!this.activo) {
-      return;
-    }
-
-    const delta = Math.min(
-      (tiempoActual - this.ultimoTiempo) / 1000,
-      0.04
-    );
-
-    this.ultimoTiempo = tiempoActual;
+    if (!this.activo) return;
 
     const juego = window.JuniorGame;
-
-    this.sincronizarNivelActual();
 
     if (
       juego?.estado?.iniciado &&
       !juego.estado.pausado &&
-      !juego.estado.terminado
+      !juego.estado.terminado &&
+      this.cajaActual &&
+      !this.cajaActual.abierta
     ) {
-      if (this.cajaActual && !this.cajaActual.abierta) {
-        this.moverCaja(delta);
-        this.revisarGolpeCabeza();
-      } else {
-        this.intentarCrearSiguiente();
-      }
+      const caja = this.cajaActual;
+      const flotacion = Math.sin(
+        tiempoActual * this.configuracion.velocidadFlotacion
+      ) * this.configuracion.amplitudFlotacion;
+
+      caja.elemento.style.top = `${caja.yBase + flotacion}px`;
+      this.revisarGolpeCabeza();
     }
 
-    requestAnimationFrame(
+    this.cuadroAnimacion = requestAnimationFrame(
       this.actualizar.bind(this)
     );
   },
 
-  moverCaja(delta) {
-    const caja = this.cajaActual;
-
-    if (!caja) {
-      return;
-    }
-
-    caja.tiempo += delta;
-    caja.y = caja.yBase + Math.sin(
-      caja.tiempo * this.configuracion.velocidadFlotacion
-    ) * this.configuracion.amplitudFlotacion;
-
-    caja.elemento.style.top = `${caja.y}px`;
-  },
-
   revisarGolpeCabeza() {
-    const juego = window.JuniorGame;
-    const perro = juego?.elementos?.perro;
+    const perro = window.JuniorGame?.elementos?.perro;
     const caja = this.cajaActual;
 
-    if (!perro || !caja || caja.abierta) {
-      return;
-    }
+    if (!perro || !caja || caja.abierta) return;
 
     const rectPerro = perro.getBoundingClientRect();
     const rectCaja = caja.elemento.getBoundingClientRect();
 
     const subiendo =
-      this.anteriorTopPerro !== null &&
-      rectPerro.top < this.anteriorTopPerro - 0.35;
+      this.topPerroAnterior !== null &&
+      rectPerro.top < this.topPerroAnterior - 0.2;
 
-    this.anteriorTopPerro = rectPerro.top;
+    this.topPerroAnterior = rectPerro.top;
 
-    const cabezaIzquierda = rectPerro.left + rectPerro.width * 0.25;
-    const cabezaDerecha = rectPerro.right - rectPerro.width * 0.25;
-    const cabezaSuperior = rectPerro.top;
-    const cabezaInferior = rectPerro.top + rectPerro.height * 0.38;
+    const cabeza = {
+      left: rectPerro.left + rectPerro.width * 0.22,
+      right: rectPerro.right - rectPerro.width * 0.22,
+      top: rectPerro.top,
+      bottom: rectPerro.top + rectPerro.height * 0.42
+    };
 
     const contacto =
-      rectCaja.right > cabezaIzquierda &&
-      rectCaja.left < cabezaDerecha &&
-      rectCaja.bottom > cabezaSuperior &&
-      rectCaja.top < cabezaInferior;
+      rectCaja.right > cabeza.left &&
+      rectCaja.left < cabeza.right &&
+      rectCaja.bottom > cabeza.top &&
+      rectCaja.top < cabeza.bottom;
 
-    /*
-      Exigir que el perro esté subiendo evita abrirla al rozarla
-      lateralmente o durante la caída.
-    */
     if (subiendo && contacto) {
       this.abrirCaja();
     }
@@ -314,13 +313,11 @@ window.SistemaCajas = {
 
   seleccionarPremio() {
     const juego = window.JuniorGame;
+    const vidas = Number(juego?.estado?.vidas) || 0;
+    const maximo = Number(juego?.estado?.vidasMaximas) || 10;
 
-    let disponibles = this.configuracion.premios.filter((premio) => {
-      if (premio.tipo === "vida") {
-        return (juego?.estado?.vidas || 0) < (juego?.estado?.vidasMaximas || 10);
-      }
-
-      return true;
+    const disponibles = this.configuracion.premios.filter((premio) => {
+      return premio.tipo !== "vida" || vidas < maximo;
     });
 
     const total = disponibles.reduce(
@@ -328,14 +325,11 @@ window.SistemaCajas = {
       0
     );
 
-    let sorteo = Math.random() * total;
+    let numero = Math.random() * total;
 
     for (const premio of disponibles) {
-      sorteo -= premio.peso;
-
-      if (sorteo <= 0) {
-        return premio;
-      }
+      numero -= premio.peso;
+      if (numero <= 0) return premio;
     }
 
     return disponibles[0];
@@ -344,12 +338,9 @@ window.SistemaCajas = {
   async abrirCaja() {
     const caja = this.cajaActual;
 
-    if (!caja || caja.abierta) {
-      return;
-    }
+    if (!caja || caja.abierta) return;
 
     caja.abierta = true;
-    this.nivelesEntregados.add(caja.nivel);
 
     if (this.temporizadorRetiro) {
       clearTimeout(this.temporizadorRetiro);
@@ -359,46 +350,40 @@ window.SistemaCajas = {
     const premio = this.seleccionarPremio();
 
     caja.elemento.classList.add("surprise-box-open");
-    window.AudioFX?.bonus();
-
+    window.AudioFX?.bonus?.();
     this.crearParticulas(caja.elemento);
 
     window.setTimeout(() => {
       this.mostrarPremio(caja.elemento, premio);
-    }, 260);
+    }, 220);
 
     await this.entregarPremio(premio);
 
     window.setTimeout(() => {
       this.eliminarCaja();
-      this.intentarCrearSiguiente();
-    }, 1450);
+    }, 1500);
   },
 
   async entregarPremio(premio) {
     const juego = window.JuniorGame;
-
-    if (!premio || !juego) {
-      return;
-    }
+    if (!premio || !juego) return;
 
     if (premio.tipo === "vida") {
-      juego.agregarVida(premio.cantidad);
-      window.AudioFX?.corazon();
+      juego.agregarVida?.(premio.cantidad);
+      window.AudioFX?.corazon?.();
       return;
     }
 
     if (premio.tipo === "escudo") {
-      juego.activarEscudo();
+      juego.activarEscudo?.();
+      window.AudioFX?.bonus?.();
       return;
     }
 
     if (premio.tipo === "monedas") {
-      window.AudioFX?.monedas();
-    }
-
-    if (premio.tipo === "diamantes") {
-      window.AudioFX?.diamantes();
+      window.AudioFX?.monedas?.();
+    } else if (premio.tipo === "diamantes") {
+      window.AudioFX?.diamantes?.();
     }
 
     await this.abonarRecursoFirebase(
@@ -417,7 +402,7 @@ window.SistemaCajas = {
       const usuario = configuracion.auth?.currentUser;
 
       if (!usuario) {
-        console.warn("Caja sorpresa: no hay sesión para guardar el premio.");
+        console.warn("Caja sorpresa: no hay sesión activa para guardar el premio.");
         return false;
       }
 
@@ -432,7 +417,6 @@ window.SistemaCajas = {
         async (transaccion) => {
           const documento = await transaccion.get(referencia);
           const datos = documento.exists() ? documento.data() : {};
-
           const esMoneda = tipo === "monedas";
           const campoPrincipal = esMoneda ? "coins" : "diamonds";
           const campoAlterno = esMoneda ? "monedas" : "diamantes";
@@ -462,56 +446,46 @@ window.SistemaCajas = {
     }
   },
 
-  mostrarPremio(cajaElemento, premio) {
-    if (!cajaElemento || !premio) {
-      return;
-    }
+  crearParticulas(contenedor) {
+    if (!contenedor) return;
 
-    const premioElemento = document.createElement("div");
-    premioElemento.className = "surprise-reward";
-    premioElemento.innerHTML = `
+    const simbolos = ["✨", "⭐", "✦", "•"];
+
+    for (let i = 0; i < 14; i += 1) {
+      const particula = document.createElement("span");
+      particula.className = "surprise-particle";
+      particula.textContent = simbolos[i % simbolos.length];
+      particula.style.setProperty("--x", `${-75 + Math.random() * 150}px`);
+      particula.style.setProperty("--y", `${-80 + Math.random() * 110}px`);
+      particula.style.setProperty("--delay", `${Math.random() * 0.12}s`);
+      contenedor.appendChild(particula);
+    }
+  },
+
+  mostrarPremio(contenedor, premio) {
+    if (!contenedor || !premio) return;
+
+    const elemento = document.createElement("div");
+    elemento.className = "surprise-reward";
+    elemento.innerHTML = `
       <span class="surprise-reward-icon">${premio.icono}</span>
       <strong>${premio.texto}</strong>
     `;
+    contenedor.appendChild(elemento);
 
-    cajaElemento.appendChild(premioElemento);
     this.mostrarMensajeRapido(`${premio.icono} ${premio.texto}`);
   },
 
-  crearParticulas(cajaElemento) {
-    if (!cajaElemento) {
-      return;
-    }
-
-    const simbolos = ["✨", "⭐", "•", "✦"];
-
-    for (let indice = 0; indice < 14; indice += 1) {
-      const particula = document.createElement("span");
-      particula.className = "surprise-particle";
-      particula.textContent = simbolos[indice % simbolos.length];
-      particula.style.setProperty("--x", `${-72 + Math.random() * 144}px`);
-      particula.style.setProperty("--y", `${-72 + Math.random() * 105}px`);
-      particula.style.setProperty("--delay", `${Math.random() * 0.12}s`);
-      cajaElemento.appendChild(particula);
-    }
-  },
-
   mostrarMensajeRapido(texto) {
-    const existente = document.querySelector(".surprise-toast");
-    existente?.remove();
+    document.querySelector(".surprise-toast")?.remove();
 
     const aviso = document.createElement("div");
     aviso.className = "surprise-toast";
     aviso.textContent = texto;
     document.body.appendChild(aviso);
 
-    window.setTimeout(() => {
-      aviso.classList.add("surprise-toast-out");
-    }, 1300);
-
-    window.setTimeout(() => {
-      aviso.remove();
-    }, 1750);
+    window.setTimeout(() => aviso.classList.add("surprise-toast-out"), 1300);
+    window.setTimeout(() => aviso.remove(), 1750);
   },
 
   eliminarCaja() {
@@ -522,12 +496,26 @@ window.SistemaCajas = {
 
     this.cajaActual?.elemento?.remove();
     this.cajaActual = null;
-    this.anteriorTopPerro = null;
+    this.topPerroAnterior = null;
   }
 };
 
-window.addEventListener("DOMContentLoaded", () => {
+/*
+  Se inicia tanto si el documento aún está cargando como si el archivo
+  fue ejecutado después de DOMContentLoaded.
+*/
+function iniciarSistemaCajasSeguro() {
   window.setTimeout(() => {
-    window.SistemaCajas.iniciar();
-  }, 70);
-});
+    window.SistemaCajas?.iniciar?.();
+  }, 100);
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    iniciarSistemaCajasSeguro,
+    { once: true }
+  );
+} else {
+  iniciarSistemaCajasSeguro();
+}

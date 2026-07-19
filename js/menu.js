@@ -67,12 +67,17 @@ const adminConsoleButton =
     modal?.classList.add("hidden");
   }
 
-  shopButton?.addEventListener(
-    "click",
-    () => {
+shopButton?.addEventListener(
+  "click",
+  () => {
+    window.AudioFX?.boton();
+
+    window.setTimeout(() => {
       window.location.href = "shop.html";
-    }
-  );
+    }, 150);
+  }
+);
+
 
   settingsButton?.addEventListener(
     "click",

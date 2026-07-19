@@ -70,11 +70,7 @@ const adminConsoleButton =
 shopButton?.addEventListener(
   "click",
   () => {
-    window.AudioFX?.boton();
-
-    window.setTimeout(() => {
-      window.location.href = "shop.html";
-    }, 300);
+window.location.href = "shop.html";
   }
 );
 

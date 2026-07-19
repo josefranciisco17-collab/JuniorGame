@@ -395,10 +395,8 @@ a {
 
 
 .level-box {
-  position: absolute;
-  top: 118px;
-  left: 28px;
-  width: 198px;
+  position: static;
+  width: 110px;
   padding: 8px 12px 10px;
   box-sizing: border-box;
 
@@ -417,6 +415,9 @@ a {
     0 8px 14px rgba(0, 0, 0, 0.35);
 
   z-index: 20;
+margin-top: 8px;
+display: flex;
+flex-direction: column;
 }
 
 .level-text {

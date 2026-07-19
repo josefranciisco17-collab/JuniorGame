@@ -176,17 +176,34 @@ window.JuniorBones = {
       return;
     }
 
+
     const rectPerro =
       perro.getBoundingClientRect();
 
     const rectHueso =
       this.huesoActual.elemento.getBoundingClientRect();
 
-    const colision =
-      rectHueso.right > rectPerro.left + 18 &&
-      rectHueso.left < rectPerro.right - 18 &&
-      rectHueso.bottom > rectPerro.top + 12 &&
-      rectHueso.top < rectPerro.bottom - 8;
+const limiteIzquierdo =
+  rectPerro.left +
+  rectPerro.width * 0.22;
+
+const limiteDerecho =
+  rectPerro.right -
+  rectPerro.width * 0.22;
+
+const limiteSuperior =
+  rectPerro.top +
+  rectPerro.height * 0.46;
+
+const limiteInferior =
+  rectPerro.bottom -
+  rectPerro.height * 0.08;
+
+const colision =
+  rectHueso.right > limiteIzquierdo &&
+  rectHueso.left < limiteDerecho &&
+  rectHueso.bottom > limiteSuperior &&
+  rectHueso.top < limiteInferior;
 
     if (!colision) {
       return;

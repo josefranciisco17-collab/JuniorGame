@@ -428,28 +428,78 @@ window.JuniorGame = {
     const estadisticas =
       await this.guardarEstadisticasPartida();
 
-    window.setTimeout(() => {
-      const textoRecord =
-        estadisticas.guardado
-          ? `\nRécord de huesos: ${estadisticas.recordHuesos}` +
-            `\nTotal acumulado: ${estadisticas.huesosRecolectados}`
-          : "";
 
-      const reiniciar = window.confirm(
-        `Juego terminado.` +
-        `\n\nHuesos de esta ronda: ${this.estado.puntos}` +
-        textoRecord +
-        `\n\n¿Quieres jugar otra vez?`
-      );
+window.setTimeout(() => {
+  const modal =
+    document.getElementById("gameOverModal");
 
-      if (reiniciar) {
-        window.location.reload();
-      } else {
-        window.location.href = "index.html";
-      }
-    }, 250);
+  const roundBones =
+    document.getElementById("gameOverRoundBones");
+
+  const recordBones =
+    document.getElementById("gameOverRecordBones");
+
+  const totalBones =
+    document.getElementById("gameOverTotalBones");
+
+  const playAgainButton =
+    document.getElementById("playAgainButton");
+
+  const backToMenuButton =
+    document.getElementById("backToMenuButton");
+
+  if (
+    !modal ||
+    !roundBones ||
+    !recordBones ||
+    !totalBones
+  ) {
+    console.error(
+      "No se encontró el modal de partida terminada."
+    );
+
+    return;
   }
-};
+
+  roundBones.textContent =
+    String(this.estado.puntos);
+
+  recordBones.textContent =
+    String(
+      estadisticas.recordHuesos ??
+      this.estado.puntos
+    );
+
+  totalBones.textContent =
+    String(
+      estadisticas.huesosRecolectados ??
+      this.estado.puntos
+    );
+
+  modal.classList.remove("hidden");
+
+  playAgainButton?.addEventListener(
+    "click",
+    () => {
+      window.location.reload();
+    },
+    {
+      once: true
+    }
+  );
+
+  backToMenuButton?.addEventListener(
+    "click",
+    () => {
+      window.location.href = "index.html";
+    },
+    {
+      once: true
+    }
+  );
+}, 250);
+
+
 
 window.addEventListener("DOMContentLoaded", () => {
   window.JuniorGame.iniciar();

@@ -93,6 +93,61 @@
 
   </main>
 
+<div
+  id="gameOverModal"
+  class="game-over-modal hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="gameOverTitle"
+>
+  <div class="game-over-card">
+
+    <div class="game-over-icon">
+      🐶
+    </div>
+
+    <h2 id="gameOverTitle">
+      PARTIDA TERMINADA
+    </h2>
+
+    <div class="game-over-stats">
+
+      <div class="game-over-stat">
+        <span>Huesos de esta ronda</span>
+        <strong id="gameOverRoundBones">0</strong>
+      </div>
+
+      <div class="game-over-stat">
+        <span>Récord de huesos</span>
+        <strong id="gameOverRecordBones">0</strong>
+      </div>
+
+      <div class="game-over-stat">
+        <span>Total acumulado</span>
+        <strong id="gameOverTotalBones">0</strong>
+      </div>
+
+    </div>
+
+    <button
+      id="playAgainButton"
+      class="game-over-button primary"
+      type="button"
+    >
+      JUGAR OTRA VEZ
+    </button>
+
+    <button
+      id="backToMenuButton"
+      class="game-over-button secondary"
+      type="button"
+    >
+      VOLVER AL MENÚ
+    </button>
+
+  </div>
+</div>
+
   <script src="js/game.js"></script>
   <script src="js/player.js"></script>
   <script src="js/controls.js"></script>

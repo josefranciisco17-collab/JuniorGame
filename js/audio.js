@@ -123,6 +123,8 @@
 
   let audioDesbloqueado = false;
   let silenciado = false;
+  let efectosSilenciados = false;
+  let musicaSilenciada = false;
 
   let volumenEfectos = 1;
   let volumenMusica = 1;
@@ -295,7 +297,10 @@
   */
   function reproducir(nombre) {
 
-    if (silenciado) {
+    if (
+      silenciado ||
+      efectosSilenciados
+    ) {
       return;
     }
 
@@ -356,7 +361,8 @@
 
     if (
       !musica ||
-      silenciado
+      silenciado ||
+      musicaSilenciada
     ) {
       return;
     }
@@ -419,7 +425,10 @@
         banco.forEach((audio) => {
 
           audio.volume =
-            silenciado
+            (
+              silenciado ||
+              efectosSilenciados
+            )
               ? 0
               : volumenBase *
                 volumenEfectos;
@@ -441,7 +450,10 @@
     }
 
     musica.volume =
-      silenciado
+      (
+        silenciado ||
+        musicaSilenciada
+      )
         ? 0
         : CONFIGURACION_MUSICA.volumen *
           volumenMusica;
@@ -494,6 +506,38 @@
           audio.currentTime = 0;
         });
       }
+    );
+  }
+
+
+  function establecerMusicaSilenciada(estado) {
+    musicaSilenciada = Boolean(estado);
+    establecerVolumenMusica(volumenMusica);
+
+    if (musicaSilenciada) {
+      pausarMusica();
+    } else {
+      reproducirMusica();
+    }
+
+    return musicaSilenciada;
+  }
+
+  function alternarMusica() {
+    return establecerMusicaSilenciada(
+      !musicaSilenciada
+    );
+  }
+
+  function establecerEfectosSilenciados(estado) {
+    efectosSilenciados = Boolean(estado);
+    establecerVolumenEfectos(volumenEfectos);
+    return efectosSilenciados;
+  }
+
+  function alternarEfectos() {
+    return establecerEfectosSilenciados(
+      !efectosSilenciados
     );
   }
 
@@ -571,8 +615,21 @@
     establecerSilencio,
     alternarSilencio,
 
+    establecerMusicaSilenciada,
+    alternarMusica,
+    establecerEfectosSilenciados,
+    alternarEfectos,
+
     estaSilenciado() {
       return silenciado;
+    },
+
+    estaMusicaSilenciada() {
+      return musicaSilenciada;
+    },
+
+    estanEfectosSilenciados() {
+      return efectosSilenciados;
     },
 
     obtenerVolumenEfectos() {

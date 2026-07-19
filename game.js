@@ -161,80 +161,7 @@ window.JuniorGame = {
     this.actualizarVidas();
     this.configurarBotonInicio();
     this.configurarBotonesModal();
-    this.configurarMusicaFondo();
   },
-
-
-  configurarMusicaFondo() {
-    let musicaIniciada = false;
-
-    const iniciarMusica = () => {
-      if (
-        musicaIniciada ||
-        this.estado.terminado
-      ) {
-        return;
-      }
-
-      /*
-        No marcamos la música como iniciada hasta
-        comprobar que AudioFX ya está disponible.
-      */
-      if (
-        !window.AudioFX ||
-        typeof window.AudioFX.reproducirMusica !== "function"
-      ) {
-        return;
-      }
-
-      musicaIniciada = true;
-      window.AudioFX.reproducirMusica();
-
-      document.removeEventListener(
-        "pointerdown",
-        iniciarMusica
-      );
-
-      document.removeEventListener(
-        "touchstart",
-        iniciarMusica
-      );
-
-      document.removeEventListener(
-        "click",
-        iniciarMusica
-      );
-    };
-
-    /*
-      La música comienza con el primer toque o clic
-      realizado en cualquier parte de la pantalla.
-    */
-    document.addEventListener(
-      "pointerdown",
-      iniciarMusica,
-      {
-        passive: true
-      }
-    );
-
-    document.addEventListener(
-      "touchstart",
-      iniciarMusica,
-      {
-        passive: true
-      }
-    );
-
-    document.addEventListener(
-      "click",
-      iniciarMusica,
-      {
-        passive: true
-      }
-    );
-  },
-
 
   prepararPerro() {
     const perro = this.elementos.perro;
@@ -264,47 +191,21 @@ window.JuniorGame = {
     });
   },
 
-
-configurarBotonesModal() {
-  const botonReiniciar =
-    this.elementos.botonJugarOtraVez;
-
-  const botonMenu =
-    this.elementos.botonVolverMenu;
-
-  botonReiniciar?.addEventListener(
-    "pointerdown",
-    () => {
-      window.AudioFX?.boton();
-    }
-  );
-
-  botonReiniciar?.addEventListener(
-    "click",
-    () => {
-      window.setTimeout(() => {
+  configurarBotonesModal() {
+    this.elementos.botonJugarOtraVez?.addEventListener(
+      "click",
+      () => {
         window.location.reload();
-      }, 400);
-    }
-  );
+      }
+    );
 
-  botonMenu?.addEventListener(
-    "pointerdown",
-    () => {
-      window.AudioFX?.boton();
-    }
-  );
-
-  botonMenu?.addEventListener(
-    "click",
-    () => {
-      window.setTimeout(() => {
+    this.elementos.botonVolverMenu?.addEventListener(
+      "click",
+      () => {
         window.location.href = "index.html";
-      }, 400);
-    }
-  );
-},
-
+      }
+    );
+  },
 
   actualizarPuntos(cantidad = 1) {
     if (
@@ -331,12 +232,6 @@ configurarBotonesModal() {
 
     this.elementos.marcador.textContent =
       String(this.estado.puntos);
-
-    if (window.SistemaNiveles) {
-      window.SistemaNiveles.actualizarNivel(
-        this.estado.puntos
-      );
-    }
   },
 
   perderVida() {
@@ -606,16 +501,6 @@ configurarBotonesModal() {
 
     this.estado.terminado = true;
     this.estado.pausado = true;
-
-/*
-  Audio de final de partida.
-*/
-window.AudioFX?.detenerMusica();
-window.AudioFX?.perro();
-
-window.setTimeout(() => {
-  window.AudioFX?.gameOver();
-}, 250);
 
     if (window.JuniorPlayer) {
       window.JuniorPlayer.activarIzquierda(false);

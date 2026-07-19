@@ -20,14 +20,7 @@ window.JuniorGame = {
     botonIzquierda: null,
     botonDerecha: null,
     botonSaltar: null,
-    botonInicio: null,
-
-    modalFin: null,
-    huesosRonda: null,
-    recordHuesos: null,
-    totalHuesos: null,
-    botonJugarOtraVez: null,
-    botonVolverMenu: null
+    botonInicio: null
   },
 
   rutas: {
@@ -80,24 +73,6 @@ window.JuniorGame = {
 
     this.elementos.botonInicio =
       document.getElementById("homeButton");
-
-    this.elementos.modalFin =
-      document.getElementById("gameOverModal");
-
-    this.elementos.huesosRonda =
-      document.getElementById("gameOverRoundBones");
-
-    this.elementos.recordHuesos =
-      document.getElementById("gameOverRecordBones");
-
-    this.elementos.totalHuesos =
-      document.getElementById("gameOverTotalBones");
-
-    this.elementos.botonJugarOtraVez =
-      document.getElementById("playAgainButton");
-
-    this.elementos.botonVolverMenu =
-      document.getElementById("backToMenuButton");
   },
 
   comprobarElementos() {
@@ -160,81 +135,7 @@ window.JuniorGame = {
     this.actualizarMarcador();
     this.actualizarVidas();
     this.configurarBotonInicio();
-    this.configurarBotonesModal();
-    this.configurarMusicaFondo();
   },
-
-
-  configurarMusicaFondo() {
-    let musicaIniciada = false;
-
-    const iniciarMusica = () => {
-      if (
-        musicaIniciada ||
-        this.estado.terminado
-      ) {
-        return;
-      }
-
-      /*
-        No marcamos la música como iniciada hasta
-        comprobar que AudioFX ya está disponible.
-      */
-      if (
-        !window.AudioFX ||
-        typeof window.AudioFX.reproducirMusica !== "function"
-      ) {
-        return;
-      }
-
-      musicaIniciada = true;
-      window.AudioFX.reproducirMusica();
-
-      document.removeEventListener(
-        "pointerdown",
-        iniciarMusica
-      );
-
-      document.removeEventListener(
-        "touchstart",
-        iniciarMusica
-      );
-
-      document.removeEventListener(
-        "click",
-        iniciarMusica
-      );
-    };
-
-    /*
-      La música comienza con el primer toque o clic
-      realizado en cualquier parte de la pantalla.
-    */
-    document.addEventListener(
-      "pointerdown",
-      iniciarMusica,
-      {
-        passive: true
-      }
-    );
-
-    document.addEventListener(
-      "touchstart",
-      iniciarMusica,
-      {
-        passive: true
-      }
-    );
-
-    document.addEventListener(
-      "click",
-      iniciarMusica,
-      {
-        passive: true
-      }
-    );
-  },
-
 
   prepararPerro() {
     const perro = this.elementos.perro;
@@ -264,48 +165,6 @@ window.JuniorGame = {
     });
   },
 
-
-configurarBotonesModal() {
-  const botonReiniciar =
-    this.elementos.botonJugarOtraVez;
-
-  const botonMenu =
-    this.elementos.botonVolverMenu;
-
-  botonReiniciar?.addEventListener(
-    "pointerdown",
-    () => {
-      window.AudioFX?.boton();
-    }
-  );
-
-  botonReiniciar?.addEventListener(
-    "click",
-    () => {
-      window.setTimeout(() => {
-        window.location.reload();
-      }, 400);
-    }
-  );
-
-  botonMenu?.addEventListener(
-    "pointerdown",
-    () => {
-      window.AudioFX?.boton();
-    }
-  );
-
-  botonMenu?.addEventListener(
-    "click",
-    () => {
-      window.setTimeout(() => {
-        window.location.href = "index.html";
-      }, 400);
-    }
-  );
-},
-
-
   actualizarPuntos(cantidad = 1) {
     if (
       this.estado.pausado ||
@@ -331,12 +190,6 @@ configurarBotonesModal() {
 
     this.elementos.marcador.textContent =
       String(this.estado.puntos);
-
-    if (window.SistemaNiveles) {
-      window.SistemaNiveles.actualizarNivel(
-        this.estado.puntos
-      );
-    }
   },
 
   perderVida() {
@@ -394,35 +247,6 @@ configurarBotonesModal() {
     this.estado.pausado = false;
   },
 
-  async esperarUsuario(auth, onAuthStateChanged) {
-    if (auth.currentUser) {
-      return auth.currentUser;
-    }
-
-    return new Promise((resolve) => {
-      let detener = () => {};
-
-      const temporizador = window.setTimeout(() => {
-        detener();
-        resolve(null);
-      }, 5000);
-
-      detener = onAuthStateChanged(
-        auth,
-        (usuario) => {
-          window.clearTimeout(temporizador);
-          detener();
-          resolve(usuario);
-        },
-        () => {
-          window.clearTimeout(temporizador);
-          detener();
-          resolve(null);
-        }
-      );
-    });
-  },
-
   async guardarEstadisticasPartida() {
     const puntosPartida =
       Math.max(
@@ -443,19 +267,15 @@ configurarBotonesModal() {
     try {
       const [
         firebaseConfig,
-        firestore,
-        firebaseAuth
+        firestore
       ] = await Promise.all([
         import("./firebase-config.js"),
         import(
           "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"
-        ),
-        import(
-          "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"
         )
       ]);
 
-      const {
+  const {
         auth,
         db
       } = firebaseConfig;
@@ -464,17 +284,45 @@ configurarBotonesModal() {
         doc,
         runTransaction,
         serverTimestamp
-      } = firestore;
+   const {
+  onAuthStateChanged
+} = await import(
+  "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"
+);
 
-      const {
-        onAuthStateChanged
-      } = firebaseAuth;
+const usuario =
+  auth.currentUser ||
+  await new Promise((resolve) => {
+    const detener =
+      onAuthStateChanged(
+        auth,
+        (usuarioDetectado) => {
+          detener();
+          resolve(usuarioDetectado);
+        }
+      );
+  });   } = firestore;
 
-      const usuario =
-        await this.esperarUsuario(
-          auth,
-          onAuthStateChanged
-        );
+
+const {
+  onAuthStateChanged
+} = await import(
+  "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"
+);
+
+const usuario =
+  auth.currentUser ||
+  await new Promise((resolve) => {
+    const detener =
+      onAuthStateChanged(
+        auth,
+        (usuarioDetectado) => {
+          detener();
+          resolve(usuarioDetectado);
+        }
+      );
+  });
+
 
       if (!usuario) {
         console.warn(
@@ -607,16 +455,6 @@ configurarBotonesModal() {
     this.estado.terminado = true;
     this.estado.pausado = true;
 
-/*
-  Audio de final de partida.
-*/
-window.AudioFX?.detenerMusica();
-window.AudioFX?.perro();
-
-window.setTimeout(() => {
-  window.AudioFX?.gameOver();
-}, 250);
-
     if (window.JuniorPlayer) {
       window.JuniorPlayer.activarIzquierda(false);
       window.JuniorPlayer.activarDerecha(false);
@@ -625,40 +463,77 @@ window.setTimeout(() => {
     const estadisticas =
       await this.guardarEstadisticasPartida();
 
-    window.setTimeout(() => {
-      const modal =
-        this.elementos.modalFin;
 
-      if (!modal) {
-        console.error(
-          "No se encontró #gameOverModal en game.html."
-        );
-        return;
-      }
+window.setTimeout(() => {
+  const modal =
+    document.getElementById("gameOverModal");
 
-      if (this.elementos.huesosRonda) {
-        this.elementos.huesosRonda.textContent =
-          String(this.estado.puntos);
-      }
+  const roundBones =
+    document.getElementById("gameOverRoundBones");
 
-      if (this.elementos.recordHuesos) {
-        this.elementos.recordHuesos.textContent =
-          String(
-            estadisticas.recordHuesos ??
-            this.estado.puntos
-          );
-      }
+  const recordBones =
+    document.getElementById("gameOverRecordBones");
 
-      if (this.elementos.totalHuesos) {
-        this.elementos.totalHuesos.textContent =
-          String(
-            estadisticas.huesosRecolectados ??
-            this.estado.puntos
-          );
-      }
+  const totalBones =
+    document.getElementById("gameOverTotalBones");
 
-      modal.classList.remove("hidden");
-    }, 250);
+  const playAgainButton =
+    document.getElementById("playAgainButton");
+
+  const backToMenuButton =
+    document.getElementById("backToMenuButton");
+
+  if (
+    !modal ||
+    !roundBones ||
+    !recordBones ||
+    !totalBones
+  ) {
+    console.error(
+      "No se encontró el modal de partida terminada."
+    );
+
+    return;
+  }
+
+  roundBones.textContent =
+    String(this.estado.puntos);
+
+  recordBones.textContent =
+    String(
+      estadisticas.recordHuesos ??
+      this.estado.puntos
+    );
+
+  totalBones.textContent =
+    String(
+      estadisticas.huesosRecolectados ??
+      this.estado.puntos
+    );
+
+  modal.classList.remove("hidden");
+
+  playAgainButton?.addEventListener(
+    "click",
+    () => {
+      window.location.reload();
+    },
+    {
+      once: true
+    }
+  );
+
+  backToMenuButton?.addEventListener(
+    "click",
+    () => {
+      window.location.href = "index.html";
+    },
+    {
+      once: true
+    }
+  );
+}, 250);
+
   }
 };
 

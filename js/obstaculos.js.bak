@@ -1,0 +1,32 @@
+/*
+=========================================
+ JuniorGame - Sistema de Obstáculos
+ Versión: 1.0.0
+=========================================
+*/
+
+"use strict";
+
+window.SistemaObstaculos = {
+
+  obstaculos: [],
+
+  tipos: [
+    "piedra",
+    "caja",
+    "tronco"
+  ],
+
+  activo: false,
+
+  iniciar() {
+    this.activo = true;
+    console.log("Sistema de obstáculos iniciado.");
+  },
+
+  detener() {
+    this.activo = false;
+    console.log("Sistema de obstáculos detenido.");
+  }
+
+};

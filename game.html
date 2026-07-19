@@ -20,26 +20,35 @@
     <header class="game-hud">
  
      <div class="score-box">
-<div class="score-main">
-  <img      
-    src="Fondos-JuniorGame/hueso.png"
-          alt="Hueso"
-          draggable="false"
-        >
+        <div class="score-main">
+          <img
+            src="Fondos-JuniorGame/hueso.png"
+            alt="Hueso"
+            draggable="false"
+          >
+          <span id="score">0</span>
+        </div>
 
-        <span id="score">0</span>
+        <div class="level-progress-row">
+          <span class="level-caption">
+            Nivel <strong id="levelNumber">1</strong>
+          </span>
+
+          <div
+            class="level-bar"
+            role="progressbar"
+            aria-label="Progreso del nivel"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          >
+            <div
+              id="levelProgress"
+              class="level-bar-fill"
+            ></div>
+          </div>
+        </div>
       </div>
-
-
-<div class="level-bar">
-
-    <div
-        id="levelProgress"
-        class="level-bar-fill">
-    </div>
-</div>
-</div>
-
 
       <div class="lives" id="lives">
         <span>❤️</span>
@@ -47,13 +56,25 @@
         <span>❤️</span>
       </div>
 
-      <a
-        class="home-button"
-        href="index.html"
-        aria-label="Volver al menú"
-      >
-        🏠
-      </a>
+      <div class="hud-actions">
+        <button
+          id="pauseButton"
+          class="pause-button"
+          type="button"
+          aria-label="Pausar juego"
+        >
+          ⏸
+        </button>
+
+        <a
+          id="homeButton"
+          class="home-button"
+          href="index.html"
+          aria-label="Volver al menú"
+        >
+          🏠
+        </a>
+      </div>
 
     </header>
 
@@ -104,6 +125,120 @@
     </nav>
 
   </main>
+
+<div
+  id="pauseModal"
+  class="pause-modal hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="pauseTitle"
+>
+  <div class="pause-card">
+    <div class="pause-handle"></div>
+
+    <h2 id="pauseTitle">JUEGO EN PAUSA</h2>
+    <p class="pause-subtitle">Tu partida está detenida</p>
+
+    <div class="pause-stats">
+      <div class="pause-stat">
+        <span class="pause-stat-icon">🦴</span>
+        <span class="pause-stat-label">Huesos atrapados</span>
+        <strong id="pauseBones">0</strong>
+      </div>
+
+      <div class="pause-stat">
+        <span class="pause-stat-icon">🪙</span>
+        <span class="pause-stat-label">Monedas</span>
+        <strong id="pauseCoins">0</strong>
+      </div>
+
+      <div class="pause-stat">
+        <span class="pause-stat-icon">💎</span>
+        <span class="pause-stat-label">Diamantes</span>
+        <strong id="pauseDiamonds">0</strong>
+      </div>
+    </div>
+
+    <div class="pause-quick-settings">
+      <button
+        id="pauseMusicButton"
+        class="pause-small-button"
+        type="button"
+      >
+        <span id="pauseMusicIcon">🔊</span>
+        <span id="pauseMusicText">Música activada</span>
+      </button>
+
+      <button
+        id="pauseEffectsButton"
+        class="pause-small-button"
+        type="button"
+      >
+        <span id="pauseEffectsIcon">🔔</span>
+        <span id="pauseEffectsText">Efectos activados</span>
+      </button>
+    </div>
+
+    <div id="pauseHelpPanel" class="pause-panel hidden">
+      <h3>¿Cómo jugar?</h3>
+      <p>
+        Muévete con las flechas, salta para esquivar obstáculos
+        y atrapa todos los huesos que puedas. Los huesos dorados
+        valen más puntos.
+      </p>
+    </div>
+
+    <div id="pauseSettingsPanel" class="pause-panel hidden">
+      <h3>Ajustes</h3>
+      <p>
+        Desde los botones superiores puedes activar o desactivar
+        la música y los efectos del juego.
+      </p>
+    </div>
+
+    <div class="pause-secondary-actions">
+      <button
+        id="pauseHelpButton"
+        class="pause-link-button"
+        type="button"
+      >
+        ❓ Ayuda
+      </button>
+
+      <button
+        id="pauseSettingsButton"
+        class="pause-link-button"
+        type="button"
+      >
+        ⚙️ Ajustes
+      </button>
+    </div>
+
+    <button
+      id="resumeButton"
+      class="pause-main-button"
+      type="button"
+    >
+      ▶ REANUDAR
+    </button>
+
+    <button
+      id="pauseMenuButton"
+      class="pause-menu-button"
+      type="button"
+    >
+      🏠 VOLVER AL MENÚ
+    </button>
+  </div>
+</div>
+
+<div
+  id="resumeCountdown"
+  class="resume-countdown hidden"
+  aria-live="assertive"
+>
+  <strong id="resumeCountdownText">3</strong>
+</div>
 
 <div
   id="gameOverModal"
@@ -162,10 +297,11 @@
 
   <script src="js/niveles.js"></script>
   <script src="js/obstaculos.js"></script>
+  <script src="js/audio.js"></script>
   <script src="js/game.js"></script>
+  <script src="js/pause.js"></script>
   <script src="js/player.js"></script>
   <script src="js/controls.js"></script>
-  <script src="js/audio.js"></script>
   <script src="js/bones.js"></script>
   <script src="js/ui.js"></script>
 

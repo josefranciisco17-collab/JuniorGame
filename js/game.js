@@ -20,7 +20,14 @@ window.JuniorGame = {
     botonIzquierda: null,
     botonDerecha: null,
     botonSaltar: null,
-    botonInicio: null
+    botonInicio: null,
+
+    modalFin: null,
+    huesosRonda: null,
+    recordHuesos: null,
+    totalHuesos: null,
+    botonJugarOtraVez: null,
+    botonVolverMenu: null
   },
 
   rutas: {
@@ -73,6 +80,24 @@ window.JuniorGame = {
 
     this.elementos.botonInicio =
       document.getElementById("homeButton");
+
+    this.elementos.modalFin =
+      document.getElementById("gameOverModal");
+
+    this.elementos.huesosRonda =
+      document.getElementById("gameOverRoundBones");
+
+    this.elementos.recordHuesos =
+      document.getElementById("gameOverRecordBones");
+
+    this.elementos.totalHuesos =
+      document.getElementById("gameOverTotalBones");
+
+    this.elementos.botonJugarOtraVez =
+      document.getElementById("playAgainButton");
+
+    this.elementos.botonVolverMenu =
+      document.getElementById("backToMenuButton");
   },
 
   comprobarElementos() {
@@ -135,6 +160,7 @@ window.JuniorGame = {
     this.actualizarMarcador();
     this.actualizarVidas();
     this.configurarBotonInicio();
+    this.configurarBotonesModal();
   },
 
   prepararPerro() {
@@ -163,6 +189,22 @@ window.JuniorGame = {
     botonInicio.addEventListener("click", () => {
       window.location.href = "index.html";
     });
+  },
+
+  configurarBotonesModal() {
+    this.elementos.botonJugarOtraVez?.addEventListener(
+      "click",
+      () => {
+        window.location.reload();
+      }
+    );
+
+    this.elementos.botonVolverMenu?.addEventListener(
+      "click",
+      () => {
+        window.location.href = "index.html";
+      }
+    );
   },
 
   actualizarPuntos(cantidad = 1) {
@@ -247,6 +289,35 @@ window.JuniorGame = {
     this.estado.pausado = false;
   },
 
+  async esperarUsuario(auth, onAuthStateChanged) {
+    if (auth.currentUser) {
+      return auth.currentUser;
+    }
+
+    return new Promise((resolve) => {
+      let detener = () => {};
+
+      const temporizador = window.setTimeout(() => {
+        detener();
+        resolve(null);
+      }, 5000);
+
+      detener = onAuthStateChanged(
+        auth,
+        (usuario) => {
+          window.clearTimeout(temporizador);
+          detener();
+          resolve(usuario);
+        },
+        () => {
+          window.clearTimeout(temporizador);
+          detener();
+          resolve(null);
+        }
+      );
+    });
+  },
+
   async guardarEstadisticasPartida() {
     const puntosPartida =
       Math.max(
@@ -267,11 +338,15 @@ window.JuniorGame = {
     try {
       const [
         firebaseConfig,
-        firestore
+        firestore,
+        firebaseAuth
       ] = await Promise.all([
         import("./firebase-config.js"),
         import(
           "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"
+        ),
+        import(
+          "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"
         )
       ]);
 
@@ -286,8 +361,15 @@ window.JuniorGame = {
         serverTimestamp
       } = firestore;
 
+      const {
+        onAuthStateChanged
+      } = firebaseAuth;
+
       const usuario =
-        auth.currentUser;
+        await this.esperarUsuario(
+          auth,
+          onAuthStateChanged
+        );
 
       if (!usuario) {
         console.warn(
@@ -428,77 +510,40 @@ window.JuniorGame = {
     const estadisticas =
       await this.guardarEstadisticasPartida();
 
+    window.setTimeout(() => {
+      const modal =
+        this.elementos.modalFin;
 
-window.setTimeout(() => {
-  const modal =
-    document.getElementById("gameOverModal");
+      if (!modal) {
+        console.error(
+          "No se encontró #gameOverModal en game.html."
+        );
+        return;
+      }
 
-  const roundBones =
-    document.getElementById("gameOverRoundBones");
+      if (this.elementos.huesosRonda) {
+        this.elementos.huesosRonda.textContent =
+          String(this.estado.puntos);
+      }
 
-  const recordBones =
-    document.getElementById("gameOverRecordBones");
+      if (this.elementos.recordHuesos) {
+        this.elementos.recordHuesos.textContent =
+          String(
+            estadisticas.recordHuesos ??
+            this.estado.puntos
+          );
+      }
 
-  const totalBones =
-    document.getElementById("gameOverTotalBones");
+      if (this.elementos.totalHuesos) {
+        this.elementos.totalHuesos.textContent =
+          String(
+            estadisticas.huesosRecolectados ??
+            this.estado.puntos
+          );
+      }
 
-  const playAgainButton =
-    document.getElementById("playAgainButton");
-
-  const backToMenuButton =
-    document.getElementById("backToMenuButton");
-
-  if (
-    !modal ||
-    !roundBones ||
-    !recordBones ||
-    !totalBones
-  ) {
-    console.error(
-      "No se encontró el modal de partida terminada."
-    );
-
-    return;
-  }
-
-  roundBones.textContent =
-    String(this.estado.puntos);
-
-  recordBones.textContent =
-    String(
-      estadisticas.recordHuesos ??
-      this.estado.puntos
-    );
-
-  totalBones.textContent =
-    String(
-      estadisticas.huesosRecolectados ??
-      this.estado.puntos
-    );
-
-  modal.classList.remove("hidden");
-
-  playAgainButton?.addEventListener(
-    "click",
-    () => {
-      window.location.reload();
-    },
-    {
-      once: true
-    }
-  );
-
-  backToMenuButton?.addEventListener(
-    "click",
-    () => {
-      window.location.href = "index.html";
-    },
-    {
-      once: true
-    }
-  );
-}, 250);
-
+      modal.classList.remove("hidden");
+    }, 250);
   }
 };
 

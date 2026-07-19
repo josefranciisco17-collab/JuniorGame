@@ -74,7 +74,7 @@ shopButton?.addEventListener(
 
     window.setTimeout(() => {
       window.location.href = "shop.html";
-    }, 150);
+    }, 300);
   }
 );
 

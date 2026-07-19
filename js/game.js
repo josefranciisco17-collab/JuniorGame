@@ -502,6 +502,16 @@ window.JuniorGame = {
     this.estado.terminado = true;
     this.estado.pausado = true;
 
+/*
+  Audio de final de partida.
+*/
+window.AudioFX?.detenerMusica();
+window.AudioFX?.perro();
+
+window.setTimeout(() => {
+  window.AudioFX?.gameOver();
+}, 250);
+
     if (window.JuniorPlayer) {
       window.JuniorPlayer.activarIzquierda(false);
       window.JuniorPlayer.activarDerecha(false);

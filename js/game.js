@@ -236,21 +236,31 @@ configurarMusicaFondo() {
     });
   },
 
-  configurarBotonesModal() {
-    this.elementos.botonJugarOtraVez?.addEventListener(
-      "click",
-      () => {
-        window.location.reload();
-      }
-    );
 
-    this.elementos.botonVolverMenu?.addEventListener(
-      "click",
-      () => {
+configurarBotonesModal() {
+  this.elementos.botonJugarOtraVez?.addEventListener(
+    "click",
+    () => {
+      window.AudioFX?.boton();
+
+      window.setTimeout(() => {
+        window.location.reload();
+      }, 120);
+    }
+  );
+
+  this.elementos.botonVolverMenu?.addEventListener(
+    "click",
+    () => {
+      window.AudioFX?.boton();
+
+      window.setTimeout(() => {
         window.location.href = "index.html";
-      }
-    );
-  },
+      }, 120);
+    }
+  );
+},
+
 
   actualizarPuntos(cantidad = 1) {
     if (

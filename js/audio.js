@@ -537,6 +537,10 @@
       reproducir("gameOver");
     },
 
+boton() {
+  reproducir("boton");
+},
+
     nivel() {
       reproducir("nivel");
     },

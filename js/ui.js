@@ -26,7 +26,15 @@ window.JuniorUI = {
 
     let corazones = "";
 
-    for (let i = 0; i < 3; i += 1) {
+    const vidasVisibles = Math.max(
+      3,
+      Math.min(
+        juego.estado.vidasMaximas || 10,
+        juego.estado.vidas
+      )
+    );
+
+    for (let i = 0; i < vidasVisibles; i += 1) {
       corazones += i < juego.estado.vidas
         ? "<span>❤️</span>"
         : "<span>🖤</span>";

@@ -863,3 +863,246 @@ a {
     padding-right:14px;
   }
 }
+
+/* ==========================================================
+   CAJAS SORPRESA FLOTANTES
+   ========================================================== */
+
+.life-shield-group{
+  min-width:0;
+  max-width:52%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+}
+
+.lives{
+  min-width:0;
+  max-width:100%;
+  flex-wrap:wrap;
+  justify-content:center;
+  row-gap:1px;
+}
+
+.lives .heart{
+  display:inline-flex;
+  animation:heartAppear .22s ease both;
+}
+
+@keyframes heartAppear{
+  from{transform:scale(.3);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+.shield-indicator{
+  width:0;
+  height:38px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  border-radius:50%;
+  font-size:25px;
+  opacity:0;
+  transform:scale(.4);
+  transition:width .22s ease, opacity .22s ease, transform .22s ease;
+}
+
+.shield-indicator.active{
+  width:38px;
+  opacity:1;
+  transform:scale(1);
+  background:rgba(45,140,255,.25);
+  border:2px solid rgba(165,220,255,.9);
+  box-shadow:0 0 14px rgba(60,170,255,.75), inset 0 0 8px rgba(255,255,255,.4);
+  animation:shieldPulse 1.15s ease-in-out infinite alternate;
+}
+
+@keyframes shieldPulse{
+  from{filter:brightness(.95);transform:scale(.96)}
+  to{filter:brightness(1.25);transform:scale(1.06)}
+}
+
+.surprise-box{
+  position:absolute;
+  width:70px;
+  height:70px;
+  z-index:17;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  transform-origin:center bottom;
+  transition:opacity .35s ease, transform .35s ease;
+  filter:drop-shadow(0 8px 5px rgba(0,0,0,.38));
+}
+
+.surprise-box-enter{
+  opacity:0;
+  transform:scale(.25) translateY(-22px);
+}
+
+.surprise-box-exit{
+  opacity:0;
+  transform:scale(.55) translateY(-32px);
+}
+
+.surprise-box-body{
+  position:relative;
+  z-index:2;
+  display:block;
+  font-size:61px;
+  line-height:1;
+  animation:surpriseBoxHover 1.4s ease-in-out infinite alternate;
+}
+
+.surprise-box-glow{
+  position:absolute;
+  inset:4px;
+  z-index:1;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,245,133,.9),rgba(255,179,0,.28) 52%,transparent 72%);
+  box-shadow:0 0 22px rgba(255,207,54,.8);
+  animation:surpriseGlow 1s ease-in-out infinite alternate;
+}
+
+.surprise-box-level{
+  position:absolute;
+  left:50%;
+  bottom:-10px;
+  z-index:3;
+  transform:translateX(-50%);
+  padding:2px 7px;
+  border:2px solid #fff0a1;
+  border-radius:999px;
+  color:#fff;
+  background:#713600;
+  box-shadow:0 2px 0 #351500;
+  font-size:10px;
+  font-weight:1000;
+}
+
+@keyframes surpriseBoxHover{
+  from{transform:rotate(-3deg) scale(.97)}
+  to{transform:rotate(3deg) scale(1.04)}
+}
+
+@keyframes surpriseGlow{
+  from{opacity:.55;transform:scale(.88)}
+  to{opacity:1;transform:scale(1.15)}
+}
+
+.surprise-box-open .surprise-box-body{
+  animation:surpriseBoxOpen .58s cubic-bezier(.2,1.35,.45,1) forwards;
+}
+
+.surprise-box-open .surprise-box-level{
+  opacity:0;
+}
+
+@keyframes surpriseBoxOpen{
+  0%{transform:scale(1) rotate(0)}
+  25%{transform:scale(.84) rotate(-8deg)}
+  52%{transform:scale(1.28) rotate(8deg)}
+  100%{transform:scale(.8) translateY(18px);opacity:.12}
+}
+
+.surprise-particle{
+  --x:0px;
+  --y:0px;
+  --delay:0s;
+  position:absolute;
+  left:50%;
+  top:45%;
+  z-index:4;
+  color:#ffe86e;
+  font-size:18px;
+  opacity:0;
+  animation:surpriseParticle .72s ease-out var(--delay) forwards;
+}
+
+@keyframes surpriseParticle{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+  28%{opacity:1}
+  100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.15) rotate(100deg)}
+}
+
+.surprise-reward{
+  position:absolute;
+  left:50%;
+  top:45%;
+  z-index:6;
+  min-width:132px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  transform:translate(-50%,-50%);
+  animation:surpriseRewardFly 1.15s cubic-bezier(.2,.9,.25,1) forwards;
+}
+
+.surprise-reward-icon{
+  font-size:43px;
+  filter:drop-shadow(0 4px 3px rgba(0,0,0,.4));
+}
+
+.surprise-reward strong{
+  padding:5px 10px;
+  border:2px solid rgba(255,239,155,.9);
+  border-radius:999px;
+  color:#fff;
+  background:rgba(64,30,4,.94);
+  box-shadow:0 3px 0 rgba(31,12,0,.8);
+  font-size:13px;
+  white-space:nowrap;
+}
+
+@keyframes surpriseRewardFly{
+  0%{opacity:0;transform:translate(-50%,0) scale(.25)}
+  30%{opacity:1;transform:translate(-50%,-75%) scale(1.15)}
+  72%{opacity:1;transform:translate(-50%,-105%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-165%) scale(.82)}
+}
+
+.surprise-toast{
+  position:fixed;
+  left:50%;
+  top:19%;
+  z-index:11000;
+  max-width:min(88vw,360px);
+  transform:translateX(-50%);
+  padding:11px 18px;
+  border:3px solid #ffd35b;
+  border-radius:18px;
+  color:#fff;
+  background:linear-gradient(180deg,#784517,#3c1c08);
+  box-shadow:0 5px 0 #1d0a02,0 12px 25px rgba(0,0,0,.4);
+  font-size:17px;
+  font-weight:950;
+  text-align:center;
+  pointer-events:none;
+  animation:surpriseToastIn .28s cubic-bezier(.2,1.3,.45,1) both;
+}
+
+.surprise-toast-out{
+  animation:surpriseToastOut .42s ease forwards;
+}
+
+@keyframes surpriseToastIn{
+  from{opacity:0;transform:translate(-50%,-22px) scale(.7)}
+  to{opacity:1;transform:translate(-50%,0) scale(1)}
+}
+
+@keyframes surpriseToastOut{
+  to{opacity:0;transform:translate(-50%,-20px) scale(.85)}
+}
+
+@media(max-width:390px){
+  .life-shield-group{max-width:48%;gap:3px}
+  .lives{font-size:20px;gap:0}
+  .shield-indicator.active{width:32px;height:32px;font-size:21px}
+  .surprise-box{width:64px;height:64px}
+  .surprise-box-body{font-size:55px}
+}

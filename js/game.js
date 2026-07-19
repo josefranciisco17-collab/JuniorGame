@@ -6,7 +6,9 @@ window.JuniorGame = {
     pausado: false,
     terminado: false,
     puntos: 0,
-    vidas: 3
+    vidas: 3,
+    vidasMaximas: 10,
+    escudo: 0
   },
 
   elementos: {
@@ -16,6 +18,7 @@ window.JuniorGame = {
     capaHuesos: null,
     marcador: null,
     vidas: null,
+    indicadorEscudo: null,
 
     botonIzquierda: null,
     botonDerecha: null,
@@ -68,6 +71,9 @@ window.JuniorGame = {
 
     this.elementos.vidas =
       document.getElementById("lives");
+
+    this.elementos.indicadorEscudo =
+      document.getElementById("shieldIndicator");
 
     this.elementos.botonIzquierda =
       document.getElementById("leftButton");
@@ -155,10 +161,12 @@ window.JuniorGame = {
     this.estado.terminado = false;
     this.estado.puntos = 0;
     this.estado.vidas = 3;
+    this.estado.escudo = 0;
 
     this.prepararPerro();
     this.actualizarMarcador();
     this.actualizarVidas();
+    this.actualizarEscudo();
     this.configurarBotonInicio();
     this.configurarBotonesModal();
     this.configurarMusicaFondo();
@@ -347,6 +355,20 @@ configurarBotonesModal() {
       return;
     }
 
+    /*
+      El escudo protege de un golpe y se consume antes
+      de descontar una vida.
+    */
+    if (this.estado.escudo > 0) {
+      this.estado.escudo = 0;
+      this.actualizarEscudo();
+      window.AudioFX?.bonus();
+      window.SistemaCajas?.mostrarMensajeRapido?.(
+        "🛡️ ¡El escudo te protegió!"
+      );
+      return;
+    }
+
     this.estado.vidas = Math.max(
       0,
       this.estado.vidas - 1
@@ -359,6 +381,48 @@ configurarBotonesModal() {
     }
   },
 
+  agregarVida(cantidad = 1) {
+    const aumento = Math.max(
+      0,
+      Math.floor(Number(cantidad) || 0)
+    );
+
+    if (aumento <= 0) {
+      return false;
+    }
+
+    const anterior = this.estado.vidas;
+
+    this.estado.vidas = Math.min(
+      this.estado.vidasMaximas,
+      this.estado.vidas + aumento
+    );
+
+    this.actualizarVidas();
+    return this.estado.vidas > anterior;
+  },
+
+  activarEscudo() {
+    this.estado.escudo = 1;
+    this.actualizarEscudo();
+  },
+
+  actualizarEscudo() {
+    const indicador = this.elementos.indicadorEscudo;
+
+    if (!indicador) {
+      return;
+    }
+
+    const activo = this.estado.escudo > 0;
+    indicador.classList.toggle("active", activo);
+    indicador.setAttribute(
+      "aria-label",
+      activo ? "Escudo activo" : "Escudo inactivo"
+    );
+    indicador.textContent = activo ? "🛡️" : "";
+  },
+
   actualizarVidas() {
     const contenedorVidas = this.elementos.vidas;
 
@@ -368,7 +432,15 @@ configurarBotonesModal() {
 
     let contenido = "";
 
-    for (let indice = 0; indice < 3; indice += 1) {
+    const vidasVisibles = Math.max(
+      3,
+      Math.min(
+        this.estado.vidasMaximas,
+        this.estado.vidas
+      )
+    );
+
+    for (let indice = 0; indice < vidasVisibles; indice += 1) {
       contenido +=
         indice < this.estado.vidas
           ? "<span class=\"heart active\">❤️</span>"
@@ -606,6 +678,8 @@ configurarBotonesModal() {
 
     this.estado.terminado = true;
     this.estado.pausado = true;
+
+    window.SistemaCajas?.detener?.();
 
 /*
   Audio de final de partida.

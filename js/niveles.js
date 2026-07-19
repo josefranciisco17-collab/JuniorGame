@@ -36,9 +36,23 @@ window.SistemaNiveles = {
     const nuevoNivel =
       this.calcularNivel(puntosSeguros);
 
-    if (nuevoNivel > this.nivelActual) {
+    const nivelAnterior = this.nivelActual;
+
+    if (nuevoNivel > nivelAnterior) {
       this.nivelActual = nuevoNivel;
       this.mostrarAvisoNivel();
+
+      /*
+        Avisamos cada nivel atravesado. Esto evita perder una
+        caja cuando un hueso dorado hace avanzar varios niveles.
+      */
+      for (
+        let nivel = nivelAnterior + 1;
+        nivel <= nuevoNivel;
+        nivel += 1
+      ) {
+        window.SistemaCajas?.notificarNivel?.(nivel);
+      }
     } else {
       this.nivelActual = nuevoNivel;
     }

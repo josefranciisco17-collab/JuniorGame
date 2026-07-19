@@ -204,7 +204,13 @@ function colocarDatosEnPerfil(
     String(obtenerNumero(datos.nivel, 1));
 
   profileRecord.textContent =
-    String(obtenerNumero(datos.record, 0));
+    String(
+      obtenerNumero(
+        datos.recordHuesos ??
+        datos.record,
+        0
+      )
+    );
 
   profileBones.textContent =
     String(

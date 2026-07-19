@@ -247,7 +247,172 @@ window.JuniorGame = {
     this.estado.pausado = false;
   },
 
-  terminarJuego() {
+  async guardarEstadisticasPartida() {
+    const puntosPartida =
+      Math.max(
+        0,
+        Math.floor(
+          Number(this.estado.puntos) || 0
+        )
+      );
+
+    if (puntosPartida <= 0) {
+      return {
+        guardado: false,
+        recordHuesos: 0,
+        huesosRecolectados: 0
+      };
+    }
+
+    try {
+      const [
+        firebaseConfig,
+        firestore
+      ] = await Promise.all([
+        import("./firebase-config.js"),
+        import(
+          "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"
+        )
+      ]);
+
+      const {
+        auth,
+        db
+      } = firebaseConfig;
+
+      const {
+        doc,
+        runTransaction,
+        serverTimestamp
+      } = firestore;
+
+      const usuario =
+        auth.currentUser;
+
+      if (!usuario) {
+        console.warn(
+          "No se guardaron las estadísticas: no hay una sesión activa."
+        );
+
+        return {
+          guardado: false,
+          recordHuesos: puntosPartida,
+          huesosRecolectados: puntosPartida
+        };
+      }
+
+      const referenciaUsuario =
+        doc(
+          db,
+          "users",
+          usuario.uid
+        );
+
+      const resultado =
+        await runTransaction(
+          db,
+          async (transaccion) => {
+            const documento =
+              await transaccion.get(
+                referenciaUsuario
+              );
+
+            const datos =
+              documento.exists()
+                ? documento.data()
+                : {};
+
+            const recordAnterior =
+              Math.max(
+                0,
+                Math.floor(
+                  Number(
+                    datos.recordHuesos ??
+                    datos.record ??
+                    0
+                  ) || 0
+                )
+              );
+
+            const totalAnterior =
+              Math.max(
+                0,
+                Math.floor(
+                  Number(
+                    datos.huesosRecolectados ??
+                    0
+                  ) || 0
+                )
+              );
+
+            const nuevoRecord =
+              Math.max(
+                recordAnterior,
+                puntosPartida
+              );
+
+            const nuevoTotal =
+              totalAnterior +
+              puntosPartida;
+
+            const cambios = {
+              recordHuesos: nuevoRecord,
+              huesosRecolectados: nuevoTotal,
+              ultimaPartidaHuesos:
+                puntosPartida,
+              estadisticasActualizadasEn:
+                serverTimestamp()
+            };
+
+            /*
+              Conservamos también "record" para que
+              otras pantallas antiguas sigan funcionando.
+            */
+            if (
+              nuevoRecord >
+              Math.max(
+                0,
+                Number(datos.record) || 0
+              )
+            ) {
+              cambios.record = nuevoRecord;
+            }
+
+            transaccion.set(
+              referenciaUsuario,
+              cambios,
+              {
+                merge: true
+              }
+            );
+
+            return {
+              recordHuesos: nuevoRecord,
+              huesosRecolectados: nuevoTotal
+            };
+          }
+        );
+
+      return {
+        guardado: true,
+        ...resultado
+      };
+
+    } catch (error) {
+      console.error(
+        "No se pudieron guardar las estadísticas de huesos:",
+        error
+      );
+
+      return {
+        guardado: false,
+        recordHuesos: puntosPartida,
+        huesosRecolectados: puntosPartida
+      };
+    }
+  },
+
+  async terminarJuego() {
     if (this.estado.terminado) {
       return;
     }
@@ -260,9 +425,21 @@ window.JuniorGame = {
       window.JuniorPlayer.activarDerecha(false);
     }
 
+    const estadisticas =
+      await this.guardarEstadisticasPartida();
+
     window.setTimeout(() => {
+      const textoRecord =
+        estadisticas.guardado
+          ? `\nRécord de huesos: ${estadisticas.recordHuesos}` +
+            `\nTotal acumulado: ${estadisticas.huesosRecolectados}`
+          : "";
+
       const reiniciar = window.confirm(
-        `Juego terminado.\n\nPuntuación: ${this.estado.puntos}\n\n¿Quieres jugar otra vez?`
+        `Juego terminado.` +
+        `\n\nHuesos de esta ronda: ${this.estado.puntos}` +
+        textoRecord +
+        `\n\n¿Quieres jugar otra vez?`
       );
 
       if (reiniciar) {

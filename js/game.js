@@ -499,7 +499,8 @@ window.setTimeout(() => {
   );
 }, 250);
 
-
+  }
+};
 
 window.addEventListener("DOMContentLoaded", () => {
   window.JuniorGame.iniciar();

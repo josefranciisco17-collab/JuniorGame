@@ -25,6 +25,7 @@ window.SistemaCajas = {
   ultimoTiempo: 0,
   anteriorTopPerro: null,
   temporizadorRetiro: null,
+  ultimoNivelDetectado: 1,
 
   configuracion: {
     tamano: 70,
@@ -46,6 +47,14 @@ window.SistemaCajas = {
 
     this.activo = true;
     this.ultimoTiempo = performance.now();
+    this.ultimoNivelDetectado = 1;
+
+    /*
+      La caja ya no depende únicamente de niveles.js.
+      También revisa directamente el nivel actual para evitar que
+      una carga tardía, caché o cambio rápido de nivel omita el aviso.
+    */
+    this.sincronizarNivelActual();
 
     requestAnimationFrame(
       this.actualizar.bind(this)
@@ -62,6 +71,49 @@ window.SistemaCajas = {
     }
 
     this.eliminarCaja();
+  },
+
+  obtenerNivelActual() {
+    const nivelSistema = Number(
+      window.SistemaNiveles?.nivelActual
+    );
+
+    if (Number.isFinite(nivelSistema) && nivelSistema >= 1) {
+      return Math.floor(nivelSistema);
+    }
+
+    const puntos = Math.max(
+      0,
+      Math.floor(
+        Number(window.JuniorGame?.estado?.puntos) || 0
+      )
+    );
+
+    const puntosPorNivel = Math.max(
+      1,
+      Math.floor(
+        Number(window.SistemaNiveles?.puntosPorNivel) || 10
+      )
+    );
+
+    return Math.min(
+      100,
+      Math.floor(puntos / puntosPorNivel) + 1
+    );
+  },
+
+  sincronizarNivelActual() {
+    const nivelActual = this.obtenerNivelActual();
+    const desde = Math.max(2, this.ultimoNivelDetectado + 1);
+
+    for (let nivel = desde; nivel <= nivelActual; nivel += 1) {
+      this.notificarNivel(nivel);
+    }
+
+    this.ultimoNivelDetectado = Math.max(
+      this.ultimoNivelDetectado,
+      nivelActual
+    );
   },
 
   esNivelConCaja(nivel) {
@@ -186,6 +238,8 @@ window.SistemaCajas = {
     this.ultimoTiempo = tiempoActual;
 
     const juego = window.JuniorGame;
+
+    this.sincronizarNivelActual();
 
     if (
       juego?.estado?.iniciado &&

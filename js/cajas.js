@@ -193,12 +193,30 @@ window.SistemaCajas = {
       return;
     }
 
-    /* Reservamos el nivel desde este momento para impedir duplicados. */
-    this.nivelesProcesados.add(nivel);
-
     const tamano = this.configuracion.tamano;
     const rectArea = area.getBoundingClientRect();
     const rectPerro = perro.getBoundingClientRect();
+
+    /*
+      En algunos celulares el sistema intenta crear la caja antes de que
+      la imagen del perro termine de cargar. En ese momento su altura puede
+      ser cero y la caja termina pegada al borde inferior.
+      Esperamos hasta tener dimensiones reales y volvemos a intentarlo.
+    */
+    if (
+      !perro.complete ||
+      perro.naturalWidth <= 0 ||
+      rectPerro.width < 40 ||
+      rectPerro.height < 40
+    ) {
+      window.setTimeout(() => {
+        this.crearCaja(nivel);
+      }, 180);
+      return;
+    }
+
+    /* Reservamos el nivel solamente cuando la caja ya puede colocarse bien. */
+    this.nivelesProcesados.add(nivel);
 
     const perroCentroLocal =
       rectPerro.left - rectArea.left + rectPerro.width / 2;
@@ -218,12 +236,21 @@ window.SistemaCajas = {
     );
 
     const topPerroLocal = rectPerro.top - rectArea.top;
-    const alturaSobreCabeza = Math.max(62, rectPerro.height * 0.34);
+
+    /*
+      La caja queda a una altura alcanzable con el salto:
+      aproximadamente entre 35 y 55 px sobre la cabeza visual.
+    */
+    const separacionCabeza = Math.max(
+      34,
+      Math.min(52, rectPerro.height * 0.20)
+    );
+
     const yBase = Math.max(
-      125,
+      135,
       Math.min(
-        area.clientHeight - 250,
-        topPerroLocal - tamano - alturaSobreCabeza
+        area.clientHeight - tamano - 150,
+        topPerroLocal - tamano - separacionCabeza
       )
     );
 

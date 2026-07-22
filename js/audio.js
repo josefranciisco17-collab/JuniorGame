@@ -120,6 +120,30 @@
       archivo: "victory.mp3",
       volumen: 1.00,
       instancias: 2
+    },
+
+    cajaAparece: {
+      archivo: "caja_aparece.wav",
+      volumen: 0.78,
+      instancias: 2
+    },
+
+    cajaGolpe: {
+      archivo: "caja_golpe.wav",
+      volumen: 0.92,
+      instancias: 3
+    },
+
+    cajaAbre: {
+      archivo: "caja_abre.wav",
+      volumen: 0.92,
+      instancias: 2
+    },
+
+    cajaPremio: {
+      archivo: "caja_premio.wav",
+      volumen: 0.82,
+      instancias: 3
     }
   };
 
@@ -624,6 +648,22 @@
 
     victoria() {
       reproducir("victoria");
+    },
+
+    cajaAparece() {
+      reproducir("cajaAparece");
+    },
+
+    cajaGolpe() {
+      reproducir("cajaGolpe");
+    },
+
+    cajaAbre() {
+      reproducir("cajaAbre");
+    },
+
+    cajaPremio() {
+      reproducir("cajaPremio");
     },
 
     reproducirMusica,

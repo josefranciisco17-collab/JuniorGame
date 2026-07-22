@@ -4,7 +4,8 @@
   JuniorGame - Cajas sorpresa flotantes
   Versión robusta e independiente.
 
-  Aparición:
+  Aparición temporal de prueba:
+  - Nivel 1
   - Nivel 5
   - Niveles 10, 20, 30... 100
 
@@ -27,8 +28,8 @@ window.SistemaCajas = {
   tiempoAnimacion: 0,
 
   configuracion: {
-    tamano: 72,
-    duracionVisible: 15000,
+    tamano: 82,
+    duracionVisible: 18000,
     amplitudFlotacion: 7,
     velocidadFlotacion: 0.004,
     premios: [
@@ -86,7 +87,7 @@ window.SistemaCajas = {
 
   esNivelConCaja(nivel) {
     const numero = Math.floor(Number(nivel) || 0);
-    return numero === 5 || (
+    return numero === 1 || numero === 5 || (
       numero >= 10 &&
       numero <= 100 &&
       numero % 10 === 0
@@ -232,7 +233,13 @@ window.SistemaCajas = {
     elemento.dataset.nivel = String(nivel);
     elemento.innerHTML = `
       <span class="surprise-box-glow"></span>
-      <span class="surprise-box-body">🎁</span>
+      <span class="surprise-box-shadow"></span>
+      <img
+        class="surprise-box-image"
+        src="Fondos-JuniorGame/caja.png"
+        alt=""
+        draggable="false"
+      >
       <span class="surprise-box-level">N${nivel}</span>
     `;
 
@@ -251,6 +258,9 @@ window.SistemaCajas = {
     });
 
     area.appendChild(elemento);
+
+    window.AudioFX?.cajaAparece?.();
+    this.mostrarMensajeRapido("🎁 ¡Caja sorpresa!");
 
     this.cajaActual = {
       elemento,
@@ -373,13 +383,20 @@ window.SistemaCajas = {
 
     const premio = this.seleccionarPremio();
 
-    caja.elemento.classList.add("surprise-box-open");
-    window.AudioFX?.bonus?.();
-    this.crearParticulas(caja.elemento);
+    caja.elemento.classList.add("surprise-box-hit");
+    window.AudioFX?.cajaGolpe?.();
+
+    window.setTimeout(() => {
+      caja.elemento.classList.remove("surprise-box-hit");
+      caja.elemento.classList.add("surprise-box-open");
+      window.AudioFX?.cajaAbre?.();
+      this.crearParticulas(caja.elemento);
+    }, 120);
 
     window.setTimeout(() => {
       this.mostrarPremio(caja.elemento, premio);
-    }, 220);
+      window.AudioFX?.cajaPremio?.();
+    }, 310);
 
     await this.entregarPremio(premio);
 

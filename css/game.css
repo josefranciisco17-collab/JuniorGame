@@ -138,18 +138,6 @@ a {
   z-index: 8;
 }
 
-  position: absolute;
-  width: 52px;
-  height: 52px;
-
-  object-fit: contain;
-  pointer-events: none;
-
-  filter:
-    drop-shadow(0 4px 3px rgba(0, 0, 0, 0.35));
-}
-
-
 .falling-bone {
   position: absolute;
   width: 90px;
@@ -949,13 +937,29 @@ a {
   transform:scale(.55) translateY(-32px);
 }
 
-.surprise-box-body{
+.surprise-box-image{
   position:relative;
-  z-index:2;
+  z-index:3;
   display:block;
-  font-size:61px;
-  line-height:1;
-  animation:surpriseBoxHover 1.4s ease-in-out infinite alternate;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  pointer-events:none;
+  animation:surpriseBoxHover 1.45s ease-in-out infinite alternate;
+  filter:drop-shadow(0 5px 3px rgba(0,0,0,.28));
+}
+
+.surprise-box-shadow{
+  position:absolute;
+  left:15%;
+  right:15%;
+  bottom:-9px;
+  z-index:0;
+  height:13px;
+  border-radius:50%;
+  background:rgba(0,0,0,.32);
+  filter:blur(4px);
+  animation:surpriseShadow 1.45s ease-in-out infinite alternate;
 }
 
 .surprise-box-glow{
@@ -994,7 +998,22 @@ a {
   to{opacity:1;transform:scale(1.15)}
 }
 
-.surprise-box-open .surprise-box-body{
+@keyframes surpriseShadow{
+  from{opacity:.38;transform:scaleX(1)}
+  to{opacity:.18;transform:scaleX(.72)}
+}
+
+.surprise-box-hit .surprise-box-image{
+  animation:surpriseBoxHit .12s ease both;
+}
+
+@keyframes surpriseBoxHit{
+  0%{transform:translateY(0) scale(1)}
+  45%{transform:translateY(-9px) scale(1.08,.92)}
+  100%{transform:translateY(1px) scale(.96,1.04)}
+}
+
+.surprise-box-open .surprise-box-image{
   animation:surpriseBoxOpen .58s cubic-bezier(.2,1.35,.45,1) forwards;
 }
 
@@ -1104,5 +1123,5 @@ a {
   .lives{font-size:20px;gap:0}
   .shield-indicator.active{width:32px;height:32px;font-size:21px}
   .surprise-box{width:64px;height:64px}
-  .surprise-box-body{font-size:55px}
+  .surprise-box-image{width:100%;height:100%}
 }

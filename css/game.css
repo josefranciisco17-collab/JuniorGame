@@ -1125,3 +1125,28 @@ a {
   .surprise-box{width:64px;height:64px}
   .surprise-box-image{width:100%;height:100%}
 }
+
+.box-layer{
+  position:absolute;
+  inset:0;
+  z-index:18;
+  overflow:visible;
+  pointer-events:none;
+}
+
+.box-layer .surprise-box{
+  position:absolute;
+  display:block;
+  pointer-events:none;
+  overflow:visible;
+}
+
+.box-layer .surprise-box-image{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  opacity:1;
+  visibility:visible;
+  pointer-events:none;
+}

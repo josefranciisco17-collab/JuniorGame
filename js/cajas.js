@@ -242,11 +242,14 @@ window.SistemaCajas = {
     const juego = window.JuniorGame;
     const area = juego?.elementos?.areaJuego;
     const perro = juego?.elementos?.perro;
+    const capaCajas =
+      document.getElementById("boxLayer") || area;
 
     if (
       !this.activo ||
       !area ||
       !perro ||
+      !capaCajas ||
       this.cajaActual ||
       juego.estado.terminado
     ) {
@@ -331,19 +334,32 @@ window.SistemaCajas = {
     elemento.className = "surprise-box surprise-box-enter";
     elemento.setAttribute("aria-hidden", "true");
     elemento.dataset.nivel = String(nivel);
-    elemento.innerHTML = `
-      <span class="surprise-box-glow"></span>
-      <span class="surprise-box-shadow"></span>
-      <img
-        class="surprise-box-image"
-        src="Fondos-JuniorGame/caja.png"
-        alt=""
-        draggable="false"
-      >
-      <span class="surprise-box-level">N${nivel}</span>
-    `;
 
-    /* Estilos esenciales en línea para que sea visible aun con caché CSS. */
+    /*
+      Usa exclusivamente la imagen caja.png que ya existe en GitHub.
+      No se usa emoji ni se incluye otra imagen.
+    */
+    const imagenCaja = document.createElement("img");
+    imagenCaja.className = "surprise-box-image";
+    imagenCaja.alt = "Caja sorpresa";
+    imagenCaja.draggable = false;
+    imagenCaja.decoding = "async";
+    imagenCaja.src =
+      new URL(
+        "Fondos-JuniorGame/caja.png",
+        document.baseURI
+      ).href + "?v=20260722-caja-oficial";
+
+    imagenCaja.addEventListener("error", () => {
+      console.error(
+        "No se pudo cargar Fondos-JuniorGame/caja.png",
+        imagenCaja.src
+      );
+      this.mostrarMensajeRapido("⚠️ No cargó caja.png");
+    });
+
+    elemento.appendChild(imagenCaja);
+
     Object.assign(elemento.style, {
       position: "absolute",
       left: `${x}px`,
@@ -351,16 +367,24 @@ window.SistemaCajas = {
       width: `${tamano}px`,
       height: `${tamano}px`,
       zIndex: "18",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
+      display: "block",
+      overflow: "visible",
+      opacity: "1",
+      visibility: "visible",
       pointerEvents: "none"
     });
 
-    area.appendChild(elemento);
+    Object.assign(imagenCaja.style, {
+      display: "block",
+      width: "100%",
+      height: "100%",
+      objectFit: "contain",
+      opacity: "1",
+      visibility: "visible",
+      pointerEvents: "none"
+    });
 
-    window.AudioFX?.cajaAparece?.();
-    this.mostrarMensajeRapido("🎁 ¡Caja sorpresa!");
+    capaCajas.appendChild(elemento);
 
     this.cajaActual = {
       elemento,

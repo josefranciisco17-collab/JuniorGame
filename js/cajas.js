@@ -26,6 +26,7 @@ window.SistemaCajas = {
   cuadroAnimacion: null,
   topPerroAnterior: null,
   tiempoAnimacion: 0,
+  pruebaNivel1Forzada: false,
 
   configuracion: {
     tamano: 82,
@@ -62,6 +63,65 @@ window.SistemaCajas = {
 
     /* Primera revisión inmediata. */
     this.revisarNivelActual();
+  },
+
+  forzarCajaPruebaNivel1() {
+    if (this.pruebaNivel1Forzada) {
+      return;
+    }
+
+    this.pruebaNivel1Forzada = true;
+
+    /*
+      No esperamos notificaciones de niveles.js. Programamos la caja
+      directamente cuando el juego y la imagen del perro estén listos.
+    */
+    const intentarCrear = (intentosRestantes = 50) => {
+      const juego = window.JuniorGame;
+      const perro = juego?.elementos?.perro;
+      const area = juego?.elementos?.areaJuego;
+
+      if (
+        !this.activo ||
+        juego?.estado?.terminado
+      ) {
+        return;
+      }
+
+      if (
+        juego?.estado?.iniciado &&
+        perro &&
+        area &&
+        perro.complete &&
+        perro.naturalWidth > 0 &&
+        perro.getBoundingClientRect().height >= 40
+      ) {
+        /*
+          Limpiamos cualquier registro previo del nivel 1 para que
+          esta prueba siempre cree exactamente una caja.
+        */
+        this.nivelesProcesados.delete(1);
+        this.nivelesPendientes =
+          this.nivelesPendientes.filter((nivel) => nivel !== 1);
+
+        if (!this.cajaActual) {
+          this.crearCaja(1, true);
+        }
+        return;
+      }
+
+      if (intentosRestantes > 0) {
+        window.setTimeout(() => {
+          intentarCrear(intentosRestantes - 1);
+        }, 120);
+      } else {
+        console.error(
+          "No fue posible crear la caja de prueba: perro o área sin dimensiones."
+        );
+      }
+    };
+
+    intentarCrear();
   },
 
   detener() {
@@ -178,7 +238,7 @@ window.SistemaCajas = {
     }, 120);
   },
 
-  crearCaja(nivel) {
+  crearCaja(nivel, esPruebaNivel1 = false) {
     const juego = window.JuniorGame;
     const area = juego?.elementos?.areaJuego;
     const perro = juego?.elementos?.perro;
@@ -225,7 +285,9 @@ window.SistemaCajas = {
       La caja aparece cerca del perro para garantizar que sea alcanzable,
       pero con una variación lateral para que siga siendo un reto.
     */
-    const desplazamiento = (Math.random() * 150) - 75;
+    const desplazamiento =
+      esPruebaNivel1 ? 0 : (Math.random() * 150) - 75;
+
     const margen = 18;
     const x = Math.max(
       margen,
@@ -246,13 +308,24 @@ window.SistemaCajas = {
       Math.min(52, rectPerro.height * 0.20)
     );
 
-    const yBase = Math.max(
-      135,
-      Math.min(
-        area.clientHeight - tamano - 150,
-        topPerroLocal - tamano - separacionCabeza
-      )
-    );
+    const yCalculada =
+      topPerroLocal - tamano - separacionCabeza;
+
+    const yBase = esPruebaNivel1
+      ? Math.max(
+          170,
+          Math.min(
+            area.clientHeight * 0.60,
+            yCalculada
+          )
+        )
+      : Math.max(
+          135,
+          Math.min(
+            area.clientHeight - tamano - 150,
+            yCalculada
+          )
+        );
 
     const elemento = document.createElement("div");
     elemento.className = "surprise-box surprise-box-enter";
@@ -293,7 +366,8 @@ window.SistemaCajas = {
       elemento,
       nivel,
       yBase,
-      abierta: false
+      abierta: false,
+      esPruebaNivel1
     };
 
     this.topPerroAnterior = rectPerro.top;
@@ -303,14 +377,20 @@ window.SistemaCajas = {
       elemento.classList.remove("surprise-box-enter");
     });
 
-    this.temporizadorRetiro = window.setTimeout(() => {
-      const caja = this.cajaActual;
+    /*
+      La caja del nivel 1 permanece visible hasta recibir el golpe,
+      para que la prueba no dependa de un temporizador.
+    */
+    if (!esPruebaNivel1) {
+      this.temporizadorRetiro = window.setTimeout(() => {
+        const caja = this.cajaActual;
 
-      if (caja && !caja.abierta) {
-        caja.elemento.classList.add("surprise-box-exit");
-        window.setTimeout(() => this.eliminarCaja(), 400);
-      }
-    }, this.configuracion.duracionVisible);
+        if (caja && !caja.abierta) {
+          caja.elemento.classList.add("surprise-box-exit");
+          window.setTimeout(() => this.eliminarCaja(), 400);
+        }
+      }, this.configuracion.duracionVisible);
+    }
   },
 
   actualizar(tiempoActual) {
@@ -573,23 +653,3 @@ window.SistemaCajas = {
     }
   }
 };
-
-/*
-  Se inicia tanto si el documento aún está cargando como si el archivo
-  fue ejecutado después de DOMContentLoaded.
-*/
-function iniciarSistemaCajasSeguro() {
-  window.setTimeout(() => {
-    window.SistemaCajas?.iniciar?.();
-  }, 100);
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener(
-    "DOMContentLoaded",
-    iniciarSistemaCajasSeguro,
-    { once: true }
-  );
-} else {
-  iniciarSistemaCajasSeguro();
-}

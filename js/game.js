@@ -170,6 +170,47 @@ window.JuniorGame = {
     this.configurarBotonInicio();
     this.configurarBotonesModal();
     this.configurarMusicaFondo();
+
+    /*
+      Arranque directo del sistema de cajas.
+      game.js se carga antes que cajas.js, por eso esperamos de forma
+      controlada hasta que SistemaCajas esté disponible.
+    */
+    this.iniciarSistemaCajas();
+  },
+
+  iniciarSistemaCajas(intentosRestantes = 40) {
+    if (
+      this.estado.terminado ||
+      !this.estado.iniciado
+    ) {
+      return;
+    }
+
+    if (
+      window.SistemaCajas &&
+      typeof window.SistemaCajas.iniciar === "function"
+    ) {
+      window.SistemaCajas.iniciar();
+
+      /*
+        Prueba explícita del nivel 1. No depende de que niveles.js
+        detecte un cambio de nivel.
+      */
+      window.SistemaCajas.forzarCajaPruebaNivel1?.();
+      return;
+    }
+
+    if (intentosRestantes <= 0) {
+      console.error(
+        "SistemaCajas no estuvo disponible al iniciar el juego."
+      );
+      return;
+    }
+
+    window.setTimeout(() => {
+      this.iniciarSistemaCajas(intentosRestantes - 1);
+    }, 100);
   },
 
 

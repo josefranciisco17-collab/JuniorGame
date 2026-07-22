@@ -329,6 +329,10 @@ this.obstaculoActual = {
 
     obstaculo.golpeado = true;
 
+if (window.AudioFX) {
+  AudioFX.golpePiedra();
+}
+
     juego.perderVida();
 
     obstaculo.elemento.style.opacity =
@@ -356,14 +360,26 @@ this.obstaculoActual = {
       return;
     }
 
-    if (
-      this.obstaculoActual.y >
-      areaJuego.clientHeight +
-      this.obstaculoActual.tamano
-    ) {
-      this.eliminarObstaculo();
-    }
-  },
+
+
+if (
+  this.obstaculoActual.y >
+  areaJuego.clientHeight +
+  this.obstaculoActual.tamano
+) {
+
+  if (
+    window.AudioFX &&
+    this.obstaculoActual.tipo === "piedra"
+  ) {
+    AudioFX.piedraSuelo();
+  }
+
+  this.eliminarObstaculo();
+}
+},
+
+
 
   eliminarObstaculo() {
     if (this.obstaculoActual) {

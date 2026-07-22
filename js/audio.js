@@ -98,6 +98,18 @@
       instancias: 4
     },
 
+golpePiedra: {
+  archivo: "golpe_de_piedra.mp3",
+  volumen: 0.90,
+  instancias: 3
+},
+
+piedraSuelo: {
+  archivo: "piedra_cae_al_suelo.mp3",
+  volumen: 0.75,
+  instancias: 3
+},
+
     boton: {
       archivo: "seleccionar_cualquier_boton.mp3",
       volumen: 0.35,
@@ -598,6 +610,15 @@
     huesoCaido() {
       reproducir("huesoCaido");
     },
+
+
+golpePiedra() {
+  reproducir("golpePiedra");
+},
+
+piedraSuelo() {
+  reproducir("piedraSuelo");
+},
 
 
     victoria() {

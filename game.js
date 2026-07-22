@@ -6,7 +6,10 @@ window.JuniorGame = {
     pausado: false,
     terminado: false,
     puntos: 0,
-    vidas: 3
+    progresoNivel: 0,
+    vidas: 3,
+    vidasMaximas: 10,
+    escudo: 0
   },
 
   elementos: {
@@ -16,6 +19,7 @@ window.JuniorGame = {
     capaHuesos: null,
     marcador: null,
     vidas: null,
+    indicadorEscudo: null,
 
     botonIzquierda: null,
     botonDerecha: null,
@@ -68,6 +72,9 @@ window.JuniorGame = {
 
     this.elementos.vidas =
       document.getElementById("lives");
+
+    this.elementos.indicadorEscudo =
+      document.getElementById("shieldIndicator");
 
     this.elementos.botonIzquierda =
       document.getElementById("leftButton");
@@ -154,14 +161,90 @@ window.JuniorGame = {
     this.estado.pausado = false;
     this.estado.terminado = false;
     this.estado.puntos = 0;
+    this.estado.progresoNivel = 0;
     this.estado.vidas = 3;
+    this.estado.escudo = 0;
 
     this.prepararPerro();
     this.actualizarMarcador();
     this.actualizarVidas();
+    this.actualizarEscudo();
     this.configurarBotonInicio();
     this.configurarBotonesModal();
+    this.configurarMusicaFondo();
   },
+
+
+  configurarMusicaFondo() {
+    let musicaIniciada = false;
+
+    const iniciarMusica = () => {
+      if (
+        musicaIniciada ||
+        this.estado.terminado
+      ) {
+        return;
+      }
+
+      /*
+        No marcamos la música como iniciada hasta
+        comprobar que AudioFX ya está disponible.
+      */
+      if (
+        !window.AudioFX ||
+        typeof window.AudioFX.reproducirMusica !== "function"
+      ) {
+        return;
+      }
+
+      musicaIniciada = true;
+      window.AudioFX.reproducirMusica();
+
+      document.removeEventListener(
+        "pointerdown",
+        iniciarMusica
+      );
+
+      document.removeEventListener(
+        "touchstart",
+        iniciarMusica
+      );
+
+      document.removeEventListener(
+        "click",
+        iniciarMusica
+      );
+    };
+
+    /*
+      La música comienza con el primer toque o clic
+      realizado en cualquier parte de la pantalla.
+    */
+    document.addEventListener(
+      "pointerdown",
+      iniciarMusica,
+      {
+        passive: true
+      }
+    );
+
+    document.addEventListener(
+      "touchstart",
+      iniciarMusica,
+      {
+        passive: true
+      }
+    );
+
+    document.addEventListener(
+      "click",
+      iniciarMusica,
+      {
+        passive: true
+      }
+    );
+  },
+
 
   prepararPerro() {
     const perro = this.elementos.perro;
@@ -191,23 +274,49 @@ window.JuniorGame = {
     });
   },
 
-  configurarBotonesModal() {
-    this.elementos.botonJugarOtraVez?.addEventListener(
-      "click",
-      () => {
+
+configurarBotonesModal() {
+  const botonReiniciar =
+    this.elementos.botonJugarOtraVez;
+
+  const botonMenu =
+    this.elementos.botonVolverMenu;
+
+  botonReiniciar?.addEventListener(
+    "pointerdown",
+    () => {
+      window.AudioFX?.boton();
+    }
+  );
+
+  botonReiniciar?.addEventListener(
+    "click",
+    () => {
+      window.setTimeout(() => {
         window.location.reload();
-      }
-    );
+      }, 400);
+    }
+  );
 
-    this.elementos.botonVolverMenu?.addEventListener(
-      "click",
-      () => {
+  botonMenu?.addEventListener(
+    "pointerdown",
+    () => {
+      window.AudioFX?.boton();
+    }
+  );
+
+  botonMenu?.addEventListener(
+    "click",
+    () => {
+      window.setTimeout(() => {
         window.location.href = "index.html";
-      }
-    );
-  },
+      }, 400);
+    }
+  );
+},
 
-  actualizarPuntos(cantidad = 1) {
+
+  actualizarPuntos(cantidad = 1, avanceNivel = cantidad) {
     if (
       this.estado.pausado ||
       this.estado.terminado
@@ -216,12 +325,17 @@ window.JuniorGame = {
     }
 
     const puntosAgregados = Number(cantidad);
+    const avanceAgregado = Number(avanceNivel);
 
-    if (!Number.isFinite(puntosAgregados)) {
+    if (
+      !Number.isFinite(puntosAgregados) ||
+      !Number.isFinite(avanceAgregado)
+    ) {
       return;
     }
 
     this.estado.puntos += puntosAgregados;
+    this.estado.progresoNivel += Math.max(0, avanceAgregado);
     this.actualizarMarcador();
   },
 
@@ -232,6 +346,12 @@ window.JuniorGame = {
 
     this.elementos.marcador.textContent =
       String(this.estado.puntos);
+
+    if (window.SistemaNiveles) {
+      window.SistemaNiveles.actualizarNivel(
+        this.estado.progresoNivel
+      );
+    }
   },
 
   perderVida() {
@@ -239,6 +359,20 @@ window.JuniorGame = {
       this.estado.pausado ||
       this.estado.terminado
     ) {
+      return;
+    }
+
+    /*
+      El escudo protege de un golpe y se consume antes
+      de descontar una vida.
+    */
+    if (this.estado.escudo > 0) {
+      this.estado.escudo = 0;
+      this.actualizarEscudo();
+      window.AudioFX?.bonus();
+      window.SistemaCajas?.mostrarMensajeRapido?.(
+        "🛡️ ¡El escudo te protegió!"
+      );
       return;
     }
 
@@ -254,6 +388,48 @@ window.JuniorGame = {
     }
   },
 
+  agregarVida(cantidad = 1) {
+    const aumento = Math.max(
+      0,
+      Math.floor(Number(cantidad) || 0)
+    );
+
+    if (aumento <= 0) {
+      return false;
+    }
+
+    const anterior = this.estado.vidas;
+
+    this.estado.vidas = Math.min(
+      this.estado.vidasMaximas,
+      this.estado.vidas + aumento
+    );
+
+    this.actualizarVidas();
+    return this.estado.vidas > anterior;
+  },
+
+  activarEscudo() {
+    this.estado.escudo = 1;
+    this.actualizarEscudo();
+  },
+
+  actualizarEscudo() {
+    const indicador = this.elementos.indicadorEscudo;
+
+    if (!indicador) {
+      return;
+    }
+
+    const activo = this.estado.escudo > 0;
+    indicador.classList.toggle("active", activo);
+    indicador.setAttribute(
+      "aria-label",
+      activo ? "Escudo activo" : "Escudo inactivo"
+    );
+    indicador.textContent = activo ? "🛡️" : "";
+  },
+
   actualizarVidas() {
     const contenedorVidas = this.elementos.vidas;
 
@@ -263,7 +439,15 @@ window.JuniorGame = {
 
     let contenido = "";
 
-    for (let indice = 0; indice < 3; indice += 1) {
+    const vidasVisibles = Math.max(
+      3,
+      Math.min(
+        this.estado.vidasMaximas,
+        this.estado.vidas
+      )
+    );
+
+    for (let indice = 0; indice < vidasVisibles; indice += 1) {
       contenido +=
         indice < this.estado.vidas
           ? "<span class=\"heart active\">❤️</span>"
@@ -501,6 +685,18 @@ window.JuniorGame = {
 
     this.estado.terminado = true;
     this.estado.pausado = true;
+
+    window.SistemaCajas?.detener?.();
+
+/*
+  Audio de final de partida.
+*/
+window.AudioFX?.detenerMusica();
+window.AudioFX?.perro();
+
+window.setTimeout(() => {
+  window.AudioFX?.gameOver();
+}, 250);
 
     if (window.JuniorPlayer) {
       window.JuniorPlayer.activarIzquierda(false);

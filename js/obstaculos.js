@@ -329,9 +329,9 @@ this.obstaculoActual = {
 
     obstaculo.golpeado = true;
 
-if (window.AudioFX) {
-  AudioFX.golpePiedra();
-}
+    if (obstaculo.tipo === "piedra") {
+      window.AudioFX?.golpePiedra?.();
+    }
 
     juego.perderVida();
 
@@ -368,11 +368,8 @@ if (
   this.obstaculoActual.tamano
 ) {
 
-  if (
-    window.AudioFX &&
-    this.obstaculoActual.tipo === "piedra"
-  ) {
-    AudioFX.piedraSuelo();
+  if (this.obstaculoActual.tipo === "piedra") {
+    window.AudioFX?.piedraSuelo?.();
   }
 
   this.eliminarObstaculo();

@@ -227,7 +227,11 @@ if (esDorado) {
   window.AudioFX?.huesoBlanco();
 }
 
-juego.actualizarPuntos(puntos);
+/*
+  El hueso dorado conserva sus 10 puntos en el marcador,
+  pero ambos tipos avanzan solo 1 unidad en la barra de nivel.
+*/
+juego.actualizarPuntos(puntos, 1);
 
 this.eliminarHueso();
 

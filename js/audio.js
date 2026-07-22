@@ -98,17 +98,17 @@
       instancias: 4
     },
 
-golpePiedra: {
-  archivo: "golpe_de_piedra.mp3",
-  volumen: 0.90,
-  instancias: 3
-},
+    golpePiedra: {
+      archivo: "golpe_de_piedra.mp3",
+      volumen: 0.90,
+      instancias: 3
+    },
 
-piedraSuelo: {
-  archivo: "piedra_cae_al_suelo.mp3",
-  volumen: 0.75,
-  instancias: 3
-},
+    piedraSuelo: {
+      archivo: "piedra_cae_al_suelo.mp3",
+      volumen: 0.75,
+      instancias: 3
+    },
 
     boton: {
       archivo: "seleccionar_cualquier_boton.mp3",
@@ -180,6 +180,7 @@ piedraSuelo: {
       );
 
       audio.preload = "auto";
+      audio.load();
 
       audio.volume =
         configuracion.volumen *
@@ -612,13 +613,13 @@ piedraSuelo: {
     },
 
 
-golpePiedra() {
-  reproducir("golpePiedra");
-},
+    golpePiedra() {
+      reproducir("golpePiedra");
+    },
 
-piedraSuelo() {
-  reproducir("piedraSuelo");
-},
+    piedraSuelo() {
+      reproducir("piedraSuelo");
+    },
 
 
     victoria() {

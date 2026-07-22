@@ -19,6 +19,7 @@ window.SistemaCajas = {
   activo: false,
   cajaActual: null,
   nivelesProcesados: new Set(),
+  nivelesPendientes: [],
   temporizadorRevision: null,
   temporizadorRetiro: null,
   cuadroAnimacion: null,
@@ -43,6 +44,7 @@ window.SistemaCajas = {
 
     this.activo = true;
     this.nivelesProcesados.clear();
+    this.nivelesPendientes = [];
     this.topPerroAnterior = null;
 
     /*
@@ -102,7 +104,12 @@ window.SistemaCajas = {
 
     const puntos = Math.max(
       0,
-      Math.floor(Number(window.JuniorGame?.estado?.puntos) || 0)
+      Math.floor(
+        Number(
+          window.JuniorGame?.estado?.progresoNivel ??
+          window.JuniorGame?.estado?.puntos
+        ) || 0
+      )
     );
 
     const puntosPorNivel = Math.max(
@@ -111,6 +118,36 @@ window.SistemaCajas = {
     );
 
     return Math.min(100, Math.floor(puntos / puntosPorNivel) + 1);
+  },
+
+  encolarNivel(nivel) {
+    const numero = Math.floor(Number(nivel) || 0);
+
+    if (
+      !this.esNivelConCaja(numero) ||
+      this.nivelesProcesados.has(numero) ||
+      this.nivelesPendientes.includes(numero)
+    ) {
+      return;
+    }
+
+    this.nivelesPendientes.push(numero);
+    this.nivelesPendientes.sort((a, b) => a - b);
+  },
+
+  procesarSiguienteCaja() {
+    if (!this.activo || this.cajaActual) {
+      return;
+    }
+
+    while (this.nivelesPendientes.length > 0) {
+      const nivel = this.nivelesPendientes.shift();
+
+      if (!this.nivelesProcesados.has(nivel)) {
+        this.crearCaja(nivel);
+        return;
+      }
+    }
   },
 
   revisarNivelActual() {
@@ -124,33 +161,20 @@ window.SistemaCajas = {
       return;
     }
 
-    const nivelActual = this.obtenerNivelActual();
-
-    if (
-      this.esNivelConCaja(nivelActual) &&
-      !this.nivelesProcesados.has(nivelActual) &&
-      !this.cajaActual
-    ) {
-      this.crearCaja(nivelActual);
-    }
+    this.encolarNivel(this.obtenerNivelActual());
+    this.procesarSiguienteCaja();
   },
 
   /* Compatibilidad con niveles.js. */
   notificarNivel(nivel) {
-    const numero = Math.floor(Number(nivel) || 0);
-
-    if (
-      this.activo &&
-      this.esNivelConCaja(numero) &&
-      !this.nivelesProcesados.has(numero) &&
-      !this.cajaActual
-    ) {
-      window.setTimeout(() => {
-        if (!this.cajaActual && !this.nivelesProcesados.has(numero)) {
-          this.crearCaja(numero);
-        }
-      }, 120);
+    if (!this.activo) {
+      return;
     }
+
+    this.encolarNivel(nivel);
+    window.setTimeout(() => {
+      this.procesarSiguienteCaja();
+    }, 120);
   },
 
   crearCaja(nivel) {
@@ -497,6 +521,12 @@ window.SistemaCajas = {
     this.cajaActual?.elemento?.remove();
     this.cajaActual = null;
     this.topPerroAnterior = null;
+
+    if (this.activo) {
+      window.setTimeout(() => {
+        this.procesarSiguienteCaja();
+      }, 150);
+    }
   }
 };
 

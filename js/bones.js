@@ -237,11 +237,27 @@ juego.actualizarPuntos(puntos, 1);
   Efecto visual independiente. No modifica la puntuación,
   la colisión ni el ciclo de aparición de los huesos.
 */
-window.JuniorCatchFX?.mostrarCaptura?.({
-  dorado: esDorado,
-  puntos,
-  rectHueso
-});
+const datosRectHueso = {
+  left: rectHueso.left,
+  top: rectHueso.top,
+  right: rectHueso.right,
+  bottom: rectHueso.bottom,
+  width: rectHueso.width,
+  height: rectHueso.height
+};
+
+if (
+  window.JuniorCatchFX &&
+  typeof window.JuniorCatchFX.mostrarCaptura === "function"
+) {
+  window.JuniorCatchFX.mostrarCaptura({
+    dorado: esDorado,
+    puntos,
+    rectHueso: datosRectHueso
+  });
+} else {
+  console.warn("JuniorCatchFX no está disponible al atrapar el hueso.");
+}
 
 this.eliminarHueso();
 

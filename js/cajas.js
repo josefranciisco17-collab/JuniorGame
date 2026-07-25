@@ -308,29 +308,29 @@ window.SistemaCajas = {
       La caja queda a una altura alcanzable con el salto:
       aproximadamente entre 35 y 55 px sobre la cabeza visual.
     */
-    const separacionCabeza = Math.max(
-      34,
-      Math.min(52, rectPerro.height * 0.20)
-    );
+
+const separacionCabeza = 6;
 
     const yCalculada =
       topPerroLocal - tamano - separacionCabeza;
 
-    const yBase = esPruebaNivel1
-      ? Math.max(
-          170,
-          Math.min(
-            area.clientHeight * 0.60,
-            yCalculada
-          )
-        )
-      : Math.max(
-          135,
-          Math.min(
-            area.clientHeight - tamano - 150,
-            yCalculada
-          )
-        );
+
+const yBase = esPruebaNivel1
+  ? Math.max(
+      170,
+      Math.min(
+        area.clientHeight * 0.60,
+        yCalculada
+      )
+    )
+  : Math.max(
+      200,
+      Math.min(
+        area.clientHeight - tamano - 80,
+        yCalculada
+      )
+    );
+
 
     const elemento = document.createElement("div");
     elemento.className = "surprise-box surprise-box-enter";

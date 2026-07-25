@@ -1,271 +1,178 @@
 "use strict";
 
 /*
-  JuniorGame - efectos de captura estables.
-  La capa visual existe desde que carga game.html y este módulo
-  solo dibuja sobre ella. No modifica puntos, vidas, niveles,
-  colisiones, sonidos ni aparición de huesos.
+  Efectos directos de captura para JuniorGame.
+  Se dibujan en una capa fija sobre toda la pantalla y usan estilos en línea,
+  por lo que no dependen de game.css ni del orden de capas dentro del juego.
 */
 window.JuniorCatchFX = {
   capa: null,
-  temporizadorMarcador: null,
 
   iniciar() {
-    this.capa = document.getElementById("catchFxLayer");
-
-    if (!this.capa) {
-      const area = document.getElementById("gameArea");
-
-      if (!area) {
-        console.error("JuniorCatchFX: no se encontró #gameArea.");
-        return false;
-      }
-
-      this.capa = document.createElement("div");
-      this.capa.id = "catchFxLayer";
-      this.capa.className = "catch-fx-layer";
-      this.capa.setAttribute("aria-hidden", "true");
-      area.appendChild(this.capa);
+    let capa = document.getElementById("juniorCatchFxOverlay");
+    if (!capa) {
+      capa = document.createElement("div");
+      capa.id = "juniorCatchFxOverlay";
+      capa.setAttribute("aria-hidden", "true");
+      Object.assign(capa.style, {
+        position: "fixed",
+        inset: "0",
+        width: "100vw",
+        height: "100vh",
+        zIndex: "2147483646",
+        pointerEvents: "none",
+        overflow: "hidden",
+        display: "block",
+        visibility: "visible",
+        opacity: "1"
+      });
+      document.body.appendChild(capa);
     }
-
-    return true;
-  },
-
-  obtenerCapa() {
-    if (this.capa && this.capa.isConnected) {
-      return this.capa;
-    }
-
-    return this.iniciar()
-      ? this.capa
-      : null;
+    this.capa = capa;
+    return capa;
   },
 
   mostrarCaptura({ dorado = false, puntos = 1, rectHueso = null } = {}) {
     try {
-      const juego = window.JuniorGame;
-      const area = juego?.elementos?.areaJuego || document.getElementById("gameArea");
-      const capa = this.obtenerCapa();
+      const capa = this.capa?.isConnected ? this.capa : this.iniciar();
+      if (!capa) return;
 
-      if (!area || !capa || juego?.estado?.terminado) {
-        return;
-      }
+      const perro = document.getElementById("dog");
+      const referencia = rectHueso || perro?.getBoundingClientRect();
+      if (!referencia) return;
 
-      const rectArea = area.getBoundingClientRect();
-      const rectReferencia = rectHueso || juego?.elementos?.perro?.getBoundingClientRect();
-
-      if (!rectReferencia) {
-        return;
-      }
-
-      const x = Math.max(
-        28,
-        Math.min(
-          area.clientWidth - 28,
-          rectReferencia.left - rectArea.left + rectReferencia.width / 2
-        )
-      );
-
-      const y = Math.max(
-        90,
-        Math.min(
-          area.clientHeight - 125,
-          rectReferencia.top - rectArea.top + rectReferencia.height / 2
-        )
-      );
+      const x = Number(referencia.left) + Number(referencia.width) / 2;
+      const y = Number(referencia.top) + Number(referencia.height) / 2;
+      if (!Number.isFinite(x) || !Number.isFinite(y)) return;
 
       this.crearDestello(capa, x, y, dorado);
       this.crearTexto(capa, x, y, puntos, dorado);
       this.crearParticulas(capa, x, y, dorado);
       this.animarMarcador(dorado);
-      this.vibrar(dorado);
+
+      if (typeof navigator.vibrate === "function") {
+        navigator.vibrate(dorado ? [30, 25, 45] : 20);
+      }
     } catch (error) {
-      console.warn("JuniorCatchFX no pudo mostrar el efecto:", error);
+      console.error("JuniorCatchFX error:", error);
     }
   },
 
   crearDestello(capa, x, y, dorado) {
-    const elemento = document.createElement("span");
-    elemento.className = dorado
-      ? "catch-flash catch-flash-golden"
-      : "catch-flash";
-
-    Object.assign(elemento.style, {
+    const el = document.createElement("div");
+    const tam = dorado ? 150 : 110;
+    Object.assign(el.style, {
+      position: "fixed",
       left: `${x}px`,
       top: `${y}px`,
-      opacity: "1",
-      display: "block"
+      width: `${tam}px`,
+      height: `${tam}px`,
+      borderRadius: "50%",
+      pointerEvents: "none",
+      transform: "translate(-50%, -50%) scale(.15)",
+      opacity: "0",
+      background: dorado
+        ? "radial-gradient(circle, #fff 0%, #fff47a 24%, #ff9d00 52%, transparent 76%)"
+        : "radial-gradient(circle, #fff 0%, #9ff7ff 25%, #38cfff 52%, transparent 76%)",
+      boxShadow: dorado
+        ? "0 0 45px 18px rgba(255,193,7,.95)"
+        : "0 0 38px 15px rgba(80,220,255,.95)",
+      transition: "transform 520ms ease-out, opacity 520ms ease-out"
     });
-
-    capa.appendChild(elemento);
-
-    if (typeof elemento.animate === "function") {
-      elemento.animate(
-        [
-          { opacity: 0, transform: "translate(-50%, -50%) scale(.15)" },
-          { opacity: 1, transform: "translate(-50%, -50%) scale(1)", offset: 0.28 },
-          { opacity: 0, transform: "translate(-50%, -50%) scale(1.65)" }
-        ],
-        {
-          duration: dorado ? 680 : 560,
-          easing: "ease-out",
-          fill: "forwards"
-        }
-      );
-    }
-
-    window.setTimeout(() => elemento.remove(), dorado ? 720 : 610);
+    capa.appendChild(el);
+    requestAnimationFrame(() => {
+      el.style.opacity = "1";
+      el.style.transform = "translate(-50%, -50%) scale(1.45)";
+    });
+    setTimeout(() => { el.style.opacity = "0"; }, 260);
+    setTimeout(() => el.remove(), 600);
   },
 
   crearTexto(capa, x, y, puntos, dorado) {
-    const elemento = document.createElement("strong");
-    elemento.className = dorado
-      ? "catch-points catch-points-golden"
-      : "catch-points";
-    elemento.textContent = `+${Math.max(0, Number(puntos) || 0)}`;
-
-    Object.assign(elemento.style, {
+    const el = document.createElement("div");
+    el.textContent = `+${Math.max(0, Number(puntos) || 0)}`;
+    Object.assign(el.style, {
+      position: "fixed",
       left: `${x}px`,
       top: `${y}px`,
-      opacity: "1",
-      display: "block"
+      zIndex: "3",
+      pointerEvents: "none",
+      color: dorado ? "#ffe94a" : "#ffffff",
+      fontFamily: "Arial, sans-serif",
+      fontSize: dorado ? "48px" : "42px",
+      fontWeight: "1000",
+      lineHeight: "1",
+      whiteSpace: "nowrap",
+      textShadow: dorado
+        ? "0 4px 0 #8a4b00, 0 0 12px #ffb300, 0 8px 18px rgba(0,0,0,.75)"
+        : "0 4px 0 #075c85, 0 0 12px #00cfff, 0 8px 18px rgba(0,0,0,.75)",
+      transform: "translate(-50%, -35%) scale(.45)",
+      opacity: "0",
+      transition: "transform 850ms cubic-bezier(.18,.85,.25,1), opacity 250ms ease"
     });
-
-    capa.appendChild(elemento);
-
-    if (typeof elemento.animate === "function") {
-      elemento.animate(
-        [
-          { opacity: 0, transform: "translate(-50%, -15%) scale(.35)" },
-          { opacity: 1, transform: "translate(-50%, -72%) scale(1.25)", offset: 0.24 },
-          { opacity: 1, transform: "translate(-50%, -130%) scale(1)", offset: 0.72 },
-          { opacity: 0, transform: "translate(-50%, -205%) scale(.82)" }
-        ],
-        {
-          duration: dorado ? 1080 : 920,
-          easing: "cubic-bezier(.18,.85,.25,1)",
-          fill: "forwards"
-        }
-      );
-    }
-
-    window.setTimeout(() => elemento.remove(), dorado ? 1130 : 970);
+    capa.appendChild(el);
+    requestAnimationFrame(() => {
+      el.style.opacity = "1";
+      el.style.transform = "translate(-50%, -190%) scale(1.15)";
+    });
+    setTimeout(() => { el.style.opacity = "0"; }, 620);
+    setTimeout(() => el.remove(), 920);
   },
 
   crearParticulas(capa, x, y, dorado) {
-    const cantidad = dorado ? 18 : 12;
-    const simbolos = dorado ? ["★", "✦", "✧", "•"] : ["✦", "✧", "•"];
-
-    for (let indice = 0; indice < cantidad; indice += 1) {
-      const particula = document.createElement("span");
-      particula.className = dorado
-        ? "catch-particle catch-particle-golden"
-        : "catch-particle";
-      particula.textContent = simbolos[indice % simbolos.length];
-
-      const angulo = (Math.PI * 2 * indice) / cantidad + Math.random() * 0.22;
-      const distancia = dorado
-        ? 58 + Math.random() * 58
-        : 38 + Math.random() * 42;
-      const destinoX = Math.cos(angulo) * distancia;
-      const destinoY = Math.sin(angulo) * distancia;
-      const giro = -130 + Math.random() * 260;
-
-      Object.assign(particula.style, {
+    const cantidad = dorado ? 16 : 12;
+    for (let i = 0; i < cantidad; i += 1) {
+      const el = document.createElement("span");
+      el.textContent = dorado ? (i % 2 ? "★" : "✦") : (i % 2 ? "✦" : "●");
+      const angulo = (Math.PI * 2 * i) / cantidad;
+      const distancia = dorado ? 105 : 80;
+      const dx = Math.cos(angulo) * distancia;
+      const dy = Math.sin(angulo) * distancia;
+      Object.assign(el.style, {
+        position: "fixed",
         left: `${x}px`,
         top: `${y}px`,
-        opacity: "1",
-        display: "block"
+        pointerEvents: "none",
+        color: dorado ? "#ffe34f" : "#85efff",
+        fontSize: dorado ? "22px" : "18px",
+        fontWeight: "900",
+        textShadow: "0 2px 6px rgba(0,0,0,.7)",
+        transform: "translate(-50%, -50%) scale(.2)",
+        opacity: "0",
+        transition: `transform ${dorado ? 760 : 650}ms ease-out, opacity 300ms ease-out`
       });
-
-      capa.appendChild(particula);
-
-      if (typeof particula.animate === "function") {
-        particula.animate(
-          [
-            {
-              opacity: 0,
-              transform: "translate(-50%, -50%) scale(.15) rotate(0deg)"
-            },
-            {
-              opacity: 1,
-              transform: "translate(-50%, -50%) scale(1)",
-              offset: 0.18
-            },
-            {
-              opacity: 0,
-              transform: `translate(calc(-50% + ${destinoX}px), calc(-50% + ${destinoY}px)) scale(1.1) rotate(${giro}deg)`
-            }
-          ],
-          {
-            duration: dorado ? 880 : 720,
-            delay: Math.random() * 55,
-            easing: "ease-out",
-            fill: "forwards"
-          }
-        );
-      }
-
-      window.setTimeout(() => particula.remove(), dorado ? 990 : 830);
+      capa.appendChild(el);
+      requestAnimationFrame(() => {
+        el.style.opacity = "1";
+        el.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(1.15) rotate(${i * 35}deg)`;
+      });
+      setTimeout(() => { el.style.opacity = "0"; }, dorado ? 500 : 420);
+      setTimeout(() => el.remove(), dorado ? 820 : 710);
     }
   },
 
   animarMarcador(dorado) {
-    const marcador = window.JuniorGame?.elementos?.marcador || document.getElementById("score");
-    const caja = marcador?.closest?.(".score-box") || marcador;
-
-    if (!caja) {
-      return;
-    }
-
-    caja.classList.remove("score-catch-pop", "score-catch-pop-golden");
-    void caja.offsetWidth;
-    caja.classList.add(dorado ? "score-catch-pop-golden" : "score-catch-pop");
-
-    if (typeof caja.animate === "function") {
-      caja.animate(
-        dorado
-          ? [
-              { transform: "scale(1)", filter: "brightness(1)" },
-              { transform: "scale(1.15)", filter: "brightness(1.35)", offset: 0.35 },
-              { transform: "scale(.98)", filter: "brightness(1.1)", offset: 0.68 },
-              { transform: "scale(1)", filter: "brightness(1)" }
-            ]
-          : [
-              { transform: "scale(1)" },
-              { transform: "scale(1.09)", offset: 0.42 },
-              { transform: "scale(.98)", offset: 0.72 },
-              { transform: "scale(1)" }
-            ],
-        {
-          duration: dorado ? 520 : 360,
-          easing: "cubic-bezier(.2,1.3,.35,1)"
-        }
-      );
-    }
-
-    if (this.temporizadorMarcador) {
-      window.clearTimeout(this.temporizadorMarcador);
-    }
-
-    this.temporizadorMarcador = window.setTimeout(() => {
-      caja.classList.remove("score-catch-pop", "score-catch-pop-golden");
-      this.temporizadorMarcador = null;
-    }, dorado ? 540 : 380);
-  },
-
-  vibrar(dorado) {
-    if (
-      typeof navigator.vibrate !== "function" ||
-      document.visibilityState === "hidden"
-    ) {
-      return;
-    }
-
-    navigator.vibrate(dorado ? [25, 25, 40] : 18);
+    const caja = document.querySelector(".score-box") || document.getElementById("score");
+    if (!caja) return;
+    caja.animate?.(
+      dorado
+        ? [
+            { transform: "scale(1)", filter: "brightness(1)" },
+            { transform: "scale(1.22)", filter: "brightness(1.6)" },
+            { transform: "scale(1)", filter: "brightness(1)" }
+          ]
+        : [
+            { transform: "scale(1)" },
+            { transform: "scale(1.14)" },
+            { transform: "scale(1)" }
+          ],
+      { duration: dorado ? 520 : 360, easing: "ease-out" }
+    );
   }
 };
 
-window.addEventListener("DOMContentLoaded", () => {
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => window.JuniorCatchFX.iniciar(), { once: true });
+} else {
   window.JuniorCatchFX.iniciar();
-});
+}

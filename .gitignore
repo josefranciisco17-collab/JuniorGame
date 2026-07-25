@@ -2,3 +2,7 @@
 *.bak
 *.tmp
 stripe-backend/.env
+
+# Dependencias de Node.js
+node_modules/
+stripe-backend/node_modules/

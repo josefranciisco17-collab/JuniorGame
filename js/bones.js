@@ -233,6 +233,16 @@ if (esDorado) {
 */
 juego.actualizarPuntos(puntos, 1);
 
+/*
+  Efecto visual independiente. No modifica la puntuación,
+  la colisión ni el ciclo de aparición de los huesos.
+*/
+window.JuniorCatchFX?.mostrarCaptura?.({
+  dorado: esDorado,
+  puntos,
+  rectHueso
+});
+
 this.eliminarHueso();
 
   },

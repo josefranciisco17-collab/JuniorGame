@@ -1160,8 +1160,8 @@ a {
 .catch-fx-layer{
   position:absolute;
   inset:0;
-  z-index:16;
-  overflow:hidden;
+  z-index:40;
+  overflow:visible;
   pointer-events:none;
   contain:layout paint;
 }
@@ -1309,13 +1309,4 @@ a {
   100%{transform:scale(1);filter:brightness(1)}
 }
 
-@media (prefers-reduced-motion: reduce){
-  .catch-flash,
-  .catch-points,
-  .catch-particle,
-  .score-catch-pop,
-  .score-catch-pop-golden{
-    animation-duration:.01ms !important;
-    animation-iteration-count:1 !important;
-  }
-}
+

@@ -3,9 +3,8 @@
 /*
   JuniorGame - efectos visuales al atrapar huesos.
 
-  Este módulo es independiente: no modifica puntos, vidas,
-  niveles, colisiones ni sonidos. Si el dispositivo no admite
-  vibración o animaciones, el juego continúa normalmente.
+  Este módulo es completamente visual. No cambia puntos, vidas,
+  niveles, colisiones, sonidos ni el ciclo de aparición de huesos.
 */
 window.JuniorCatchFX = {
   capa: null,
@@ -47,24 +46,28 @@ window.JuniorCatchFX = {
       }
 
       const rectArea = area.getBoundingClientRect();
-      const rectReferencia = rectHueso || juego?.elementos?.perro?.getBoundingClientRect();
+      const rectReferencia =
+        rectHueso || juego?.elementos?.perro?.getBoundingClientRect();
 
       if (!rectReferencia) {
         return;
       }
 
+      const anchoArea = Math.max(1, area.clientWidth);
+      const altoArea = Math.max(1, area.clientHeight);
+
       const centroX = Math.max(
-        20,
+        24,
         Math.min(
-          area.clientWidth - 20,
+          anchoArea - 24,
           rectReferencia.left - rectArea.left + rectReferencia.width / 2
         )
       );
 
       const centroY = Math.max(
-        80,
+        70,
         Math.min(
-          area.clientHeight - 120,
+          altoArea - 105,
           rectReferencia.top - rectArea.top + rectReferencia.height / 2
         )
       );
@@ -79,17 +82,47 @@ window.JuniorCatchFX = {
     }
   },
 
+  animarElemento(elemento, fotogramas, opciones, tiempoRetiro) {
+    if (!elemento) {
+      return;
+    }
+
+    /*
+      Web Animations evita que el efecto desaparezca en dispositivos
+      que tienen activada la opción de reducir animaciones.
+    */
+    if (typeof elemento.animate === "function") {
+      elemento.animate(fotogramas, {
+        fill: "forwards",
+        ...opciones
+      });
+    }
+
+    window.setTimeout(() => elemento.remove(), tiempoRetiro);
+  },
+
   crearDestello(capa, x, y, dorado) {
     const destello = document.createElement("span");
     destello.className = dorado
       ? "catch-flash catch-flash-golden"
       : "catch-flash";
-
     destello.style.left = `${x}px`;
     destello.style.top = `${y}px`;
     capa.appendChild(destello);
 
-    window.setTimeout(() => destello.remove(), 620);
+    this.animarElemento(
+      destello,
+      [
+        { opacity: 0, transform: "translate(-50%, -50%) scale(.2)" },
+        { opacity: 1, transform: "translate(-50%, -50%) scale(1)", offset: 0.28 },
+        { opacity: 0, transform: "translate(-50%, -50%) scale(1.55)" }
+      ],
+      {
+        duration: dorado ? 620 : 540,
+        easing: "ease-out"
+      },
+      dorado ? 680 : 600
+    );
   },
 
   crearTexto(capa, x, y, puntos, dorado) {
@@ -102,7 +135,27 @@ window.JuniorCatchFX = {
     texto.style.top = `${y}px`;
     capa.appendChild(texto);
 
-    window.setTimeout(() => texto.remove(), dorado ? 1050 : 900);
+    this.animarElemento(
+      texto,
+      dorado
+        ? [
+            { opacity: 0, transform: "translate(-50%, -20%) scale(.3) rotate(-5deg)" },
+            { opacity: 1, transform: "translate(-50%, -72%) scale(1.3) rotate(3deg)", offset: 0.22 },
+            { opacity: 1, transform: "translate(-50%, -135%) scale(1.06)", offset: 0.68 },
+            { opacity: 0, transform: "translate(-50%, -210%) scale(.84)" }
+          ]
+        : [
+            { opacity: 0, transform: "translate(-50%, -25%) scale(.4)" },
+            { opacity: 1, transform: "translate(-50%, -70%) scale(1.18)", offset: 0.24 },
+            { opacity: 1, transform: "translate(-50%, -125%) scale(1)", offset: 0.72 },
+            { opacity: 0, transform: "translate(-50%, -180%) scale(.82)" }
+          ],
+      {
+        duration: dorado ? 1020 : 860,
+        easing: "cubic-bezier(.18,.85,.25,1)"
+      },
+      dorado ? 1080 : 920
+    );
   },
 
   crearParticulas(capa, x, y, dorado) {
@@ -113,10 +166,15 @@ window.JuniorCatchFX = {
 
     for (let indice = 0; indice < cantidad; indice += 1) {
       const particula = document.createElement("span");
-      const angulo = (Math.PI * 2 * indice) / cantidad + Math.random() * 0.35;
+      const angulo =
+        (Math.PI * 2 * indice) / cantidad + Math.random() * 0.35;
       const distancia = dorado
         ? 48 + Math.random() * 62
         : 30 + Math.random() * 42;
+      const destinoX = Math.cos(angulo) * distancia;
+      const destinoY = Math.sin(angulo) * distancia;
+      const rotacion = -100 + Math.random() * 200;
+      const retraso = Math.random() * 70;
 
       particula.className = dorado
         ? "catch-particle catch-particle-golden"
@@ -124,13 +182,32 @@ window.JuniorCatchFX = {
       particula.textContent = iconos[indice % iconos.length];
       particula.style.left = `${x}px`;
       particula.style.top = `${y}px`;
-      particula.style.setProperty("--catch-x", `${Math.cos(angulo) * distancia}px`);
-      particula.style.setProperty("--catch-y", `${Math.sin(angulo) * distancia}px`);
-      particula.style.setProperty("--catch-delay", `${Math.random() * 0.08}s`);
-      particula.style.setProperty("--catch-rotation", `${-100 + Math.random() * 200}deg`);
       capa.appendChild(particula);
 
-      window.setTimeout(() => particula.remove(), dorado ? 920 : 760);
+      this.animarElemento(
+        particula,
+        [
+          {
+            opacity: 0,
+            transform: "translate(-50%, -50%) scale(.15) rotate(0deg)"
+          },
+          {
+            opacity: 1,
+            transform: "translate(-50%, -50%) scale(.85)",
+            offset: 0.2
+          },
+          {
+            opacity: 0,
+            transform: `translate(calc(-50% + ${destinoX}px), calc(-50% + ${destinoY}px)) scale(1.05) rotate(${rotacion}deg)`
+          }
+        ],
+        {
+          duration: dorado ? 820 : 680,
+          delay: retraso,
+          easing: "ease-out"
+        },
+        (dorado ? 900 : 760) + retraso
+      );
     }
   },
 
@@ -147,7 +224,6 @@ window.JuniorCatchFX = {
       "score-catch-pop-golden"
     );
 
-    /* Reinicia la animación incluso en capturas consecutivas. */
     void cajaMarcador.offsetWidth;
 
     cajaMarcador.classList.add(

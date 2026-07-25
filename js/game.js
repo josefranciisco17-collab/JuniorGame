@@ -6,6 +6,7 @@ window.JuniorGame = {
     pausado: false,
     terminado: false,
     puntos: 0,
+    progresoNivel: 0,
     vidas: 3,
     vidasMaximas: 10,
     escudo: 0
@@ -160,6 +161,7 @@ window.JuniorGame = {
     this.estado.pausado = false;
     this.estado.terminado = false;
     this.estado.puntos = 0;
+    this.estado.progresoNivel = 0;
     this.estado.vidas = 3;
     this.estado.escudo = 0;
 
@@ -172,45 +174,11 @@ window.JuniorGame = {
     this.configurarMusicaFondo();
 
     /*
-      Arranque directo del sistema de cajas.
-      game.js se carga antes que cajas.js, por eso esperamos de forma
-      controlada hasta que SistemaCajas esté disponible.
+      Inicia las cajas cuando el juego y sus elementos ya existen.
+      Los scripts se cargan antes de DOMContentLoaded, por lo que
+      SistemaCajas ya está disponible en este punto.
     */
-    this.iniciarSistemaCajas();
-  },
-
-  iniciarSistemaCajas(intentosRestantes = 40) {
-    if (
-      this.estado.terminado ||
-      !this.estado.iniciado
-    ) {
-      return;
-    }
-
-    if (
-      window.SistemaCajas &&
-      typeof window.SistemaCajas.iniciar === "function"
-    ) {
-      window.SistemaCajas.iniciar();
-
-      /*
-        Prueba explícita del nivel 1. No depende de que niveles.js
-        detecte un cambio de nivel.
-      */
-      window.SistemaCajas.forzarCajaPruebaNivel1?.();
-      return;
-    }
-
-    if (intentosRestantes <= 0) {
-      console.error(
-        "SistemaCajas no estuvo disponible al iniciar el juego."
-      );
-      return;
-    }
-
-    window.setTimeout(() => {
-      this.iniciarSistemaCajas(intentosRestantes - 1);
-    }, 100);
+    window.SistemaCajas?.iniciar?.();
   },
 
 
@@ -355,7 +323,7 @@ configurarBotonesModal() {
 },
 
 
-  actualizarPuntos(cantidad = 1) {
+  actualizarPuntos(cantidad = 1, avanceNivel = cantidad) {
     if (
       this.estado.pausado ||
       this.estado.terminado
@@ -364,12 +332,17 @@ configurarBotonesModal() {
     }
 
     const puntosAgregados = Number(cantidad);
+    const avanceAgregado = Number(avanceNivel);
 
-    if (!Number.isFinite(puntosAgregados)) {
+    if (
+      !Number.isFinite(puntosAgregados) ||
+      !Number.isFinite(avanceAgregado)
+    ) {
       return;
     }
 
     this.estado.puntos += puntosAgregados;
+    this.estado.progresoNivel += Math.max(0, avanceAgregado);
     this.actualizarMarcador();
   },
 
@@ -383,7 +356,7 @@ configurarBotonesModal() {
 
     if (window.SistemaNiveles) {
       window.SistemaNiveles.actualizarNivel(
-        this.estado.puntos
+        this.estado.progresoNivel
       );
     }
   },

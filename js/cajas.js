@@ -4,8 +4,7 @@
   JuniorGame - Cajas sorpresa flotantes
   Versión robusta e independiente.
 
-  Aparición temporal de prueba:
-  - Nivel 1
+  Aparición:
   - Nivel 5
   - Niveles 10, 20, 30... 100
 
@@ -66,6 +65,9 @@ window.SistemaCajas = {
   },
 
   forzarCajaPruebaNivel1() {
+    console.warn("La caja de prueba del nivel 1 está desactivada en la versión estable.");
+    return;
+
     if (this.pruebaNivel1Forzada) {
       return;
     }
@@ -147,7 +149,7 @@ window.SistemaCajas = {
 
   esNivelConCaja(nivel) {
     const numero = Math.floor(Number(nivel) || 0);
-    return numero === 1 || numero === 5 || (
+    return numero === 5 || (
       numero >= 10 &&
       numero <= 100 &&
       numero % 10 === 0

@@ -18,11 +18,136 @@
 window.SistemaHabilidades = {
   activo: false,
   habilidadEquipada: "dash",
+  razaEquipada: null,
+  configuracionRazaActiva: null,
   enfriamientosHasta: {},
   efectosHasta: {},
   temporizadorEscudo: null,
   cuadroAnimacion: null,
   interfaz: {},
+
+  catalogoRazas: {
+    "raza-chihuahua": {
+      nombreRaza: "Chihuahua",
+      nombre: "Superladrido",
+      icono: "🔊",
+      habilidadBase: "ladrido"
+    },
+    "raza-beagle": {
+      nombreRaza: "Beagle",
+      nombre: "Olfato Maestro",
+      icono: "👃",
+      habilidadBase: "iman"
+    },
+    "raza-bulldog": {
+      nombreRaza: "Bulldog",
+      nombre: "Impacto",
+      icono: "💥",
+      habilidadBase: "escudo"
+    },
+    "raza-husky": {
+      nombreRaza: "Husky Siberiano",
+      nombre: "Tormenta Polar",
+      icono: "❄️",
+      habilidadBase: "tiempoLento"
+    },
+    "raza-golden": {
+      nombreRaza: "Golden Retriever",
+      nombre: "Buena Fortuna",
+      icono: "🍀",
+      habilidadBase: "iman"
+    },
+    "raza-pastor-aleman": {
+      nombreRaza: "Pastor Alemán",
+      nombre: "Comandante",
+      icono: "🐕‍🦺",
+      habilidadBase: "escudo"
+    },
+    "raza-dalmata": {
+      nombreRaza: "Dálmata",
+      nombre: "Rebote",
+      icono: "🔁",
+      habilidadBase: "dobleSalto"
+    },
+    "raza-doberman": {
+      nombreRaza: "Doberman",
+      nombre: "Furia",
+      icono: "🔥",
+      habilidadBase: "dash"
+    },
+    "raza-border-collie": {
+      nombreRaza: "Border Collie",
+      nombre: "Mente Ágil",
+      icono: "🧠",
+      habilidadBase: "tiempoLento"
+    },
+    "raza-poodle": {
+      nombreRaza: "Poodle",
+      nombre: "Magia Canina",
+      icono: "🪄",
+      habilidadBase: "ladrido"
+    },
+    "raza-rottweiler": {
+      nombreRaza: "Rottweiler",
+      nombre: "Guardia",
+      icono: "🛡️",
+      habilidadBase: "escudo"
+    },
+    "raza-shiba": {
+      nombreRaza: "Shiba Inu",
+      nombre: "Travesura Ninja",
+      icono: "🥷",
+      habilidadBase: "dash"
+    },
+    "raza-samoyedo": {
+      nombreRaza: "Samoyedo",
+      nombre: "Aurora",
+      icono: "🌌",
+      habilidadBase: "tiempoLento"
+    },
+    "raza-corgi": {
+      nombreRaza: "Corgi",
+      nombre: "Energía Feliz",
+      icono: "⚡",
+      habilidadBase: "dobleSalto"
+    },
+    "raza-schnauzer": {
+      nombreRaza: "Schnauzer",
+      nombre: "Torbellino",
+      icono: "🌪️",
+      habilidadBase: "iman"
+    },
+    "raza-labrador": {
+      nombreRaza: "Labrador",
+      nombre: "Rescate",
+      icono: "🛟",
+      habilidadBase: "escudo"
+    },
+    "raza-san-bernardo": {
+      nombreRaza: "San Bernardo",
+      nombre: "Protector",
+      icono: "❤️",
+      habilidadBase: "escudo"
+    },
+    "raza-akita": {
+      nombreRaza: "Akita",
+      nombre: "Espíritu Leal",
+      icono: "✨",
+      habilidadBase: "tiempoLento"
+    },
+    "raza-galgo": {
+      nombreRaza: "Galgo",
+      nombre: "Paso Fantasma",
+      icono: "👻",
+      habilidadBase: "dash"
+    },
+    "raza-pug": {
+      nombreRaza: "Pug",
+      nombre: "Carisma",
+      icono: "🎭",
+      habilidadBase: "ladrido"
+    }
+  },
 
   catalogo: {
     dash: {
@@ -74,8 +199,12 @@ window.SistemaHabilidades = {
     if (this.activo) return;
     this.activo = true;
 
-    const guardada = window.localStorage.getItem("juniorGame.habilidadEquipada");
-    if (guardada && this.catalogo[guardada]) this.habilidadEquipada = guardada;
+    this.sincronizarRazaEquipada();
+
+    if (!this.configuracionRazaActiva) {
+      const guardada = window.localStorage.getItem("juniorGame.habilidadEquipada");
+      if (guardada && this.catalogo[guardada]) this.habilidadEquipada = guardada;
+    }
 
     this.crearInterfaz();
     this.configurarEventos();
@@ -94,6 +223,42 @@ window.SistemaHabilidades = {
     document.body.classList.remove("habilidad-iman-activa", "habilidad-dash-activa");
   },
 
+  sincronizarRazaEquipada() {
+    let idRaza = null;
+
+    try {
+      idRaza = window.localStorage.getItem("juniorGame.razaEquipada");
+    } catch (error) {
+      console.warn("No se pudo leer la raza equipada:", error);
+    }
+
+    const configuracion = idRaza ? this.catalogoRazas[idRaza] : null;
+
+    this.razaEquipada = configuracion ? idRaza : null;
+    this.configuracionRazaActiva = configuracion || null;
+
+    if (configuracion && this.catalogo[configuracion.habilidadBase]) {
+      this.habilidadEquipada = configuracion.habilidadBase;
+    }
+
+    return this.configuracionRazaActiva;
+  },
+
+  obtenerDatosVisuales() {
+    const habilidad = this.catalogo[this.habilidadEquipada];
+
+    if (this.configuracionRazaActiva) {
+      return {
+        ...habilidad,
+        nombre: this.configuracionRazaActiva.nombre,
+        icono: this.configuracionRazaActiva.icono,
+        nombreRaza: this.configuracionRazaActiva.nombreRaza
+      };
+    }
+
+    return habilidad;
+  },
+
   crearInterfaz() {
     const boton = document.getElementById("abilityButton");
     const configurar = document.getElementById("abilityConfigButton");
@@ -110,13 +275,31 @@ window.SistemaHabilidades = {
       icono: document.getElementById("abilityIcon"),
       nombre: document.getElementById("abilityName"),
       recarga: document.getElementById("abilityCooldown"),
-      progreso: document.getElementById("abilityCooldownFill")
+      progreso: document.getElementById("abilityCooldownFill"),
+      tituloModal: document.getElementById("abilityModalTitle"),
+      descripcionModal: document.getElementById("abilityModalDescription")
     };
 
     if (!lista) return;
     lista.innerHTML = "";
 
-    Object.entries(this.catalogo).forEach(([id, datos]) => {
+    const entradas = this.configuracionRazaActiva
+      ? [[this.habilidadEquipada, this.obtenerDatosVisuales()]]
+      : Object.entries(this.catalogo);
+
+    if (this.configuracionRazaActiva) {
+      if (this.interfaz.tituloModal) {
+        this.interfaz.tituloModal.textContent =
+          `${this.configuracionRazaActiva.icono} ${this.configuracionRazaActiva.nombre}`;
+      }
+
+      if (this.interfaz.descripcionModal) {
+        this.interfaz.descripcionModal.textContent =
+          `Habilidad exclusiva de ${this.configuracionRazaActiva.nombreRaza}. Se equipa automáticamente.`;
+      }
+    }
+
+    entradas.forEach(([id, datos]) => {
       const opcion = document.createElement("button");
       opcion.type = "button";
       opcion.className = "ability-option";
@@ -130,6 +313,13 @@ window.SistemaHabilidades = {
         <span class="ability-option-check" aria-hidden="true">✓</span>
       `;
       opcion.addEventListener("click", () => {
+        if (this.configuracionRazaActiva) {
+          this.mostrarMensaje(
+            `${this.configuracionRazaActiva.icono} ${this.configuracionRazaActiva.nombre} pertenece a ${this.configuracionRazaActiva.nombreRaza}`
+          );
+          return;
+        }
+
         this.equipar(id);
         this.cerrarSelector();
       });
@@ -163,6 +353,11 @@ window.SistemaHabilidades = {
   },
 
   equipar(id) {
+    if (this.configuracionRazaActiva) {
+      this.mostrarMensaje("🐾 La habilidad depende de la raza equipada");
+      return false;
+    }
+
     if (!this.catalogo[id]) return false;
     this.habilidadEquipada = id;
     window.localStorage.setItem("juniorGame.habilidadEquipada", id);
@@ -403,6 +598,26 @@ window.SistemaHabilidades = {
     }
   }
 };
+
+window.addEventListener("storage", (evento) => {
+  if (evento.key !== "juniorGame.razaEquipada") return;
+
+  window.SistemaHabilidades.sincronizarRazaEquipada();
+  window.SistemaHabilidades.crearInterfaz();
+  window.SistemaHabilidades.actualizarInterfaz();
+});
+
+window.addEventListener("focus", () => {
+  const sistema = window.SistemaHabilidades;
+  const razaAnterior = sistema.razaEquipada;
+
+  sistema.sincronizarRazaEquipada();
+
+  if (razaAnterior !== sistema.razaEquipada) {
+    sistema.crearInterfaz();
+    sistema.actualizarInterfaz();
+  }
+});
 
 window.addEventListener("DOMContentLoaded", () => {
   window.setTimeout(() => window.SistemaHabilidades.iniciar(), 140);

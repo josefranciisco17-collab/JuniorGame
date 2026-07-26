@@ -15,7 +15,9 @@ import {
 import {
   doc,
   getDoc,
+  setDoc,
   updateDoc,
+  onSnapshot,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
@@ -96,6 +98,7 @@ const profileMessage =
 
 let usuarioActual = null;
 let datosActuales = null;
+let detenerEscuchaPerfil = null;
 
 
 /* =========================================
@@ -167,6 +170,167 @@ function formatearFecha(fechaFirebase) {
 
 
 /* =========================================
+   NORMALIZAR PERFIL
+========================================= */
+
+function normalizarDatosPerfil(datos = {}) {
+  const monedas = Math.max(
+    0,
+    Math.floor(
+      obtenerNumero(
+        datos.coins ??
+        datos.monedas,
+        0
+      )
+    )
+  );
+
+  const diamantes = Math.max(
+    0,
+    Math.floor(
+      obtenerNumero(
+        datos.diamonds ??
+        datos.diamantes,
+        0
+      )
+    )
+  );
+
+  const record = Math.max(
+    0,
+    Math.floor(
+      obtenerNumero(
+        datos.recordHuesos ??
+        datos.record,
+        0
+      )
+    )
+  );
+
+  const huesos = Math.max(
+    0,
+    Math.floor(
+      obtenerNumero(
+        datos.huesosRecolectados,
+        0
+      )
+    )
+  );
+
+  const nivel = Math.max(
+    1,
+    Math.floor(
+      obtenerNumero(
+        datos.nivelActual ??
+        datos.progreso?.nivelActual ??
+        datos.nivel,
+        1
+      )
+    )
+  );
+
+  return {
+    ...datos,
+
+    coins: monedas,
+    monedas,
+
+    diamonds: diamantes,
+    diamantes,
+
+    recordHuesos: record,
+    record,
+
+    huesosRecolectados: huesos,
+
+    nivelActual: nivel,
+    nivel,
+
+    vidas: Math.max(
+      0,
+      Math.floor(
+        obtenerNumero(datos.vidas, 3)
+      )
+    ),
+
+    progreso: {
+      ...(datos.progreso || {}),
+      nivelActual: nivel
+    }
+  };
+}
+
+async function asegurarCamposPerfil(
+  referenciaUsuario,
+  datos
+) {
+  const normalizados =
+    normalizarDatosPerfil(datos);
+
+  const necesitaSincronizacion =
+    datos.coins !== normalizados.coins ||
+    datos.monedas !== normalizados.monedas ||
+    datos.diamonds !== normalizados.diamonds ||
+    datos.diamantes !== normalizados.diamantes ||
+    datos.recordHuesos !== normalizados.recordHuesos ||
+    datos.record !== normalizados.record ||
+    datos.nivelActual !== normalizados.nivelActual ||
+    datos.nivel !== normalizados.nivel ||
+    datos.progreso?.nivelActual !==
+      normalizados.progreso.nivelActual ||
+    datos.ultimaPartidaHuesos === undefined;
+
+  if (necesitaSincronizacion) {
+    await setDoc(
+      referenciaUsuario,
+      {
+        coins: normalizados.coins,
+        monedas: normalizados.monedas,
+
+        diamonds: normalizados.diamonds,
+        diamantes: normalizados.diamantes,
+
+        recordHuesos:
+          normalizados.recordHuesos,
+        record:
+          normalizados.record,
+
+        huesosRecolectados:
+          normalizados.huesosRecolectados,
+
+        ultimaPartidaHuesos:
+          Math.max(
+            0,
+            Math.floor(
+              obtenerNumero(
+                datos.ultimaPartidaHuesos,
+                0
+              )
+            )
+          ),
+
+        nivelActual:
+          normalizados.nivelActual,
+        nivel:
+          normalizados.nivel,
+
+        progreso:
+          normalizados.progreso,
+
+        perfilSincronizadoEn:
+          serverTimestamp()
+      },
+      {
+        merge: true
+      }
+    );
+  }
+
+  return normalizados;
+}
+
+
+/* =========================================
    MOSTRAR DATOS
 ========================================= */
 
@@ -174,6 +338,8 @@ function colocarDatosEnPerfil(
   usuario,
   datos
 ) {
+  datos = normalizarDatosPerfil(datos);
+
   const nombre =
     datos.customName ||
     datos.displayName ||
@@ -292,12 +458,48 @@ async function cargarPerfil() {
     }
 
     datosActuales =
-      documentoUsuario.data();
+      await asegurarCamposPerfil(
+        referenciaUsuario,
+        documentoUsuario.data()
+      );
 
     colocarDatosEnPerfil(
       usuarioActual,
       datosActuales
     );
+
+    /*
+      Mantiene el perfil sincronizado mientras está abierto.
+      Cuando termina una partida o cambia un saldo, los
+      contadores se actualizan sin depender de la caché.
+    */
+    detenerEscuchaPerfil?.();
+
+    detenerEscuchaPerfil =
+      onSnapshot(
+        referenciaUsuario,
+        (documento) => {
+          if (!documento.exists()) {
+            return;
+          }
+
+          datosActuales =
+            normalizarDatosPerfil(
+              documento.data()
+            );
+
+          colocarDatosEnPerfil(
+            usuarioActual,
+            datosActuales
+          );
+        },
+        (error) => {
+          console.warn(
+            "No se pudo actualizar el perfil en tiempo real:",
+            error
+          );
+        }
+      );
 
     return true;
 
@@ -344,6 +546,9 @@ function cerrarPerfil() {
     return;
   }
 
+  detenerEscuchaPerfil?.();
+  detenerEscuchaPerfil = null;
+
   profilePanel.classList.add("hidden");
   limpiarMensaje();
 }
@@ -383,6 +588,19 @@ document.addEventListener(
   (evento) => {
     if (evento.key === "Escape") {
       cerrarPerfil();
+    }
+  }
+);
+
+window.addEventListener(
+  "juniorgame:menu-visible",
+  () => {
+    if (
+      usuarioActual &&
+      profilePanel &&
+      !profilePanel.classList.contains("hidden")
+    ) {
+      cargarPerfil();
     }
   }
 );

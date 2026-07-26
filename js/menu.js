@@ -34,9 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const settingsButton =
     document.getElementById("settingsButton");
 
-    document.getElementById("howToPlayButton");
-    const howToPlayButton =
-
+  const howToPlayButton =
     document.getElementById("howToPlayButton");
 
 const adminConsoleButton =
@@ -121,6 +119,24 @@ window.location.href = "shop.html";
     (event) => {
       if (event.key === "Escape") {
         cerrarModal();
+      }
+    }
+  );
+
+  /*
+    Al regresar desde una partida, la pantalla del menú
+    queda disponible para que profile.js consulte Firestore
+    nuevamente y muestre los contadores recién guardados.
+  */
+  document.addEventListener(
+    "visibilitychange",
+    () => {
+      if (!document.hidden) {
+        window.dispatchEvent(
+          new CustomEvent(
+            "juniorgame:menu-visible"
+          )
+        );
       }
     }
   );

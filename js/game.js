@@ -677,6 +677,30 @@ configurarBotonesModal() {
     });
   },
 
+  obtenerNivelActual() {
+    const candidatos = [
+      window.SistemaNiveles?.nivelActual,
+      window.SistemaNiveles?.estado?.nivelActual,
+      window.SistemaNiveles?.estado?.nivel,
+      window.SistemaNiveles?.nivel,
+      1
+    ];
+
+    for (const candidato of candidatos) {
+      const nivel =
+        Math.floor(Number(candidato));
+
+      if (
+        Number.isFinite(nivel) &&
+        nivel >= 1
+      ) {
+        return nivel;
+      }
+    }
+
+    return 1;
+  },
+
   async guardarEstadisticasPartida() {
     const puntosPartida =
       Math.max(
@@ -685,6 +709,31 @@ configurarBotonesModal() {
           Number(this.estado.puntos) || 0
         )
       );
+
+    /*
+      estado.monedas y estado.diamantes contienen el total
+      más reciente mostrado en el HUD. Si una recompensa
+      actualizó el contador local pero todavía no Firestore,
+      aquí se conserva el valor mayor sin duplicar premios.
+    */
+    const monedasPartida =
+      Math.max(
+        0,
+        Math.floor(
+          Number(this.estado.monedas) || 0
+        )
+      );
+
+    const diamantesPartida =
+      Math.max(
+        0,
+        Math.floor(
+          Number(this.estado.diamantes) || 0
+        )
+      );
+
+    const nivelPartida =
+      this.obtenerNivelActual();
 
     if (puntosPartida <= 0) {
       return {
@@ -796,28 +845,107 @@ configurarBotonesModal() {
               totalAnterior +
               puntosPartida;
 
+            const monedasAnteriores =
+              Math.max(
+                0,
+                Math.floor(
+                  Number(
+                    datos.coins ??
+                    datos.monedas ??
+                    0
+                  ) || 0
+                )
+              );
+
+            const diamantesAnteriores =
+              Math.max(
+                0,
+                Math.floor(
+                  Number(
+                    datos.diamonds ??
+                    datos.diamantes ??
+                    0
+                  ) || 0
+                )
+              );
+
+            const nivelAnterior =
+              Math.max(
+                1,
+                Math.floor(
+                  Number(
+                    datos.nivelActual ??
+                    datos.progreso?.nivelActual ??
+                    datos.nivel ??
+                    1
+                  ) || 1
+                )
+              );
+
+            /*
+              Se usa el valor mayor para:
+              - guardar recompensas locales pendientes;
+              - respetar depósitos hechos por ruleta/tienda/cajas;
+              - evitar sumar dos veces una recompensa ya escrita.
+            */
+            const monedasFinales =
+              Math.max(
+                monedasAnteriores,
+                monedasPartida
+              );
+
+            const diamantesFinales =
+              Math.max(
+                diamantesAnteriores,
+                diamantesPartida
+              );
+
+            const nivelFinal =
+              Math.max(
+                nivelAnterior,
+                nivelPartida
+              );
+
+            const partidasAnteriores =
+              Math.max(
+                0,
+                Math.floor(
+                  Number(
+                    datos.progreso?.partidasJugadas ??
+                    0
+                  ) || 0
+                )
+              );
+
             const cambios = {
               recordHuesos: nuevoRecord,
+              record: nuevoRecord,
+
               huesosRecolectados: nuevoTotal,
               ultimaPartidaHuesos:
                 puntosPartida,
+
+              coins: monedasFinales,
+              monedas: monedasFinales,
+
+              diamonds: diamantesFinales,
+              diamantes: diamantesFinales,
+
+              nivelActual: nivelFinal,
+              nivel: nivelFinal,
+
+              progreso: {
+                ...(datos.progreso || {}),
+                nivelActual: nivelFinal,
+                partidasJugadas:
+                  partidasAnteriores + 1,
+                ultimaPuntuacion:
+                  puntosPartida
+              },
+
               estadisticasActualizadasEn:
                 serverTimestamp()
             };
-
-            /*
-              Conservamos también "record" para que
-              otras pantallas antiguas sigan funcionando.
-            */
-            if (
-              nuevoRecord >
-              Math.max(
-                0,
-                Number(datos.record) || 0
-              )
-            ) {
-              cambios.record = nuevoRecord;
-            }
 
             transaccion.set(
               referenciaUsuario,
@@ -829,7 +957,10 @@ configurarBotonesModal() {
 
             return {
               recordHuesos: nuevoRecord,
-              huesosRecolectados: nuevoTotal
+              huesosRecolectados: nuevoTotal,
+              monedas: monedasFinales,
+              diamantes: diamantesFinales,
+              nivelActual: nivelFinal
             };
           }
         );

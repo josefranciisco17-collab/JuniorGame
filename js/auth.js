@@ -210,12 +210,26 @@ async function crearPerfilJugador(
               nombre,
               email: usuario.email,
 
+              /*
+                Recursos canónicos y aliases de compatibilidad.
+                Se guardan ambos nombres para que las pantallas
+                antiguas y nuevas siempre lean el mismo saldo.
+              */
+              coins: 0,
               monedas: 0,
+              diamonds: 0,
+              diamantes: 0,
+
               vidas: 3,
+
+              recordHuesos: 0,
               record: 0,
+              huesosRecolectados: 0,
+              ultimaPartidaHuesos: 0,
+
+              nivelActual: 1,
               nivel: 1,
               experiencia: 0,
-              huesosRecolectados: 0,
 
               settings: {
                 musicaActivada: true,

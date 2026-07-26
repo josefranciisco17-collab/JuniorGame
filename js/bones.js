@@ -65,15 +65,26 @@ window.JuniorBones = {
     const esPoder = nivelActual >= 3 && Math.random() < 0.045;
     const esDorado = !esPoder && Math.random() < 0.08;
 
-    const imagen = document.createElement("img");
+    const objetoMundo = window.SistemaMundos?.obtenerObjetoCaida?.();
+    const imagen = objetoMundo
+      ? document.createElement("div")
+      : document.createElement("img");
 
-    imagen.className = esPoder ? "falling-bone power-bone" : "falling-bone";
-    imagen.draggable = false;
-    imagen.alt = "";
+    imagen.className = objetoMundo
+      ? "falling-bone secret-world-object"
+      : (esPoder ? "falling-bone power-bone" : "falling-bone");
 
-    imagen.src = esDorado
-      ? juego.rutas.huesoDorado
-      : juego.rutas.huesoNormal;
+    if (objetoMundo) {
+      imagen.textContent = objetoMundo.simbolo;
+      imagen.setAttribute("aria-label", objetoMundo.nombre);
+      imagen.dataset.secretWorldObject = objetoMundo.mundo;
+    } else {
+      imagen.draggable = false;
+      imagen.alt = "";
+      imagen.src = esDorado
+        ? juego.rutas.huesoDorado
+        : juego.rutas.huesoNormal;
+    }
 
     imagen.style.position = "absolute";
     imagen.style.width = `${this.tamanoHueso}px`;
@@ -118,6 +129,7 @@ window.JuniorBones = {
 
       dorado: esDorado,
       poder: esPoder,
+      objetoMundo: Boolean(objetoMundo),
       atrapado: false
     };
 
@@ -267,6 +279,7 @@ if (esPoder) {
 */
 juego.actualizarPuntos(puntos, 1);
 window.SistemaSupervivencia?.registrarCaptura?.({ dorado: esDorado });
+if (this.huesoActual.objetoMundo) window.SistemaMundos?.registrarCapturaObjeto?.();
 
 /*
   Efecto visual independiente. No modifica la puntuación,

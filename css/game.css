@@ -2246,3 +2246,89 @@ body.perro-invulnerable .dog{animation:perroProtegido .55s ease-in-out infinite 
 .pet-toast-out{opacity:0;transform:translateX(-50%) translateY(-18px);transition:.35s ease}
 @keyframes petToastIn{from{opacity:0;transform:translateX(-50%) translateY(-12px) scale(.8)}to{opacity:1;transform:translateX(-50%) scale(1)}}
 @media(max-width:390px){.pet-button{min-width:45px;height:43px;padding:2px 6px}.pet-button-icon{font-size:20px}.active-pet{width:42px;height:42px;font-size:34px}}
+
+
+/* ==========================================================
+   FASE 3 - PORTALES Y MUNDOS SECRETOS
+   ========================================================== */
+.secret-portal{
+  position:absolute;
+  z-index:18;
+  width:92px;
+  height:112px;
+  border:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  color:#fff;
+  background:transparent;
+  cursor:pointer;
+  filter:drop-shadow(0 8px 8px rgba(0,0,0,.45));
+  animation:secretPortalFloat 1.45s ease-in-out infinite;
+}
+.secret-portal-ring{
+  position:absolute;
+  inset:3px 8px 19px;
+  border:7px solid rgba(194,116,255,.9);
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(20,5,55,.92) 25%,rgba(90,12,180,.58) 54%,rgba(255,255,255,.12) 70%);
+  box-shadow:0 0 12px #a55cff,0 0 28px rgba(86,0,255,.9),inset 0 0 18px #39dfff;
+  animation:secretPortalPulse .85s ease-in-out infinite alternate;
+}
+.secret-portal strong{position:relative;z-index:2;font-size:36px;line-height:1;}
+.secret-portal small{position:relative;z-index:2;margin-top:22px;padding:3px 8px;border-radius:999px;background:rgba(0,0,0,.7);font-size:9px;font-weight:1000;letter-spacing:.7px;}
+@keyframes secretPortalFloat{50%{transform:translateY(-9px)}}
+@keyframes secretPortalPulse{to{transform:scale(1.07);filter:hue-rotate(35deg)}}
+
+.secret-world{background-size:cover;background-position:center;}
+.secret-world::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.62;
+  background-image:radial-gradient(circle at 18% 20%,rgba(255,255,255,.7) 0 2px,transparent 3px),radial-gradient(circle at 72% 36%,rgba(255,255,255,.65) 0 2px,transparent 3px),radial-gradient(circle at 45% 68%,rgba(255,255,255,.6) 0 3px,transparent 4px);
+  background-size:110px 130px,150px 160px,190px 180px;
+  animation:secretWorldSparkles 5s linear infinite;
+}
+.secret-world-enchanted{background:linear-gradient(180deg,#081f19 0%,#195b3c 48%,#10301d 100%);}
+.secret-world-ice{background:linear-gradient(180deg,#c8f7ff 0%,#4aa4d8 50%,#dffaff 100%);}
+.secret-world-volcano{background:radial-gradient(circle at 50% 95%,#ffb11b 0 8%,#b52b08 28%,#35100b 65%,#120607 100%);}
+.secret-world-sky{background:linear-gradient(180deg,#218ee7 0%,#b9ebff 57%,#fff1a4 100%);}
+.secret-world-space{background:radial-gradient(circle at 72% 24%,#5f37bb 0 8%,transparent 22%),linear-gradient(180deg,#070621,#151051 55%,#05040f 100%);}
+@keyframes secretWorldSparkles{to{background-position:0 130px,0 160px,0 180px}}
+
+.secret-world-object{
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  font-size:58px;
+  line-height:1;
+  filter:drop-shadow(0 0 9px rgba(255,255,255,.9)) drop-shadow(0 5px 4px rgba(0,0,0,.35));
+  animation:secretObjectSpin 1.35s ease-in-out infinite alternate;
+}
+@keyframes secretObjectSpin{to{transform:rotate(18deg) scale(1.12)}}
+
+.secret-world-timer{
+  position:absolute;
+  top:calc(max(12px,env(safe-area-inset-top)) + 156px);
+  right:14px;
+  z-index:28;
+  min-width:76px;
+  height:42px;
+  padding:5px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  border:2px solid #d9b1ff;
+  border-radius:16px;
+  color:#fff;
+  background:linear-gradient(180deg,rgba(91,32,157,.96),rgba(28,7,61,.96));
+  box-shadow:0 4px 0 #160326,0 7px 16px rgba(0,0,0,.35),0 0 18px rgba(177,83,255,.5);
+}
+.secret-world-timer.hidden{display:none;}
+.secret-world-timer span{font-size:20px}.secret-world-timer strong{font-size:20px}.secret-world-timer small{font-size:11px;font-weight:900}

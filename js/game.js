@@ -193,6 +193,7 @@ window.JuniorGame = {
     this.configurarBotonesModal();
     this.configurarMusicaFondo();
     this.iniciarContadoresRecursos();
+    window.SistemaMundos?.iniciar?.();
 
     /*
       Inicia las cajas cuando el juego y sus elementos ya existen.
@@ -831,6 +832,7 @@ configurarBotonesModal() {
     window.SistemaCajas?.detener?.();
     window.SistemaEnemigos?.detener?.();
     window.SistemaSupervivencia?.detener?.();
+    window.SistemaMundos?.detener?.();
 
 /*
   Audio de final de partida.

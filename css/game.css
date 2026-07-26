@@ -1571,7 +1571,7 @@ a {
 
 @media (max-width:390px){
   .resource-hud{
-top: calc(max(10px, env(safe-area-inset-top)) + 130px);
+top: calc(max(10px, env(safe-area-inset-top)) + 150px);
     left:10px;
     width:142px;
     gap:4px;
@@ -1590,7 +1590,7 @@ top: calc(max(10px, env(safe-area-inset-top)) + 130px);
 
 @media (max-height:700px){
   .resource-hud{
-top: calc(max(9px, env(safe-area-inset-top)) + 130px);
+top: calc(max(9px, env(safe-area-inset-top)) + 150px);
   }
 }
 

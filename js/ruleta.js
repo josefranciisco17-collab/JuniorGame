@@ -396,6 +396,9 @@ window.SistemaRuleta = {
     if (!disponible) return;
 
     this.girando = true;
+    window.AudioFX?.detenerRuleta?.();
+    window.AudioFX?.iniciarRuleta?.();
+
     this.interfaz.botonGirar && (this.interfaz.botonGirar.disabled = true);
     this.interfaz.resultado?.classList.add("hidden");
     if (this.interfaz.estado) this.interfaz.estado.textContent = "La ruleta está girando…";
@@ -433,6 +436,7 @@ window.SistemaRuleta = {
         this.interfaz.estado.textContent = error?.message || "No fue posible entregar el premio.";
       }
     } finally {
+      window.AudioFX?.detenerRuleta?.();
       this.girando = false;
 
       if (this.interfaz.rueda) {

@@ -68,6 +68,12 @@
       instancias: 3
     },
 
+    ruleta: {
+      archivo: "ruleta.mp3",
+      volumen: 0.72,
+      instancias: 1
+    },
+
     perro: {
       archivo: "dog.mp3",
       volumen: 0.75,
@@ -392,6 +398,68 @@
   }
 
   /*
+    Inicia el sonido continuo de la ruleta.
+    Se mantiene en bucle hasta llamar detenerRuleta().
+  */
+  function iniciarRuleta() {
+
+    if (
+      silenciado ||
+      efectosSilenciados
+    ) {
+      return;
+    }
+
+    const audio = bancos.ruleta?.[0];
+
+    if (!audio) {
+      console.warn("AudioFX: sonido de ruleta no encontrado.");
+      return;
+    }
+
+    try {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.loop = true;
+      audio.volume =
+        CONFIGURACION.ruleta.volumen *
+        volumenEfectos;
+
+      const promesa = audio.play();
+
+      if (
+        promesa &&
+        typeof promesa.catch === "function"
+      ) {
+        promesa.catch(() => {
+          // El navegador puede exigir una interacción previa.
+        });
+      }
+    } catch (error) {
+      console.warn(
+        "AudioFX: no se pudo iniciar el sonido de ruleta",
+        error
+      );
+    }
+  }
+
+  /*
+    Detiene y reinicia el sonido de la ruleta.
+  */
+  function detenerRuleta() {
+
+    const audio = bancos.ruleta?.[0];
+
+    if (!audio) {
+      return;
+    }
+
+    audio.pause();
+    audio.currentTime = 0;
+    audio.loop = false;
+  }
+
+  /*
     Inicia la música de fondo.
   */
   function reproducirMusica() {
@@ -609,6 +677,9 @@
     bonus() {
       reproducir("bonus");
     },
+
+    iniciarRuleta,
+    detenerRuleta,
 
     perro() {
       reproducir("perro");

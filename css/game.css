@@ -2521,3 +2521,100 @@ body.perro-invulnerable .dog{animation:perroProtegido .55s ease-in-out infinite 
   pointer-events: none;
 }
 
+
+
+/* ==========================================================
+   FASE 4 — HABILIDADES EXCLUSIVAS DE RAZA
+   ========================================================== */
+
+.raza-estallido{
+  position:absolute;
+  z-index:45;
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  font-size:58px;
+  filter:drop-shadow(0 6px 5px rgba(0,0,0,.38));
+  animation:razaEstallido .85s ease-out forwards;
+}
+
+@keyframes razaEstallido{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.25) rotate(-15deg)}
+  35%{opacity:1;transform:translate(-50%,-50%) scale(1.2) rotate(8deg)}
+  100%{opacity:0;transform:translate(-50%,-90%) scale(1.8) rotate(20deg)}
+}
+
+.obstaculo-destruido-habilidad{
+  animation:obstaculoHabilidad .28s ease-out forwards!important;
+}
+
+@keyframes obstaculoHabilidad{
+  to{opacity:0;transform:scale(1.8) rotate(35deg);filter:brightness(2)}
+}
+
+body.raza-tormenta-activa .game-area{
+  filter:saturate(.72) brightness(1.08) hue-rotate(165deg);
+}
+
+body.raza-tormenta-activa #gameArea::after{
+  content:"❄ TORMENTA POLAR";
+  position:absolute;
+  left:50%;
+  top:27%;
+  z-index:26;
+  transform:translateX(-50%);
+  padding:7px 14px;
+  border:2px solid #dffaff;
+  border-radius:999px;
+  color:#effdff;
+  background:rgba(20,92,142,.78);
+  box-shadow:0 0 20px rgba(120,225,255,.82);
+  font-size:12px;
+  font-weight:1000;
+  pointer-events:none;
+}
+
+body.raza-fortuna-activa .falling-bone{
+  filter:drop-shadow(0 0 13px rgba(255,224,69,1)) drop-shadow(0 4px 3px rgba(0,0,0,.35));
+}
+
+body.raza-aurora-activa .game-area{
+  animation:auroraRaza 2.3s ease-in-out infinite alternate;
+}
+
+@keyframes auroraRaza{
+  from{filter:hue-rotate(0deg) saturate(1.05)}
+  to{filter:hue-rotate(48deg) saturate(1.35) brightness(1.08)}
+}
+
+body.raza-furia-activa .dog{
+  animation:furiaRaza .22s ease-in-out infinite alternate;
+}
+
+@keyframes furiaRaza{
+  from{filter:drop-shadow(0 0 8px #ffb13b) drop-shadow(0 10px 7px rgba(0,0,0,.42))}
+  to{filter:drop-shadow(0 0 22px #ff3b20) drop-shadow(0 10px 7px rgba(0,0,0,.42));transform:scale(1.04)}
+}
+
+body.raza-lealtad-activa .dog,
+body.raza-guardia-activa .dog,
+body.raza-protector-activa .dog{
+  filter:drop-shadow(0 0 18px rgba(255,238,126,.95)) drop-shadow(0 10px 7px rgba(0,0,0,.42));
+}
+
+body.raza-torbellino-activa .falling-bone{
+  animation:huesoTorbellino .45s linear infinite;
+}
+
+@keyframes huesoTorbellino{
+  to{transform:rotate(360deg)}
+}
+
+body.raza-olfato-activa .falling-bone,
+.hueso-olfato{
+  filter:drop-shadow(0 0 17px #7dff77) drop-shadow(0 4px 3px rgba(0,0,0,.35));
+}
+
+body.raza-fantasma-activa .dog{
+  opacity:.58;
+  filter:drop-shadow(0 0 18px rgba(194,224,255,.95));
+}

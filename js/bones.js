@@ -63,7 +63,9 @@ window.JuniorBones = {
 
     const nivelActual = Math.max(1, Number(window.SistemaNiveles?.nivelActual) || 1);
     const esPoder = nivelActual >= 3 && Math.random() < 0.045;
-    const esDorado = !esPoder && Math.random() < 0.08;
+    const probabilidadDorado =
+      window.SistemaHabilidades?.modificarProbabilidadDorado?.(0.08) ?? 0.08;
+    const esDorado = !esPoder && Math.random() < probabilidadDorado;
 
     const objetoMundo = window.SistemaMundos?.obtenerObjetoCaida?.();
     const imagen = objetoMundo
@@ -174,8 +176,14 @@ window.JuniorBones = {
     const multiplicadorTiempo =
       window.SistemaSupervivencia?.obtenerMultiplicadorTiempo?.() ?? 1;
 
+    const multiplicadorHabilidad =
+      window.SistemaHabilidades?.obtenerMultiplicadorObjetos?.() ?? 1;
+
     this.huesoActual.y +=
-      this.huesoActual.velocidad * deltaTime * multiplicadorTiempo;
+      this.huesoActual.velocidad *
+      deltaTime *
+      multiplicadorTiempo *
+      multiplicadorHabilidad;
 
     /*
       La habilidad Imán acerca progresivamente el hueso al centro
@@ -245,12 +253,17 @@ const colision =
   rectHueso.bottom > limiteSuperior &&
   rectHueso.top < limiteInferior;
 
-    if (!colision) {
+    const autoCaptura =
+      window.SistemaHabilidades?.debeAutoCapturar?.() &&
+      rectHueso.bottom > rectPerro.top - rectPerro.height * 1.15;
+
+    if (!colision && !autoCaptura) {
       return;
     }
 
-
-
+    if (autoCaptura) {
+      window.SistemaHabilidades?.consumirAutoCaptura?.();
+    }
 
 this.huesoActual.atrapado = true;
 
@@ -278,6 +291,11 @@ if (esPoder) {
   pero ambos tipos avanzan solo 1 unidad en la barra de nivel.
 */
 juego.actualizarPuntos(puntos, 1);
+window.SistemaHabilidades?.alAtraparHueso?.({
+  dorado: esDorado,
+  poder: esPoder,
+  elemento: this.huesoActual?.elemento || null
+});
 window.SistemaSupervivencia?.registrarCaptura?.({ dorado: esDorado });
 window.SistemaMisiones?.registrar?.("hueso_atrapado", 1, { dorado: esDorado, poder: esPoder });
 if (esDorado) window.SistemaMisiones?.registrar?.("hueso_dorado", 1);
@@ -351,7 +369,12 @@ this.eliminarHueso();
   El hueso dorado solo desaparece.
 */
 if (!eraDorado && !eraPoder) {
-  juego.perderVida();
+  const protegido =
+    window.SistemaHabilidades?.evitarHuesoPerdido?.() === true;
+
+  if (!protegido) {
+    juego.perderVida();
+  }
 }
 }
 },

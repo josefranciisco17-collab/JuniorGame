@@ -22,6 +22,8 @@ window.SistemaHabilidades = {
   configuracionRazaActiva: null,
   enfriamientosHasta: {},
   efectosHasta: {},
+  cargasTemporales: {},
+  velocidadOriginal: null,
   temporizadorEscudo: null,
   cuadroAnimacion: null,
   interfaz: {},
@@ -31,121 +33,161 @@ window.SistemaHabilidades = {
       nombreRaza: "Chihuahua",
       nombre: "Superladrido",
       icono: "🔊",
-      habilidadBase: "ladrido"
+      habilidadBase: "ladrido",
+      metodoExclusivo: "usarSuperladrido",
+      recarga: 16000
     },
     "raza-beagle": {
       nombreRaza: "Beagle",
       nombre: "Olfato Maestro",
       icono: "👃",
-      habilidadBase: "iman"
+      habilidadBase: "iman",
+      metodoExclusivo: "usarOlfatoMaestro",
+      recarga: 22000
     },
     "raza-bulldog": {
       nombreRaza: "Bulldog",
       nombre: "Impacto",
       icono: "💥",
-      habilidadBase: "escudo"
+      habilidadBase: "escudo",
+      metodoExclusivo: "usarImpacto",
+      recarga: 20000
     },
     "raza-husky": {
       nombreRaza: "Husky Siberiano",
       nombre: "Tormenta Polar",
       icono: "❄️",
-      habilidadBase: "tiempoLento"
+      habilidadBase: "tiempoLento",
+      metodoExclusivo: "usarTormentaPolar",
+      recarga: 28000
     },
     "raza-golden": {
       nombreRaza: "Golden Retriever",
       nombre: "Buena Fortuna",
       icono: "🍀",
-      habilidadBase: "iman"
+      habilidadBase: "iman",
+      metodoExclusivo: "usarBuenaFortuna",
+      recarga: 26000
     },
     "raza-pastor-aleman": {
       nombreRaza: "Pastor Alemán",
       nombre: "Comandante",
       icono: "🐕‍🦺",
-      habilidadBase: "escudo"
+      habilidadBase: "escudo",
+      metodoExclusivo: "usarComandante",
+      recarga: 26000
     },
     "raza-dalmata": {
       nombreRaza: "Dálmata",
       nombre: "Rebote",
       icono: "🔁",
-      habilidadBase: "dobleSalto"
+      habilidadBase: "dobleSalto",
+      metodoExclusivo: "usarRebote",
+      recarga: 18000
     },
     "raza-doberman": {
       nombreRaza: "Doberman",
       nombre: "Furia",
       icono: "🔥",
-      habilidadBase: "dash"
+      habilidadBase: "dash",
+      metodoExclusivo: "usarFuria",
+      recarga: 22000
     },
     "raza-border-collie": {
       nombreRaza: "Border Collie",
       nombre: "Mente Ágil",
       icono: "🧠",
-      habilidadBase: "tiempoLento"
+      habilidadBase: "tiempoLento",
+      metodoExclusivo: "usarMenteAgil",
+      recarga: 24000
     },
     "raza-poodle": {
       nombreRaza: "Poodle",
       nombre: "Magia Canina",
       icono: "🪄",
-      habilidadBase: "ladrido"
+      habilidadBase: "ladrido",
+      metodoExclusivo: "usarMagiaCanina",
+      recarga: 22000
     },
     "raza-rottweiler": {
       nombreRaza: "Rottweiler",
       nombre: "Guardia",
       icono: "🛡️",
-      habilidadBase: "escudo"
+      habilidadBase: "escudo",
+      metodoExclusivo: "usarGuardia",
+      recarga: 26000
     },
     "raza-shiba": {
       nombreRaza: "Shiba Inu",
       nombre: "Travesura Ninja",
       icono: "🥷",
-      habilidadBase: "dash"
+      habilidadBase: "dash",
+      metodoExclusivo: "usarTravesuraNinja",
+      recarga: 14000
     },
     "raza-samoyedo": {
       nombreRaza: "Samoyedo",
       nombre: "Aurora",
       icono: "🌌",
-      habilidadBase: "tiempoLento"
+      habilidadBase: "tiempoLento",
+      metodoExclusivo: "usarAurora",
+      recarga: 28000
     },
     "raza-corgi": {
       nombreRaza: "Corgi",
       nombre: "Energía Feliz",
       icono: "⚡",
-      habilidadBase: "dobleSalto"
+      habilidadBase: "dobleSalto",
+      metodoExclusivo: "usarEnergiaFeliz",
+      recarga: 17000
     },
     "raza-schnauzer": {
       nombreRaza: "Schnauzer",
       nombre: "Torbellino",
       icono: "🌪️",
-      habilidadBase: "iman"
+      habilidadBase: "iman",
+      metodoExclusivo: "usarTorbellino",
+      recarga: 23000
     },
     "raza-labrador": {
       nombreRaza: "Labrador",
       nombre: "Rescate",
       icono: "🛟",
-      habilidadBase: "escudo"
+      habilidadBase: "escudo",
+      metodoExclusivo: "usarRescate",
+      recarga: 30000
     },
     "raza-san-bernardo": {
       nombreRaza: "San Bernardo",
       nombre: "Protector",
       icono: "❤️",
-      habilidadBase: "escudo"
+      habilidadBase: "escudo",
+      metodoExclusivo: "usarProtector",
+      recarga: 32000
     },
     "raza-akita": {
       nombreRaza: "Akita",
       nombre: "Espíritu Leal",
       icono: "✨",
-      habilidadBase: "tiempoLento"
+      habilidadBase: "tiempoLento",
+      metodoExclusivo: "usarEspirituLeal",
+      recarga: 25000
     },
     "raza-galgo": {
       nombreRaza: "Galgo",
       nombre: "Paso Fantasma",
       icono: "👻",
-      habilidadBase: "dash"
+      habilidadBase: "dash",
+      metodoExclusivo: "usarPasoFantasma",
+      recarga: 15000
     },
     "raza-pug": {
       nombreRaza: "Pug",
       nombre: "Carisma",
       icono: "🎭",
-      habilidadBase: "ladrido"
+      habilidadBase: "ladrido",
+      metodoExclusivo: "usarCarisma",
+      recarga: 21000
     }
   },
 
@@ -220,7 +262,17 @@ window.SistemaHabilidades = {
     clearInterval(this.temporizadorEscudo);
     this.temporizadorEscudo = null;
     this.efectosHasta = {};
-    document.body.classList.remove("habilidad-iman-activa", "habilidad-dash-activa");
+    this.cargasTemporales = {};
+    this.restaurarVelocidadJugador();
+    document.body.classList.remove(
+      "habilidad-iman-activa",
+      "habilidad-dash-activa",
+      "raza-tormenta-activa",
+      "raza-fortuna-activa",
+      "raza-aurora-activa",
+      "raza-furia-activa",
+      "raza-lealtad-activa"
+    );
   },
 
   sincronizarRazaEquipada() {
@@ -252,7 +304,8 @@ window.SistemaHabilidades = {
         ...habilidad,
         nombre: this.configuracionRazaActiva.nombre,
         icono: this.configuracionRazaActiva.icono,
-        nombreRaza: this.configuracionRazaActiva.nombreRaza
+        nombreRaza: this.configuracionRazaActiva.nombreRaza,
+        recarga: this.configuracionRazaActiva.recarga || habilidad.recarga
       };
     }
 
@@ -395,14 +448,20 @@ window.SistemaHabilidades = {
       juego?.estado?.iniciado &&
       !juego.estado.pausado &&
       !juego.estado.terminado &&
-      performance.now() >= (this.enfriamientosHasta[id] || 0)
+      performance.now() >= (
+        this.enfriamientosHasta[this.razaEquipada || id] || 0
+      )
     );
   },
 
   iniciarRecarga(id) {
     const habilidad = this.catalogo[id];
     if (!habilidad) return;
-    this.enfriamientosHasta[id] = performance.now() + habilidad.recarga;
+
+    const recarga = this.configuracionRazaActiva?.recarga || habilidad.recarga;
+    const clave = this.razaEquipada || id;
+
+    this.enfriamientosHasta[clave] = performance.now() + recarga;
     this.actualizarInterfaz();
   },
 
@@ -417,6 +476,8 @@ window.SistemaHabilidades = {
       return false;
     }
 
+    const metodoExclusivo = this.configuracionRazaActiva?.metodoExclusivo;
+
     const metodos = {
       dash: () => this.usarDash(),
       dobleSalto: () => this.usarDobleSalto(),
@@ -426,10 +487,15 @@ window.SistemaHabilidades = {
       tiempoLento: () => this.usarTiempoLento()
     };
 
-    const ejecutada = Boolean(metodos[id]?.());
+    const ejecutada = metodoExclusivo && typeof this[metodoExclusivo] === "function"
+      ? Boolean(this[metodoExclusivo]())
+      : Boolean(metodos[id]?.());
     if (ejecutada) {
       this.iniciarRecarga(id);
-      window.SistemaMisiones?.registrar?.("habilidad_usada", 1, { habilidad: id });
+      window.SistemaMisiones?.registrar?.("habilidad_usada", 1, {
+        habilidad: this.razaEquipada || id,
+        habilidadBase: id
+      });
     }
     return ejecutada;
   },
@@ -528,6 +594,341 @@ window.SistemaHabilidades = {
     return true;
   },
 
+
+  activarEfecto(id, duracion, claseBody = "") {
+    this.efectosHasta[id] = performance.now() + duracion;
+
+    if (claseBody) {
+      document.body.classList.add(claseBody);
+      window.setTimeout(() => {
+        if (!this.estaActiva(id)) document.body.classList.remove(claseBody);
+      }, duracion + 100);
+    }
+  },
+
+  eliminarObstaculoActual(motivo = "habilidad") {
+    const sistema = window.SistemaObstaculos;
+    const obstaculo = sistema?.obstaculoActual;
+
+    if (!obstaculo) return false;
+
+    obstaculo.golpeado = true;
+    obstaculo.elemento.classList.add("obstaculo-destruido-habilidad");
+    window.setTimeout(() => sistema.eliminarObstaculo?.(), 260);
+    window.SistemaMisiones?.registrar?.("obstaculo_destruido", 1, { motivo });
+    return true;
+  },
+
+  derrotarEnemigoActual(motivo = "habilidad") {
+    const sistema = window.SistemaEnemigos;
+    if (!sistema?.enemigoActual) return false;
+    sistema.derrotarEnemigo?.(motivo);
+    return true;
+  },
+
+  crearEstallido(simbolo, clase = "") {
+    const area = window.JuniorGame?.elementos?.areaJuego;
+    const perro = window.JuniorGame?.elementos?.perro;
+    if (!area || !perro) return;
+
+    const efecto = document.createElement("span");
+    efecto.className = `raza-estallido ${clase}`.trim();
+    efecto.textContent = simbolo;
+
+    const rectArea = area.getBoundingClientRect();
+    const rectPerro = perro.getBoundingClientRect();
+    efecto.style.left = `${rectPerro.left - rectArea.left + rectPerro.width / 2}px`;
+    efecto.style.top = `${rectPerro.top - rectArea.top + rectPerro.height / 2}px`;
+
+    area.appendChild(efecto);
+    window.setTimeout(() => efecto.remove(), 900);
+  },
+
+  usarSuperladrido() {
+    const destruyo = this.eliminarObstaculoActual("superladrido");
+    const derroto = this.derrotarEnemigoActual("superladrido");
+    this.crearEstallido("🔊", "estallido-ladrido");
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje(
+      destruyo || derroto
+        ? "🔊 ¡Superladrido! Peligro despejado"
+        : "🔊 ¡Superladrido!"
+    );
+    return true;
+  },
+
+  usarOlfatoMaestro() {
+    this.activarEfecto("iman", 10000, "habilidad-iman-activa");
+    this.activarEfecto("olfato", 10000, "raza-olfato-activa");
+    this.cargasTemporales.autoCapturas = 1;
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("👃 ¡Olfato Maestro! El próximo hueso no escapará");
+    return true;
+  },
+
+  usarImpacto() {
+    const destruyo = this.eliminarObstaculoActual("impacto");
+    this.crearEstallido("💥", "estallido-impacto");
+    window.SistemaSupervivencia?.activarInvulnerabilidad?.(900);
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje(destruyo ? "💥 ¡Impacto! Obstáculo destruido" : "💥 ¡Impacto protector!");
+    return true;
+  },
+
+  usarTormentaPolar() {
+    this.activarEfecto("tormentaPolar", 9000, "raza-tormenta-activa");
+    this.activarEfecto("congelarObjetos", 9000);
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("❄️ ¡Tormenta Polar! Todo cae más despacio");
+    return true;
+  },
+
+  usarBuenaFortuna() {
+    this.activarEfecto("buenaFortuna", 12000, "raza-fortuna-activa");
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("🍀 ¡Buena Fortuna! Aumentan los huesos dorados");
+    return true;
+  },
+
+  usarComandante() {
+    this.cargasTemporales.autoCapturas = 3;
+    this.crearEstallido("🐕‍🦺", "estallido-comandante");
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("🐕‍🦺 ¡Comandante! La manada atrapará 3 huesos");
+    return true;
+  },
+
+  usarRebote() {
+    this.cargasTemporales.rebotes = 5;
+    this.activarEfecto("rebote", 14000, "raza-rebote-activa");
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("🔁 ¡Rebote! Los próximos 5 huesos dan punto extra");
+    return true;
+  },
+
+  usarFuria() {
+    const jugador = window.JuniorPlayer;
+    if (!jugador) return false;
+
+    this.restaurarVelocidadJugador();
+    this.velocidadOriginal = jugador.velocidadMovimiento;
+    jugador.velocidadMovimiento = Math.round(this.velocidadOriginal * 1.55);
+    this.activarEfecto("furia", 8000, "raza-furia-activa");
+    window.SistemaSupervivencia?.activarInvulnerabilidad?.(1200);
+
+    window.setTimeout(() => this.restaurarVelocidadJugador(), 8100);
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("🔥 ¡Furia! Movimiento acelerado");
+    return true;
+  },
+
+  restaurarVelocidadJugador() {
+    const jugador = window.JuniorPlayer;
+    if (jugador && this.velocidadOriginal) {
+      jugador.velocidadMovimiento = this.velocidadOriginal;
+    }
+    this.velocidadOriginal = null;
+  },
+
+  usarMenteAgil() {
+    this.activarEfecto("menteAgil", 10000, "raza-mente-activa");
+    this.activarEfecto("congelarObjetos", 10000);
+    this.cargasTemporales.rebotes = 3;
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("🧠 ¡Mente Ágil! Tiempo lento y 3 puntos extra");
+    return true;
+  },
+
+  usarMagiaCanina() {
+    const obstaculo = window.SistemaObstaculos?.obstaculoActual;
+    if (obstaculo) {
+      this.eliminarObstaculoActual("magia");
+      window.JuniorGame?.actualizarPuntos?.(3, 1);
+      this.crearEstallido("🪄", "estallido-magia");
+      this.mostrarMensaje("🪄 ¡Magia Canina! Obstáculo convertido en 3 puntos");
+    } else {
+      this.activarEfecto("buenaFortuna", 8000, "raza-fortuna-activa");
+      this.mostrarMensaje("🪄 ¡Magia Canina! Fortuna temporal");
+    }
+    window.AudioFX?.bonus?.();
+    return true;
+  },
+
+  usarGuardia() {
+    const juego = window.JuniorGame;
+    if (!juego) return false;
+    juego.estado.escudo = Math.max(2, Number(juego.estado.escudo) || 0);
+    juego.actualizarEscudo?.();
+    this.activarEfecto("guardia", 10000, "raza-guardia-activa");
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("🛡️ ¡Guardia! Dos cargas de protección");
+    return true;
+  },
+
+  usarTravesuraNinja() {
+    const jugador = window.JuniorPlayer;
+    const perro = jugador?.obtenerPerro?.();
+    const area = jugador?.obtenerAreaJuego?.();
+    if (!jugador || !perro || !area) return false;
+
+    const limite = Math.max(0, area.clientWidth - perro.offsetWidth);
+    jugador.posicionX = jugador.posicionX < limite / 2 ? limite : 0;
+    perro.style.left = `${jugador.posicionX}px`;
+
+    window.SistemaSupervivencia?.activarInvulnerabilidad?.(900);
+    this.crearEstallido("🥷", "estallido-ninja");
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("🥷 ¡Travesura Ninja! Teletransporte");
+    return true;
+  },
+
+  usarAurora() {
+    this.activarEfecto("aurora", 11000, "raza-aurora-activa");
+    this.activarEfecto("buenaFortuna", 11000);
+    this.activarEfecto("congelarObjetos", 11000);
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("🌌 ¡Aurora! Fortuna y calma durante 11 segundos");
+    return true;
+  },
+
+  usarEnergiaFeliz() {
+    const clave = this.razaEquipada || this.habilidadEquipada;
+    this.enfriamientosHasta[clave] = 0;
+    this.cargasTemporales.rebotes = 2;
+    this.crearEstallido("⚡", "estallido-energia");
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("⚡ ¡Energía Feliz! Dos puntos extra preparados");
+    return true;
+  },
+
+  usarTorbellino() {
+    this.activarEfecto("iman", 12000, "habilidad-iman-activa");
+    this.activarEfecto("torbellino", 12000, "raza-torbellino-activa");
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("🌪️ ¡Torbellino! Atracción reforzada");
+    return true;
+  },
+
+  usarRescate() {
+    const juego = window.JuniorGame;
+    if (!juego) return false;
+
+    const antes = Number(juego.estado.vidas) || 0;
+    juego.estado.vidas = Math.min(juego.estado.vidasMaximas || 10, antes + 1);
+    juego.actualizarVidas?.();
+    this.cargasTemporales.salvacion = 1;
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje(
+      juego.estado.vidas > antes
+        ? "🛟 ¡Rescate! Recuperaste una vida"
+        : "🛟 ¡Rescate preparado para un hueso perdido!"
+    );
+    return true;
+  },
+
+  usarProtector() {
+    const juego = window.JuniorGame;
+    if (!juego) return false;
+
+    juego.estado.escudo = Math.max(3, Number(juego.estado.escudo) || 0);
+    juego.actualizarEscudo?.();
+    this.activarEfecto("protector", 12000, "raza-protector-activa");
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("❤️ ¡Protector! Escudo triple");
+    return true;
+  },
+
+  usarEspirituLeal() {
+    this.cargasTemporales.lealtad = 2;
+    this.activarEfecto("lealtad", 18000, "raza-lealtad-activa");
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje("✨ ¡Espíritu Leal! Perdona 2 huesos escapados");
+    return true;
+  },
+
+  usarPasoFantasma() {
+    const resultado = this.usarDash();
+    if (!resultado) return false;
+    window.SistemaSupervivencia?.activarInvulnerabilidad?.(1800);
+    this.activarEfecto("pasoFantasma", 1800, "raza-fantasma-activa");
+    this.mostrarMensaje("👻 ¡Paso Fantasma!");
+    return true;
+  },
+
+  usarCarisma() {
+    const opciones = [
+      () => {
+        this.cargasTemporales.rebotes = 4;
+        return "🎭 Carisma: 4 puntos extra";
+      },
+      () => {
+        this.activarEfecto("buenaFortuna", 9000, "raza-fortuna-activa");
+        return "🎭 Carisma: buena fortuna";
+      },
+      () => {
+        const juego = window.JuniorGame;
+        if (juego) {
+          juego.estado.escudo = Math.max(1, Number(juego.estado.escudo) || 0);
+          juego.actualizarEscudo?.();
+        }
+        return "🎭 Carisma: escudo sorpresa";
+      }
+    ];
+
+    const mensaje = opciones[Math.floor(Math.random() * opciones.length)]();
+    this.crearEstallido("🎭", "estallido-carisma");
+    window.AudioFX?.bonus?.();
+    this.mostrarMensaje(mensaje);
+    return true;
+  },
+
+  obtenerMultiplicadorObjetos() {
+    return this.estaActiva("congelarObjetos") ? 0.42 : 1;
+  },
+
+  modificarProbabilidadDorado(base = 0.08) {
+    if (this.estaActiva("buenaFortuna")) return Math.max(base, 0.34);
+    return base;
+  },
+
+  debeAutoCapturar() {
+    return Number(this.cargasTemporales.autoCapturas) > 0;
+  },
+
+  consumirAutoCaptura() {
+    if (!this.debeAutoCapturar()) return false;
+    this.cargasTemporales.autoCapturas -= 1;
+    return true;
+  },
+
+  alAtraparHueso(datos = {}) {
+    if (Number(this.cargasTemporales.rebotes) > 0) {
+      this.cargasTemporales.rebotes -= 1;
+      window.JuniorGame?.actualizarPuntos?.(1, 0);
+      this.mostrarMensaje("🔁 +1 punto de habilidad");
+    }
+
+    if (this.estaActiva("olfato") && datos?.elemento) {
+      datos.elemento.classList.add("hueso-olfato");
+    }
+  },
+
+  evitarHuesoPerdido() {
+    if (Number(this.cargasTemporales.lealtad) > 0) {
+      this.cargasTemporales.lealtad -= 1;
+      this.mostrarMensaje("✨ Espíritu Leal evitó perder una vida");
+      return true;
+    }
+
+    if (Number(this.cargasTemporales.salvacion) > 0) {
+      this.cargasTemporales.salvacion -= 1;
+      this.mostrarMensaje("🛟 Rescate evitó perder una vida");
+      return true;
+    }
+
+    return false;
+  },
+
   configurarEscudoAutomatico() {
     clearInterval(this.temporizadorEscudo);
     this.temporizadorEscudo = window.setInterval(() => {
@@ -551,7 +952,8 @@ window.SistemaHabilidades = {
   },
 
   obtenerRecargaRestante(id = this.habilidadEquipada) {
-    return Math.max(0, (this.enfriamientosHasta[id] || 0) - performance.now());
+    const clave = this.razaEquipada || id;
+    return Math.max(0, (this.enfriamientosHasta[clave] || 0) - performance.now());
   },
 
   obtenerMultiplicadorIman() {
@@ -565,7 +967,7 @@ window.SistemaHabilidades = {
   },
 
   actualizarInterfaz() {
-    const datos = this.catalogo[this.habilidadEquipada];
+    const datos = this.obtenerDatosVisuales();
     const boton = this.interfaz.boton;
     if (!datos || !boton) return;
 

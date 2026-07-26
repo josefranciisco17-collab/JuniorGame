@@ -264,9 +264,13 @@ this.obstaculoActual = {
       return;
     }
 
+    const multiplicadorHabilidad =
+      window.SistemaHabilidades?.obtenerMultiplicadorObjetos?.() ?? 1;
+
     this.obstaculoActual.y +=
       this.obstaculoActual.velocidad *
-      deltaTime;
+      deltaTime *
+      multiplicadorHabilidad;
 
     this.obstaculoActual.elemento.style.top =
       `${this.obstaculoActual.y}px`;

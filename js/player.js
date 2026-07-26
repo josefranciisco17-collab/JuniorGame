@@ -8,6 +8,7 @@ window.JuniorPlayer = {
   moviendoIzquierda: false,
   moviendoDerecha: false,
   saltando: false,
+  dobleSaltoUsado: false,
 
   ultimaDireccion: "izquierda",
 
@@ -50,6 +51,7 @@ window.JuniorPlayer = {
     this.alturaSalto = 0;
     this.velocidadVertical = 0;
     this.saltando = false;
+    this.dobleSaltoUsado = false;
 
     this.moviendoIzquierda = false;
     this.moviendoDerecha = false;
@@ -113,9 +115,15 @@ window.JuniorPlayer = {
     if (
       !juego ||
       juego.estado.pausado ||
-      juego.estado.terminado ||
-      this.saltando
+      juego.estado.terminado
     ) {
+      return;
+    }
+
+    if (this.saltando) {
+      if (window.SistemaHabilidades?.habilidadEquipada === "dobleSalto") {
+        window.SistemaHabilidades.usarEquipada?.();
+      }
       return;
     }
 
@@ -126,6 +134,7 @@ window.JuniorPlayer = {
     }
 
     this.saltando = true;
+    this.dobleSaltoUsado = false;
     this.velocidadVertical = this.fuerzaSalto;
 
     if (
@@ -138,6 +147,34 @@ window.JuniorPlayer = {
       perro.src =
         juego.rutas.perroSaltoIzquierda;
     }
+  },
+
+
+  realizarDobleSalto(desdeHabilidad = false) {
+    const juego = window.JuniorGame;
+    const perro = this.obtenerPerro();
+
+    if (
+      !juego ||
+      !perro ||
+      !this.saltando ||
+      this.dobleSaltoUsado ||
+      juego.estado.pausado ||
+      juego.estado.terminado ||
+      window.SistemaHabilidades?.habilidadEquipada !== "dobleSalto"
+    ) {
+      return false;
+    }
+
+    this.dobleSaltoUsado = true;
+    this.velocidadVertical = this.fuerzaSalto * 0.88;
+    perro.classList.remove("perro-doble-salto");
+    void perro.offsetWidth;
+    perro.classList.add("perro-doble-salto");
+    window.setTimeout(() => perro.classList.remove("perro-doble-salto"), 480);
+    window.AudioFX?.bonus?.();
+    window.SistemaHabilidades?.mostrarMensaje?.("🦘 ¡Doble salto!");
+    return true;
   },
 
   actualizarMovimientoHorizontal(deltaTime) {
@@ -195,6 +232,7 @@ window.JuniorPlayer = {
       this.alturaSalto = 0;
       this.velocidadVertical = 0;
       this.saltando = false;
+      this.dobleSaltoUsado = false;
 
       if (this.ultimaDireccion === "derecha") {
         perro.src =

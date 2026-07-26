@@ -1946,3 +1946,202 @@ body.tiempo-lento-activo .game-area{filter:saturate(.82) brightness(1.05)}
 body.perro-invulnerable .dog{animation:perroProtegido .55s ease-in-out infinite alternate}
 @keyframes perroProtegido{from{filter:drop-shadow(0 0 7px rgba(255,255,255,.6)) drop-shadow(0 10px 7px rgba(0,0,0,.42))}to{filter:drop-shadow(0 0 20px rgba(255,225,70,1)) drop-shadow(0 10px 7px rgba(0,0,0,.42));opacity:.78}}
 .shield-indicator.active{width:auto;min-width:38px;padding:0 5px;font-size:20px;font-weight:1000}
+
+/* ==========================================================
+   MOTOR DE HABILIDADES DEL PERRO
+   ========================================================== */
+.ability-control-wrap{
+  position:relative;
+  flex:0 0 auto;
+}
+
+.ability-button{
+  position:relative;
+  width:72px;
+  height:72px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:1px;
+  border-radius:22px;
+  border:2px solid rgba(255,235,157,.82);
+  background:linear-gradient(180deg,#6d43c9,#35216e);
+  box-shadow:0 6px 0 #1c1045,0 10px 20px rgba(0,0,0,.35);
+}
+
+.ability-button:active,
+.ability-button.pressed{
+  transform:translateY(5px);
+  box-shadow:0 1px 0 #1c1045,0 4px 10px rgba(0,0,0,.3);
+}
+
+.ability-cooldown-fill{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  transform-origin:center bottom;
+  transform:scaleY(0);
+  background:rgba(0,0,0,.56);
+  pointer-events:none;
+}
+
+.ability-icon,
+.ability-name,
+.ability-cooldown{
+  position:relative;
+  z-index:1;
+}
+
+.ability-icon{font-size:25px;line-height:1}
+.ability-name{max-width:62px;overflow:hidden;text-overflow:ellipsis;font-size:8px;font-weight:950;white-space:nowrap}
+.ability-cooldown{font-size:9px;color:#ffe99b}
+
+.ability-button.ready{
+  animation:abilityReadyPulse 1.05s ease-in-out infinite alternate;
+}
+
+.ability-button.cooldown{filter:saturate(.7)}
+
+.ability-config-button{
+  position:absolute;
+  top:-9px;
+  right:-9px;
+  z-index:4;
+  width:28px;
+  height:28px;
+  border:2px solid #ffe69b;
+  border-radius:50%;
+  background:#3a205f;
+  color:#fff;
+  font-size:13px;
+  box-shadow:0 3px 0 #160a2e;
+  touch-action:manipulation;
+}
+
+@keyframes abilityReadyPulse{
+  from{filter:brightness(.95);box-shadow:0 6px 0 #1c1045,0 0 8px rgba(185,143,255,.45)}
+  to{filter:brightness(1.22);box-shadow:0 6px 0 #1c1045,0 0 22px rgba(220,190,255,.95)}
+}
+
+.ability-modal{
+  position:fixed;
+  inset:0;
+  z-index:11000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(6px);
+}
+
+.ability-modal.hidden{display:none}
+
+.ability-modal-card{
+  position:relative;
+  width:min(94vw,430px);
+  max-height:88vh;
+  overflow:auto;
+  padding:24px 16px 18px;
+  border:3px solid #cba5ff;
+  border-radius:26px;
+  background:linear-gradient(180deg,#4e2f78,#221235);
+  color:#fff;
+  box-shadow:0 13px 0 #12081d,0 26px 55px rgba(0,0,0,.62);
+}
+
+.ability-modal-card h2{
+  margin:0 36px 5px 0;
+  color:#ffe59a;
+  font-size:22px;
+}
+
+.ability-modal-card>p{
+  margin:0 0 15px;
+  color:#e5d6f2;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.ability-close-button{
+  position:absolute;
+  top:13px;
+  right:13px;
+  width:34px;
+  height:34px;
+  border:1px solid rgba(255,255,255,.32);
+  border-radius:50%;
+  background:rgba(0,0,0,.28);
+  color:#fff;
+  font-size:17px;
+}
+
+.ability-list{display:grid;gap:9px}
+
+.ability-option{
+  width:100%;
+  min-height:72px;
+  padding:10px;
+  display:grid;
+  grid-template-columns:48px 1fr 25px;
+  align-items:center;
+  gap:9px;
+  border:1px solid rgba(231,207,255,.34);
+  border-radius:17px;
+  background:rgba(255,255,255,.075);
+  color:#fff;
+  text-align:left;
+}
+
+.ability-option.equipped{
+  border-color:#ffe28a;
+  background:rgba(255,210,77,.16);
+  box-shadow:inset 0 0 0 1px rgba(255,226,138,.25);
+}
+
+.ability-option-icon{font-size:34px;text-align:center}
+.ability-option-copy{display:flex;flex-direction:column;gap:4px}
+.ability-option-copy strong{color:#fff1ae;font-size:15px}
+.ability-option-copy small{color:#e2d6ed;font-size:11px;line-height:1.28}
+.ability-option-check{font-size:20px;color:#ffe477;opacity:0}
+.ability-option.equipped .ability-option-check{opacity:1}
+
+.perro-dash{animation:perroDashFlash .18s linear 3}
+@keyframes perroDashFlash{50%{opacity:.42;filter:brightness(1.8) drop-shadow(0 0 18px #fff)}}
+
+.perro-ladrido{animation:perroLadrido .22s ease 3}
+@keyframes perroLadrido{50%{transform:scale(1.08) rotate(-2deg)}}
+
+.onda-ladrido{
+  position:absolute;
+  z-index:16;
+  width:30px;
+  height:30px;
+  margin:-15px 0 0 -15px;
+  border:5px solid rgba(178,230,255,.94);
+  border-radius:50%;
+  pointer-events:none;
+  animation:ondaLadrido .68s ease-out forwards;
+}
+@keyframes ondaLadrido{to{width:420px;height:420px;margin:-210px 0 0 -210px;opacity:0;border-width:2px}}
+
+.habilidad-iman-activa .falling-bone{
+  filter:drop-shadow(0 0 12px #9feaff) drop-shadow(0 4px 3px rgba(0,0,0,.35));
+}
+
+@media(max-width:390px){
+  .controls{padding-left:10px;padding-right:10px;gap:5px}
+  .ability-button{width:60px;height:64px;border-radius:19px}
+  .ability-config-button{width:25px;height:25px;top:-7px;right:-7px}
+  .ability-icon{font-size:22px}
+  .ability-name{max-width:52px;font-size:7px}
+}
+
+@media(max-height:700px){
+  .ability-button{width:58px;height:58px;border-radius:18px}
+  .ability-icon{font-size:20px}
+}
+.perro-doble-salto{animation:perroDobleSalto .48s ease}
+@keyframes perroDobleSalto{50%{filter:brightness(1.5) drop-shadow(0 0 18px #d9f5ff);transform:scale(1.08)}}

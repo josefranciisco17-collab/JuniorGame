@@ -165,6 +165,28 @@ window.JuniorBones = {
     this.huesoActual.y +=
       this.huesoActual.velocidad * deltaTime * multiplicadorTiempo;
 
+    /*
+      La habilidad Imán acerca progresivamente el hueso al centro
+      del perro sin alterar la colisión ni crear huesos adicionales.
+    */
+    if (window.SistemaHabilidades?.estaActiva?.("iman")) {
+      const juego = window.JuniorGame;
+      const perro = juego?.elementos?.perro;
+      const area = juego?.elementos?.areaJuego;
+
+      if (perro && area) {
+        const rectArea = area.getBoundingClientRect();
+        const rectPerro = perro.getBoundingClientRect();
+        const objetivoX =
+          rectPerro.left - rectArea.left +
+          rectPerro.width / 2 -
+          this.tamanoHueso / 2;
+        const diferencia = objetivoX - this.huesoActual.x;
+        const avanceMaximo = 330 * deltaTime;
+        this.huesoActual.x += Math.max(-avanceMaximo, Math.min(avanceMaximo, diferencia));
+        this.huesoActual.elemento.style.left = `${this.huesoActual.x}px`;
+      }
+    }
 
     this.huesoActual.elemento.style.top =
       `${this.huesoActual.y}px`;

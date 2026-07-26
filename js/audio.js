@@ -150,6 +150,36 @@
       archivo: "caja_premio.wav",
       volumen: 0.82,
       instancias: 3
+    },
+
+    razaComun: {
+      archivo: "raza_comun.ogg",
+      volumen: 0.70,
+      instancias: 2
+    },
+
+    razaRara: {
+      archivo: "raza_rara.ogg",
+      volumen: 0.78,
+      instancias: 2
+    },
+
+    razaEpica: {
+      archivo: "raza_epica.ogg",
+      volumen: 0.88,
+      instancias: 2
+    },
+
+    razaLegendaria: {
+      archivo: "raza_legendaria.ogg",
+      volumen: 0.95,
+      instancias: 2
+    },
+
+    razaEquipada: {
+      archivo: "raza_equipada.ogg",
+      volumen: 0.72,
+      instancias: 2
     }
   };
 
@@ -735,6 +765,43 @@
 
     cajaPremio() {
       reproducir("cajaPremio");
+    },
+
+    razaComun() {
+      reproducir("razaComun");
+    },
+
+    razaRara() {
+      reproducir("razaRara");
+    },
+
+    razaEpica() {
+      reproducir("razaEpica");
+    },
+
+    razaLegendaria() {
+      reproducir("razaLegendaria");
+    },
+
+    razaEquipada() {
+      reproducir("razaEquipada");
+    },
+
+    reproducirRazaPorRareza(rareza) {
+      const clave = String(rareza || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+
+      if (clave.includes("legend") || clave.includes("mitic")) {
+        reproducir("razaLegendaria");
+      } else if (clave.includes("epic")) {
+        reproducir("razaEpica");
+      } else if (clave.includes("raro") || clave.includes("rara")) {
+        reproducir("razaRara");
+      } else {
+        reproducir("razaComun");
+      }
     },
 
     reproducirMusica,

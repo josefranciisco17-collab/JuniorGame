@@ -67,6 +67,20 @@ function numero(valor, defecto = 0) {
   return Number.isFinite(convertido) ? convertido : defecto;
 }
 
+function reproducirSonidoRazaPorRareza(articulo) {
+  if (!articulo || articulo.tipo !== "raza") return;
+
+  if (typeof window.AudioFX?.reproducirRazaPorRareza === "function") {
+    window.AudioFX.reproducirRazaPorRareza(articulo.rareza);
+  }
+}
+
+function reproducirSonidoRazaEquipada() {
+  if (typeof window.AudioFX?.razaEquipada === "function") {
+    window.AudioFX.razaEquipada();
+  }
+}
+
 function mostrarMensaje(texto, tipo = "") {
   elementos.articlesMessage.textContent = texto;
   elementos.articlesMessage.className = `articles-message ${tipo}`.trim();
@@ -438,6 +452,11 @@ async function confirmarCompra() {
     }
 
     cerrarCompra();
+
+    if (articulo.tipo === "raza") {
+      reproducirSonidoRazaPorRareza(articulo);
+    }
+
     mostrarMensaje(
       articulo.tipo === "raza"
         ? `¡${articulo.nombre} comprada y equipada correctamente!`
@@ -503,6 +522,7 @@ async function equiparRaza(articulo) {
     estado.razaEquipada = articulo.id;
     guardarRazaLocal(articulo.id);
     renderTodo();
+    reproducirSonidoRazaEquipada();
     mostrarMensaje(`${articulo.nombre} quedó equipada.`);
   } catch (error) {
     console.error(error);

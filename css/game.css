@@ -1257,19 +1257,26 @@ a {
    Se mantiene pegado al bloque de huesos para liberar la zona
    central por donde caen los objetos.
    ========================================================== */
+  
 .resource-hud{
-  position:absolute;
-  top:calc(max(14px, env(safe-area-inset-top)) + 78px);
-  left:14px;
-  z-index:24;
+    position: absolute;
 
-  width:clamp(150px,31vw,182px);
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  align-items:center;
-  gap:5px;
+    top: calc(max(14px, env(safe-area-inset-top)) + 112px);
+    left: 10px;
 
-  pointer-events:none;
+    z-index: 24;
+
+    width: 145px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 3px;
+
+    pointer-events: none;
+
+    transform: scale(.94);
+    transform-origin: top left;
 }
 
 .resource-counter{

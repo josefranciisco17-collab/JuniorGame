@@ -61,11 +61,13 @@ window.JuniorBones = {
       return;
     }
 
-    const esDorado = Math.random() < 0.08;
+    const nivelActual = Math.max(1, Number(window.SistemaNiveles?.nivelActual) || 1);
+    const esPoder = nivelActual >= 3 && Math.random() < 0.045;
+    const esDorado = !esPoder && Math.random() < 0.08;
 
     const imagen = document.createElement("img");
 
-    imagen.className = "falling-bone";
+    imagen.className = esPoder ? "falling-bone power-bone" : "falling-bone";
     imagen.draggable = false;
     imagen.alt = "";
 
@@ -115,6 +117,7 @@ window.JuniorBones = {
         ),
 
       dorado: esDorado,
+      poder: esPoder,
       atrapado: false
     };
 
@@ -217,11 +220,17 @@ this.huesoActual.atrapado = true;
 const esDorado =
   this.huesoActual.dorado;
 
+const esPoder =
+  this.huesoActual.poder;
+
 const puntos =
   esDorado ? 10 : 1;
 
 
-if (esDorado) {
+if (esPoder) {
+  window.AudioFX?.bonus?.();
+  window.SistemaEnemigos?.activarPoder?.();
+} else if (esDorado) {
   window.AudioFX?.huesoDorado();
 } else {
   window.AudioFX?.huesoBlanco();
@@ -251,7 +260,7 @@ if (
   typeof window.JuniorCatchFX.mostrarCaptura === "function"
 ) {
   window.JuniorCatchFX.mostrarCaptura({
-    dorado: esDorado,
+    dorado: esDorado || esPoder,
     puntos,
     rectHueso: datosRectHueso
   });
@@ -286,6 +295,9 @@ this.eliminarHueso();
 const eraDorado =
   this.huesoActual.dorado;
 
+const eraPoder =
+  this.huesoActual.poder;
+
 /*
   El hueso llegó al suelo sin ser atrapado.
 */
@@ -297,7 +309,7 @@ this.eliminarHueso();
   El hueso normal resta una vida.
   El hueso dorado solo desaparece.
 */
-if (!eraDorado) {
+if (!eraDorado && !eraPoder) {
   juego.perderVida();
 }
 }

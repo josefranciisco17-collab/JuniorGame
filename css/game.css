@@ -1829,3 +1829,78 @@ top: calc(max(9px, env(safe-area-inset-top)) + 95px);
   15%,72%{opacity:1;transform:translate(-50%,0) scale(1)}
   100%{opacity:0;transform:translate(-50%,-12px) scale(.92)}
 }
+
+/* ==========================================================
+   ENEMIGOS FASE 1 IA + HUESO DE PODER
+   ========================================================== */
+
+.power-bone{
+  border-radius:50%;
+  filter:
+    drop-shadow(0 0 7px rgba(255,245,120,.95))
+    drop-shadow(0 0 17px rgba(255,154,0,.9));
+  animation:powerBonePulse .58s ease-in-out infinite alternate;
+}
+
+@keyframes powerBonePulse{
+  from{transform:scale(.9) rotate(-8deg);filter:drop-shadow(0 0 6px rgba(255,245,120,.85)) drop-shadow(0 0 12px rgba(255,154,0,.72))}
+  to{transform:scale(1.1) rotate(8deg);filter:drop-shadow(0 0 11px rgba(255,255,190,1)) drop-shadow(0 0 25px rgba(255,119,0,1))}
+}
+
+.power-indicator{
+  position:absolute;
+  top:max(92px, calc(env(safe-area-inset-top) + 82px));
+  left:50%;
+  z-index:36;
+  min-width:78px;
+  height:38px;
+  padding:0 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  transform:translateX(-50%);
+  border:2px solid #fff2a3;
+  border-radius:999px;
+  color:#fff;
+  background:linear-gradient(180deg,#ffbd29,#b75b00);
+  box-shadow:0 4px 0 #683000,0 0 18px rgba(255,178,0,.75);
+  font-size:17px;
+  font-weight:1000;
+}
+
+.power-indicator.hidden{display:none}
+.power-indicator span{font-size:20px}
+.power-indicator small{font-size:11px}
+
+.perro-con-poder{
+  animation:dogPowerPulse .42s ease-in-out infinite alternate;
+  filter:
+    drop-shadow(0 0 8px rgba(255,255,165,1))
+    drop-shadow(0 0 20px rgba(255,135,0,.95))
+    drop-shadow(0 10px 7px rgba(0,0,0,.42));
+}
+
+@keyframes dogPowerPulse{
+  from{filter:drop-shadow(0 0 5px rgba(255,255,165,.85)) drop-shadow(0 0 12px rgba(255,135,0,.7)) drop-shadow(0 10px 7px rgba(0,0,0,.42))}
+  to{filter:drop-shadow(0 0 12px rgba(255,255,220,1)) drop-shadow(0 0 27px rgba(255,110,0,1)) drop-shadow(0 10px 7px rgba(0,0,0,.42))}
+}
+
+.enemigo-mira-izquierda{transform:scaleX(-1)}
+.enemigo-robo-exitoso{animation:enemySteal .26s ease-in-out infinite alternate}
+
+@keyframes enemySteal{
+  from{transform:translateY(0) rotate(-8deg) scale(1)}
+  to{transform:translateY(-8px) rotate(8deg) scale(1.12)}
+}
+
+.enemigo-derrotado{
+  pointer-events:none;
+  animation:enemyDefeated .42s ease forwards !important;
+}
+
+@keyframes enemyDefeated{
+  0%{opacity:1;transform:scale(1) rotate(0)}
+  45%{opacity:1;transform:scale(1.28) rotate(-12deg)}
+  100%{opacity:0;transform:scale(.18) translateY(-75px) rotate(35deg)}
+}

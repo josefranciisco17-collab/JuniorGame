@@ -2,17 +2,17 @@
 
 /*
   ============================================================
-  JuniorGame - Sistema de enemigos
+  JuniorGame - Sistema de enemigos Fase 1 IA
   Archivo: js/enemigos.js
   ============================================================
 
-  Enemigos iniciales:
-  - Gato ladrón: cruza la pantalla y roba hasta 5 puntos.
-  - Cuervo: vuela en diagonal y roba hasta 3 puntos.
-  - Fantasma: flota y desorienta al jugador brevemente.
-  - Erizo: cruza por el suelo y quita una vida.
-
-  El sistema es independiente de huesos, obstáculos y cajas.
+  Incluye:
+  - Gato ladrón que busca el hueso activo y puede llevárselo.
+  - Cuervo que puede robar el hueso durante el vuelo.
+  - Fantasma que invierte los controles temporalmente.
+  - Erizo que quita una vida.
+  - Salto sobre el enemigo para derrotarlo.
+  - Hueso de Poder: permite derrotar enemigos por contacto.
 */
 
 window.SistemaEnemigos = {
@@ -21,13 +21,19 @@ window.SistemaEnemigos = {
   temporizador: null,
   tiempoAnterior: performance.now(),
   controlesInvertidosHasta: 0,
+  poderHasta: 0,
   reenviandoControl: false,
+  intercambioInstalado: false,
+  ultimoRectPerro: null,
+  indicadorPoder: null,
 
   configuracion: {
     esperaMinima: 6500,
     esperaMaxima: 10500,
     nivelInicio: 3,
-    duracionDesorientacion: 3200
+    duracionDesorientacion: 3200,
+    duracionPoder: 8000,
+    puntosPorDerrotar: 2
   },
 
   tipos: {
@@ -38,7 +44,7 @@ window.SistemaEnemigos = {
       tamano: 62,
       velocidadMinima: 150,
       velocidadMaxima: 205,
-      modo: "horizontal",
+      modo: "cazador",
       efecto: "robar",
       cantidad: 5
     },
@@ -85,13 +91,11 @@ window.SistemaEnemigos = {
 
     this.activo = true;
     this.tiempoAnterior = performance.now();
+    this.crearIndicadorPoder();
     this.programarSiguiente();
 
-    requestAnimationFrame(
-      this.actualizar.bind(this)
-    );
-
-    console.log("Sistema de enemigos iniciado.");
+    requestAnimationFrame(this.actualizar.bind(this));
+    console.log("Sistema de enemigos IA iniciado.");
   },
 
   detener() {
@@ -104,13 +108,11 @@ window.SistemaEnemigos = {
 
     this.eliminarEnemigo(false);
     this.quitarDesorientacion();
+    this.desactivarPoder();
   },
 
   obtenerNivel() {
-    return Math.max(
-      1,
-      Number(window.SistemaNiveles?.nivelActual) || 1
-    );
+    return Math.max(1, Number(window.SistemaNiveles?.nivelActual) || 1);
   },
 
   obtenerTiposDisponibles() {
@@ -124,17 +126,12 @@ window.SistemaEnemigos = {
   programarSiguiente() {
     if (!this.activo) return;
 
-    if (this.temporizador) {
-      clearTimeout(this.temporizador);
-    }
+    if (this.temporizador) clearTimeout(this.temporizador);
 
     const nivel = this.obtenerNivel();
 
     if (nivel < this.configuracion.nivelInicio) {
-      this.temporizador = setTimeout(
-        () => this.programarSiguiente(),
-        1800
-      );
+      this.temporizador = setTimeout(() => this.programarSiguiente(), 1800);
       return;
     }
 
@@ -146,10 +143,7 @@ window.SistemaEnemigos = {
       Math.random() *
         (this.configuracion.esperaMaxima - this.configuracion.esperaMinima);
 
-    const espera = Math.max(
-      3000,
-      esperaBase * multiplicadorFrecuencia
-    );
+    const espera = Math.max(3000, esperaBase * multiplicadorFrecuencia);
 
     this.temporizador = setTimeout(() => {
       const juego = window.JuniorGame;
@@ -177,11 +171,9 @@ window.SistemaEnemigos = {
       return;
     }
 
-    const tipo = disponibles[
-      Math.floor(Math.random() * disponibles.length)
-    ];
-
+    const tipo = disponibles[Math.floor(Math.random() * disponibles.length)];
     const elemento = document.createElement("div");
+
     elemento.className = `enemigo ${tipo.clase} enemigo-entrada`;
     elemento.textContent = tipo.simbolo;
     elemento.setAttribute("aria-hidden", "true");
@@ -190,15 +182,25 @@ window.SistemaEnemigos = {
     const ancho = area.clientWidth;
     const alto = area.clientHeight;
     const desdeIzquierda = Math.random() < 0.5;
+    const perro = juego.elementos.perro;
+    const rectArea = area.getBoundingClientRect();
+    const rectPerro = perro?.getBoundingClientRect();
 
     let x = desdeIzquierda ? -tipo.tamano - 18 : ancho + 18;
     let y = Math.max(95, alto * 0.32);
     let direccionX = desdeIzquierda ? 1 : -1;
     let direccionY = 0;
 
+    if (tipo.modo === "cazador") {
+      /* El gato aparece a nivel del suelo, más abajo que antes. */
+      y = rectPerro
+        ? rectPerro.bottom - rectArea.top - tipo.tamano * 0.48
+        : alto - 150;
+    }
+
     if (tipo.modo === "diagonal") {
       y = 105 + Math.random() * Math.max(20, alto * 0.25);
-      direccionY = 0.48;
+      direccionY = 0.42;
     }
 
     if (tipo.modo === "flotante") {
@@ -206,10 +208,6 @@ window.SistemaEnemigos = {
     }
 
     if (tipo.modo === "suelo") {
-      const perro = juego.elementos.perro;
-      const rectArea = area.getBoundingClientRect();
-      const rectPerro = perro?.getBoundingClientRect();
-
       y = rectPerro
         ? rectPerro.bottom - rectArea.top - tipo.tamano * 0.72
         : alto - 175;
@@ -223,20 +221,16 @@ window.SistemaEnemigos = {
     });
 
     area.appendChild(elemento);
-
-    requestAnimationFrame(() => {
-      elemento.classList.remove("enemigo-entrada");
-    });
+    requestAnimationFrame(() => elemento.classList.remove("enemigo-entrada"));
 
     const multiplicadorVelocidad =
       window.SistemaNiveles?.obtenerMultiplicadorVelocidad?.() ?? 1;
 
     const velocidad = Math.min(
       360,
-      (
-        tipo.velocidadMinima +
-        Math.random() * (tipo.velocidadMaxima - tipo.velocidadMinima)
-      ) * Math.min(1.7, multiplicadorVelocidad)
+      (tipo.velocidadMinima +
+        Math.random() * (tipo.velocidadMaxima - tipo.velocidadMinima)) *
+        Math.min(1.7, multiplicadorVelocidad)
     );
 
     this.enemigoActual = {
@@ -263,7 +257,6 @@ window.SistemaEnemigos = {
     );
 
     this.tiempoAnterior = tiempoActual;
-
     const juego = window.JuniorGame;
 
     if (
@@ -273,6 +266,7 @@ window.SistemaEnemigos = {
       this.enemigoActual
     ) {
       this.mover(deltaTime);
+      this.revisarRoboHueso();
       this.revisarColision();
       this.revisarSalida();
     }
@@ -288,9 +282,13 @@ window.SistemaEnemigos = {
       this.quitarDesorientacion();
     }
 
-    requestAnimationFrame(
-      this.actualizar.bind(this)
-    );
+    if (this.poderHasta > 0 && performance.now() >= this.poderHasta) {
+      this.desactivarPoder();
+    }
+
+    this.actualizarIndicadorPoder();
+    this.guardarPosicionPerro();
+    requestAnimationFrame(this.actualizar.bind(this));
   },
 
   mover(deltaTime) {
@@ -298,16 +296,35 @@ window.SistemaEnemigos = {
     if (!enemigo) return;
 
     enemigo.tiempoVivo += deltaTime;
-    enemigo.x += enemigo.velocidad * enemigo.direccionX * deltaTime;
+
+    if (enemigo.modo === "cazador") {
+      const hueso = window.JuniorBones?.huesoActual;
+      const area = window.JuniorGame?.elementos?.areaJuego;
+
+      if (hueso?.elemento && area) {
+        const rectArea = area.getBoundingClientRect();
+        const rectHueso = hueso.elemento.getBoundingClientRect();
+        const centroHueso = rectHueso.left - rectArea.left + rectHueso.width / 2;
+        const centroGato = enemigo.x + enemigo.tamano / 2;
+        const diferencia = centroHueso - centroGato;
+
+        if (Math.abs(diferencia) > 12) {
+          enemigo.direccionX = diferencia > 0 ? 1 : -1;
+        }
+      }
+
+      enemigo.x += enemigo.velocidad * enemigo.direccionX * deltaTime;
+      enemigo.elemento.classList.toggle("enemigo-mira-izquierda", enemigo.direccionX < 0);
+    } else {
+      enemigo.x += enemigo.velocidad * enemigo.direccionX * deltaTime;
+    }
 
     if (enemigo.modo === "diagonal") {
       enemigo.y += enemigo.velocidad * enemigo.direccionY * deltaTime;
     }
 
     if (enemigo.modo === "flotante") {
-      enemigo.y =
-        enemigo.origenY +
-        Math.sin(enemigo.tiempoVivo * 3.5) * 32;
+      enemigo.y = enemigo.origenY + Math.sin(enemigo.tiempoVivo * 3.5) * 32;
     }
 
     if (enemigo.modo === "suelo") {
@@ -317,6 +334,43 @@ window.SistemaEnemigos = {
 
     enemigo.elemento.style.left = `${enemigo.x}px`;
     enemigo.elemento.style.top = `${enemigo.y}px`;
+  },
+
+  revisarRoboHueso() {
+    const enemigo = this.enemigoActual;
+    const hueso = window.JuniorBones?.huesoActual;
+
+    if (
+      !enemigo ||
+      enemigo.golpeado ||
+      !hueso?.elemento ||
+      hueso.atrapado ||
+      !["gato", "cuervo"].includes(enemigo.nombre)
+    ) {
+      return;
+    }
+
+    const rectEnemigo = enemigo.elemento.getBoundingClientRect();
+    const rectHueso = hueso.elemento.getBoundingClientRect();
+
+    const tocaHueso =
+      rectEnemigo.right > rectHueso.left + rectHueso.width * 0.2 &&
+      rectEnemigo.left < rectHueso.right - rectHueso.width * 0.2 &&
+      rectEnemigo.bottom > rectHueso.top + rectHueso.height * 0.2 &&
+      rectEnemigo.top < rectHueso.bottom - rectHueso.height * 0.2;
+
+    if (!tocaHueso) return;
+
+    hueso.atrapado = true;
+    window.JuniorBones?.eliminarHueso?.();
+    enemigo.elemento.classList.add("enemigo-robo-exitoso");
+    window.AudioFX?.huesoCaido?.();
+
+    this.mostrarMensaje(
+      enemigo.nombre === "gato"
+        ? "🐱 ¡El gato se llevó el hueso!"
+        : "🐦‍⬛ ¡El cuervo atrapó el hueso!"
+    );
   },
 
   revisarColision() {
@@ -344,14 +398,66 @@ window.SistemaEnemigos = {
 
     if (!colision) return;
 
+    if (this.poderActivo()) {
+      this.derrotarEnemigo("poder");
+      return;
+    }
+
+    if (this.esPisoton(rectPerro, rectEnemigo)) {
+      this.derrotarEnemigo("salto");
+      return;
+    }
+
     enemigo.golpeado = true;
     enemigo.elemento.classList.add("enemigo-golpe");
-
     this.aplicarEfecto(enemigo);
 
-    window.setTimeout(() => {
-      this.eliminarEnemigo();
-    }, 320);
+    window.setTimeout(() => this.eliminarEnemigo(), 320);
+  },
+
+  esPisoton(rectPerro, rectEnemigo) {
+    const anterior = this.ultimoRectPerro;
+    if (!anterior) return false;
+
+    const descendiendo = rectPerro.top > anterior.top + 0.5;
+    const veniaDesdeArriba = anterior.bottom <= rectEnemigo.top + 18;
+    const piesCerca = rectPerro.bottom <= rectEnemigo.top + rectEnemigo.height * 0.58;
+
+    return descendiendo && veniaDesdeArriba && piesCerca;
+  },
+
+  guardarPosicionPerro() {
+    const perro = window.JuniorGame?.elementos?.perro;
+    if (!perro) return;
+
+    const rect = perro.getBoundingClientRect();
+    this.ultimoRectPerro = {
+      top: rect.top,
+      bottom: rect.bottom,
+      left: rect.left,
+      right: rect.right
+    };
+  },
+
+  derrotarEnemigo(metodo) {
+    const enemigo = this.enemigoActual;
+    const juego = window.JuniorGame;
+
+    if (!enemigo || enemigo.golpeado) return;
+
+    enemigo.golpeado = true;
+    enemigo.elemento.classList.add("enemigo-derrotado");
+    window.AudioFX?.bonus?.();
+
+    juego?.actualizarPuntos?.(this.configuracion.puntosPorDerrotar, 0);
+
+    this.mostrarMensaje(
+      metodo === "salto"
+        ? `💥 ¡Pisotón! +${this.configuracion.puntosPorDerrotar}`
+        : `⭐ ¡Enemigo derrotado! +${this.configuracion.puntosPorDerrotar}`
+    );
+
+    window.setTimeout(() => this.eliminarEnemigo(), 420);
   },
 
   aplicarEfecto(enemigo) {
@@ -376,7 +482,7 @@ window.SistemaEnemigos = {
       const nombre = enemigo.nombre === "gato" ? "gato" : "cuervo";
       this.mostrarMensaje(
         robados > 0
-          ? `${enemigo.simbolo} ¡El ${nombre} robó ${robados} huesos!`
+          ? `${enemigo.simbolo} ¡El ${nombre} robó ${robados} puntos!`
           : `${enemigo.simbolo} ¡El ${nombre} intentó robarte!`
       );
       return;
@@ -388,21 +494,63 @@ window.SistemaEnemigos = {
     }
   },
 
+  activarPoder(duracion = this.configuracion.duracionPoder) {
+    const duracionSegura = Math.max(1000, Number(duracion) || 0);
+    this.poderHasta = Math.max(this.poderHasta, performance.now()) + duracionSegura;
+
+    document.body.classList.add("poder-activo");
+    window.JuniorGame?.elementos?.perro?.classList.add("perro-con-poder");
+    window.AudioFX?.bonus?.();
+    this.crearIndicadorPoder();
+    this.actualizarIndicadorPoder();
+    this.mostrarMensaje(`⭐ ¡Hueso de Poder por ${Math.round(duracionSegura / 1000)} segundos!`);
+  },
+
+  poderActivo() {
+    return performance.now() < this.poderHasta;
+  },
+
+  desactivarPoder() {
+    this.poderHasta = 0;
+    document.body.classList.remove("poder-activo");
+    window.JuniorGame?.elementos?.perro?.classList.remove("perro-con-poder");
+    this.actualizarIndicadorPoder();
+  },
+
+  crearIndicadorPoder() {
+    if (this.indicadorPoder?.isConnected) return;
+
+    const juego = document.getElementById("game");
+    if (!juego) return;
+
+    const indicador = document.createElement("div");
+    indicador.id = "powerIndicator";
+    indicador.className = "power-indicator hidden";
+    indicador.setAttribute("aria-live", "polite");
+    indicador.innerHTML = '<span>⭐</span><strong id="powerSeconds">0</strong><small>s</small>';
+    juego.appendChild(indicador);
+    this.indicadorPoder = indicador;
+  },
+
+  actualizarIndicadorPoder() {
+    if (!this.indicadorPoder) return;
+
+    const restante = Math.max(0, this.poderHasta - performance.now());
+    const activo = restante > 0;
+
+    this.indicadorPoder.classList.toggle("hidden", !activo);
+    const numero = this.indicadorPoder.querySelector("#powerSeconds");
+    if (numero) numero.textContent = String(Math.ceil(restante / 1000));
+  },
+
   aplicarDesorientacion() {
-    const juego = window.JuniorGame;
-    const area = juego?.elementos?.areaJuego;
+    const area = window.JuniorGame?.elementos?.areaJuego;
 
     this.controlesInvertidosHasta =
       performance.now() + this.configuracion.duracionDesorientacion;
 
     document.body.classList.add("controles-invertidos");
     area?.classList.add("juego-desorientado");
-
-    /*
-      controls.js puede consultar esta función sin necesidad de
-      alterar su arquitectura. La integración exacta de botones
-      se realiza mediante captura temprana de los eventos.
-    */
     this.instalarIntercambioControles();
   },
 
@@ -423,12 +571,10 @@ window.SistemaEnemigos = {
       evento.preventDefault();
 
       const sustituto = objetivo === izquierda ? derecha : izquierda;
-      const tipo = evento.type;
-
       this.reenviandoControl = true;
 
       sustituto.dispatchEvent(
-        new PointerEvent(tipo, {
+        new PointerEvent(evento.type, {
           bubbles: true,
           cancelable: true,
           pointerId: evento.pointerId || 1,
@@ -452,9 +598,7 @@ window.SistemaEnemigos = {
   quitarDesorientacion() {
     this.controlesInvertidosHasta = 0;
     document.body.classList.remove("controles-invertidos");
-    window.JuniorGame?.elementos?.areaJuego?.classList.remove(
-      "juego-desorientado"
-    );
+    window.JuniorGame?.elementos?.areaJuego?.classList.remove("juego-desorientado");
   },
 
   revisarSalida() {
@@ -465,13 +609,11 @@ window.SistemaEnemigos = {
 
     const margen = enemigo.tamano + 80;
     const salioHorizontal =
-      enemigo.x < -margen ||
-      enemigo.x > area.clientWidth + margen;
+      enemigo.x < -margen || enemigo.x > area.clientWidth + margen;
+    const salioVertical = enemigo.y > area.clientHeight + margen;
+    const tiempoAgotado = enemigo.tiempoVivo > 11;
 
-    const salioVertical =
-      enemigo.y > area.clientHeight + margen;
-
-    if (salioHorizontal || salioVertical) {
+    if (salioHorizontal || salioVertical || tiempoAgotado) {
       this.eliminarEnemigo();
     }
   },
@@ -486,7 +628,6 @@ window.SistemaEnemigos = {
     mensaje.className = "enemigo-mensaje";
     mensaje.textContent = texto;
     document.body.appendChild(mensaje);
-
     window.setTimeout(() => mensaje.remove(), 1500);
   },
 
@@ -496,17 +637,10 @@ window.SistemaEnemigos = {
       this.enemigoActual = null;
     }
 
-    if (programar && this.activo) {
-      this.programarSiguiente();
-    }
+    if (programar && this.activo) this.programarSiguiente();
   }
 };
 
-window.addEventListener(
-  "DOMContentLoaded",
-  () => {
-    window.setTimeout(() => {
-      window.SistemaEnemigos.iniciar();
-    }, 100);
-  }
-);
+window.addEventListener("DOMContentLoaded", () => {
+  window.setTimeout(() => window.SistemaEnemigos.iniciar(), 100);
+});

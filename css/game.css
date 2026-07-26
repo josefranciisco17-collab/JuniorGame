@@ -1724,3 +1724,108 @@ top: calc(max(9px, env(safe-area-inset-top)) + 95px);
     transition-duration:.01ms!important;
   }
 }
+
+/* ==========================================================
+   ENEMIGOS - FASE 1
+   ========================================================== */
+
+.enemigo{
+  position:absolute;
+  z-index:16;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  line-height:1;
+  font-size:52px;
+  filter:drop-shadow(0 7px 5px rgba(0,0,0,.42));
+  will-change:left,top,transform;
+  transition:opacity .26s ease, filter .26s ease;
+}
+
+.enemigo-entrada{
+  opacity:0;
+  filter:drop-shadow(0 7px 5px rgba(0,0,0,.42)) blur(4px);
+}
+
+.enemigo-gato{
+  animation:enemigoGato .42s ease-in-out infinite alternate;
+}
+
+.enemigo-cuervo{
+  animation:enemigoCuervo .28s ease-in-out infinite alternate;
+}
+
+.enemigo-fantasma{
+  opacity:.88;
+  animation:enemigoFantasma .75s ease-in-out infinite alternate;
+}
+
+.enemigo-erizo{
+  transform-origin:center;
+}
+
+.enemigo-golpe{
+  opacity:0;
+  filter:brightness(1.9) drop-shadow(0 0 18px rgba(255,80,40,.95));
+  transform:scale(1.45) rotate(18deg) !important;
+}
+
+@keyframes enemigoGato{
+  from{transform:translateY(0) rotate(-3deg)}
+  to{transform:translateY(-7px) rotate(3deg)}
+}
+
+@keyframes enemigoCuervo{
+  from{transform:translateY(-3px) rotate(-7deg) scaleY(.92)}
+  to{transform:translateY(5px) rotate(7deg) scaleY(1.06)}
+}
+
+@keyframes enemigoFantasma{
+  from{transform:scale(.94) rotate(-3deg);filter:drop-shadow(0 0 8px rgba(170,230,255,.7))}
+  to{transform:scale(1.08) rotate(3deg);filter:drop-shadow(0 0 20px rgba(205,245,255,1))}
+}
+
+.juego-desorientado{
+  animation:juegoDesorientado .28s ease-in-out infinite alternate;
+}
+
+@keyframes juegoDesorientado{
+  from{filter:hue-rotate(-18deg) saturate(1.1)}
+  to{filter:hue-rotate(24deg) saturate(1.4)}
+}
+
+.controles-invertidos #leftButton,
+.controles-invertidos #rightButton{
+  box-shadow:
+    0 0 0 4px rgba(174,102,255,.45),
+    0 6px 0 #43205f,
+    0 10px 20px rgba(0,0,0,.35);
+}
+
+.enemigo-mensaje{
+  position:fixed;
+  top:27%;
+  left:50%;
+  z-index:10020;
+  transform:translateX(-50%);
+  width:max-content;
+  max-width:88vw;
+  padding:12px 18px;
+  border:2px solid #ffd27a;
+  border-radius:18px;
+  color:#fff;
+  background:rgba(44,17,7,.94);
+  box-shadow:0 8px 24px rgba(0,0,0,.42);
+  font-size:15px;
+  font-weight:900;
+  text-align:center;
+  pointer-events:none;
+  animation:enemigoMensaje 1.5s ease both;
+}
+
+@keyframes enemigoMensaje{
+  0%{opacity:0;transform:translate(-50%,-18px) scale(.8)}
+  15%,72%{opacity:1;transform:translate(-50%,0) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-12px) scale(.92)}
+}

@@ -818,6 +818,7 @@ configurarBotonesModal() {
     this.estado.pausado = true;
 
     window.SistemaCajas?.detener?.();
+    window.SistemaEnemigos?.detener?.();
 
 /*
   Audio de final de partida.

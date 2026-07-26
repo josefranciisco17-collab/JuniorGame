@@ -84,12 +84,147 @@ window.SistemaRuleta = {
   },
 
   configurarEventos() {
-    this.interfaz.botonAbrir?.addEventListener("click", () => this.abrir());
-    this.interfaz.cerrar?.addEventListener("click", () => this.cerrar());
-    this.interfaz.modal?.addEventListener("click", (evento) => {
-      if (evento.target === this.interfaz.modal && !this.girando) this.cerrar();
+    /*
+      Compatibilidad universal:
+      - iPhone/iPad (Safari)
+      - Android
+      - Navegadores de escritorio
+
+      En dispositivos con Pointer Events usamos pointerup.
+      También conservamos click para teclado y accesibilidad.
+      El bloqueo interno evita que un toque genere dos acciones
+      por el click sintético posterior de Safari.
+    */
+    this.configurarAccionSegura(
+      this.interfaz.botonAbrir,
+      () => this.abrir()
+    );
+
+    this.configurarAccionSegura(
+      this.interfaz.cerrar,
+      () => this.cerrar()
+    );
+
+    this.configurarAccionSegura(
+      this.interfaz.botonGirar,
+      () => this.girar()
+    );
+
+    this.configurarAccionSegura(
+      this.interfaz.modal,
+      (evento) => {
+        if (
+          evento.target === this.interfaz.modal &&
+          !this.girando
+        ) {
+          this.cerrar();
+        }
+      },
+      { soloFondo: true }
+    );
+
+    this.prepararCompatibilidadIOS();
+  },
+
+  configurarAccionSegura(elemento, accion, opciones = {}) {
+    if (!elemento || typeof accion !== "function") {
+      return;
+    }
+
+    let ultimoToque = 0;
+    let procesando = false;
+
+    const ejecutar = (evento) => {
+      const ahora = Date.now();
+
+      if (ahora - ultimoToque < 650 || procesando) {
+        return;
+      }
+
+      if (
+        opciones.soloFondo &&
+        evento.target !== elemento
+      ) {
+        return;
+      }
+
+      ultimoToque = ahora;
+      procesando = true;
+
+      if (
+        evento.type !== "click" &&
+        evento.cancelable
+      ) {
+        evento.preventDefault();
+      }
+
+      Promise.resolve(accion(evento))
+        .catch((error) => {
+          console.error(
+            "Error en la interacción de la ruleta:",
+            error
+          );
+        })
+        .finally(() => {
+          window.setTimeout(() => {
+            procesando = false;
+          }, 80);
+        });
+    };
+
+    if ("PointerEvent" in window) {
+      elemento.addEventListener(
+        "pointerup",
+        ejecutar,
+        { passive: false }
+      );
+    } else {
+      elemento.addEventListener(
+        "touchend",
+        ejecutar,
+        { passive: false }
+      );
+    }
+
+    elemento.addEventListener(
+      "click",
+      ejecutar
+    );
+  },
+
+  prepararCompatibilidadIOS() {
+    const controles = [
+      this.interfaz.botonAbrir,
+      this.interfaz.cerrar,
+      this.interfaz.botonGirar
+    ].filter(Boolean);
+
+    controles.forEach((elemento) => {
+      elemento.style.touchAction = "manipulation";
+      elemento.style.webkitTapHighlightColor = "transparent";
+      elemento.style.webkitUserSelect = "none";
     });
-    this.interfaz.botonGirar?.addEventListener("click", () => this.girar());
+
+    const desbloquearAudio = () => {
+      try {
+        window.AudioFX?.desbloquear?.();
+        window.AudioFX?.boton?.();
+      } catch {
+        // La ruleta continúa aunque el audio todavía no esté disponible.
+      }
+    };
+
+    document.addEventListener(
+      "pointerdown",
+      desbloquearAudio,
+      { once: true, passive: true }
+    );
+
+    document.addEventListener(
+      "touchstart",
+      desbloquearAudio,
+      { once: true, passive: true }
+    );
   },
 
   abrir() {
@@ -274,10 +409,18 @@ window.SistemaRuleta = {
     this.rotacionActual += destino;
 
     if (this.interfaz.rueda) {
-      this.interfaz.rueda.style.transform = `rotate(${this.rotacionActual}deg)`;
+      this.interfaz.rueda.style.willChange = "transform";
+      this.interfaz.rueda.style.webkitTransform =
+        `translateZ(0) rotate(${this.rotacionActual}deg)`;
+      this.interfaz.rueda.style.transform =
+        `translateZ(0) rotate(${this.rotacionActual}deg)`;
+
+      void this.interfaz.rueda.offsetWidth;
     }
 
-    await new Promise((resolver) => window.setTimeout(resolver, 4600));
+    await new Promise((resolver) =>
+      window.setTimeout(resolver, 4700)
+    );
 
     try {
       await this.reclamarPremio(seleccion.premio);
@@ -291,6 +434,11 @@ window.SistemaRuleta = {
       }
     } finally {
       this.girando = false;
+
+      if (this.interfaz.rueda) {
+        this.interfaz.rueda.style.willChange = "auto";
+      }
+
       await this.actualizarEstado();
     }
   },

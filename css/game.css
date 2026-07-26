@@ -2482,3 +2482,42 @@ body.perro-invulnerable .dog{animation:perroProtegido .55s ease-in-out infinite 
 .missions-toast{position:fixed;left:50%;top:17%;z-index:10050;max-width:84vw;padding:12px 18px;border:2px solid #ffd66e;border-radius:16px;color:#fff;background:rgba(43,22,9,.96);font-weight:900;transform:translate(-50%,-14px) scale(.92);opacity:0;transition:.22s ease;pointer-events:none;text-align:center}
 .missions-toast.show{transform:translate(-50%,0) scale(1);opacity:1}
 @media(max-width:410px){.resource-hud{gap:5px}.missions-button,.daily-wheel-button,.pet-button{min-width:54px}.missions-card{padding-left:10px;padding-right:10px}.missions-list{max-height:60vh}}
+
+/* ==========================================================
+   RULETA DIARIA - COMPATIBILIDAD iPhone / iPad / Safari
+   ========================================================== */
+
+#dailyWheelButton,
+#dailyWheelCloseButton,
+#dailyWheelSpinButton,
+.daily-wheel-button,
+.daily-wheel-close-button,
+.daily-wheel-spin-button {
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#dailyWheelDisc,
+.daily-wheel-disc {
+  -webkit-transform: translateZ(0) rotate(0deg);
+  transform: translateZ(0) rotate(0deg);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+#dailyWheelModal,
+.daily-wheel-modal {
+  -webkit-overflow-scrolling: touch;
+}
+
+#dailyWheelSpinButton:disabled,
+.daily-wheel-spin-button:disabled {
+  pointer-events: none;
+}
+

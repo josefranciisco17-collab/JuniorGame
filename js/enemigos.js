@@ -26,6 +26,8 @@ window.SistemaEnemigos = {
   intercambioInstalado: false,
   ultimoRectPerro: null,
   indicadorPoder: null,
+  ultimoTipoCreado: null,
+  ultimoGatoEn: 0,
 
   configuracion: {
     esperaMinima: 6500,
@@ -33,7 +35,9 @@ window.SistemaEnemigos = {
     nivelInicio: 3,
     duracionDesorientacion: 3200,
     duracionPoder: 8000,
-    puntosPorDerrotar: 2
+    puntosPorDerrotar: 2,
+    descansoTrasSalvacion: 6500,
+    descansoMinimoEntreGatos: 18000
   },
 
   tipos: {
@@ -123,6 +127,66 @@ window.SistemaEnemigos = {
       .map(([nombre, datos]) => ({ nombre, ...datos }));
   },
 
+  obtenerRangoEspera() {
+    const nivel = this.obtenerNivel();
+
+    if (nivel <= 5) return [40000, 60000];
+    if (nivel <= 10) return [30000, 45000];
+    if (nivel <= 20) return [20000, 35000];
+    return [15000, 25000];
+  },
+
+  haySalvacionActiva() {
+    return Boolean(
+      window.SistemaSupervivencia?.objetoActual ||
+      window.SistemaCajas?.cajaActual
+    );
+  },
+
+  calcularEsperaDirector() {
+    const [minima, maxima] = this.obtenerRangoEspera();
+    let espera = minima + Math.random() * (maxima - minima);
+
+    const vidas = Math.max(0, Number(window.JuniorGame?.estado?.vidas) || 0);
+    const combo = Math.max(0, Number(window.SistemaSupervivencia?.combo) || 0);
+
+    if (vidas <= 1) espera *= 1.55;
+    if (this.haySalvacionActiva()) espera += this.configuracion.descansoTrasSalvacion;
+    if (combo >= 50) espera *= 0.9;
+
+    return Math.max(12000, espera);
+  },
+
+  elegirTipoDirector(disponibles) {
+    if (!Array.isArray(disponibles) || disponibles.length === 0) return null;
+
+    let candidatos = disponibles;
+
+    if (this.ultimoTipoCreado === "gato" && disponibles.length > 1) {
+      candidatos = disponibles.filter((tipo) => tipo.nombre !== "gato");
+    }
+
+    const ahora = performance.now();
+    const gatoEnDescanso =
+      ahora - this.ultimoGatoEn < this.configuracion.descansoMinimoEntreGatos;
+
+    if (gatoEnDescanso && candidatos.length > 1) {
+      candidatos = candidatos.filter((tipo) => tipo.nombre !== "gato");
+    }
+
+    const ponderados = [];
+
+    candidatos.forEach((tipo) => {
+      let peso = tipo.nombre === "gato" ? 2 : 4;
+      if (tipo.nombre === "fantasma") peso = 3;
+      if (tipo.nombre === "erizo") peso = 3;
+
+      for (let i = 0; i < peso; i += 1) ponderados.push(tipo);
+    });
+
+    return ponderados[Math.floor(Math.random() * ponderados.length)] || candidatos[0];
+  },
+
   programarSiguiente() {
     if (!this.activo) return;
 
@@ -135,15 +199,7 @@ window.SistemaEnemigos = {
       return;
     }
 
-    const multiplicadorFrecuencia =
-      window.SistemaNiveles?.obtenerMultiplicadorFrecuencia?.() ?? 1;
-
-    const esperaBase =
-      this.configuracion.esperaMinima +
-      Math.random() *
-        (this.configuracion.esperaMaxima - this.configuracion.esperaMinima);
-
-    const espera = Math.max(3000, esperaBase * multiplicadorFrecuencia);
+    const espera = this.calcularEsperaDirector();
 
     this.temporizador = setTimeout(() => {
       const juego = window.JuniorGame;
@@ -171,7 +227,11 @@ window.SistemaEnemigos = {
       return;
     }
 
-    const tipo = disponibles[Math.floor(Math.random() * disponibles.length)];
+    const tipo = this.elegirTipoDirector(disponibles);
+    if (!tipo) {
+      this.programarSiguiente();
+      return;
+    }
     const elemento = document.createElement("div");
 
     elemento.className = `enemigo ${tipo.clase} enemigo-entrada`;
@@ -233,6 +293,9 @@ window.SistemaEnemigos = {
         Math.min(1.7, multiplicadorVelocidad)
     );
 
+    this.ultimoTipoCreado = tipo.nombre;
+    if (tipo.nombre === "gato") this.ultimoGatoEn = performance.now();
+
     this.enemigoActual = {
       ...tipo,
       elemento,
@@ -293,6 +356,8 @@ window.SistemaEnemigos = {
 
   mover(deltaTime) {
     const enemigo = this.enemigoActual;
+    const multiplicadorTiempo =
+      window.SistemaSupervivencia?.obtenerMultiplicadorTiempo?.() ?? 1;
     if (!enemigo) return;
 
     enemigo.tiempoVivo += deltaTime;
@@ -313,10 +378,12 @@ window.SistemaEnemigos = {
         }
       }
 
-      enemigo.x += enemigo.velocidad * enemigo.direccionX * deltaTime;
+      enemigo.x +=
+        enemigo.velocidad * enemigo.direccionX * deltaTime * multiplicadorTiempo;
       enemigo.elemento.classList.toggle("enemigo-mira-izquierda", enemigo.direccionX < 0);
     } else {
-      enemigo.x += enemigo.velocidad * enemigo.direccionX * deltaTime;
+      enemigo.x +=
+        enemigo.velocidad * enemigo.direccionX * deltaTime * multiplicadorTiempo;
     }
 
     if (enemigo.modo === "diagonal") {

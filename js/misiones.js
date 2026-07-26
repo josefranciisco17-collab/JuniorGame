@@ -16,6 +16,9 @@ window.SistemaMisiones = {
   datos: null,
   pestañaActual: "diarias",
   interfaz: {},
+  usuario: null,
+  referenciaUsuario: null,
+  modulosFirebase: null,
 
   catalogo: {
     diarias: [
@@ -52,6 +55,54 @@ window.SistemaMisiones = {
     this.configurarEventos();
     this.renderizar();
     this.actualizarInsignia();
+    this.prepararFirebase();
+  },
+
+  async prepararFirebase() {
+    try {
+      const [configuracion, firestore, authMod] = await Promise.all([
+        import("./firebase-config.js"),
+        import("https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"),
+        import("https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js")
+      ]);
+
+      this.usuario = await this.esperarUsuario(
+        configuracion.auth,
+        authMod.onAuthStateChanged
+      );
+
+      if (!this.usuario) return;
+
+      this.modulosFirebase = { configuracion, firestore };
+      this.referenciaUsuario = firestore.doc(
+        configuracion.db,
+        "users",
+        this.usuario.uid
+      );
+    } catch (error) {
+      console.warn("Misiones en modo local:", error);
+    }
+  },
+
+  esperarUsuario(auth, onAuthStateChanged) {
+    if (auth.currentUser) return Promise.resolve(auth.currentUser);
+
+    return new Promise((resolver) => {
+      let terminado = false;
+      const cancelar = onAuthStateChanged(auth, (usuario) => {
+        if (terminado) return;
+        terminado = true;
+        cancelar();
+        resolver(usuario || null);
+      });
+
+      window.setTimeout(() => {
+        if (terminado) return;
+        terminado = true;
+        cancelar();
+        resolver(auth.currentUser || null);
+      }, 5000);
+    });
   },
 
   nuevaEstructura() {
@@ -224,33 +275,138 @@ window.SistemaMisiones = {
     return tarjeta;
   },
 
-  reclamar(mision) {
-    if (!mision || !this.estaCompleta(mision) || this.datos.reclamadas[mision.id]) return false;
-    this.datos.reclamadas[mision.id] = true;
-    this.entregarRecompensa(mision.recompensa);
-    this.guardar();
-    this.renderizar();
-    this.actualizarInsignia();
-    this.mostrarMensaje(`🎁 ${mision.recompensa.texto} reclamado`);
-    return true;
+  async reclamar(mision) {
+    if (
+      !mision ||
+      !this.estaCompleta(mision) ||
+      this.datos.reclamadas[mision.id]
+    ) {
+      return false;
+    }
+
+    try {
+      await this.entregarRecompensa(mision.recompensa);
+      this.datos.reclamadas[mision.id] = true;
+      this.guardar();
+      this.renderizar();
+      this.actualizarInsignia();
+      this.mostrarMensaje(`🎁 ${mision.recompensa.texto} reclamado`);
+      return true;
+    } catch (error) {
+      console.error("No se pudo reclamar la misión:", error);
+      this.mostrarMensaje("No se pudo entregar el premio. Inténtalo otra vez.");
+      return false;
+    }
   },
 
-  entregarRecompensa(recompensa) {
-    const juego = window.JuniorGame;
+  async entregarRecompensa(recompensa) {
     if (!recompensa) return;
-    if (recompensa.tipo === "monedas") {
-      const actual = Number(juego?.estado?.monedas) || 0;
-      juego?.actualizarRecursoHUD?.("monedas", actual + recompensa.cantidad, { animar: true });
-    } else if (recompensa.tipo === "diamantes") {
-      const actual = Number(juego?.estado?.diamantes) || 0;
-      juego?.actualizarRecursoHUD?.("diamantes", actual + recompensa.cantidad, { animar: true });
-    } else if (recompensa.tipo === "xpMascota") {
-      window.SistemaMascotas?.agregarExperiencia?.(recompensa.cantidad);
-    } else if (recompensa.tipo === "vida") {
-      juego?.agregarVida?.(recompensa.cantidad);
-    } else if (recompensa.tipo === "escudo") {
-      juego?.activarEscudo?.(recompensa.cantidad);
+
+    if (
+      (recompensa.tipo === "monedas" || recompensa.tipo === "diamantes") &&
+      this.referenciaUsuario &&
+      this.modulosFirebase
+    ) {
+      const { firestore, configuracion } = this.modulosFirebase;
+
+      await firestore.runTransaction(
+        configuracion.db,
+        async (transaccion) => {
+          const documento = await transaccion.get(this.referenciaUsuario);
+          const datos = documento.exists() ? documento.data() : {};
+          const cambios = {};
+
+          if (recompensa.tipo === "monedas") {
+            cambios.coins =
+              (Number(datos.coins ?? datos.monedas ?? 0) || 0) +
+              recompensa.cantidad;
+          }
+
+          if (recompensa.tipo === "diamantes") {
+            cambios.diamonds =
+              (Number(datos.diamonds ?? datos.diamantes ?? 0) || 0) +
+              recompensa.cantidad;
+          }
+
+          transaccion.set(
+            this.referenciaUsuario,
+            cambios,
+            { merge: true }
+          );
+        }
+      );
+
+      return;
     }
+
+    if (recompensa.tipo === "xpMascota") {
+      if (window.SistemaMascotas?.agregarExperiencia) {
+        window.SistemaMascotas.agregarExperiencia(recompensa.cantidad);
+      } else {
+        this.agregarExperienciaMascotaLocal(recompensa.cantidad);
+      }
+      return;
+    }
+
+    /*
+      Respaldo local cuando no hay una sesión o conexión disponible.
+      El valor queda guardado para no perder la recompensa.
+    */
+    const clave = "juniorGame.recompensasLocales";
+    let locales = {};
+    try {
+      locales = JSON.parse(localStorage.getItem(clave) || "{}") || {};
+    } catch {
+      locales = {};
+    }
+
+    locales[recompensa.tipo] =
+      (Number(locales[recompensa.tipo]) || 0) +
+      recompensa.cantidad;
+
+    localStorage.setItem(clave, JSON.stringify(locales));
+  },
+
+  agregarExperienciaMascotaLocal(cantidad) {
+    const equipada =
+      localStorage.getItem("juniorGame.mascotaEquipada") ||
+      "cachorro";
+
+    let progreso = {};
+    try {
+      progreso = JSON.parse(
+        localStorage.getItem("juniorGame.progresoMascotas") || "{}"
+      ) || {};
+    } catch {
+      progreso = {};
+    }
+
+    const datos = progreso[equipada] || {
+      nivel: 1,
+      experiencia: 0,
+      desbloqueada: true
+    };
+
+    datos.experiencia =
+      Math.max(0, Number(datos.experiencia) || 0) +
+      Math.max(0, Number(cantidad) || 0);
+
+    const experienciaNecesaria = (nivel) =>
+      25 + Math.max(0, nivel - 1) * 20;
+
+    while (
+      datos.nivel < 20 &&
+      datos.experiencia >= experienciaNecesaria(datos.nivel)
+    ) {
+      datos.experiencia -= experienciaNecesaria(datos.nivel);
+      datos.nivel += 1;
+    }
+
+    progreso[equipada] = datos;
+    localStorage.setItem(
+      "juniorGame.progresoMascotas",
+      JSON.stringify(progreso)
+    );
   },
 
   mostrarMensaje(texto) {

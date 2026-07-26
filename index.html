@@ -128,6 +128,27 @@
         </a>
 
         <button
+          id="dailyWheelButton"
+          class="wood-button menu-feature-button"
+          type="button"
+        >
+          <span class="button-icon" aria-hidden="true">🎡</span>
+          <span class="button-text">RULETA DIARIA</span>
+          <small id="dailyWheelMenuStatus" class="menu-feature-status">Disponible</small>
+        </button>
+
+        <button
+          id="missionsButton"
+          class="wood-button menu-feature-button"
+          type="button"
+        >
+          <span class="button-icon" aria-hidden="true">📋</span>
+          <span class="button-text">MISIONES</span>
+          <small class="menu-feature-status">Diarias, semanales y logros</small>
+          <em id="missionsBadge" class="menu-notification-badge hidden">0</em>
+        </button>
+
+        <button
           id="shopButton"
           class="wood-button"
           type="button"
@@ -413,6 +434,46 @@
 
 
 
+
+    <!-- RULETA DIARIA -->
+    <div id="dailyWheelModal" class="daily-wheel-modal hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="dailyWheelTitle">
+      <div class="daily-wheel-card">
+        <button id="dailyWheelCloseButton" class="daily-wheel-close" type="button" aria-label="Cerrar">✕</button>
+        <h2 id="dailyWheelTitle">RULETA DIARIA</h2>
+        <p id="dailyWheelStatus">Preparando tu giro…</p>
+
+        <div class="daily-wheel-stage">
+          <div class="daily-wheel-pointer" aria-hidden="true">▼</div>
+          <div id="dailyWheelDisc" class="daily-wheel-disc">
+            <div id="dailyWheelSegments" class="daily-wheel-segments"></div>
+            <div class="daily-wheel-center" aria-hidden="true">🐶</div>
+          </div>
+        </div>
+
+        <div id="dailyWheelResult" class="daily-wheel-result hidden" aria-live="polite"></div>
+        <strong id="dailyWheelCountdown" class="daily-wheel-countdown">Disponible ahora</strong>
+        <button id="dailyWheelSpinButton" class="daily-wheel-spin" type="button">GIRAR AHORA</button>
+        <small class="daily-wheel-note">Un giro por día. El premio se guarda en tu cuenta.</small>
+      </div>
+    </div>
+
+    <!-- MISIONES Y LOGROS -->
+    <div id="missionsModal" class="missions-modal hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="missionsTitle">
+      <div class="missions-card">
+        <button id="missionsCloseButton" class="missions-close" type="button" aria-label="Cerrar">✕</button>
+        <h2 id="missionsTitle">MISIONES Y LOGROS</h2>
+        <p id="missionsSummary" class="missions-summary">Tus desafíos de JuniorGame</p>
+
+        <div class="missions-tabs" role="tablist">
+          <button class="missions-tab active" data-missions-tab="diarias" type="button">DIARIAS</button>
+          <button class="missions-tab" data-missions-tab="semanales" type="button">SEMANALES</button>
+          <button class="missions-tab" data-missions-tab="logros" type="button">LOGROS</button>
+        </div>
+
+        <div id="missionsList" class="missions-list"></div>
+      </div>
+    </div>
+
     <!-- VENTANA EMERGENTE -->
     <div
       id="menuModal"
@@ -481,8 +542,10 @@
 ></script>
 
 <script src="js/audio.js"></script>
+<script src="js/ruleta.js?v=20260726-menu1"></script>
+<script src="js/misiones.js?v=20260726-menu1"></script>
 
-<script type="module" src="js/menu.js?v=22"></script>
+<script type="module" src="js/menu.js?v=23"></script>
 
 </body>
 

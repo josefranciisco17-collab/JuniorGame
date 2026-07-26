@@ -185,6 +185,12 @@ window.JuniorGame = {
     this.estado.monedas = 0;
     this.estado.diamantes = 0;
 
+    /*
+      Aplica premios pendientes obtenidos desde la ruleta del menú.
+      Después de aplicarlos se eliminan para evitar duplicados.
+    */
+    this.aplicarBonosPendientes();
+
     this.prepararPerro();
     this.actualizarMarcador();
     this.actualizarVidas();
@@ -202,6 +208,32 @@ window.JuniorGame = {
     */
     window.SistemaCajas?.iniciar?.();
     window.SistemaSupervivencia?.iniciar?.();
+  },
+
+
+  aplicarBonosPendientes() {
+    try {
+      const clave = "juniorGame.bonosPendientes";
+      const bonos = JSON.parse(localStorage.getItem(clave) || "{}") || {};
+
+      const vidas = Math.max(0, Math.floor(Number(bonos.vidas) || 0));
+      const escudos = Math.max(0, Math.floor(Number(bonos.escudos) || 0));
+
+      if (vidas > 0) {
+        this.estado.vidas = Math.min(
+          this.estado.vidasMaximas,
+          this.estado.vidas + vidas
+        );
+      }
+
+      if (escudos > 0) {
+        this.estado.escudo = Math.min(3, escudos);
+      }
+
+      localStorage.removeItem(clave);
+    } catch (error) {
+      console.warn("No se pudieron aplicar los premios pendientes:", error);
+    }
   },
 
 

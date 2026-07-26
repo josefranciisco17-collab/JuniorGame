@@ -50,7 +50,8 @@ window.SistemaRuleta = {
       botonGirar: document.getElementById("dailyWheelSpinButton"),
       estado: document.getElementById("dailyWheelStatus"),
       resultado: document.getElementById("dailyWheelResult"),
-      tiempo: document.getElementById("dailyWheelCountdown")
+      tiempo: document.getElementById("dailyWheelCountdown"),
+      estadoMenu: document.getElementById("dailyWheelMenuStatus")
     };
   },
 
@@ -193,6 +194,11 @@ window.SistemaRuleta = {
     if (this.interfaz.tiempo) {
       this.interfaz.tiempo.textContent = disponible ? "Disponible ahora" : `Nuevo giro en ${this.textoRestante()}`;
     }
+    if (this.interfaz.estadoMenu) {
+      this.interfaz.estadoMenu.textContent = disponible
+        ? "¡Premio listo!"
+        : `Disponible en ${this.textoRestante()}`;
+    }
     return disponible;
   },
 
@@ -290,23 +296,84 @@ window.SistemaRuleta = {
   },
 
   aplicarPremioEnPartida(premio) {
-    if (premio.tipo === "vida") {
-      window.JuniorGame?.agregarVida?.(premio.cantidad);
+    if (premio.tipo === "vida" || premio.tipo === "escudo") {
+      const clave = "juniorGame.bonosPendientes";
+      let bonos = {};
+      try {
+        bonos = JSON.parse(localStorage.getItem(clave) || "{}") || {};
+      } catch {
+        bonos = {};
+      }
+
+      if (premio.tipo === "vida") {
+        bonos.vidas = (Number(bonos.vidas) || 0) + premio.cantidad;
+      }
+
+      if (premio.tipo === "escudo") {
+        bonos.escudos = (Number(bonos.escudos) || 0) + premio.cantidad;
+      }
+
+      localStorage.setItem(clave, JSON.stringify(bonos));
     }
-    if (premio.tipo === "escudo") {
-      window.JuniorGame?.activarEscudo?.(premio.cantidad);
-    }
+
     if (premio.tipo === "xpMascota") {
-      window.SistemaMascotas?.agregarExperiencia?.(premio.cantidad);
+      if (window.SistemaMascotas?.agregarExperiencia) {
+        window.SistemaMascotas.agregarExperiencia(premio.cantidad);
+      } else {
+        this.agregarExperienciaMascotaLocal(premio.cantidad);
+      }
     }
-    if (premio.tipo === "monedas") {
-      const actual = Number(window.JuniorGame?.estado?.monedas || 0);
-      window.JuniorGame?.actualizarRecursoHUD?.("monedas", actual + premio.cantidad, { animar: true });
+
+    /*
+      Dentro de una partida todavía actualiza el HUD si el motor existe.
+      En el menú, monedas y diamantes ya se guardan mediante Firestore.
+    */
+    if (premio.tipo === "monedas" && window.JuniorGame) {
+      const actual = Number(window.JuniorGame.estado?.monedas || 0);
+      window.JuniorGame.actualizarRecursoHUD?.("monedas", actual + premio.cantidad, { animar: true });
     }
-    if (premio.tipo === "diamantes") {
-      const actual = Number(window.JuniorGame?.estado?.diamantes || 0);
-      window.JuniorGame?.actualizarRecursoHUD?.("diamantes", actual + premio.cantidad, { animar: true });
+
+    if (premio.tipo === "diamantes" && window.JuniorGame) {
+      const actual = Number(window.JuniorGame.estado?.diamantes || 0);
+      window.JuniorGame.actualizarRecursoHUD?.("diamantes", actual + premio.cantidad, { animar: true });
     }
+  },
+
+  agregarExperienciaMascotaLocal(cantidad) {
+    const equipada = localStorage.getItem("juniorGame.mascotaEquipada") || "cachorro";
+    let progreso = {};
+
+    try {
+      progreso = JSON.parse(localStorage.getItem("juniorGame.progresoMascotas") || "{}") || {};
+    } catch {
+      progreso = {};
+    }
+
+    const datos = progreso[equipada] || {
+      nivel: 1,
+      experiencia: 0,
+      desbloqueada: true
+    };
+
+    datos.experiencia = Math.max(0, Number(datos.experiencia) || 0) +
+      Math.max(0, Number(cantidad) || 0);
+
+    const experienciaNecesaria = (nivel) =>
+      25 + Math.max(0, nivel - 1) * 20;
+
+    while (
+      datos.nivel < 20 &&
+      datos.experiencia >= experienciaNecesaria(datos.nivel)
+    ) {
+      datos.experiencia -= experienciaNecesaria(datos.nivel);
+      datos.nivel += 1;
+    }
+
+    progreso[equipada] = datos;
+    localStorage.setItem(
+      "juniorGame.progresoMascotas",
+      JSON.stringify(progreso)
+    );
   },
 
   mostrarResultado(premio) {

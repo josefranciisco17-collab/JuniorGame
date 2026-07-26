@@ -2332,3 +2332,87 @@ body.perro-invulnerable .dog{animation:perroProtegido .55s ease-in-out infinite 
 }
 .secret-world-timer.hidden{display:none;}
 .secret-world-timer span{font-size:20px}.secret-world-timer strong{font-size:20px}.secret-world-timer small{font-size:11px;font-weight:900}
+
+/* ==========================================================
+   FASE 4 · RULETA DIARIA
+   ========================================================== */
+.daily-wheel-button{
+  min-width:58px;
+  height:54px;
+  padding:4px 7px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:1px;
+  border:2px solid #ffd768;
+  border-radius:16px;
+  color:#fff;
+  background:linear-gradient(180deg,#6548c8,#2e1c78);
+  box-shadow:0 4px 0 #160b46,0 7px 14px rgba(0,0,0,.3);
+  cursor:pointer;
+}
+.daily-wheel-button span{font-size:24px;line-height:1}
+.daily-wheel-button strong{font-size:8px;letter-spacing:.4px}
+.daily-wheel-button.daily-wheel-ready{animation:dailyWheelReady 1.4s ease-in-out infinite}
+@keyframes dailyWheelReady{50%{transform:translateY(-3px);filter:drop-shadow(0 0 8px #ffe77c)}}
+
+.daily-wheel-modal{
+  position:fixed;
+  inset:0;
+  z-index:12000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  background:radial-gradient(circle at top,rgba(106,69,210,.35),rgba(0,0,0,.9) 64%);
+  backdrop-filter:blur(7px);
+}
+.daily-wheel-modal.hidden{display:none}
+.daily-wheel-card{
+  position:relative;
+  width:min(94vw,420px);
+  max-height:calc(100dvh - 24px);
+  overflow-y:auto;
+  padding:20px 16px 18px;
+  border:3px solid #ffd568;
+  border-radius:28px;
+  color:#fff;
+  text-align:center;
+  background:linear-gradient(180deg,#4b3298 0%,#28165e 52%,#160b37 100%);
+  box-shadow:0 12px 0 #0b051d,0 25px 60px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.25);
+}
+.daily-wheel-close{
+  position:absolute;top:10px;right:10px;width:38px;height:38px;border:1px solid rgba(255,255,255,.3);border-radius:50%;color:#fff;background:rgba(0,0,0,.3);font-size:18px;font-weight:900
+}
+.daily-wheel-card h2{margin:0;color:#ffe477;font-size:27px;text-shadow:0 3px 0 rgba(0,0,0,.4)}
+.daily-wheel-card>p{margin:5px 35px 8px;color:#e5ddff;font-size:13px;font-weight:750}
+.daily-wheel-stage{position:relative;width:min(78vw,310px);aspect-ratio:1;margin:8px auto 10px}
+.daily-wheel-pointer{position:absolute;z-index:4;top:-9px;left:50%;transform:translateX(-50%);color:#fff3a4;font-size:38px;line-height:1;filter:drop-shadow(0 4px 1px rgba(0,0,0,.6))}
+.daily-wheel-disc{
+  position:absolute;inset:12px;border:8px solid #ffc94d;border-radius:50%;overflow:hidden;
+  background:conic-gradient(#e74c3c 0deg 45deg,#ff9f1c 45deg 90deg,#f4d35e 90deg 135deg,#3ec1d3 135deg 180deg,#46c26f 180deg 225deg,#6c5ce7 225deg 270deg,#b85cff 270deg 315deg,#ef5da8 315deg 360deg);
+  box-shadow:0 0 0 6px #512b00,0 12px 24px rgba(0,0,0,.45),inset 0 0 24px rgba(0,0,0,.25);
+  transition:transform 4.5s cubic-bezier(.12,.68,.08,1);
+}
+.daily-wheel-segments{position:absolute;inset:0}
+.daily-wheel-segment{
+  --angle:calc(360deg / var(--segment-total));
+  position:absolute;left:50%;top:50%;width:42%;height:50%;transform-origin:0 0;
+  transform:rotate(calc(var(--segment-index) * var(--angle))) translateY(-100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:13px;color:#fff;text-shadow:0 2px 2px rgba(0,0,0,.7)
+}
+.daily-wheel-segment>*{transform:rotate(calc((var(--segment-index) * var(--angle)) * -1))}
+.daily-wheel-segment-icon{font-size:25px;line-height:1}
+.daily-wheel-segment small{max-width:66px;margin-top:2px;font-size:8px;line-height:1.05;font-weight:950}
+.daily-wheel-center{position:absolute;left:50%;top:50%;width:68px;height:68px;display:grid;place-items:center;transform:translate(-50%,-50%);border:5px solid #ffe48b;border-radius:50%;background:linear-gradient(180deg,#6a3d1f,#32160a);font-size:37px;box-shadow:0 5px 12px rgba(0,0,0,.5)}
+.daily-wheel-result{margin:7px 0 8px;padding:10px;border:1px solid rgba(255,232,145,.45);border-radius:15px;background:rgba(0,0,0,.25);display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px;text-align:left}
+.daily-wheel-result.hidden{display:none}
+.daily-wheel-result>span{grid-row:1/3;font-size:35px}
+.daily-wheel-result strong{color:#ffe477;font-size:16px}
+.daily-wheel-result small{color:#ded5ff;font-size:11px}
+.daily-wheel-countdown{display:block;margin:3px 0 9px;color:#d9d0ff;font-size:12px}
+.daily-wheel-spin{width:100%;min-height:52px;border:2px solid #fff1a5;border-radius:17px;color:#321a00;background:linear-gradient(180deg,#ffe77b,#ffae22);box-shadow:0 5px 0 #9d5200;font-size:17px;font-weight:1000;cursor:pointer}
+.daily-wheel-spin:disabled{color:#a6a0b5;background:#5a526c;border-color:#777085;box-shadow:0 4px 0 #292433;cursor:not-allowed}
+.daily-wheel-note{display:block;margin-top:10px;color:#bdb4d8;font-size:10px}
+@media(max-height:720px){.daily-wheel-stage{width:min(62vw,245px)}.daily-wheel-card{padding-top:14px}.daily-wheel-card h2{font-size:23px}}

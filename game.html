@@ -102,6 +102,11 @@
         <span id="petButtonIcon" class="pet-button-icon" aria-hidden="true">🐕</span>
         <strong id="petButtonLevel">Nv. 1</strong>
       </button>
+
+      <button id="dailyWheelButton" class="daily-wheel-button daily-wheel-ready" type="button" aria-label="Abrir ruleta diaria">
+        <span aria-hidden="true">🎡</span>
+        <strong>DIARIA</strong>
+      </button>
     </div>
 
     <section id="gameArea" class="game-area">
@@ -361,6 +366,28 @@
   </div>
 </div>
 
+
+<div id="dailyWheelModal" class="daily-wheel-modal hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="dailyWheelTitle">
+  <div class="daily-wheel-card">
+    <button id="dailyWheelCloseButton" class="daily-wheel-close" type="button" aria-label="Cerrar">✕</button>
+    <h2 id="dailyWheelTitle">RULETA DIARIA</h2>
+    <p id="dailyWheelStatus">Preparando tu giro…</p>
+
+    <div class="daily-wheel-stage">
+      <div class="daily-wheel-pointer" aria-hidden="true">▼</div>
+      <div id="dailyWheelDisc" class="daily-wheel-disc">
+        <div id="dailyWheelSegments" class="daily-wheel-segments"></div>
+        <div class="daily-wheel-center" aria-hidden="true">🐶</div>
+      </div>
+    </div>
+
+    <div id="dailyWheelResult" class="daily-wheel-result hidden" aria-live="polite"></div>
+    <strong id="dailyWheelCountdown" class="daily-wheel-countdown">Disponible ahora</strong>
+    <button id="dailyWheelSpinButton" class="daily-wheel-spin" type="button">GIRAR AHORA</button>
+    <small class="daily-wheel-note">Un giro por día. El premio se guarda en tu cuenta.</small>
+  </div>
+</div>
+
   <script src="js/audio.js?v=20260722-caja4-github"></script>
   <script src="js/game.js?v=20260726-mundos-secretos3"></script>
   <script src="js/mundos.js?v=20260726-mundos-secretos3"></script>
@@ -375,6 +402,7 @@
   <script src="js/supervivencia.js?v=20260726-supervivencia1"></script>
   <script src="js/habilidades.js?v=20260726-habilidades1"></script>
   <script src="js/mascotas.js?v=20260726-mascotas2"></script>
+  <script src="js/ruleta.js?v=20260726-ruleta4"></script>
   <script src="js/pause.js?v=20260722-caja4-github"></script>
   <script src="js/ui.js?v=20260722-caja4-github"></script>
 

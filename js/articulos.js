@@ -15,6 +15,7 @@ const estado = {
   usuario: null,
   datos: {},
   inventario: {},
+  razasCompradas: {},
   outfitGuardado: {},
   vistaActual: {},
   pruebas: new Set(),
@@ -84,14 +85,79 @@ function inventarioDesdeDatos(datos = {}) {
     : {};
 }
 
+function razasDesdeDatos(datos = {}, inventario = {}) {
+  const guardadas = datos.razasCompradas && typeof datos.razasCompradas === "object"
+    ? datos.razasCompradas
+    : {};
+
+  const resultado = {};
+  for (const articulo of ARTICULOS) {
+    if (
+      articulo.tipo === "raza" &&
+      (guardadas[articulo.id] === true || inventario[articulo.id] === true)
+    ) {
+      resultado[articulo.id] = true;
+    }
+  }
+
+  return resultado;
+}
+
+function razaComprada(id) {
+  return estado.razasCompradas[id] === true || estado.inventario[id] === true;
+}
+
+function guardarRazaLocal(id) {
+  try {
+    if (id) {
+      window.localStorage.setItem("juniorGame.razaEquipada", id);
+    } else {
+      window.localStorage.removeItem("juniorGame.razaEquipada");
+    }
+  } catch (error) {
+    console.warn("No se pudo sincronizar la raza localmente:", error);
+  }
+}
+
+async function migrarRazasCompradasSiHaceFalta() {
+  if (!estado.usuario) return;
+
+  const cambios = {};
+  for (const articulo of ARTICULOS) {
+    if (
+      articulo.tipo === "raza" &&
+      estado.inventario[articulo.id] === true &&
+      estado.datos?.razasCompradas?.[articulo.id] !== true
+    ) {
+      cambios[`razasCompradas.${articulo.id}`] = true;
+    }
+  }
+
+  if (Object.keys(cambios).length === 0) return;
+
+  try {
+    await setDoc(doc(db, "users", estado.usuario.uid), {
+      ...cambios,
+      actualizadoEn: serverTimestamp()
+    }, { merge: true });
+  } catch (error) {
+    console.warn("No se pudieron migrar las razas compradas:", error);
+  }
+}
+
 function configurarDesdeFirestore(datos = {}) {
   estado.datos = datos;
   estado.inventario = inventarioDesdeDatos(datos);
+  estado.razasCompradas = razasDesdeDatos(datos, estado.inventario);
   estado.outfitGuardado = datos.outfitGuardado && typeof datos.outfitGuardado === "object"
     ? datos.outfitGuardado
     : {};
   estado.poderSeleccionado = datos.poderSeleccionado || null;
-  estado.razaEquipada = datos.razaEquipada || null;
+  const razaRemota = datos.razaEquipada || null;
+  estado.razaEquipada = razaRemota && razaComprada(razaRemota)
+    ? razaRemota
+    : null;
+  guardarRazaLocal(estado.razaEquipada);
 
   if (Object.keys(estado.vistaActual).length === 0) {
     estado.vistaActual = { ...estado.outfitGuardado };
@@ -103,6 +169,7 @@ function configurarDesdeFirestore(datos = {}) {
 
   elementos.diamondBalance.textContent = String(numero(datos.diamantes));
   renderTodo();
+  migrarRazasCompradasSiHaceFalta();
 }
 
 function crearCategoriasRopa() {
@@ -115,7 +182,9 @@ function crearCategoriasRopa() {
 }
 
 function estadoArticulo(articulo) {
-  const comprado = estado.inventario[articulo.id] === true;
+  const comprado = articulo.tipo === "raza"
+    ? razaComprada(articulo.id)
+    : estado.inventario[articulo.id] === true;
   const equipado = articulo.tipo === "poder"
     ? estado.poderSeleccionado === articulo.id
     : articulo.tipo === "raza"
@@ -351,6 +420,7 @@ async function confirmarCompra() {
       };
 
       if (articulo.tipo === "raza") {
+        cambios[`razasCompradas.${articulo.id}`] = true;
         cambios.razaEquipada = articulo.id;
       }
 
@@ -358,8 +428,10 @@ async function confirmarCompra() {
     });
 
     if (articulo.tipo === "raza") {
+      estado.inventario[articulo.id] = true;
+      estado.razasCompradas[articulo.id] = true;
       estado.razaEquipada = articulo.id;
-      window.localStorage.setItem("juniorGame.razaEquipada", articulo.id);
+      guardarRazaLocal(articulo.id);
     } else {
       estado.vistaActual[articulo.categoria] = articulo.id;
       estado.pruebas.delete(articulo.categoria);
@@ -417,7 +489,7 @@ async function guardarOutfit() {
 async function equiparRaza(articulo) {
   if (!estado.usuario) return;
 
-  if (!estado.inventario[articulo.id]) {
+  if (!razaComprada(articulo.id)) {
     mostrarMensaje("Primero debes comprar esta raza.", "error");
     return;
   }
@@ -429,7 +501,7 @@ async function equiparRaza(articulo) {
     }, { merge: true });
 
     estado.razaEquipada = articulo.id;
-    window.localStorage.setItem("juniorGame.razaEquipada", articulo.id);
+    guardarRazaLocal(articulo.id);
     renderTodo();
     mostrarMensaje(`${articulo.nombre} quedó equipada.`);
   } catch (error) {

@@ -232,7 +232,10 @@ window.SistemaHabilidades = {
     };
 
     const ejecutada = Boolean(metodos[id]?.());
-    if (ejecutada) this.iniciarRecarga(id);
+    if (ejecutada) {
+      this.iniciarRecarga(id);
+      window.SistemaMisiones?.registrar?.("habilidad_usada", 1, { habilidad: id });
+    }
     return ejecutada;
   },
 

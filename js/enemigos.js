@@ -518,6 +518,7 @@ window.SistemaEnemigos = {
     window.AudioFX?.bonus?.();
 
     juego?.actualizarPuntos?.(this.configuracion.puntosPorDerrotar, 0);
+    window.SistemaMisiones?.registrar?.("enemigo_derrotado", 1, { metodo });
 
     this.mostrarMensaje(
       metodo === "salto"

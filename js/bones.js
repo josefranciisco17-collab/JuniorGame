@@ -279,6 +279,8 @@ if (esPoder) {
 */
 juego.actualizarPuntos(puntos, 1);
 window.SistemaSupervivencia?.registrarCaptura?.({ dorado: esDorado });
+window.SistemaMisiones?.registrar?.("hueso_atrapado", 1, { dorado: esDorado, poder: esPoder });
+if (esDorado) window.SistemaMisiones?.registrar?.("hueso_dorado", 1);
 if (this.huesoActual.objetoMundo) window.SistemaMundos?.registrarCapturaObjeto?.();
 
 /*

@@ -166,6 +166,7 @@ window.SistemaMascotas = {
     this.crearMascotaVisual();
     this.actualizarInterfaz();
     this.mostrarMensaje(`${this.catalogo[id].icono} ${this.catalogo[id].nombre} te acompaña`);
+    window.SistemaMisiones?.registrar?.("mascota_equipada", 1, { mascota: id });
     return true;
   },
 

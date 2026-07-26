@@ -67,6 +67,7 @@ window.SistemaNiveles = {
       bloque de diez niveles.
     */
     window.SistemaMundos?.aplicarNivel?.(this.nivelActual);
+    window.SistemaMisiones?.registrar?.("nivel_alcanzado", this.nivelActual, { nivel: this.nivelActual });
 
     const textoNivel =
       document.getElementById("levelNumber");

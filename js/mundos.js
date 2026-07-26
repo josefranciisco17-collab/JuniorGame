@@ -245,7 +245,10 @@ window.SistemaMundos = {
     this.mundoSecretoActual = null;
     this.finMundoSecretoEn = 0;
     document.getElementById("secretWorldTimer")?.classList.add("hidden");
-    if (entregar) this.entregarRecompensa(datos.recompensa);
+    if (entregar) {
+      this.entregarRecompensa(datos.recompensa);
+      window.SistemaMisiones?.registrar?.("mundo_completado", 1, { mundo: id });
+    }
     const normal = this.obtenerMundoNormal(window.SistemaNiveles?.nivelActual || 1);
     this.transicionar(() => this.aplicarFondoNormal(normal, { inmediato: true }), {
       emoji: normal.emoji,

@@ -107,6 +107,12 @@
         <span aria-hidden="true">🎡</span>
         <strong>DIARIA</strong>
       </button>
+
+      <button id="missionsButton" class="missions-button" type="button" aria-label="Abrir misiones y logros">
+        <span aria-hidden="true">📋</span>
+        <strong>MISIONES</strong>
+        <em id="missionsBadge" class="missions-badge hidden">0</em>
+      </button>
     </div>
 
     <section id="gameArea" class="game-area">
@@ -388,6 +394,22 @@
   </div>
 </div>
 
+
+
+<div id="missionsModal" class="missions-modal hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="missionsTitle">
+  <div class="missions-card">
+    <button id="missionsCloseButton" class="missions-close" type="button" aria-label="Cerrar">✕</button>
+    <h2 id="missionsTitle">MISIONES Y LOGROS</h2>
+    <p id="missionsSummary" class="missions-summary">Tus desafíos de JuniorGame</p>
+    <div class="missions-tabs" role="tablist">
+      <button class="missions-tab active" data-missions-tab="diarias" type="button">DIARIAS</button>
+      <button class="missions-tab" data-missions-tab="semanales" type="button">SEMANALES</button>
+      <button class="missions-tab" data-missions-tab="logros" type="button">LOGROS</button>
+    </div>
+    <div id="missionsList" class="missions-list"></div>
+  </div>
+</div>
+
   <script src="js/audio.js?v=20260722-caja4-github"></script>
   <script src="js/game.js?v=20260726-mundos-secretos3"></script>
   <script src="js/mundos.js?v=20260726-mundos-secretos3"></script>
@@ -403,6 +425,7 @@
   <script src="js/habilidades.js?v=20260726-habilidades1"></script>
   <script src="js/mascotas.js?v=20260726-mascotas2"></script>
   <script src="js/ruleta.js?v=20260726-ruleta4"></script>
+  <script src="js/misiones.js?v=20260726-misiones5"></script>
   <script src="js/pause.js?v=20260722-caja4-github"></script>
   <script src="js/ui.js?v=20260722-caja4-github"></script>
 

@@ -2145,3 +2145,104 @@ body.perro-invulnerable .dog{animation:perroProtegido .55s ease-in-out infinite 
 }
 .perro-doble-salto{animation:perroDobleSalto .48s ease}
 @keyframes perroDobleSalto{50%{filter:brightness(1.5) drop-shadow(0 0 18px #d9f5ff);transform:scale(1.08)}}
+
+/* ==========================================================
+   FASE 2 - MOTOR DE MASCOTAS
+   ========================================================== */
+.pet-button{
+  position:relative;
+  min-width:54px;
+  height:48px;
+  padding:3px 8px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:2px solid rgba(255,231,143,.9);
+  border-radius:16px;
+  color:#fff;
+  background:linear-gradient(180deg,#4f9f59,#255b31);
+  box-shadow:0 4px 0 #123419,0 7px 14px rgba(0,0,0,.3);
+  touch-action:manipulation;
+}
+.pet-button:active{transform:translateY(3px);box-shadow:0 1px 0 #123419}
+.pet-button-icon{font-size:23px;line-height:1}
+.pet-button strong{font-size:9px;color:#fff2a9}
+
+.active-pet{
+  position:absolute;
+  z-index:9;
+  width:48px;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  font-size:39px;
+  line-height:1;
+  filter:drop-shadow(0 7px 4px rgba(0,0,0,.38));
+  animation:petFloat 1.05s ease-in-out infinite alternate;
+  transition:filter .2s ease;
+}
+.active-pet.pet-facing-left{transform:scaleX(-1)}
+.active-pet.pet-working{filter:drop-shadow(0 0 14px #a8f2ff) drop-shadow(0 7px 4px rgba(0,0,0,.38))}
+.active-pet.pet-attack{animation:petAttack .5s ease}
+@keyframes petFloat{from{margin-top:0}to{margin-top:-7px}}
+@keyframes petAttack{0%{transform:scale(1)}45%{transform:translateY(-34px) scale(1.35) rotate(-12deg)}100%{transform:scale(1)}}
+
+.pet-modal{
+  position:fixed;
+  inset:0;
+  z-index:11200;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(6px);
+}
+.pet-modal.hidden{display:none}
+.pet-modal-card{
+  position:relative;
+  width:min(94vw,440px);
+  max-height:88vh;
+  overflow:auto;
+  padding:24px 16px 18px;
+  border:3px solid #a6e5a8;
+  border-radius:26px;
+  color:#fff;
+  background:linear-gradient(180deg,#315e39,#172d1c);
+  box-shadow:0 13px 0 #0b170e,0 26px 55px rgba(0,0,0,.65);
+}
+.pet-modal-card h2{margin:0 40px 5px 0;color:#fff0a5;font-size:24px}
+.pet-modal-card>p{margin:0 0 15px;color:#dcebdc;font-size:13px;line-height:1.4}
+.pet-close-button{
+  position:absolute;top:13px;right:13px;width:34px;height:34px;
+  border:1px solid rgba(255,255,255,.32);border-radius:50%;
+  color:#fff;background:rgba(0,0,0,.28);font-size:17px;
+}
+.pet-list{display:grid;gap:9px}
+.pet-option{
+  width:100%;min-height:90px;padding:10px;
+  display:grid;grid-template-columns:54px 1fr 25px;align-items:center;gap:9px;
+  border:1px solid rgba(208,245,207,.35);border-radius:17px;
+  color:#fff;background:rgba(255,255,255,.075);text-align:left;
+}
+.pet-option.equipped{border-color:#ffe587;background:rgba(255,221,92,.15);box-shadow:inset 0 0 0 1px rgba(255,229,135,.25)}
+.pet-option-icon{font-size:39px;text-align:center}
+.pet-option-copy{display:flex;flex-direction:column;gap:3px}
+.pet-option-copy strong{color:#fff1aa;font-size:15px}
+.pet-option-copy small{color:#bfe7c2;font-size:11px;font-weight:850}
+.pet-option-copy span{color:#e2ece2;font-size:11px;line-height:1.25}
+.pet-option-copy em{color:#ffe587;font-size:10px;font-style:normal;font-weight:900}
+.pet-option-check{font-size:20px;color:#ffe477;opacity:0}
+.pet-option.equipped .pet-option-check{opacity:1}
+.pet-toast{
+  position:fixed;left:50%;top:21%;z-index:12500;transform:translateX(-50%);
+  max-width:min(88vw,390px);padding:11px 17px;border:2px solid #d6ffb1;border-radius:999px;
+  color:#fff;background:rgba(24,70,31,.95);box-shadow:0 7px 22px rgba(0,0,0,.45);
+  font-size:14px;font-weight:950;text-align:center;animation:petToastIn .24s ease both;
+}
+.pet-toast-out{opacity:0;transform:translateX(-50%) translateY(-18px);transition:.35s ease}
+@keyframes petToastIn{from{opacity:0;transform:translateX(-50%) translateY(-12px) scale(.8)}to{opacity:1;transform:translateX(-50%) scale(1)}}
+@media(max-width:390px){.pet-button{min-width:45px;height:43px;padding:2px 6px}.pet-button-icon{font-size:20px}.active-pet{width:42px;height:42px;font-size:34px}}

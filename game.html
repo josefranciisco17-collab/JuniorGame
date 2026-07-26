@@ -97,6 +97,11 @@
         <span class="resource-counter-icon" aria-hidden="true">💎</span>
         <strong id="diamondsTotal">0</strong>
       </div>
+
+      <button id="petButton" class="pet-button" type="button" aria-label="Cambiar mascota">
+        <span id="petButtonIcon" class="pet-button-icon" aria-hidden="true">🐕</span>
+        <strong id="petButtonLevel">Nv. 1</strong>
+      </button>
     </div>
 
     <section id="gameArea" class="game-area">
@@ -347,6 +352,15 @@
   </div>
 </div>
 
+<div id="petModal" class="pet-modal hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="petModalTitle">
+  <div class="pet-modal-card">
+    <button id="petCloseButton" class="pet-close-button" type="button" aria-label="Cerrar">✕</button>
+    <h2 id="petModalTitle">MASCOTAS</h2>
+    <p>Elige una compañera. Cada mascota gana experiencia y mejora su habilidad mientras juegas.</p>
+    <div id="petList" class="pet-list"></div>
+  </div>
+</div>
+
   <script src="js/audio.js?v=20260722-caja4-github"></script>
   <script src="js/game.js?v=20260726-supervivencia1"></script>
   <script src="js/mundos.js?v=20260725-mundos-base"></script>
@@ -360,6 +374,7 @@
   <script src="js/cajas.js?v=20260725-recompensas-premium"></script>
   <script src="js/supervivencia.js?v=20260726-supervivencia1"></script>
   <script src="js/habilidades.js?v=20260726-habilidades1"></script>
+  <script src="js/mascotas.js?v=20260726-mascotas2"></script>
   <script src="js/pause.js?v=20260722-caja4-github"></script>
   <script src="js/ui.js?v=20260722-caja4-github"></script>
 

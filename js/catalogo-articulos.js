@@ -345,6 +345,232 @@ export const ARTICULOS = [
   },
 
   /* -----------------------------------------
+     RAZAS — PERSONAJES COLECCIONABLES
+     Todas cuestan 80 diamantes.
+     La habilidad se conectará al juego en la siguiente fase.
+  ----------------------------------------- */
+  {
+    id: "raza-chihuahua",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Chihuahua",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Común",
+    habilidad: "Superladrido",
+    descripcion: "Una onda sonora que empuja los obstáculos cercanos."
+  },
+  {
+    id: "raza-beagle",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Beagle",
+    icono: "🐶",
+    precio: 80,
+    rareza: "Raro",
+    habilidad: "Olfato Maestro",
+    descripcion: "Detecta y resalta las mejores recompensas de la partida."
+  },
+  {
+    id: "raza-bulldog",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Bulldog",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Épico",
+    habilidad: "Impacto",
+    descripcion: "Destruye los obstáculos visibles con un golpe al suelo."
+  },
+  {
+    id: "raza-husky",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Husky Siberiano",
+    icono: "🐺",
+    precio: 80,
+    rareza: "Épico",
+    habilidad: "Tormenta Polar",
+    descripcion: "Congela temporalmente los objetos y obstáculos."
+  },
+  {
+    id: "raza-golden",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Golden Retriever",
+    icono: "🦮",
+    precio: 80,
+    rareza: "Raro",
+    habilidad: "Buena Fortuna",
+    descripcion: "Aumenta temporalmente la aparición de premios especiales."
+  },
+  {
+    id: "raza-pastor-aleman",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Pastor Alemán",
+    icono: "🐕‍🦺",
+    precio: 80,
+    rareza: "Épico",
+    habilidad: "Comandante",
+    descripcion: "Llama ayudantes que recogen huesos durante unos segundos."
+  },
+  {
+    id: "raza-dalmata",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Dálmata",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Raro",
+    habilidad: "Rebote",
+    descripcion: "Los huesos atrapados pueden generar un hueso adicional."
+  },
+  {
+    id: "raza-doberman",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Doberman",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Épico",
+    habilidad: "Furia",
+    descripcion: "Aumenta la movilidad y la capacidad de reacción."
+  },
+  {
+    id: "raza-border-collie",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Border Collie",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Raro",
+    habilidad: "Mente Ágil",
+    descripcion: "Mejora temporalmente los combos y la experiencia."
+  },
+  {
+    id: "raza-poodle",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Poodle",
+    icono: "🐩",
+    precio: 80,
+    rareza: "Épico",
+    habilidad: "Magia Canina",
+    descripcion: "Transforma obstáculos visibles en recompensas."
+  },
+  {
+    id: "raza-rottweiler",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Rottweiler",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Épico",
+    habilidad: "Guardia",
+    descripcion: "Protege al perro de impactos durante un tiempo limitado."
+  },
+  {
+    id: "raza-shiba",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Shiba Inu",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Raro",
+    habilidad: "Travesura Ninja",
+    descripcion: "Cambia de posición rápidamente para alcanzar premios."
+  },
+  {
+    id: "raza-samoyedo",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Samoyedo",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Épico",
+    habilidad: "Aurora",
+    descripcion: "Crea una zona brillante que mejora las recompensas."
+  },
+  {
+    id: "raza-corgi",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Corgi",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Común",
+    habilidad: "Energía Feliz",
+    descripcion: "Acelera la recarga de la habilidad durante una racha."
+  },
+  {
+    id: "raza-schnauzer",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Schnauzer",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Raro",
+    habilidad: "Torbellino",
+    descripcion: "Hace girar y acercarse a los huesos próximos."
+  },
+  {
+    id: "raza-labrador",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Labrador",
+    icono: "🦮",
+    precio: 80,
+    rareza: "Raro",
+    habilidad: "Rescate",
+    descripcion: "Recupera una oportunidad al completar un reto rápido."
+  },
+  {
+    id: "raza-san-bernardo",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "San Bernardo",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Épico",
+    habilidad: "Protector",
+    descripcion: "Otorga una protección reforzada durante unos segundos."
+  },
+  {
+    id: "raza-akita",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Akita",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Épico",
+    habilidad: "Espíritu Leal",
+    descripcion: "Mantiene el combo aunque se escape un hueso."
+  },
+  {
+    id: "raza-galgo",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Galgo",
+    icono: "🐕",
+    precio: 80,
+    rareza: "Raro",
+    habilidad: "Paso Fantasma",
+    descripcion: "Permite reposicionarse sin recibir daño durante un instante."
+  },
+  {
+    id: "raza-pug",
+    tipo: "raza",
+    categoria: "razas",
+    nombre: "Pug",
+    icono: "🐶",
+    precio: 80,
+    rareza: "Común",
+    habilidad: "Carisma",
+    descripcion: "Activa una bonificación sorpresa basada en la racha actual."
+  },
+
+  /* -----------------------------------------
      PODERES
   ----------------------------------------- */
   {

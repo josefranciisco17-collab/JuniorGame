@@ -21,6 +21,7 @@ const estado = {
   categoriaRopa: "sombreros",
   productoCompra: null,
   poderSeleccionado: null,
+  razaEquipada: null,
   detenerEscucha: null
 };
 
@@ -31,10 +32,12 @@ const elementos = {
   mainTabs: [...document.querySelectorAll(".main-tab")],
   wardrobeSection: $("wardrobeSection"),
   skinsSection: $("skinsSection"),
+  breedsSection: $("breedsSection"),
   powersSection: $("powersSection"),
   clothingCategories: $("clothingCategories"),
   clothingCatalog: $("clothingCatalog"),
   skinsCatalog: $("skinsCatalog"),
+  breedsCatalog: $("breedsCatalog"),
   powersCatalog: $("powersCatalog"),
   mannequinBase: $("mannequinBase"),
   clothingLayers: $("clothingLayers"),
@@ -45,6 +48,9 @@ const elementos = {
   saveHelp: $("saveHelp"),
   selectedPowerIcon: $("selectedPowerIcon"),
   selectedPowerName: $("selectedPowerName"),
+  selectedBreedIcon: $("selectedBreedIcon"),
+  selectedBreedName: $("selectedBreedName"),
+  selectedBreedAbility: $("selectedBreedAbility"),
   articlesMessage: $("articlesMessage"),
   purchaseModal: $("purchaseModal"),
   purchaseIcon: $("purchaseIcon"),
@@ -85,6 +91,7 @@ function configurarDesdeFirestore(datos = {}) {
     ? datos.outfitGuardado
     : {};
   estado.poderSeleccionado = datos.poderSeleccionado || null;
+  estado.razaEquipada = datos.razaEquipada || null;
 
   if (Object.keys(estado.vistaActual).length === 0) {
     estado.vistaActual = { ...estado.outfitGuardado };
@@ -111,27 +118,35 @@ function estadoArticulo(articulo) {
   const comprado = estado.inventario[articulo.id] === true;
   const equipado = articulo.tipo === "poder"
     ? estado.poderSeleccionado === articulo.id
-    : estado.outfitGuardado[articulo.categoria] === articulo.id;
-  const prueba = estado.pruebas.has(articulo.categoria) && estado.vistaActual[articulo.categoria] === articulo.id;
+    : articulo.tipo === "raza"
+      ? estado.razaEquipada === articulo.id
+      : estado.outfitGuardado[articulo.categoria] === articulo.id;
+  const prueba = articulo.tipo !== "raza"
+    && estado.pruebas.has(articulo.categoria)
+    && estado.vistaActual[articulo.categoria] === articulo.id;
   return { comprado, equipado, prueba };
 }
 
 function tarjetaArticulo(articulo) {
   const { comprado, equipado, prueba } = estadoArticulo(articulo);
   const esPoder = articulo.tipo === "poder";
+  const esRaza = articulo.tipo === "raza";
+
   const accionPrueba = articulo.categoria === "sombreros"
     ? "Probar sombrero"
     : articulo.categoria === "skins"
       ? "Probar skin"
       : `Probar ${articulo.categoria.replace("panuelos", "pañuelo").replace("zapatos", "zapatos")}`;
 
-  const estadoTexto = comprado
-    ? `<span class="status-label owned">🟢 Comprado</span>`
-    : prueba
-      ? `<span class="status-label preview">🟡 Modo prueba</span>`
-      : "";
+  const estadoTexto = equipado
+    ? `<span class="status-label equipped">⭐ Equipada</span>`
+    : comprado
+      ? `<span class="status-label owned">🟢 Comprado</span>`
+      : prueba
+        ? `<span class="status-label preview">🟡 Modo prueba</span>`
+        : "";
 
-  const primerBoton = esPoder
+  const primerBoton = esPoder || esRaza
     ? ""
     : `<button class="item-button" type="button" data-action="preview" data-id="${articulo.id}">${accionPrueba}</button>`;
 
@@ -140,6 +155,8 @@ function tarjetaArticulo(articulo) {
     segundoBoton = `<button class="item-button buy" type="button" data-action="buy" data-id="${articulo.id}">💎 Comprar</button>`;
   } else if (esPoder) {
     segundoBoton = `<button class="item-button ${equipado ? "equipped" : ""}" type="button" data-action="select-power" data-id="${articulo.id}">${equipado ? "✔ Seleccionado" : "⚡ Seleccionar"}</button>`;
+  } else if (esRaza) {
+    segundoBoton = `<button class="item-button ${equipado ? "equipped" : ""}" type="button" data-action="equip-breed" data-id="${articulo.id}" ${equipado ? "disabled" : ""}>${equipado ? "✔ Equipada" : "🐾 Equipar"}</button>`;
   } else {
     segundoBoton = `<button class="item-button ${equipado ? "equipped" : ""}" type="button" data-action="equip" data-id="${articulo.id}">${equipado ? "✔ Equipado" : "✔ Equipar"}</button>`;
   }
@@ -148,14 +165,19 @@ function tarjetaArticulo(articulo) {
     ? `<p class="item-description">${articulo.descripcion}${articulo.duracion ? ` · ${articulo.duracion} s` : ""}</p>`
     : "";
 
+  const habilidad = esRaza && articulo.habilidad
+    ? `<p class="breed-ability">✨ ${articulo.habilidad}</p>`
+    : "";
+
   return `
-    <article class="item-card">
-<div class="item-icon">
-${articulo.imagen
-? `<img src="${articulo.imagen}" class="item-image" alt="${articulo.nombre}">`
-: articulo.icono}
-</div>
+    <article class="item-card ${esRaza ? "breed-card" : ""}">
+      <div class="item-icon">
+        ${articulo.imagen
+          ? `<img src="${articulo.imagen}" class="item-image" alt="${articulo.nombre}">`
+          : articulo.icono}
+      </div>
       <h3>${articulo.nombre}</h3>
+      ${habilidad}
       ${descripcion}
       <div class="item-meta">
         <span class="rarity">⭐ ${articulo.rareza}</span>
@@ -174,6 +196,7 @@ function renderCatalogos() {
   const ropa = ARTICULOS.filter((a) => a.tipo === "ropa" && a.categoria === estado.categoriaRopa);
   elementos.clothingCatalog.innerHTML = ropa.map(tarjetaArticulo).join("");
   elementos.skinsCatalog.innerHTML = ARTICULOS.filter((a) => a.tipo === "skin").map(tarjetaArticulo).join("");
+  elementos.breedsCatalog.innerHTML = ARTICULOS.filter((a) => a.tipo === "raza").map(tarjetaArticulo).join("");
   elementos.powersCatalog.innerHTML = ARTICULOS.filter((a) => a.tipo === "poder").map(tarjetaArticulo).join("");
 }
 
@@ -242,17 +265,28 @@ function renderPoderSeleccionado() {
   elementos.selectedPowerName.textContent = poder?.nombre || "Ninguno";
 }
 
+function renderRazaEquipada() {
+  const raza = obtenerArticulo(estado.razaEquipada);
+  elementos.selectedBreedIcon.textContent = raza?.icono || "🐾";
+  elementos.selectedBreedName.textContent = raza?.nombre || "Perro original";
+  elementos.selectedBreedAbility.textContent = raza
+    ? `${raza.habilidad}: ${raza.descripcion}`
+    : "Compra y equipa una raza para preparar su habilidad exclusiva.";
+}
+
 function renderTodo() {
   crearCategoriasRopa();
   renderCatalogos();
   renderManiqui();
   renderPoderSeleccionado();
+  renderRazaEquipada();
 }
 
 function mostrarSeccion(nombre) {
   elementos.mainTabs.forEach((boton) => boton.classList.toggle("active", boton.dataset.section === nombre));
   elementos.wardrobeSection.classList.toggle("hidden", nombre !== "ropa");
   elementos.skinsSection.classList.toggle("hidden", nombre !== "skins");
+  elementos.breedsSection.classList.toggle("hidden", nombre !== "razas");
   elementos.powersSection.classList.toggle("hidden", nombre !== "poderes");
 }
 
@@ -276,7 +310,7 @@ async function equiparArticulo(articulo) {
 
 function abrirCompra(articulo) {
   estado.productoCompra = articulo;
-  elementos.purchaseIcon.textContent = articulo.icono;
+  elementos.purchaseIcon.textContent = articulo.icono || "🐾";
   elementos.purchaseDescription.textContent = `¿Quieres comprar ${articulo.nombre}? Quedará desbloqueado permanentemente.`;
   elementos.purchasePrice.textContent = `💎 ${articulo.precio}`;
   elementos.purchaseModal.classList.remove("hidden");
@@ -310,17 +344,33 @@ async function confirmarCompra() {
       const diamantes = numero(datos.diamantes);
       if (diamantes < articulo.precio) throw new Error("No tienes suficientes diamantes.");
 
-      transaccion.update(referencia, {
+      const cambios = {
         diamantes: diamantes - articulo.precio,
         [`inventarioArticulos.${articulo.id}`]: true,
         actualizadoEn: serverTimestamp()
-      });
+      };
+
+      if (articulo.tipo === "raza") {
+        cambios.razaEquipada = articulo.id;
+      }
+
+      transaccion.update(referencia, cambios);
     });
 
-    estado.vistaActual[articulo.categoria] = articulo.id;
-    estado.pruebas.delete(articulo.categoria);
+    if (articulo.tipo === "raza") {
+      estado.razaEquipada = articulo.id;
+      window.localStorage.setItem("juniorGame.razaEquipada", articulo.id);
+    } else {
+      estado.vistaActual[articulo.categoria] = articulo.id;
+      estado.pruebas.delete(articulo.categoria);
+    }
+
     cerrarCompra();
-    mostrarMensaje(`¡${articulo.nombre} comprado correctamente!`);
+    mostrarMensaje(
+      articulo.tipo === "raza"
+        ? `¡${articulo.nombre} comprada y equipada correctamente!`
+        : `¡${articulo.nombre} comprado correctamente!`
+    );
   } catch (error) {
     console.error(error);
     mostrarMensaje(error.message || "No se pudo completar la compra.", "error");
@@ -364,6 +414,30 @@ async function guardarOutfit() {
   }
 }
 
+async function equiparRaza(articulo) {
+  if (!estado.usuario) return;
+
+  if (!estado.inventario[articulo.id]) {
+    mostrarMensaje("Primero debes comprar esta raza.", "error");
+    return;
+  }
+
+  try {
+    await setDoc(doc(db, "users", estado.usuario.uid), {
+      razaEquipada: articulo.id,
+      actualizadoEn: serverTimestamp()
+    }, { merge: true });
+
+    estado.razaEquipada = articulo.id;
+    window.localStorage.setItem("juniorGame.razaEquipada", articulo.id);
+    renderTodo();
+    mostrarMensaje(`${articulo.nombre} quedó equipada.`);
+  } catch (error) {
+    console.error(error);
+    mostrarMensaje("No se pudo equipar la raza.", "error");
+  }
+}
+
 async function seleccionarPoder(articulo) {
   if (!estado.inventario[articulo.id]) {
     mostrarMensaje("Primero debes comprar este poder.", "error");
@@ -403,6 +477,7 @@ document.addEventListener("click", (evento) => {
     case "preview": probarArticulo(articulo); break;
     case "buy": abrirCompra(articulo); break;
     case "equip": equiparArticulo(articulo); break;
+    case "equip-breed": equiparRaza(articulo); break;
     case "select-power": seleccionarPoder(articulo); break;
   }
 });

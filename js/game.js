@@ -9,7 +9,9 @@ window.JuniorGame = {
     progresoNivel: 0,
     vidas: 3,
     vidasMaximas: 10,
-    escudo: 0
+    escudo: 0,
+    monedas: 0,
+    diamantes: 0
   },
 
   elementos: {
@@ -20,6 +22,10 @@ window.JuniorGame = {
     marcador: null,
     vidas: null,
     indicadorEscudo: null,
+    contadorMonedas: null,
+    totalMonedas: null,
+    contadorDiamantes: null,
+    totalDiamantes: null,
 
     botonIzquierda: null,
     botonDerecha: null,
@@ -75,6 +81,18 @@ window.JuniorGame = {
 
     this.elementos.indicadorEscudo =
       document.getElementById("shieldIndicator");
+
+    this.elementos.contadorMonedas =
+      document.getElementById("coinsCounter");
+
+    this.elementos.totalMonedas =
+      document.getElementById("coinsTotal");
+
+    this.elementos.contadorDiamantes =
+      document.getElementById("diamondsCounter");
+
+    this.elementos.totalDiamantes =
+      document.getElementById("diamondsTotal");
 
     this.elementos.botonIzquierda =
       document.getElementById("leftButton");
@@ -164,6 +182,8 @@ window.JuniorGame = {
     this.estado.progresoNivel = 0;
     this.estado.vidas = 3;
     this.estado.escudo = 0;
+    this.estado.monedas = 0;
+    this.estado.diamantes = 0;
 
     this.prepararPerro();
     this.actualizarMarcador();
@@ -172,6 +192,7 @@ window.JuniorGame = {
     this.configurarBotonInicio();
     this.configurarBotonesModal();
     this.configurarMusicaFondo();
+    this.iniciarContadoresRecursos();
 
     /*
       Inicia las cajas cuando el juego y sus elementos ya existen.
@@ -250,6 +271,109 @@ window.JuniorGame = {
         passive: true
       }
     );
+  },
+
+
+  formatearRecurso(valor) {
+    return new Intl.NumberFormat("es-MX", {
+      maximumFractionDigits: 0
+    }).format(Math.max(0, Math.floor(Number(valor) || 0)));
+  },
+
+  actualizarRecursoHUD(tipo, total, opciones = {}) {
+    const esMoneda = tipo === "monedas" || tipo === "coins";
+    const clave = esMoneda ? "monedas" : "diamantes";
+    const elementoNumero = esMoneda
+      ? this.elementos.totalMonedas
+      : this.elementos.totalDiamantes;
+    const contenedor = esMoneda
+      ? this.elementos.contadorMonedas
+      : this.elementos.contadorDiamantes;
+
+    const valorFinal = Math.max(0, Math.floor(Number(total) || 0));
+    const valorInicial = Math.max(0, Math.floor(Number(this.estado[clave]) || 0));
+    this.estado[clave] = valorFinal;
+
+    if (!elementoNumero) return;
+
+    if (!opciones.animar) {
+      elementoNumero.textContent = this.formatearRecurso(valorFinal);
+      return;
+    }
+
+    if (contenedor) {
+      contenedor.classList.remove("resource-counter-impact");
+      void contenedor.offsetWidth;
+      contenedor.classList.add("resource-counter-impact");
+      window.setTimeout(() => {
+        contenedor.classList.remove("resource-counter-impact");
+      }, 720);
+    }
+
+    if (valorInicial === valorFinal) {
+      elementoNumero.textContent = this.formatearRecurso(valorFinal);
+      return;
+    }
+
+    const duracion = 520;
+    const inicio = performance.now();
+
+    const paso = (ahora) => {
+      const progreso = Math.min(1, (ahora - inicio) / duracion);
+      const suavizado = 1 - Math.pow(1 - progreso, 3);
+      const valorActual = Math.round(
+        valorInicial + (valorFinal - valorInicial) * suavizado
+      );
+      elementoNumero.textContent = this.formatearRecurso(valorActual);
+
+      if (progreso < 1) {
+        requestAnimationFrame(paso);
+      }
+    };
+
+    requestAnimationFrame(paso);
+
+  },
+
+  async iniciarContadoresRecursos() {
+    try {
+      const [configuracion, firestore, firebaseAuth] = await Promise.all([
+        import("./firebase-config.js"),
+        import("https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"),
+        import("https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js")
+      ]);
+
+      const usuario = await this.esperarUsuario(
+        configuracion.auth,
+        firebaseAuth.onAuthStateChanged
+      );
+
+      if (!usuario) return;
+
+      const referencia = firestore.doc(
+        configuracion.db,
+        "users",
+        usuario.uid
+      );
+
+      this.detenerEscuchaRecursos?.();
+      this.detenerEscuchaRecursos = firestore.onSnapshot(
+        referencia,
+        (documento) => {
+          const datos = documento.exists() ? documento.data() : {};
+          const monedas = Number(datos.coins ?? datos.monedas ?? 0) || 0;
+          const diamantes = Number(datos.diamonds ?? datos.diamantes ?? 0) || 0;
+
+          this.actualizarRecursoHUD("monedas", monedas);
+          this.actualizarRecursoHUD("diamantes", diamantes);
+        },
+        (error) => {
+          console.warn("No se pudieron actualizar los contadores:", error);
+        }
+      );
+    } catch (error) {
+      console.warn("No se pudieron iniciar los contadores de recursos:", error);
+    }
   },
 
 

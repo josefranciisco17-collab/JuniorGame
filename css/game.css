@@ -1250,3 +1250,128 @@ a {
   transform-origin:center center;
   will-change:transform, filter;
 }
+
+
+/* ==========================================================
+   HUD DE MONEDAS Y DIAMANTES + RECOMPENSAS PREMIUM
+   ========================================================== */
+.resource-hud{
+  position:absolute;
+  top:calc(max(14px, env(safe-area-inset-top)) + 78px);
+  left:50%;
+  z-index:24;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  transform:translateX(-50%);
+  pointer-events:none;
+}
+
+.resource-counter{
+  position:relative;
+  min-width:94px;
+  height:39px;
+  padding:5px 13px 5px 8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  overflow:visible;
+  border:2px solid rgba(255,230,148,.92);
+  border-radius:999px;
+  color:#fff;
+  background:linear-gradient(180deg,rgba(71,42,24,.96),rgba(31,15,8,.98));
+  box-shadow:0 4px 0 rgba(16,7,3,.9),0 7px 14px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.16);
+  font-size:17px;
+  font-weight:1000;
+  text-shadow:0 2px 0 rgba(0,0,0,.5);
+  transform-origin:center;
+}
+
+.resource-counter-coins{border-color:#ffd866;}
+.resource-counter-diamonds{border-color:#8ee9ff;}
+.resource-counter-icon{position:relative;z-index:2;font-size:23px;line-height:1;filter:drop-shadow(0 2px 1px rgba(0,0,0,.4));}
+.resource-counter strong{position:relative;z-index:2;min-width:42px;text-align:center;}
+.resource-counter-glow{position:absolute;inset:-6px;border-radius:999px;opacity:0;pointer-events:none;}
+.resource-counter-coins .resource-counter-glow{background:radial-gradient(circle,rgba(255,219,82,.72),transparent 68%);box-shadow:0 0 19px rgba(255,188,31,.78);}
+.resource-counter-diamonds .resource-counter-glow{background:radial-gradient(circle,rgba(111,229,255,.72),transparent 68%);box-shadow:0 0 19px rgba(55,195,255,.8);}
+
+.resource-counter-tick{animation:resourceTick .2s ease;}
+.resource-counter-impact{animation:resourceImpact .68s cubic-bezier(.2,.9,.2,1);}
+.resource-counter-impact .resource-counter-glow{animation:resourceGlow .68s ease;}
+
+@keyframes resourceTick{0%{transform:scale(1)}55%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes resourceImpact{0%{transform:scale(1)}32%{transform:scale(1.22) rotate(-2deg)}58%{transform:scale(.96) rotate(1deg)}100%{transform:scale(1)}}
+@keyframes resourceGlow{0%{opacity:0;transform:scale(.65)}35%{opacity:1;transform:scale(1.18)}100%{opacity:0;transform:scale(1.45)}}
+
+.flying-reward{
+  position:fixed;
+  z-index:10020;
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  pointer-events:none;
+  opacity:0;
+  font-size:25px;
+  line-height:1;
+  will-change:transform,opacity,filter;
+  transform:translate3d(0,0,0) scale(.35) rotate(0deg);
+  filter:drop-shadow(0 3px 2px rgba(0,0,0,.42));
+}
+
+.flying-reward::after{
+  content:"";
+  position:absolute;
+  inset:6px;
+  z-index:-1;
+  border-radius:50%;
+  opacity:.75;
+  filter:blur(6px);
+}
+.flying-coin::after{background:#ffd740;box-shadow:0 0 14px #ffb300;}
+.flying-diamond::after{background:#63e6ff;box-shadow:0 0 16px #22b8ff;}
+
+.flying-reward-go{
+  animation:rewardMagnet var(--reward-duration) cubic-bezier(.18,.72,.18,1) var(--reward-delay) forwards;
+}
+
+@keyframes rewardMagnet{
+  0%{opacity:0;transform:translate3d(0,0,0) scale(.35) rotate(0deg)}
+  12%{opacity:1;transform:translate3d(var(--burst-x),var(--burst-y),0) scale(1.12) rotate(120deg)}
+  48%{opacity:1;transform:translate3d(var(--target-x-38),var(--target-y-32),0) scale(1) rotate(430deg)}
+  82%{opacity:1;transform:translate3d(var(--target-x-82),var(--target-y-78),0) scale(.82) rotate(760deg)}
+  100%{opacity:0;transform:translate3d(var(--target-x),var(--target-y),0) scale(.18) rotate(980deg)}
+}
+
+.resource-impact-particle{
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:8;
+  pointer-events:none;
+  font-size:15px;
+  font-weight:1000;
+  animation:resourceParticle .7s ease-out forwards;
+}
+.resource-impact-monedas{color:#ffe36b;text-shadow:0 0 7px #ffb300;}
+.resource-impact-diamantes{color:#a8f3ff;text-shadow:0 0 8px #18b9ff;}
+@keyframes resourceParticle{
+  from{opacity:1;transform:translate(-50%,-50%) scale(.3)}
+  to{opacity:0;transform:translate(calc(-50% + var(--impact-x)),calc(-50% + var(--impact-y))) scale(1.25) rotate(140deg)}
+}
+
+@media (max-width:390px){
+  .resource-hud{top:calc(max(10px, env(safe-area-inset-top)) + 70px);gap:6px;}
+  .resource-counter{min-width:82px;height:35px;padding:4px 10px 4px 7px;font-size:15px;}
+  .resource-counter-icon{font-size:20px;}
+}
+
+@media (max-height:700px){
+  .resource-hud{top:calc(max(9px, env(safe-area-inset-top)) + 62px);}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .flying-reward-go,.resource-counter-tick,.resource-counter-impact,.resource-counter-impact .resource-counter-glow,.resource-impact-particle{animation-duration:.01ms!important;animation-delay:0ms!important;}
+}

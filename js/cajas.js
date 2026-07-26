@@ -554,16 +554,23 @@ const yBase = esPruebaNivel1
       return;
     }
 
-    if (premio.tipo === "monedas") {
-      window.AudioFX?.monedas?.();
-    } else if (premio.tipo === "diamantes") {
-      window.AudioFX?.diamantes?.();
-    }
+    if (premio.tipo === "monedas" || premio.tipo === "diamantes") {
+      await new Promise((resolve) => window.setTimeout(resolve, 360));
+      await this.animarRecompensaHaciaHUD(premio);
 
-    await this.abonarRecursoFirebase(
-      premio.tipo,
-      premio.cantidad
-    );
+      const resultado = await this.abonarRecursoFirebase(
+        premio.tipo,
+        premio.cantidad
+      );
+
+      if (resultado?.guardado) {
+        juego.actualizarRecursoHUD?.(
+          premio.tipo,
+          resultado.nuevoTotal,
+          { animar: true }
+        );
+      }
+    }
   },
 
   async abonarRecursoFirebase(tipo, cantidad) {
@@ -577,7 +584,7 @@ const yBase = esPruebaNivel1
 
       if (!usuario) {
         console.warn("Caja sorpresa: no hay sesión activa para guardar el premio.");
-        return false;
+        return { guardado: false, nuevoTotal: null };
       }
 
       const referencia = firestore.doc(
@@ -586,7 +593,7 @@ const yBase = esPruebaNivel1
         usuario.uid
       );
 
-      await firestore.runTransaction(
+      const nuevoTotal = await firestore.runTransaction(
         configuracion.db,
         async (transaccion) => {
           const documento = await transaccion.get(referencia);
@@ -599,25 +606,132 @@ const yBase = esPruebaNivel1
             Number(datos[campoPrincipal] ?? datos[campoAlterno] ?? 0) || 0
           );
 
+          const totalActualizado = actual + cantidad;
+
           transaccion.set(
             referencia,
             {
-              [campoPrincipal]: actual + cantidad,
+              [campoPrincipal]: totalActualizado,
               recursosActualizadosEn: firestore.serverTimestamp()
             },
             { merge: true }
           );
+
+          return totalActualizado;
         }
       );
 
-      return true;
+      return { guardado: true, nuevoTotal };
     } catch (error) {
       console.error("No se pudo guardar el premio de la caja:", error);
       this.mostrarMensajeRapido(
         "Premio obtenido; revisa tu conexión para guardarlo"
       );
-      return false;
+      return { guardado: false, nuevoTotal: null };
     }
+  },
+
+  vibrar(patron) {
+    try {
+      if (navigator.vibrate) {
+        navigator.vibrate(patron);
+      }
+    } catch (_) {
+      /* La vibración es opcional. */
+    }
+  },
+
+  crearDestelloEnContador(contenedor, tipo) {
+    if (!contenedor) return;
+
+    const cantidad = tipo === "monedas" ? 8 : 6;
+    for (let i = 0; i < cantidad; i += 1) {
+      const chispa = document.createElement("span");
+      chispa.className = `resource-impact-particle resource-impact-${tipo}`;
+      chispa.textContent = i % 2 === 0 ? "✦" : "•";
+      chispa.style.setProperty("--impact-x", `${-38 + Math.random() * 76}px`);
+      chispa.style.setProperty("--impact-y", `${-34 + Math.random() * 68}px`);
+      contenedor.appendChild(chispa);
+      window.setTimeout(() => chispa.remove(), 750);
+    }
+  },
+
+  animarRecompensaHaciaHUD(premio) {
+    return new Promise((resolve) => {
+      const caja = this.cajaActual?.elemento;
+      const esMoneda = premio.tipo === "monedas";
+      const destino = document.getElementById(
+        esMoneda ? "coinsCounter" : "diamondsCounter"
+      );
+
+      if (!caja || !destino) {
+        if (esMoneda) window.AudioFX?.monedas?.();
+        else window.AudioFX?.diamantes?.();
+        resolve();
+        return;
+      }
+
+      const origenRect = caja.getBoundingClientRect();
+      const destinoRect = destino.getBoundingClientRect();
+      const cantidadVisual = esMoneda ? 14 : Math.max(2, premio.cantidad);
+      const duracionBase = esMoneda ? 720 : 820;
+      let llegadas = 0;
+
+      this.vibrar(18);
+
+      for (let i = 0; i < cantidadVisual; i += 1) {
+        const objeto = document.createElement("span");
+        objeto.className = `flying-reward ${esMoneda ? "flying-coin" : "flying-diamond"}`;
+        objeto.textContent = esMoneda ? "🪙" : "💎";
+
+        const inicioX = origenRect.left + origenRect.width / 2 - 14;
+        const inicioY = origenRect.top + origenRect.height / 2 - 14;
+        const finX = destinoRect.left + destinoRect.width / 2 - 14;
+        const finY = destinoRect.top + destinoRect.height / 2 - 14;
+        const dispersionX = -58 + Math.random() * 116;
+        const dispersionY = -75 - Math.random() * 55;
+        const retraso = i * (esMoneda ? 34 : 110);
+        const duracion = duracionBase + Math.random() * 170;
+
+        Object.assign(objeto.style, {
+          left: `${inicioX}px`,
+          top: `${inicioY}px`,
+          "--burst-x": `${dispersionX}px`,
+          "--burst-y": `${dispersionY}px`,
+          "--target-x": `${finX - inicioX}px`,
+          "--target-y": `${finY - inicioY}px`,
+          "--target-x-38": `${(finX - inicioX) * 0.38}px`,
+          "--target-y-32": `${(finY - inicioY) * 0.32 - 55}px`,
+          "--target-x-82": `${(finX - inicioX) * 0.82}px`,
+          "--target-y-78": `${(finY - inicioY) * 0.78 - 14}px`,
+          "--reward-duration": `${duracion}ms`,
+          "--reward-delay": `${retraso}ms`
+        });
+
+        document.body.appendChild(objeto);
+
+        window.setTimeout(() => {
+          objeto.classList.add("flying-reward-go");
+        }, 20);
+
+        window.setTimeout(() => {
+          objeto.remove();
+          llegadas += 1;
+
+          destino.classList.remove("resource-counter-tick");
+          void destino.offsetWidth;
+          destino.classList.add("resource-counter-tick");
+          this.crearDestelloEnContador(destino, premio.tipo);
+
+          if (llegadas === cantidadVisual) {
+            if (esMoneda) window.AudioFX?.monedas?.();
+            else window.AudioFX?.diamantes?.();
+            this.vibrar(12);
+            resolve();
+          }
+        }, retraso + duracion + 40);
+      }
+    });
   },
 
   crearParticulas(contenedor) {

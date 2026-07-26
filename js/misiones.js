@@ -19,6 +19,7 @@ window.SistemaMisiones = {
   usuario: null,
   referenciaUsuario: null,
   modulosFirebase: null,
+  firebasePromise: null,
 
   catalogo: {
     diarias: [
@@ -58,50 +59,70 @@ window.SistemaMisiones = {
     this.prepararFirebase();
   },
 
-  async prepararFirebase() {
-    try {
+  prepararFirebase() {
+    if (this.firebasePromise) {
+      return this.firebasePromise;
+    }
+
+    this.firebasePromise = (async () => {
       const [configuracion, firestore, authMod] = await Promise.all([
         import("./firebase-config.js"),
         import("https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"),
         import("https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js")
       ]);
 
-      this.usuario = await this.esperarUsuario(
+      const usuario = await this.esperarUsuario(
         configuracion.auth,
         authMod.onAuthStateChanged
       );
 
-      if (!this.usuario) return;
+      if (!usuario) {
+        throw new Error("Inicia sesión para reclamar la recompensa.");
+      }
 
+      this.usuario = usuario;
       this.modulosFirebase = { configuracion, firestore };
       this.referenciaUsuario = firestore.doc(
         configuracion.db,
         "users",
-        this.usuario.uid
+        usuario.uid
       );
-    } catch (error) {
-      console.warn("Misiones en modo local:", error);
-    }
+
+      return true;
+    })().catch((error) => {
+      this.firebasePromise = null;
+      throw error;
+    });
+
+    return this.firebasePromise;
   },
 
   esperarUsuario(auth, onAuthStateChanged) {
-    if (auth.currentUser) return Promise.resolve(auth.currentUser);
+    if (auth.currentUser) {
+      return Promise.resolve(auth.currentUser);
+    }
 
     return new Promise((resolver) => {
-      let terminado = false;
-      const cancelar = onAuthStateChanged(auth, (usuario) => {
-        if (terminado) return;
-        terminado = true;
+      let finalizado = false;
+      let cancelar = () => {};
+
+      const terminar = (usuario) => {
+        if (finalizado) return;
+        finalizado = true;
+        window.clearTimeout(temporizador);
         cancelar();
         resolver(usuario || null);
-      });
+      };
 
-      window.setTimeout(() => {
-        if (terminado) return;
-        terminado = true;
-        cancelar();
-        resolver(auth.currentUser || null);
+      const temporizador = window.setTimeout(() => {
+        terminar(auth.currentUser);
       }, 5000);
+
+      cancelar = onAuthStateChanged(
+        auth,
+        (usuario) => terminar(usuario),
+        () => terminar(null)
+      );
     });
   },
 
@@ -303,10 +324,15 @@ window.SistemaMisiones = {
     if (!recompensa) return;
 
     if (
-      (recompensa.tipo === "monedas" || recompensa.tipo === "diamantes") &&
-      this.referenciaUsuario &&
-      this.modulosFirebase
+      recompensa.tipo === "monedas" ||
+      recompensa.tipo === "diamantes"
     ) {
+      /*
+        Espera a que la sesión y Firestore estén listos.
+        Si no se puede guardar, la misión NO queda marcada como reclamada.
+      */
+      await this.prepararFirebase();
+
       const { firestore, configuracion } = this.modulosFirebase;
 
       await firestore.runTransaction(

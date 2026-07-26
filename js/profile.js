@@ -175,6 +175,8 @@ function colocarDatosEnPerfil(
   datos
 ) {
   const nombre =
+    datos.customName ||
+    datos.displayName ||
     datos.nombre ||
     usuario.displayName ||
     "Jugador";
@@ -184,6 +186,8 @@ function colocarDatosEnPerfil(
     "JF-XXXXX";
 
   const foto =
+    datos.customPhoto ||
+    datos.photoURL ||
     datos.foto ||
     usuario.photoURL ||
     "Fondos-JuniorGame/Estrella.png";
@@ -195,13 +199,32 @@ function colocarDatosEnPerfil(
     String(obtenerNumero(datos.vidas, 3));
 
   profileCoins.textContent =
-    String(obtenerNumero(datos.monedas, 0));
+    String(
+      obtenerNumero(
+        datos.coins ??
+        datos.monedas,
+        0
+      )
+    );
 
   profileDiamonds.textContent =
-    String(obtenerNumero(datos.diamantes, 0));
+    String(
+      obtenerNumero(
+        datos.diamonds ??
+        datos.diamantes,
+        0
+      )
+    );
 
   profileLevel.textContent =
-    String(obtenerNumero(datos.nivel, 1));
+    String(
+      obtenerNumero(
+        datos.nivelActual ??
+        datos.progreso?.nivelActual ??
+        datos.nivel,
+        1
+      )
+    );
 
   profileRecord.textContent =
     String(

@@ -573,6 +573,44 @@ const yBase = esPruebaNivel1
     }
   },
 
+  async esperarUsuarioActivo(auth) {
+    if (auth?.currentUser) {
+      return auth.currentUser;
+    }
+
+    try {
+      const authMod = await import(
+        "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"
+      );
+
+      return await new Promise((resolver) => {
+        let finalizado = false;
+        let cancelar = () => {};
+
+        const terminar = (usuario) => {
+          if (finalizado) return;
+          finalizado = true;
+          window.clearTimeout(temporizador);
+          cancelar();
+          resolver(usuario || null);
+        };
+
+        const temporizador = window.setTimeout(() => {
+          terminar(auth?.currentUser);
+        }, 5000);
+
+        cancelar = authMod.onAuthStateChanged(
+          auth,
+          (usuario) => terminar(usuario),
+          () => terminar(null)
+        );
+      });
+    } catch (error) {
+      console.warn("No se pudo verificar la sesión:", error);
+      return auth?.currentUser || null;
+    }
+  },
+
   async abonarRecursoFirebase(tipo, cantidad) {
     try {
       const [configuracion, firestore] = await Promise.all([
@@ -580,10 +618,17 @@ const yBase = esPruebaNivel1
         import("https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js")
       ]);
 
-      const usuario = configuracion.auth?.currentUser;
+      const usuario = await this.esperarUsuarioActivo(
+        configuracion.auth
+      );
 
       if (!usuario) {
-        console.warn("Caja sorpresa: no hay sesión activa para guardar el premio.");
+        console.warn(
+          "Caja sorpresa: no hay sesión activa para guardar el premio."
+        );
+        this.mostrarMensajeRapido(
+          "Inicia sesión para guardar la recompensa"
+        );
         return { guardado: false, nuevoTotal: null };
       }
 

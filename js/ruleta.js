@@ -15,6 +15,7 @@ window.SistemaRuleta = {
   usuario: null,
   referenciaUsuario: null,
   modulosFirebase: null,
+  firebasePromise: null,
   interfaz: {},
   rotacionActual: 0,
   almacenamientoLocal: "juniorGame.ruletaDiaria",
@@ -36,7 +37,15 @@ window.SistemaRuleta = {
     this.capturarInterfaz();
     this.construirRuleta();
     this.configurarEventos();
-    this.prepararFirebase();
+    this.prepararFirebase()
+      .then(() => this.actualizarEstado())
+      .catch((error) => {
+        console.warn("No se pudo preparar la ruleta:", error);
+        if (this.interfaz.estado) {
+          this.interfaz.estado.textContent =
+            "Inicia sesión y revisa tu conexión para usar la ruleta.";
+        }
+      });
     this.actualizarEstado();
   },
 
@@ -95,36 +104,70 @@ window.SistemaRuleta = {
     this.interfaz.modal?.setAttribute("aria-hidden", "true");
   },
 
-  async prepararFirebase() {
-    try {
+  prepararFirebase() {
+    if (this.firebasePromise) {
+      return this.firebasePromise;
+    }
+
+    this.firebasePromise = (async () => {
       const [configuracion, firestore, authMod] = await Promise.all([
         import("./firebase-config.js"),
         import("https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"),
         import("https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js")
       ]);
 
-      this.usuario = await this.esperarUsuario(configuracion.auth, authMod.onAuthStateChanged);
-      if (!this.usuario) return;
+      const usuario = await this.esperarUsuario(
+        configuracion.auth,
+        authMod.onAuthStateChanged
+      );
 
+      if (!usuario) {
+        throw new Error("Inicia sesión para reclamar el premio.");
+      }
+
+      this.usuario = usuario;
       this.modulosFirebase = { configuracion, firestore };
-      this.referenciaUsuario = firestore.doc(configuracion.db, "users", this.usuario.uid);
-      await this.actualizarEstado();
-    } catch (error) {
-      console.warn("Ruleta diaria en modo local:", error);
-    }
+      this.referenciaUsuario = firestore.doc(
+        configuracion.db,
+        "users",
+        usuario.uid
+      );
+
+      return true;
+    })().catch((error) => {
+      this.firebasePromise = null;
+      throw error;
+    });
+
+    return this.firebasePromise;
   },
 
   esperarUsuario(auth, onAuthStateChanged) {
-    if (auth.currentUser) return Promise.resolve(auth.currentUser);
+    if (auth.currentUser) {
+      return Promise.resolve(auth.currentUser);
+    }
+
     return new Promise((resolver) => {
-      const cancelar = onAuthStateChanged(auth, (usuario) => {
+      let finalizado = false;
+      let cancelar = () => {};
+
+      const terminar = (usuario) => {
+        if (finalizado) return;
+        finalizado = true;
+        window.clearTimeout(temporizador);
         cancelar();
         resolver(usuario || null);
-      });
-      window.setTimeout(() => {
-        cancelar();
-        resolver(auth.currentUser || null);
+      };
+
+      const temporizador = window.setTimeout(() => {
+        terminar(auth.currentUser);
       }, 5000);
+
+      cancelar = onAuthStateChanged(
+        auth,
+        (usuario) => terminar(usuario),
+        () => terminar(null)
+      );
     });
   },
 
@@ -255,11 +298,20 @@ window.SistemaRuleta = {
   async reclamarPremio(premio) {
     const dia = this.claveDia();
 
-    if (this.referenciaUsuario && this.modulosFirebase) {
-      const { firestore } = this.modulosFirebase;
-      await firestore.runTransaction(this.modulosFirebase.configuracion.db, async (transaccion) => {
+    /*
+      La ruleta no marca el premio como reclamado hasta confirmar
+      que se guardó en la cuenta del usuario.
+    */
+    await this.prepararFirebase();
+
+    const { firestore, configuracion } = this.modulosFirebase;
+
+    await firestore.runTransaction(
+      configuracion.db,
+      async (transaccion) => {
         const documento = await transaccion.get(this.referenciaUsuario);
         const datos = documento.exists() ? documento.data() : {};
+
         if (datos.ultimaRuletaDia === dia) {
           throw new Error("El giro de hoy ya fue utilizado.");
         }
@@ -271,20 +323,30 @@ window.SistemaRuleta = {
         };
 
         if (premio.tipo === "monedas") {
-          cambios.coins = (Number(datos.coins ?? datos.monedas ?? 0) || 0) + premio.cantidad;
-        }
-        if (premio.tipo === "diamantes") {
-          cambios.diamonds = (Number(datos.diamonds ?? datos.diamantes ?? 0) || 0) + premio.cantidad;
-        }
-        if (premio.tipo === "llave") {
-          cambios.llavesMundos = (Number(datos.llavesMundos ?? 0) || 0) + premio.cantidad;
+          cambios.coins =
+            (Number(datos.coins ?? datos.monedas ?? 0) || 0) +
+            premio.cantidad;
         }
 
-        transaccion.set(this.referenciaUsuario, cambios, { merge: true });
-      });
-    } else if (!this.puedeGirarLocal()) {
-      throw new Error("El giro de hoy ya fue utilizado.");
-    }
+        if (premio.tipo === "diamantes") {
+          cambios.diamonds =
+            (Number(datos.diamonds ?? datos.diamantes ?? 0) || 0) +
+            premio.cantidad;
+        }
+
+        if (premio.tipo === "llave") {
+          cambios.llavesMundos =
+            (Number(datos.llavesMundos ?? 0) || 0) +
+            premio.cantidad;
+        }
+
+        transaccion.set(
+          this.referenciaUsuario,
+          cambios,
+          { merge: true }
+        );
+      }
+    );
 
     const local = this.leerLocal();
     local.dia = dia;

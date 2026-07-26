@@ -320,7 +320,8 @@ window.SistemaEnemigos = {
     }
 
     if (enemigo.modo === "diagonal") {
-      enemigo.y += enemigo.velocidad * enemigo.direccionY * deltaTime;
+      enemigo.y +=
+        enemigo.velocidad * enemigo.direccionY * deltaTime * multiplicadorTiempo;
     }
 
     if (enemigo.modo === "flotante") {

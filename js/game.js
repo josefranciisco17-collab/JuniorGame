@@ -200,6 +200,7 @@ window.JuniorGame = {
       SistemaCajas ya está disponible en este punto.
     */
     window.SistemaCajas?.iniciar?.();
+    window.SistemaSupervivencia?.iniciar?.();
   },
 
 
@@ -493,12 +494,19 @@ configurarBotonesModal() {
       return;
     }
 
+    if (window.SistemaSupervivencia?.estaInvulnerable?.()) {
+      window.SistemaSupervivencia?.mostrarMensaje?.("✨ ¡Protección activa!");
+      return;
+    }
+
+    window.SistemaSupervivencia?.registrarFallo?.();
+
     /*
-      El escudo protege de un golpe y se consume antes
+      El escudo protege de varios golpes y se consume antes
       de descontar una vida.
     */
     if (this.estado.escudo > 0) {
-      this.estado.escudo = 0;
+      this.estado.escudo = Math.max(0, this.estado.escudo - 1);
       this.actualizarEscudo();
       window.AudioFX?.bonus();
       window.SistemaCajas?.mostrarMensajeRapido?.(
@@ -540,8 +548,9 @@ configurarBotonesModal() {
     return this.estado.vidas > anterior;
   },
 
-  activarEscudo() {
-    this.estado.escudo = 1;
+  activarEscudo(cargas = 2) {
+    const cantidad = Math.max(1, Math.floor(Number(cargas) || 1));
+    this.estado.escudo = Math.min(3, Math.max(this.estado.escudo, cantidad));
     this.actualizarEscudo();
   },
 
@@ -558,7 +567,9 @@ configurarBotonesModal() {
       "aria-label",
       activo ? "Escudo activo" : "Escudo inactivo"
     );
-    indicador.textContent = activo ? "🛡️" : "";
+    indicador.textContent = activo
+      ? `🛡️${this.estado.escudo > 1 ? `×${this.estado.escudo}` : ""}`
+      : "";
   },
 
   actualizarVidas() {
@@ -819,6 +830,7 @@ configurarBotonesModal() {
 
     window.SistemaCajas?.detener?.();
     window.SistemaEnemigos?.detener?.();
+    window.SistemaSupervivencia?.detener?.();
 
 /*
   Audio de final de partida.

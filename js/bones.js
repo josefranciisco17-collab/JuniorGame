@@ -159,8 +159,11 @@ window.JuniorBones = {
       return;
     }
 
+    const multiplicadorTiempo =
+      window.SistemaSupervivencia?.obtenerMultiplicadorTiempo?.() ?? 1;
+
     this.huesoActual.y +=
-      this.huesoActual.velocidad * deltaTime;
+      this.huesoActual.velocidad * deltaTime * multiplicadorTiempo;
 
 
     this.huesoActual.elemento.style.top =
@@ -241,6 +244,7 @@ if (esPoder) {
   pero ambos tipos avanzan solo 1 unidad en la barra de nivel.
 */
 juego.actualizarPuntos(puntos, 1);
+window.SistemaSupervivencia?.registrarCaptura?.({ dorado: esDorado });
 
 /*
   Efecto visual independiente. No modifica la puntuación,

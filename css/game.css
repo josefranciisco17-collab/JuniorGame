@@ -1904,3 +1904,45 @@ top: calc(max(9px, env(safe-area-inset-top)) + 95px);
   45%{opacity:1;transform:scale(1.28) rotate(-12deg)}
   100%{opacity:0;transform:scale(.18) translateY(-75px) rotate(35deg)}
 }
+
+
+/* ==========================================================
+   SISTEMA DE SUPERVIVENCIA
+   ========================================================== */
+.objeto-salvacion{
+  position:absolute;
+  z-index:19;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  line-height:1;
+  filter:drop-shadow(0 7px 5px rgba(0,0,0,.38));
+  transition:opacity .25s ease, transform .25s ease;
+  animation:salvacionFlotar .85s ease-in-out infinite alternate;
+}
+.objeto-salvacion-entrada{opacity:0;transform:scale(.2) translateY(-25px)}
+.objeto-salvacion-atrapado{opacity:0;transform:scale(1.7) rotate(18deg)}
+.salvacion-corazon{font-size:50px;filter:drop-shadow(0 0 12px rgba(255,50,80,.9))}
+.salvacion-reloj{font-size:48px;filter:drop-shadow(0 0 12px rgba(110,210,255,.9))}
+.salvacion-gigante{font-size:104px;filter:drop-shadow(0 0 18px rgba(255,210,70,.95))}
+.salvacion-angel{font-size:67px;filter:drop-shadow(0 0 18px rgba(255,255,210,.95))}
+@keyframes salvacionFlotar{from{transform:rotate(-4deg) scale(.96)}to{transform:rotate(4deg) scale(1.05)}}
+.salvacion-toast{
+  position:fixed;left:50%;top:22%;z-index:12000;transform:translateX(-50%);
+  max-width:min(88vw,390px);padding:12px 18px;border:2px solid #fff3a6;border-radius:999px;
+  color:#fff;background:rgba(60,24,8,.94);box-shadow:0 7px 22px rgba(0,0,0,.45);
+  font-size:15px;font-weight:900;text-align:center;animation:salvacionToastIn .25s ease both;
+}
+.salvacion-toast-out{opacity:0;transform:translateX(-50%) translateY(-18px);transition:.35s ease}
+@keyframes salvacionToastIn{from{opacity:0;transform:translateX(-50%) translateY(-15px) scale(.8)}to{opacity:1;transform:translateX(-50%) scale(1)}}
+body.tiempo-lento-activo #gameArea::after{
+  content:"TIEMPO LENTO";position:absolute;left:50%;top:31%;z-index:25;transform:translateX(-50%);
+  padding:7px 13px;border:2px solid rgba(190,240,255,.9);border-radius:999px;color:#eafbff;
+  background:rgba(12,76,108,.78);font-size:12px;font-weight:1000;letter-spacing:.8px;
+  box-shadow:0 0 18px rgba(90,205,255,.7);pointer-events:none;
+}
+body.tiempo-lento-activo .game-area{filter:saturate(.82) brightness(1.05)}
+body.perro-invulnerable .dog{animation:perroProtegido .55s ease-in-out infinite alternate}
+@keyframes perroProtegido{from{filter:drop-shadow(0 0 7px rgba(255,255,255,.6)) drop-shadow(0 10px 7px rgba(0,0,0,.42))}to{filter:drop-shadow(0 0 20px rgba(255,225,70,1)) drop-shadow(0 10px 7px rgba(0,0,0,.42));opacity:.78}}
+.shield-indicator.active{width:auto;min-width:38px;padding:0 5px;font-size:20px;font-weight:1000}

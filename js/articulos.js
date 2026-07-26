@@ -167,11 +167,23 @@ function configurarDesdeFirestore(datos = {}) {
     ? datos.outfitGuardado
     : {};
   estado.poderSeleccionado = datos.poderSeleccionado || null;
-  const razaRemota = datos.razaEquipada || null;
   estado.razaEquipada = razaRemota && razaComprada(razaRemota)
-    ? razaRemota
+  ? razaRemota
+  : null;
+guardarRazaLocal(estado.razaEquipada);
+
+const razaRemota =
+  typeof datos.razaEquipada === "string" &&
+  datos.razaEquipada.startsWith("raza-")
+    ? datos.razaEquipada
     : null;
-  guardarRazaLocal(estado.razaEquipada);
+
+if (razaRemota) {
+  estado.razaEquipada = razaRemota;
+  guardarRazaLocal(razaRemota);
+} else {
+  estado.razaEquipada = null;
+}
 
   if (Object.keys(estado.vistaActual).length === 0) {
     estado.vistaActual = { ...estado.outfitGuardado };

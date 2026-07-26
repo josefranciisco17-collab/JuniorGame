@@ -1605,3 +1605,122 @@ top: calc(max(9px, env(safe-area-inset-top)) + 95px);
   }
 }
 
+
+/* ==========================================================
+   SISTEMA DE MUNDOS - TRANSICIÓN Y AVISO
+   ========================================================== */
+
+.game-area{
+  transition: background-image .35s ease;
+}
+
+.world-transition-overlay{
+  position:fixed;
+  inset:0;
+  z-index:9996;
+  pointer-events:none;
+  opacity:0;
+  background:#090603;
+  transition:opacity .36s ease;
+}
+
+.world-transition-overlay.visible{
+  opacity:1;
+}
+
+.world-announcement{
+  position:fixed;
+  top:34%;
+  left:50%;
+  z-index:9997;
+
+  width:min(86vw,360px);
+  padding:16px 22px 18px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+
+  border:3px solid #ffc34b;
+  border-radius:24px;
+
+  color:#fff;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(94,52,24,.97),
+      rgba(33,15,7,.97)
+    );
+
+  box-shadow:
+    0 8px 0 #160803,
+    0 18px 38px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.18);
+
+  text-align:center;
+  pointer-events:none;
+  opacity:0;
+
+  transform:
+    translate(-50%,-50%)
+    scale(.72);
+
+  transition:
+    opacity .28s ease,
+    transform .42s cubic-bezier(.2,1.25,.35,1);
+}
+
+.world-announcement.visible{
+  opacity:1;
+  transform:
+    translate(-50%,-50%)
+    scale(1);
+}
+
+.world-announcement-emoji{
+  font-size:42px;
+  line-height:1;
+  filter:drop-shadow(0 3px 0 rgba(0,0,0,.35));
+}
+
+.world-announcement-label{
+  color:#ffd779;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.world-announcement-name{
+  color:#fff;
+  font-size:clamp(25px,7vw,34px);
+  line-height:1.05;
+  font-weight:1000;
+  text-shadow:0 3px 0 rgba(0,0,0,.38);
+}
+
+.world-announcement-message{
+  margin-top:3px;
+  color:#ffe8bd;
+  font-size:13px;
+  line-height:1.25;
+  font-weight:750;
+}
+
+@media (max-height:700px){
+  .world-announcement{
+    top:31%;
+    padding:13px 18px 15px;
+  }
+
+  .world-announcement-emoji{
+    font-size:34px;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .world-transition-overlay,
+  .world-announcement{
+    transition-duration:.01ms!important;
+  }
+}

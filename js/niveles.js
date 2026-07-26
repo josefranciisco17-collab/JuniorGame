@@ -8,6 +8,10 @@ window.SistemaNiveles = {
   iniciar() {
     this.nivelActual = 1;
     this.actualizarNivel(0);
+    window.SistemaMundos?.aplicarNivel?.(1, {
+      inmediato: true,
+      mostrarAviso: false
+    });
   },
 
   calcularNivel(puntos) {
@@ -56,6 +60,13 @@ window.SistemaNiveles = {
     } else {
       this.nivelActual = nuevoNivel;
     }
+
+    /*
+      El sistema de mundos decide si debe cambiar el escenario.
+      Solo realizará una transición cuando el nivel entre a otro
+      bloque de diez niveles.
+    */
+    window.SistemaMundos?.aplicarNivel?.(this.nivelActual);
 
     const textoNivel =
       document.getElementById("levelNumber");

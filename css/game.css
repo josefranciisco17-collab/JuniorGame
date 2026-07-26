@@ -1261,7 +1261,7 @@ a {
 .resource-hud{
     position: absolute;
 
-    top: calc(max(14px, env(safe-area-inset-top)) + 112px);
+    top: calc(max(14px, env(safe-area-inset-top)) + 135px);
     left: 10px;
 
     z-index: 24;

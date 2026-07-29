@@ -1570,3 +1570,13 @@ transition:
   .menu-redesign-v5 .v5-action .button-text { font-size: 12px; }
   .menu-redesign-v5 .v5-action .menu-feature-status { font-size: 8px; }
 }
+
+/* Foto del perfil sincronizada en el encabezado */
+#menuPlayerPhoto {
+  opacity: 0.72;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+#menuPlayerPhoto.is-loaded {
+  opacity: 1;
+}

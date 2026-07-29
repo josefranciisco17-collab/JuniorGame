@@ -73,9 +73,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const photo =
       data.customPhoto ||
       data.photoURL ||
+      data.foto ||
       data.photo ||
       user?.photoURL ||
-      "";
+      "Fondos-JuniorGame/Estrella.png";
 
     const level = Math.max(
       1,
@@ -95,9 +96,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (headerFields.coins) headerFields.coins.textContent = numberFormatter.format(coins);
     if (headerFields.diamonds) headerFields.diamonds.textContent = numberFormatter.format(diamonds);
 
-    if (headerFields.photo && photo) {
-      headerFields.photo.src = photo;
+    if (headerFields.photo) {
+      headerFields.photo.classList.remove("is-loaded");
       headerFields.photo.alt = `Foto de ${name}`;
+      headerFields.photo.onerror = () => {
+        headerFields.photo.onerror = null;
+        headerFields.photo.src = "Fondos-JuniorGame/Estrella.png";
+      };
+      headerFields.photo.onload = () => {
+        headerFields.photo.classList.add("is-loaded");
+      };
+      headerFields.photo.src = photo;
     }
   }
 

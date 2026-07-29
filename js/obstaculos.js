@@ -371,8 +371,7 @@ if (
   this.obstaculoActual.tamano
 ) {
 
-  window.AudioFX?.piedraSuelo?.();
-
+  // Los obstáculos peligrosos desaparecen silenciosamente al tocar el suelo.
   this.eliminarObstaculo();
 }
 },

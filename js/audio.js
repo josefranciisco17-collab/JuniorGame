@@ -726,6 +726,91 @@
   }
 
   /*
+    Sonidos modernos generados con Web Audio.
+    Sustituyen el efecto retro al recoger huesos y recompensas,
+    sin depender de archivos adicionales ni aumentar el peso del juego.
+  */
+  let contextoCaptura = null;
+
+  function obtenerContextoCaptura() {
+    if (contextoCaptura) return contextoCaptura;
+    const AudioContexto = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContexto) return null;
+    contextoCaptura = new AudioContexto();
+    return contextoCaptura;
+  }
+
+  function tocarNotaSuave(ctx, destino, frecuencia, inicio, duracion, volumen, tipo = "sine") {
+    const oscilador = ctx.createOscillator();
+    const ganancia = ctx.createGain();
+    const filtro = ctx.createBiquadFilter();
+
+    oscilador.type = tipo;
+    oscilador.frequency.setValueAtTime(frecuencia, inicio);
+    oscilador.frequency.exponentialRampToValueAtTime(frecuencia * 1.018, inicio + duracion);
+
+    filtro.type = "lowpass";
+    filtro.frequency.setValueAtTime(3600, inicio);
+    filtro.Q.setValueAtTime(0.45, inicio);
+
+    ganancia.gain.setValueAtTime(0.0001, inicio);
+    ganancia.gain.exponentialRampToValueAtTime(Math.max(0.0002, volumen), inicio + 0.018);
+    ganancia.gain.exponentialRampToValueAtTime(0.0001, inicio + duracion);
+
+    oscilador.connect(filtro);
+    filtro.connect(ganancia);
+    ganancia.connect(destino);
+    oscilador.start(inicio);
+    oscilador.stop(inicio + duracion + 0.03);
+  }
+
+  function reproducirCapturaModerna(variante = "normal") {
+    if (silenciado || efectosSilenciados || volumenEfectos <= 0) return;
+
+    const ctx = obtenerContextoCaptura();
+    if (!ctx) {
+      reproducir(variante === "dorado" ? "huesoDorado" : "huesoBlanco");
+      return;
+    }
+
+    if (ctx.state === "suspended") {
+      ctx.resume().catch(() => {});
+    }
+
+    const master = ctx.createGain();
+    const compresor = ctx.createDynamicsCompressor();
+    const ahora = ctx.currentTime + 0.012;
+    const base = Math.min(0.34, 0.22 * volumenEfectos);
+
+    compresor.threshold.setValueAtTime(-20, ahora);
+    compresor.knee.setValueAtTime(16, ahora);
+    compresor.ratio.setValueAtTime(4, ahora);
+    compresor.attack.setValueAtTime(0.004, ahora);
+    compresor.release.setValueAtTime(0.18, ahora);
+
+    master.gain.setValueAtTime(base, ahora);
+    master.connect(compresor);
+    compresor.connect(ctx.destination);
+
+    if (variante === "dorado") {
+      tocarNotaSuave(ctx, master, 659.25, ahora, 0.28, 0.34, "sine");
+      tocarNotaSuave(ctx, master, 830.61, ahora + 0.055, 0.32, 0.30, "sine");
+      tocarNotaSuave(ctx, master, 987.77, ahora + 0.115, 0.36, 0.25, "triangle");
+    } else {
+      tocarNotaSuave(ctx, master, 523.25, ahora, 0.22, 0.29, "sine");
+      tocarNotaSuave(ctx, master, 659.25, ahora + 0.045, 0.27, 0.24, "triangle");
+      tocarNotaSuave(ctx, master, 783.99, ahora + 0.095, 0.30, 0.19, "sine");
+    }
+
+    setTimeout(() => {
+      try {
+        master.disconnect();
+        compresor.disconnect();
+      } catch (_) {}
+    }, 700);
+  }
+
+  /*
     Exponemos una API global para usarla
     desde game.js, bones.js, tienda, menú, etc.
   */
@@ -734,11 +819,11 @@
     reproducir,
 
     huesoBlanco() {
-      reproducir("huesoBlanco");
+      reproducirCapturaModerna("normal");
     },
 
     huesoDorado() {
-      reproducir("huesoDorado");
+      reproducirCapturaModerna("dorado");
     },
 
     corazon() {

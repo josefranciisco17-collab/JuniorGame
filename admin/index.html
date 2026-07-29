@@ -24,6 +24,11 @@
         <button class="nav-item" data-module="usuarios" type="button"><span>◎</span><b>Usuarios</b></button>
         <button class="nav-item" data-view="economia" type="button"><span>◇</span><b>Economía</b></button>
         <button class="nav-item" data-view="cuentas" type="button"><span>◉</span><b>Control de cuentas</b></button>
+        <button class="nav-item" data-view="jugadores" type="button"><span>👥</span><b>Jugadores 360</b></button>
+        <button class="nav-item" data-view="inventario" type="button"><span>🎒</span><b>Inventario</b></button>
+        <button class="nav-item" data-view="moderacion" type="button"><span>🛡</span><b>Moderación</b></button>
+        <button class="nav-item" data-view="eventos" type="button"><span>🎁</span><b>Eventos</b></button>
+        <button class="nav-item" data-view="auditoria" type="button"><span>☷</span><b>Auditoría</b></button>
         <button class="nav-item" data-view="analytics" type="button"><span>▥</span><b>Analíticas</b></button>
         <button class="nav-item" data-view="stripe" type="button"><span>▣</span><b>Stripe</b></button>
         <button class="nav-item" data-view="codigos" type="button"><span>⌁</span><b>Códigos</b></button>
@@ -69,6 +74,35 @@
           <div id="accountOperationMessage" class="account-operation-message" aria-live="polite"></div>
         </section>
 
+
+        <section id="jugadoresView" class="admin-view hidden">
+          <div class="section-heading"><div><span class="eyebrow">JUGADORES 360</span><h2>Directorio ejecutivo</h2><p>Busca, filtra y revisa el estado general de cada jugador antes de abrir Control de cuentas.</p></div><button id="gmsRefreshPlayers" class="secondary-button" type="button">Actualizar</button></div>
+          <section class="metrics-grid"><article class="metric-card"><span>Activos</span><strong id="gmsActivePlayers">—</strong><small>Sin sanción vigente</small></article><article class="metric-card warning"><span>Suspendidos</span><strong id="gmsSuspendedPlayers">—</strong><small>Suspensión temporal</small></article><article class="metric-card danger"><span>Baneados</span><strong id="gmsBannedPlayers">—</strong><small>Acceso deshabilitado</small></article><article class="metric-card"><span>Perfiles incompletos</span><strong id="gmsIncompletePlayers">—</strong><small>Nombre, correo o ID faltante</small></article></section>
+          <article class="panel-card"><div class="gms-toolbar"><input id="gmsPlayerSearch" type="search" placeholder="Buscar nombre, correo, UID o ID JF"><select id="gmsPlayerState"><option value="all">Todos los estados</option><option value="active">Activos</option><option value="suspended">Suspendidos</option><option value="banned">Baneados</option></select></div><div id="gmsPlayerDirectory" class="gms-table-wrap"><div class="empty-inline">Cargando jugadores…</div></div></article>
+        </section>
+
+        <section id="inventarioView" class="admin-view hidden">
+          <div class="section-heading"><div><span class="eyebrow">INVENTARIO GLOBAL</span><h2>Uso de artículos y equipamiento</h2><p>Resumen construido con los inventarios guardados en los perfiles.</p></div></div>
+          <section class="metrics-grid"><article class="metric-card"><span>Artículos entregados</span><strong id="gmsTotalItems">—</strong><small>Entradas activas</small></article><article class="metric-card"><span>Perritos Jr.</span><strong id="gmsTotalPets">—</strong><small>Comprados o entregados</small></article><article class="metric-card"><span>Razas</span><strong id="gmsTotalRaces">—</strong><small>Desbloqueos registrados</small></article><article class="metric-card"><span>Con equipamiento</span><strong id="gmsEquippedPlayers">—</strong><small>Skin, perrito o raza</small></article></section>
+          <section class="two-column"><article class="panel-card"><div class="panel-title"><div><span class="eyebrow">POPULARIDAD</span><h3>Equipamiento más usado</h3></div></div><div id="gmsPopularEquipment" class="data-list"></div></article><article class="panel-card"><div class="panel-title"><div><span class="eyebrow">COBERTURA</span><h3>Jugadores con inventario</h3></div></div><div id="gmsInventoryCoverage" class="bar-list"></div></article></section>
+        </section>
+
+        <section id="moderacionView" class="admin-view hidden">
+          <div class="section-heading"><div><span class="eyebrow">CENTRO DE MODERACIÓN</span><h2>Estado de sanciones</h2><p>Consulta baneos, suspensiones, silencios, bloqueos de eventos y advertencias.</p></div><button data-view="cuentas" class="primary-button compact" type="button">Abrir Control de cuentas</button></div>
+          <section class="metrics-grid"><article class="metric-card danger"><span>Baneados</span><strong id="gmsModBanned">—</strong><small>Bloqueo permanente</small></article><article class="metric-card warning"><span>Suspendidos</span><strong id="gmsModSuspended">—</strong><small>Bloqueo temporal</small></article><article class="metric-card warning"><span>Chat silenciado</span><strong id="gmsModMuted">—</strong><small>Restricción vigente</small></article><article class="metric-card"><span>Fuera de eventos</span><strong id="gmsModEvents">—</strong><small>Participación bloqueada</small></article></section>
+          <article class="panel-card"><div class="panel-title"><div><span class="eyebrow">CASOS ABIERTOS</span><h3>Cuentas con medidas activas</h3></div></div><div id="gmsModerationCases" class="data-list"></div></article>
+        </section>
+
+        <section id="eventosView" class="admin-view hidden">
+          <div class="section-heading"><div><span class="eyebrow">EVENTOS Y RECOMPENSAS</span><h2>Planificador operativo</h2><p>Prepara eventos antes de conectarlos a publicación global. Los borradores se guardan en este dispositivo.</p></div></div>
+          <section class="two-column"><article class="panel-card form-panel"><label>Nombre del evento<input id="gmsEventName" maxlength="60" placeholder="Fin de semana de diamantes"></label><label>Tipo<select id="gmsEventType"><option>Recompensa global</option><option>Multiplicador</option><option>Misión especial</option><option>Temporada</option></select></label><label>Recompensa<input id="gmsEventReward" maxlength="80" placeholder="20 diamantes"></label><label>Fecha de inicio<input id="gmsEventStart" type="datetime-local"></label><label>Notas<textarea id="gmsEventNotes" rows="4" maxlength="300" placeholder="Condiciones y detalles"></textarea></label><button id="gmsSaveEvent" class="primary-button compact" type="button">Guardar borrador</button></article><article class="panel-card"><div class="panel-title"><div><span class="eyebrow">CALENDARIO</span><h3>Eventos preparados</h3></div></div><div id="gmsEventDrafts" class="data-list"></div></article></section>
+        </section>
+
+        <section id="auditoriaView" class="admin-view hidden">
+          <div class="section-heading"><div><span class="eyebrow">AUDITORÍA GLOBAL</span><h2>Registro administrativo</h2><p>Consulta las acciones protegidas realizadas desde la consola.</p></div><button id="gmsRefreshAudit" class="secondary-button" type="button">Actualizar</button></div>
+          <article class="panel-card"><div class="gms-toolbar"><input id="gmsAuditSearch" type="search" placeholder="Buscar jugador, motivo o administrador"><select id="gmsAuditFilter"><option value="all">Todas las acciones</option><option value="adjustBalance">Economía</option><option value="inventory">Inventario</option><option value="moderation">Moderación</option></select></div><div id="gmsAuditList" class="data-list"><div class="empty-inline">Cargando auditoría…</div></div></article>
+        </section>
+
         <section id="analyticsView" class="admin-view hidden"><div class="section-heading"><div><span class="eyebrow">ANALÍTICAS</span><h2>Progreso y comportamiento</h2><p>Indicadores construidos con los datos disponibles en Firestore.</p></div></div><section class="metrics-grid"><article class="metric-card"><span>Nivel promedio</span><strong id="avgLevel">—</strong><small>Todos los usuarios</small></article><article class="metric-card"><span>Nivel máximo</span><strong id="maxLevel">—</strong><small>Mayor progreso</small></article><article class="metric-card"><span>Con perfil completo</span><strong id="completeProfiles">—</strong><small>Nombre, correo e ID</small></article><article class="metric-card"><span>Jugadores con récord</span><strong id="playersWithRecord">—</strong><small>Registro mayor a cero</small></article></section><section class="two-column"><article class="panel-card"><div class="panel-title"><div><span class="eyebrow">DISTRIBUCIÓN</span><h3>Jugadores por rango de nivel</h3></div></div><div id="levelDistribution" class="bar-list"></div></article><article class="panel-card"><div class="panel-title"><div><span class="eyebrow">TOP PROGRESO</span><h3>Jugadores destacados</h3></div></div><div id="topProgress" class="data-list"></div></article></section></section>
 
         <section id="stripeView" class="admin-view hidden"><div class="section-heading"><div><span class="eyebrow">PAGOS</span><h2>Centro de conciliación Stripe</h2><p>Panel preventivo para revisar compras y entrega de diamantes.</p></div></div><section class="metrics-grid"><article class="metric-card"><span>Backend</span><strong>Activo</strong><small>Configuración detectada</small></article><article class="metric-card"><span>Conciliación</span><strong id="stripeStatus">Manual</strong><small>Hasta conectar historial</small></article><article class="metric-card warning"><span>Revisiones pendientes</span><strong id="stripePending">0</strong><small>Marcadas por el escáner</small></article><article class="metric-card"><span>Seguridad</span><strong>Protegida</strong><small>Sin cambios automáticos</small></article></section><article class="panel-card checklist-card"><div class="panel-title"><div><span class="eyebrow">FLUJO RECOMENDADO</span><h3>Conciliación segura</h3></div></div><div class="checklist"><label><input type="checkbox"> Confirmar pago en Stripe</label><label><input type="checkbox"> Verificar sesión o identificador</label><label><input type="checkbox"> Confirmar diamantes entregados</label><label><input type="checkbox"> Registrar incidencia si no coincide</label></div><p class="muted-note">Esta sección no realiza reembolsos ni modifica saldos automáticamente.</p></article></section>
@@ -94,5 +128,6 @@
   <script type="module" src="./assistant.js?v=2"></script>
   <script type="module" src="./operations.js?v=1"></script>
   <script type="module" src="./accounts.js?v=4"></script>
+  <script type="module" src="./gms.js?v=1"></script>
 </body>
 </html>

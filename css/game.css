@@ -3100,11 +3100,11 @@ button, a {
   height: clamp(46px, 13vw, 63px) !important;
   max-width: 66px !important;
   max-height: 63px !important;
-  inset: auto !important;
+  /* No usar inset aquí: anulaba los left/top calculados por JavaScript
+     y mandaba al Perrito Jr a la esquina superior izquierda. */
   margin: 0 !important;
   overflow: visible !important;
   background-repeat: no-repeat !important;
-  background-size: auto 100% !important;
   pointer-events: none !important;
   object-fit: contain !important;
 }

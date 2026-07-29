@@ -14,6 +14,7 @@ window.SistemaMascotas = {
   mascotaEquipada: "perrito-junior",
   mascotaElemento: null,
   mascotaImagen: null,
+  spriteController: null,
   cuadroAnimacion: null,
   estadoAnimacion: "idle",
   ultimoEstadoJuego: { pausado: false, terminado: false, vidas: 3, puntos: 0 },
@@ -72,6 +73,7 @@ window.SistemaMascotas = {
     this.mascotaElemento?.remove();
     this.mascotaElemento = null;
     this.mascotaImagen = null;
+    this.spriteController = null;
   },
 
   cargarDatos() {
@@ -159,43 +161,22 @@ window.SistemaMascotas = {
     const mascota = this.catalogo[this.mascotaEquipada];
     if (!area || !mascota) return;
 
-    const colores = this.estilosRaza[this.mascotaEquipada] || this.estilosRaza["perrito-junior"];
     const elemento = document.createElement("div");
     elemento.id = "activePet";
-    elemento.className = "active-pet pet-state-idle";
+    elemento.className = "active-pet active-pet-sprite";
     elemento.dataset.pet = this.mascotaEquipada;
+    elemento.dataset.petState = "idle";
+    elemento.setAttribute("role", "img");
     elemento.setAttribute("aria-label", `${mascota.nombre}, Perrito Jr equipado`);
-    elemento.style.setProperty("--pet-fur", colores.pelaje);
-    elemento.style.setProperty("--pet-light", colores.claro);
-    elemento.style.setProperty("--pet-dark", colores.oscuro);
 
     const sombra = document.createElement("span");
     sombra.className = "active-pet-shadow";
+    elemento.appendChild(sombra);
 
-    const rig = document.createElement("span");
-    rig.className = "active-pet-rig";
-
-    const imagen = document.createElement("img");
-    imagen.className = "active-pet-image";
-    imagen.src = mascota.imagen;
-    imagen.alt = "";
-    imagen.draggable = false;
-
-    const posiciones = ["front-near", "front-far", "back-near", "back-far"];
-    posiciones.forEach((posicion) => {
-      const pierna = document.createElement("span");
-      pierna.className = `active-pet-leg active-pet-leg-${posicion}`;
-      const pata = document.createElement("span");
-      pata.className = "active-pet-paw";
-      pierna.appendChild(pata);
-      rig.appendChild(pierna);
-    });
-
-    rig.appendChild(imagen);
-    elemento.append(sombra, rig);
     area.appendChild(elemento);
     this.mascotaElemento = elemento;
-    this.mascotaImagen = imagen;
+    this.spriteController = new window.PerritoJrSpriteController(elemento, this.mascotaEquipada);
+    this.spriteController.setState("idle", true);
     this.xVisual = null;
     this.yVisual = null;
   },
@@ -277,6 +258,7 @@ window.SistemaMascotas = {
     const juego = window.JuniorGame;
     const dt = Math.min((tiempoActual - this.tiempoAnterior) / 1000, 0.05);
     this.tiempoAnterior = tiempoActual;
+    this.spriteController?.tick(dt);
     if (juego?.estado?.iniciado) {
       this.detectarEventosJuego(juego);
       this.seguirPerro(dt);
@@ -328,7 +310,7 @@ window.SistemaMascotas = {
 
     mascota.style.left = `${Math.max(2, Math.min(area.clientWidth - anchoMascota - 2, this.xVisual))}px`;
     mascota.style.top = `${Math.max(58, Math.min(area.clientHeight - mascota.offsetHeight - 72, this.yVisual))}px`;
-    mascota.classList.toggle("pet-facing-left", !derecha);
+    this.spriteController?.setFacing(!derecha);
 
     if (juego.estado.pausado) return this.cambiarEstado("sleep");
     if (juego.estado.terminado) return;
@@ -340,58 +322,36 @@ window.SistemaMascotas = {
   },
 
   prepararAudio() {
-    if (this.audioContexto) return this.audioContexto;
-    const Ctx = window.AudioContext || window.webkitAudioContext;
-    if (!Ctx) return null;
-    try {
-      this.audioContexto = new Ctx();
-      return this.audioContexto;
-    } catch {
-      return null;
-    }
+    window.AudioPerritosJr?.preparar?.();
+    return window.AudioPerritosJr;
   },
 
   reproducirSonido(tipo = "yip") {
-    const ahora = performance.now();
-    if (ahora - this.ultimoSonidoEn < 650) return;
-    this.ultimoSonidoEn = ahora;
-    const ctx = this.prepararAudio();
-    if (!ctx) return;
-    if (ctx.state === "suspended") ctx.resume().catch(() => {});
-
-    const inicio = ctx.currentTime;
-    const oscilador = ctx.createOscillator();
-    const ganancia = ctx.createGain();
-    const filtro = ctx.createBiquadFilter();
-    filtro.type = "bandpass";
-    filtro.frequency.value = tipo === "hurt" ? 900 : 1450;
-    filtro.Q.value = 1.2;
-    oscilador.type = tipo === "sleep" ? "sine" : "triangle";
-    const base = tipo === "hurt" ? 420 : tipo === "celebrate" ? 760 : 620;
-    oscilador.frequency.setValueAtTime(base, inicio);
-    oscilador.frequency.exponentialRampToValueAtTime(base * 1.65, inicio + 0.055);
-    oscilador.frequency.exponentialRampToValueAtTime(base * 0.82, inicio + 0.16);
-    ganancia.gain.setValueAtTime(0.0001, inicio);
-    ganancia.gain.exponentialRampToValueAtTime(0.055, inicio + 0.018);
-    ganancia.gain.exponentialRampToValueAtTime(0.0001, inicio + 0.19);
-    oscilador.connect(filtro).connect(ganancia).connect(ctx.destination);
-    oscilador.start(inicio);
-    oscilador.stop(inicio + 0.2);
+    const mapa = {
+      yip: "bark",
+      celebrate: "happy",
+      hurt: "hurt",
+      sleep: "pant"
+    };
+    window.AudioPerritosJr?.reproducir?.(mapa[tipo] || "bark");
   },
 
   cambiarEstado(estado, duracion = 0) {
-    if (!this.mascotaElemento || this.estadoAnimacion === estado) return;
-    this.estadoAnimacion = estado;
-    if (estado === "celebrate") this.reproducirSonido("celebrate");
-    if (estado === "hurt") this.reproducirSonido("hurt");
-    if (estado === "jump" && Math.random() < 0.18) this.reproducirSonido("yip");
-    const clases = [...this.mascotaElemento.classList].filter((c) => c.startsWith("pet-state-"));
-    clases.forEach((c) => this.mascotaElemento.classList.remove(c));
-    this.mascotaElemento.classList.add(`pet-state-${estado}`);
+    if (!this.mascotaElemento) return;
+    const estadoSprite = estado === "fall" ? "fall" : estado;
+    if (this.estadoAnimacion === estadoSprite && duracion <= 0) return;
+    this.estadoAnimacion = estadoSprite;
+    this.spriteController?.setState(estadoSprite, duracion > 0);
+
+    if (estadoSprite === "celebrate") this.reproducirSonido("celebrate");
+    if (estadoSprite === "hurt") this.reproducirSonido("hurt");
+    if (estadoSprite === "jump" && Math.random() < 0.22) this.reproducirSonido("yip");
+    if (estadoSprite === "run" && Math.random() < 0.004) this.reproducirSonido("sleep");
+
     if (duracion > 0) {
       clearTimeout(this.__estadoTimer);
       this.__estadoTimer = setTimeout(() => {
-        if (this.estadoAnimacion === estado) this.cambiarEstado("idle");
+        if (this.estadoAnimacion === estadoSprite) this.cambiarEstado("idle");
       }, duracion);
     }
   },

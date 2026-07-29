@@ -2806,3 +2806,64 @@ body.raza-fantasma-activa .dog{
 @media(prefers-reduced-motion:reduce){
   .active-pet-rig,.active-pet-leg,.active-pet-shadow{animation:none!important}
 }
+
+/* =====================================================
+   PERRITOS JR — BIBLIOTECA DE SPRITES REALES
+   Cada estado utiliza una hoja de cuadros independiente.
+===================================================== */
+.active-pet.active-pet-sprite{
+  position:absolute;
+  z-index:35;
+  width:clamp(58px, 14vw, 86px);
+  aspect-ratio:1 / 1;
+  background-repeat:no-repeat;
+  background-position:0 0;
+  image-rendering:auto;
+  pointer-events:none;
+  transform-origin:50% 86%;
+  will-change:left, top, background-position, transform;
+  filter:drop-shadow(0 6px 3px rgba(0,0,0,.35));
+}
+.active-pet.active-pet-sprite.pet-facing-left{
+  transform:scaleX(-1);
+}
+.active-pet.active-pet-sprite .active-pet-shadow{
+  position:absolute;
+  left:18%;
+  right:18%;
+  bottom:4%;
+  height:10%;
+  border-radius:50%;
+  background:rgba(0,0,0,.28);
+  filter:blur(3px);
+  z-index:-1;
+  transform-origin:center;
+}
+.active-pet.active-pet-sprite[data-pet-state="run"] .active-pet-shadow{
+  transform:scaleX(1.25) scaleY(.72);
+  opacity:.75;
+}
+.active-pet.active-pet-sprite[data-pet-state="jump"] .active-pet-shadow,
+.active-pet.active-pet-sprite[data-pet-state="fall"] .active-pet-shadow{
+  transform:scale(.68);
+  opacity:.48;
+}
+.active-pet.active-pet-sprite[data-pet-state="sleep"]{
+  filter:drop-shadow(0 3px 2px rgba(0,0,0,.34));
+}
+.active-pet.active-pet-sprite[data-pet-state="hurt"]{
+  filter:drop-shadow(0 0 9px rgba(255,80,80,.9));
+}
+.active-pet.active-pet-sprite.pet-recovering{
+  transition:opacity .16s ease;
+  opacity:.25;
+}
+@media (max-width:390px){
+  .active-pet.active-pet-sprite{width:clamp(52px, 15vw, 68px)}
+}
+@media (min-width:768px){
+  .active-pet.active-pet-sprite{width:90px}
+}
+@media (prefers-reduced-motion:reduce){
+  .active-pet.active-pet-sprite{transition:none!important}
+}

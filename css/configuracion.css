@@ -22,3 +22,20 @@ body.jg-settings-open{overflow:hidden;touch-action:none}
 @media(max-width:430px){.jg-settings-sheet{max-height:94dvh;border-radius:24px 24px 0 0}.jg-settings-grid{gap:9px}.jg-settings-card{min-height:117px;padding:14px 12px}.jg-settings-card strong{font-size:14px}.jg-settings-card small{font-size:10px}}
 @media(max-width:340px){.jg-settings-grid{grid-template-columns:1fr}.jg-settings-card[data-section="lab"]{grid-column:auto}}
 @media(prefers-reduced-motion:reduce){.jg-settings-sheet{animation:none}.jg-settings-layer{transition:none}}
+
+/* Fase 2 · selectores funcionales de región e idioma */
+.jg-settings-option.is-disabled{opacity:.68}
+.jg-settings-switch{position:relative;width:48px;height:28px;border-radius:999px;background:#4d3a2c;box-shadow:inset 0 2px 5px rgba(0,0,0,.45);transition:.2s}
+.jg-settings-switch i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#f5e7c4;box-shadow:0 2px 4px rgba(0,0,0,.4);transition:.2s}
+.jg-settings-switch.on{background:#42a845}.jg-settings-switch.on i{transform:translateX(20px);background:#fff}
+.jg-settings-picker{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;background:linear-gradient(180deg,#29170c,#100a07);animation:jgPickerIn .2s ease}
+.jg-settings-picker.hidden{display:none}
+@keyframes jgPickerIn{from{transform:translateX(18px);opacity:.5}to{transform:none;opacity:1}}
+.jg-settings-picker-head{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;padding:15px;border-bottom:1px solid rgba(227,181,74,.24)}
+.jg-settings-picker-head h3{color:#fff6df;font-size:21px}.jg-settings-picker-head p{margin-top:3px;color:#cdbb9b;font-size:12px}
+.jg-settings-picker-back{width:40px;height:40px;border:1px solid rgba(233,190,82,.45);border-radius:13px;background:linear-gradient(#50301b,#25150d);color:#fff4d0;font-size:25px;font-weight:900}
+.jg-settings-picker-list{overflow-y:auto;-webkit-overflow-scrolling:touch;display:grid;gap:9px;padding:14px 14px calc(var(--jg-safe-bottom) + 14px)}
+.jg-settings-choice{display:grid;grid-template-columns:38px 1fr 26px;align-items:center;gap:10px;min-height:58px;padding:10px 13px;border:1px solid rgba(220,176,73,.28);border-radius:15px;background:linear-gradient(180deg,rgba(75,43,25,.9),rgba(34,20,13,.96));color:#fff;text-align:left}
+.jg-settings-choice.selected{border-color:#f1bd45;background:linear-gradient(180deg,#76501e,#4a2d12);box-shadow:0 0 0 2px rgba(241,189,69,.14)}
+.jg-settings-choice-icon{font-size:25px}.jg-settings-choice strong{font-size:14px}.jg-settings-choice>span:last-child{color:#ffe28e;font-size:18px;font-weight:900;text-align:center}
+.jg-settings-sheet{position:relative}

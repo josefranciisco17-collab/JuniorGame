@@ -23,6 +23,90 @@ import {
 
 
 /* =========================================
+   IDIOMA DE CORREOS DE FIREBASE
+========================================= */
+
+const CLAVE_CONFIGURACION_IDIOMA =
+  "juniorGame.localeSettings";
+
+const IDIOMAS_FIREBASE = {
+  "es-MX": "es",
+  "es-ES": "es",
+  "es": "es",
+  "en-US": "en",
+  "en-GB": "en",
+  "en": "en",
+  "fr-FR": "fr",
+  "fr": "fr",
+  "de-DE": "de",
+  "de": "de",
+  "it-IT": "it",
+  "it": "it",
+  "pt-BR": "pt",
+  "pt-PT": "pt",
+  "pt": "pt",
+  "ru-RU": "ru",
+  "ru": "ru",
+  "ja-JP": "ja",
+  "ja": "ja",
+  "ko-KR": "ko",
+  "ko": "ko",
+  "zh-CN": "zh-CN",
+  "zh-TW": "zh-TW",
+  "zh": "zh-CN"
+};
+
+function obtenerIdiomaSeleccionado() {
+  try {
+    const configuracion =
+      JSON.parse(
+        localStorage.getItem(
+          CLAVE_CONFIGURACION_IDIOMA
+        ) || "{}"
+      );
+
+    return configuracion.language || "";
+  } catch (error) {
+    console.warn(
+      "No fue posible leer el idioma guardado.",
+      error
+    );
+
+    return "";
+  }
+}
+
+function configurarIdiomaFirebase() {
+  const idiomaSeleccionado =
+    obtenerIdiomaSeleccionado();
+
+  const idiomaFirebase =
+    IDIOMAS_FIREBASE[idiomaSeleccionado];
+
+  if (idiomaFirebase) {
+    auth.languageCode = idiomaFirebase;
+    return idiomaFirebase;
+  }
+
+  /*
+    Si el jugador todavía no eligió un idioma,
+    Firebase utiliza el idioma configurado en
+    Android, iOS, APK o navegador.
+  */
+  auth.useDeviceLanguage();
+
+  return auth.languageCode || "es";
+}
+
+configurarIdiomaFirebase();
+
+window.addEventListener(
+  "juniorgame:locale-changed",
+  configurarIdiomaFirebase
+);
+
+
+/* =========================================
    ELEMENTOS DEL LOGIN
 ========================================= */
 
@@ -491,6 +575,8 @@ forgotPasswordButton.addEventListener(
     }
 
     try {
+      configurarIdiomaFirebase();
+
       await sendPasswordResetEmail(
         auth,
         email

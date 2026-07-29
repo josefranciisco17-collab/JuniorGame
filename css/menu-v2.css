@@ -1304,3 +1304,269 @@ transition:
 ========================================= */
 #chatGlobalButton{position:relative}
 .chat-unread-badge{position:absolute;right:-7px;top:-8px;padding:3px 7px;border-radius:999px;background:#e33b32;color:#fff;border:2px solid #fff;font-size:9px;font-weight:1000;box-shadow:0 2px 5px rgba(0,0,0,.35)}
+
+/* =========================================================
+   MENU V5 — DISEÑO BOSQUE PREMIUM / LISTO PARA PWA Y APK
+   ========================================================= */
+.menu-redesign-v5 {
+  background: #160d05;
+  overscroll-behavior: none;
+}
+
+.menu-redesign-v5 .menu-page {
+  max-width: 560px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-position: center 45%;
+  isolation: isolate;
+}
+
+.menu-redesign-v5 .menu-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255, 231, 154, .18), transparent 34%),
+    linear-gradient(180deg, rgba(13, 39, 16, .14), rgba(22, 9, 1, .28) 72%, rgba(10, 4, 0, .7));
+}
+
+.menu-redesign-v5 .v5-shell {
+  height: 100%;
+  min-height: 100dvh;
+  padding:
+    max(10px, env(safe-area-inset-top))
+    12px
+    max(10px, env(safe-area-inset-bottom));
+  gap: 8px;
+  overflow: hidden;
+}
+
+.player-status-bar {
+  width: 100%;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 2px solid rgba(255, 201, 105, .34);
+  border-radius: 19px;
+  background: linear-gradient(180deg, rgba(47, 25, 11, .93), rgba(21, 12, 6, .94));
+  box-shadow: inset 0 1px rgba(255,255,255,.11), 0 5px 12px rgba(0,0,0,.27);
+  backdrop-filter: blur(8px);
+}
+
+.player-chip {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: #fff7e7;
+  text-align: left;
+}
+.player-chip-photo {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  object-fit: cover;
+  border: 2px solid #f5b541;
+  border-radius: 50%;
+  background: #6a3415;
+  box-shadow: 0 2px 0 #3a1705;
+}
+.player-chip-copy { display: grid; min-width: 0; }
+.player-chip-copy strong { max-width: 116px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; }
+.player-chip-copy small { color: #e9c898; font-size: 12px; }
+.resource-chips { display: flex; gap: 5px; }
+.resource-chip {
+  min-width: 66px;
+  height: 34px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid rgba(255,215,132,.35);
+  border-radius: 17px;
+  color: #fff;
+  background: rgba(29,18,9,.88);
+  font-size: 13px;
+  box-shadow: inset 0 1px rgba(255,255,255,.08);
+}
+.resource-chip strong { max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
+
+.v5-brand {
+  width: 100%;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 1px 0 0;
+}
+.v5-logo-wrap { text-align: center; filter: drop-shadow(0 5px 4px rgba(39,13,0,.55)); }
+.v5-logo-title {
+  color: #ffc02f;
+  font-weight: 1000;
+  font-size: clamp(37px, 10vw, 57px);
+  line-height: .82;
+  letter-spacing: -2px;
+  text-shadow: 0 2px #b86508, 0 5px #6f3300, 0 8px 10px rgba(0,0,0,.35);
+}
+.v5-logo-title span { display: inline-block; font-size: .58em; transform: translateY(-.08em); }
+.v5-logo-game {
+  color: #fff4d5;
+  font-weight: 1000;
+  font-size: clamp(26px, 7vw, 39px);
+  letter-spacing: 5px;
+  line-height: .95;
+  text-shadow: 0 3px #6c3211, 0 6px 9px rgba(0,0,0,.5);
+}
+.v5-logo-bone { margin-top: -2px; font-size: 20px; }
+
+.v5-main-zone {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(112px, .84fr);
+  align-items: stretch;
+  gap: 8px;
+}
+
+.menu-redesign-v5 .v5-primary-actions {
+  width: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: repeat(5, minmax(48px, 1fr));
+  gap: 7px;
+  overflow: visible;
+  padding: 0;
+}
+
+.menu-redesign-v5 .v5-action {
+  width: 100%;
+  min-height: 0;
+  height: auto;
+  margin: 0;
+  padding: 7px 10px;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 14px;
+  align-items: center;
+  column-gap: 7px;
+  border: 3px solid #3b1908;
+  border-radius: 15px;
+  color: #fff8e9;
+  text-decoration: none;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 13px, rgba(62,22,4,.11) 14px 15px),
+    linear-gradient(180deg, #824519, #3d210e);
+  box-shadow: inset 0 2px rgba(255,255,255,.13), inset 0 -3px rgba(25,8,1,.28), 0 3px 0 #261003, 0 5px 8px rgba(0,0,0,.25);
+  transition: transform .13s ease, filter .13s ease;
+}
+.menu-redesign-v5 .v5-action:active { transform: translateY(2px) scale(.985); filter: brightness(1.12); }
+.menu-redesign-v5 .v5-action .button-icon { font-size: 23px; text-align: center; }
+.menu-redesign-v5 .v5-action .button-copy { min-width: 0; display: grid; line-height: 1.02; }
+.menu-redesign-v5 .v5-action .button-text { min-width: 0; font-size: clamp(13px, 3.6vw, 17px); font-weight: 1000; text-align: left; white-space: normal; }
+.menu-redesign-v5 .v5-action .menu-feature-status { margin-top: 2px; color: #eacaa1; font-size: 9px; font-style: normal; text-align: left; line-height: 1.05; }
+.menu-redesign-v5 .v5-action .button-arrow { color: #f6b739; font-size: 26px; font-weight: 900; }
+.menu-redesign-v5 .v5-play { background: linear-gradient(180deg, #6caa2c, #2f651b); border-color: #274709; }
+.menu-redesign-v5 .v5-play .button-text { font-size: clamp(16px, 4.2vw, 20px); }
+
+.v5-mascot-stage {
+  position: relative;
+  min-height: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid rgba(255,213,132,.2);
+  border-radius: 28px 28px 18px 18px;
+  background: radial-gradient(circle at 50% 42%, rgba(255,235,173,.23), transparent 52%);
+}
+.v5-mascot-halo { position: absolute; width: 150px; height: 150px; bottom: 20%; border-radius: 50%; background: radial-gradient(circle, rgba(255,230,148,.23), transparent 68%); }
+.v5-menu-dog {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 185px);
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 8px 5px rgba(25,8,0,.55));
+}
+.v5-mascot-ground { position: absolute; z-index: 1; bottom: 4px; width: 88%; height: 18px; border-radius: 50%; background: rgba(25,11,3,.48); filter: blur(3px); }
+
+.v5-bottom-dock {
+  width: 100%;
+  flex: 0 0 65px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
+  border: 3px solid #3b1908;
+  border-radius: 17px;
+  background: linear-gradient(180deg, rgba(83,45,19,.96), rgba(34,19,9,.97));
+  box-shadow: inset 0 1px rgba(255,255,255,.11), 0 4px 0 #201004;
+}
+.dock-button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 2px;
+  border: 0;
+  border-right: 1px solid rgba(255,213,139,.17);
+  color: #fff4da;
+  background: transparent;
+}
+.dock-button:last-child { border-right: 0; }
+.dock-button:active { background: rgba(255,185,61,.15); transform: translateY(1px); }
+.dock-button > span { font-size: 23px; line-height: 1; }
+.dock-button small { font-size: 9px; font-weight: 900; white-space: nowrap; }
+.dock-button .chat-unread-badge { position: absolute; top: 3px; right: 4px; font-size: 7px; }
+
+.v5-admin-button {
+  flex: 0 0 auto;
+  min-height: 30px;
+  padding: 5px 12px;
+  border: 1px solid rgba(255,197,91,.38);
+  border-radius: 14px;
+  color: #ffe1a6;
+  background: rgba(44,24,10,.88);
+  font-size: 11px;
+  font-weight: 900;
+}
+.menu-redesign-v5 .v5-footer { flex: 0 0 auto; padding: 1px 0 0; color: rgba(255,244,216,.76); font-size: 8px; text-shadow: 0 1px #000; }
+.menu-redesign-v5 .v5-footer strong, .menu-redesign-v5 .v5-footer span { display: block; }
+
+/* Teclado, notch y contenedor WebView/APK */
+@supports (height: 100svh) {
+  .menu-redesign-v5 .menu-page,
+  .menu-redesign-v5 .v5-shell { min-height: 100svh; height: 100svh; }
+}
+@media (display-mode: standalone) {
+  .menu-redesign-v5 .v5-shell { padding-top: max(12px, env(safe-area-inset-top)); }
+}
+@media (max-height: 690px) {
+  .menu-redesign-v5 .v5-shell { gap: 5px; padding-top: max(6px, env(safe-area-inset-top)); }
+  .player-status-bar { min-height: 48px; }
+  .player-chip-photo { width: 35px; height: 35px; flex-basis: 35px; }
+  .resource-chip { height: 29px; min-width: 59px; font-size: 11px; }
+  .v5-logo-title { font-size: 34px; }
+  .v5-logo-game { font-size: 22px; }
+  .v5-logo-bone { display: none; }
+  .v5-bottom-dock { flex-basis: 55px; }
+  .dock-button > span { font-size: 19px; }
+  .dock-button small { font-size: 8px; }
+  .menu-redesign-v5 .v5-action { padding-block: 4px; }
+  .menu-redesign-v5 .v5-action .button-icon { font-size: 19px; }
+}
+@media (max-width: 370px) {
+  .v5-main-zone { grid-template-columns: minmax(0, 1.28fr) minmax(92px, .72fr); }
+  .player-chip-copy strong { max-width: 92px; }
+  .resource-chip { min-width: 57px; padding-inline: 5px; }
+  .menu-redesign-v5 .v5-action { grid-template-columns: 27px minmax(0, 1fr) 10px; padding-inline: 7px; }
+  .menu-redesign-v5 .v5-action .button-text { font-size: 12px; }
+  .menu-redesign-v5 .v5-action .menu-feature-status { font-size: 8px; }
+}

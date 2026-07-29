@@ -1,0 +1,25 @@
+JUNIORGAME — MENÚ V5 BOSQUE PREMIUM
+
+ARCHIVOS MODIFICADOS:
+- index.html
+- css/menu-v2.css
+- js/menu.js
+
+INSTALACIÓN EN TERMUX:
+cd ~/JuniorGame
+unzip -o ~/storage/downloads/JuniorGame_Menu_V5_Bosque_APK_LISTO.zip -d ~/JuniorGame
+git add index.html css/menu-v2.css js/menu.js LEEME_MENU_V5_APK.txt
+git commit -m "Rediseña menu principal estilo bosque premium"
+git push origin main
+
+COMPATIBILIDAD:
+- GitHub Pages
+- PWA instalada
+- Android WebView / Capacitor
+- PWABuilder APK
+- Safe areas para notch y barra inferior
+- 100dvh/100svh para pantallas móviles
+- Botones táctiles y sin zoom accidental
+
+NOTA:
+No se modificó la lógica de ruleta, misiones, chat, tienda, perfil, autenticación ni Admin Console.

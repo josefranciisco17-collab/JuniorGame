@@ -37,6 +37,42 @@ document.addEventListener("DOMContentLoaded", () => {
   const howToPlayButton =
     document.getElementById("howToPlayButton");
 
+  const headerProfileButton = document.getElementById("headerProfileButton");
+  const headerFields = {
+    name: document.getElementById("menuPlayerName"),
+    photo: document.getElementById("menuPlayerPhoto"),
+    level: document.getElementById("menuPlayerLevel"),
+    coins: document.getElementById("menuPlayerCoins"),
+    diamonds: document.getElementById("menuPlayerDiamonds")
+  };
+
+  function syncMenuHeader() {
+    const sourceName = document.getElementById("profileName");
+    const sourcePhoto = document.getElementById("profilePhoto");
+    const sourceLevel = document.getElementById("profileLevel");
+    const sourceCoins = document.getElementById("profileCoins");
+    const sourceDiamonds = document.getElementById("profileDiamonds");
+
+    if (headerFields.name && sourceName) headerFields.name.textContent = sourceName.textContent || "Jugador";
+    if (headerFields.photo && sourcePhoto?.src) headerFields.photo.src = sourcePhoto.src;
+    if (headerFields.level && sourceLevel) headerFields.level.textContent = sourceLevel.textContent || "1";
+    if (headerFields.coins && sourceCoins) headerFields.coins.textContent = sourceCoins.textContent || "0";
+    if (headerFields.diamonds && sourceDiamonds) headerFields.diamonds.textContent = sourceDiamonds.textContent || "0";
+  }
+
+  const profileObserver = new MutationObserver(syncMenuHeader);
+  ["profileName", "profileLevel", "profileCoins", "profileDiamonds"].forEach((id) => {
+    const node = document.getElementById(id);
+    if (node) profileObserver.observe(node, { childList: true, characterData: true, subtree: true });
+  });
+  const sourceProfilePhoto = document.getElementById("profilePhoto");
+  if (sourceProfilePhoto) profileObserver.observe(sourceProfilePhoto, { attributes: true, attributeFilter: ["src"] });
+  syncMenuHeader();
+
+  headerProfileButton?.addEventListener("click", () => {
+    document.getElementById("exitButton")?.click();
+  });
+
   // Chat Global: se crea dinámicamente para no depender de cambios manuales en menu.html.
   const menuButtons = document.querySelector(".menu-buttons");
   let chatButton = document.getElementById("chatGlobalButton");

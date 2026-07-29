@@ -1,554 +1,229 @@
 <!DOCTYPE html>
+
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-  >
-
-  <meta name="theme-color" content="#2b1609">
-
-  <title>JuniorGame</title>
-
-  <link
-    rel="stylesheet"
-    href="css/menu-v2.css?v=2"
-  >
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<meta content="#2b1609" name="theme-color"/>
+<title>JuniorGame</title>
+<link href="css/menu-v2.css?v=5" rel="stylesheet"/>
 </head>
-
-<body>
-
-  <main class="menu-page">
-
-    <div
-      class="menu-darkness"
-      aria-hidden="true"
-    ></div>
-
-    <section class="menu-content">
-
-      <!-- LETRERO PRINCIPAL -->
-      <header class="game-logo">
-
-        <span
-          class="logo-screw logo-screw-left"
-          aria-hidden="true"
-        ></span>
-
-        <span
-          class="logo-screw logo-screw-right"
-          aria-hidden="true"
-        ></span>
-
-        <span
-          class="logo-leaf logo-leaf-left"
-          aria-hidden="true"
-        >
-          🍃
-        </span>
-
-        <span
-          class="logo-leaf logo-leaf-right"
-          aria-hidden="true"
-        >
-          🍃
-        </span>
-
-        <div
-          class="logo-top-paw"
-          aria-hidden="true"
-        >
-          🐾
-        </div>
-
-        <div
-          class="logo-title"
-          aria-label="Junior"
-        >
-
-          <span class="logo-letter">J</span>
-          <span class="logo-letter">U</span>
-          <span class="logo-letter">N</span>
-          <span class="logo-letter">I</span>
-
-          <span class="logo-o">
-            <span class="logo-letter">O</span>
-
-            <span
-              class="logo-o-paw"
-              aria-hidden="true"
-            >
-              🐾
-            </span>
-          </span>
-
-          <span class="logo-letter">R</span>
-
-        </div>
-
-        <div class="logo-game">
-          GAME
-        </div>
-
-        <div
-          class="logo-decoration"
-          aria-hidden="true"
-        >
-          <span class="logo-small-paw">🐾</span>
-          <span class="logo-bone">🦴</span>
-          <span class="logo-small-paw">🐾</span>
-        </div>
-
-      </header>
-
-      <!-- BOTONES DEL MENÚ -->
-      <nav
-        class="menu-buttons"
-        aria-label="Menú principal"
-      >
-
-        <a
-          class="wood-button play-button"
-          href="game.html"
-        >
-          <span
-            class="button-icon"
-            aria-hidden="true"
-          >
-            🐾
-          </span>
-
-
-<span class="button-text">          
-            JUGAR
-          </span>
-        </a>
-
-        <button
-          id="dailyWheelButton"
-          class="wood-button menu-feature-button"
-          type="button"
-        >
-          <span class="button-icon" aria-hidden="true">🎡</span>
-          <span class="button-text">RULETA DIARIA</span>
-          <small id="dailyWheelMenuStatus" class="menu-feature-status">Disponible</small>
-        </button>
-
-        <button
-          id="missionsButton"
-          class="wood-button menu-feature-button"
-          type="button"
-        >
-          <span class="button-icon" aria-hidden="true">📋</span>
-          <span class="button-text">MISIONES</span>
-          <small class="menu-feature-status">Diarias, semanales y logros</small>
-          <em id="missionsBadge" class="menu-notification-badge hidden">0</em>
-        </button>
-
-        <button
-          id="shopButton"
-          class="wood-button"
-          type="button"
-        >
-          <span
-            class="button-icon"
-            aria-hidden="true"
-          >
-            💎
-          </span>
-
-          <span class="button-text">
-            RECARGAR DIAMANTES
-          </span>
-          <small class="menu-feature-status">Compra paquetes de diamantes</small>
-        </button>
-
-        <a
-          id="articlesButton"
-          class="wood-button"
-          href="articulos.html"
-        >
-          <span
-            class="button-icon"
-            aria-hidden="true"
-          >
-            📦
-          </span>
-
-          <span class="button-text">
-            TIENDA OFICIAL
-          </span>
-          <small class="menu-feature-status">Ropa, skins, razas y poderes</small>
-        </a>
-
-        <button
-          id="settingsButton"
-          class="wood-button"
-          type="button"
-        >
-          <span
-            class="button-icon"
-            aria-hidden="true"
-          >
-            ⚙️
-          </span>
-
-          <span class="button-text">
-            AJUSTES
-          </span>
-        </button>
-
-        <button
-          id="howToPlayButton"
-          class="wood-button"
-          type="button"
-        >
-          <span
-            class="button-icon"
-            aria-hidden="true"
-          >
-            ℹ️
-          </span>
-
-          <span class="button-text">
-            CÓMO JUGAR
-          </span>
-        </button>
-
-        <button
-          id="exitButton"
-          class="wood-button"
-          type="button"
-        >
-          <span
-            class="button-icon"
-            aria-hidden="true"
-          >
-            🚪
-          </span>
-
-          <span class="button-text">
-            PERFIL
-          </span>
-        </button>
-
-
-<button
-  id="adminConsoleButton"
-  class="wood-button hidden"
-  type="button"
->
-  <span
-    class="button-icon"
-    aria-hidden="true"
-  >
-    🛠️
-  </span>
-
-  <span class="button-text">
-    ADMIN CONSOLE
-  </span>
+<body class="menu-redesign-v5">
+<main class="menu-page">
+<div aria-hidden="true" class="menu-darkness"></div>
+<section class="menu-content v5-shell">
+<header aria-label="Estado del jugador" class="player-status-bar">
+<button aria-label="Abrir perfil" class="player-chip" id="headerProfileButton" type="button">
+<img alt="Foto del jugador" class="player-chip-photo" id="menuPlayerPhoto" src="Fondos-JuniorGame/Estrella.png"/>
+<span class="player-chip-copy">
+<strong id="menuPlayerName">Jugador</strong>
+<small>Nivel <span id="menuPlayerLevel">1</span></small>
+</span>
 </button>
-
-      </nav>
-
-      <!-- PIE DEL MENÚ -->
-      <footer class="menu-footer">
-
-        <strong>
-          JFAM &amp; Co. Game Studios
-        </strong>
-
-        <span>
-          Copyright &amp; Co.Studios 2026 S.A de C.V
-        </span>
-
-      </footer>
-
-    </section>
-
-
+<div aria-label="Recursos" class="resource-chips">
+<span class="resource-chip"><b>🪙</b><strong id="menuPlayerCoins">0</strong></span>
+<span class="resource-chip"><b>💎</b><strong id="menuPlayerDiamonds">0</strong></span>
+</div>
+</header>
+<section aria-label="JuniorGame" class="v5-brand">
+<div class="v5-logo-wrap">
+<div class="v5-logo-title">JUNI<span>🐾</span>R</div>
+<div class="v5-logo-game">GAME</div>
+<div class="v5-logo-bone">🦴</div>
+</div>
+</section>
+<section class="v5-main-zone">
+<nav aria-label="Acciones principales" class="menu-buttons v5-primary-actions">
+<a class="wood-button play-button v5-action v5-play" href="game.html">
+<span aria-hidden="true" class="button-icon">▶️</span>
+<span class="button-text">JUGAR</span>
+<span aria-hidden="true" class="button-arrow">›</span>
+</a>
+<button class="wood-button menu-feature-button v5-action" id="dailyWheelButton" type="button">
+<span aria-hidden="true" class="button-icon">🎡</span>
+<span class="button-copy"><span class="button-text">RULETA DIARIA</span><small class="menu-feature-status" id="dailyWheelMenuStatus">Disponible</small></span>
+<span aria-hidden="true" class="button-arrow">›</span>
+</button>
+<button class="wood-button menu-feature-button v5-action" id="missionsButton" type="button">
+<span aria-hidden="true" class="button-icon">📋</span>
+<span class="button-copy"><span class="button-text">MISIONES</span><small class="menu-feature-status">Diarias, semanales y logros</small></span>
+<em class="menu-notification-badge hidden" id="missionsBadge">0</em>
+<span aria-hidden="true" class="button-arrow">›</span>
+</button>
+<button class="wood-button v5-action" id="shopButton" type="button">
+<span aria-hidden="true" class="button-icon">💎</span>
+<span class="button-copy"><span class="button-text">RECARGAR DIAMANTES</span><small class="menu-feature-status">Paquetes de diamantes</small></span>
+<span aria-hidden="true" class="button-arrow">›</span>
+</button>
+<a class="wood-button v5-action" href="articulos.html" id="articlesButton">
+<span aria-hidden="true" class="button-icon">🛒</span>
+<span class="button-copy"><span class="button-text">TIENDA OFICIAL</span><small class="menu-feature-status">Skins, habilidades y Perritos Jr</small></span>
+<span aria-hidden="true" class="button-arrow">›</span>
+</a>
+</nav>
+<div aria-hidden="true" class="v5-mascot-stage">
+<span class="v5-mascot-halo"></span>
+<img alt="" class="v5-menu-dog" src="Fondos-JuniorGame/Estrella.png"/>
+<span class="v5-mascot-ground"></span>
+</div>
+</section>
+<nav aria-label="Herramientas" class="v5-bottom-dock">
+<button class="dock-button" id="settingsButton" type="button"><span>⚙️</span><small>AJUSTES</small></button>
+<button class="dock-button" id="howToPlayButton" type="button"><span>📖</span><small>CÓMO JUGAR</small></button>
+<button class="dock-button" id="chatGlobalButton" type="button"><span>💬</span><small>CHAT</small><em class="chat-unread-badge hidden" id="chatUnreadBadge">NUEVO</em></button>
+<button class="dock-button" id="exitButton" type="button"><span>👤</span><small>PERFIL</small></button>
+</nav>
+<button class="v5-admin-button hidden" id="adminConsoleButton" type="button">🛠️ ADMIN CONSOLE</button>
+<footer class="menu-footer v5-footer">
+<strong>JFAM &amp; Co. Game Studios</strong>
+<span>JuniorGame Production · 2026</span>
+</footer>
+</section>
 <!-- PERFIL DEL JUGADOR -->
-<div
-  id="profilePanel"
-  class="profile-panel hidden"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="profileTitle"
->
-  <div class="profile-backdrop"></div>
-
-  <section class="profile-card">
-
-    <button
-      id="closeProfileButton"
-      class="profile-close"
-      type="button"
-      aria-label="Cerrar perfil"
-    >
+<div aria-labelledby="profileTitle" aria-modal="true" class="profile-panel hidden" id="profilePanel" role="dialog">
+<div class="profile-backdrop"></div>
+<section class="profile-card">
+<button aria-label="Cerrar perfil" class="profile-close" id="closeProfileButton" type="button">
       ×
     </button>
-
-    <header class="profile-header">
-
-      <img
-        id="profilePhoto"
-        class="profile-photo"
-        src="Fondos-JuniorGame/Estrella.png"
-        alt="Foto del jugador"
-      >
-
-      <h2 id="profileTitle">PERFIL</h2>
-
-      <p id="profileName">Jugador</p>
-
-      <div class="profile-id-box">
-        <span>ID DEL JUGADOR</span>
-
-        <strong id="profilePlayerId">
+<header class="profile-header">
+<img alt="Foto del jugador" class="profile-photo" id="profilePhoto" src="Fondos-JuniorGame/Estrella.png"/>
+<h2 id="profileTitle">PERFIL</h2>
+<p id="profileName">Jugador</p>
+<div class="profile-id-box">
+<span>ID DEL JUGADOR</span>
+<strong id="profilePlayerId">
           JF-XXXXX
         </strong>
-
-        <button
-          id="copyPlayerIdButton"
-          class="profile-copy-button"
-          type="button"
-        >
+<button class="profile-copy-button" id="copyPlayerIdButton" type="button">
           COPIAR ID
         </button>
-      </div>
-
-    </header>
-
-    <div class="profile-stats">
-
-      <div class="profile-stat">
-        <span>❤️</span>
-        <small>Vidas</small>
-        <strong id="profileLives">3</strong>
-      </div>
-
-      <div class="profile-stat">
-        <span>🪙</span>
-        <small>Monedas</small>
-        <strong id="profileCoins">0</strong>
-      </div>
-
-      <div class="profile-stat">
-        <span>💎</span>
-        <small>Diamantes</small>
-        <strong id="profileDiamonds">0</strong>
-      </div>
-
-      <div class="profile-stat">
-        <span>⭐</span>
-        <small>Nivel</small>
-        <strong id="profileLevel">1</strong>
-      </div>
-
-      <div class="profile-stat">
-        <span>🏆</span>
-        <small>Récord</small>
-        <strong id="profileRecord">0</strong>
-      </div>
-
-      <div class="profile-stat">
-        <span>🦴</span>
-        <small>Huesos</small>
-        <strong id="profileBones">0</strong>
-      </div>
-
-    </div>
-
-    <div class="profile-details">
-
-      <p>
-        <span>Correo</span>
-        <strong id="profileEmail">
+</div>
+</header>
+<div class="profile-stats">
+<div class="profile-stat">
+<span>❤️</span>
+<small>Vidas</small>
+<strong id="profileLives">3</strong>
+</div>
+<div class="profile-stat">
+<span>🪙</span>
+<small>Monedas</small>
+<strong id="profileCoins">0</strong>
+</div>
+<div class="profile-stat">
+<span>💎</span>
+<small>Diamantes</small>
+<strong id="profileDiamonds">0</strong>
+</div>
+<div class="profile-stat">
+<span>⭐</span>
+<small>Nivel</small>
+<strong id="profileLevel">1</strong>
+</div>
+<div class="profile-stat">
+<span>🏆</span>
+<small>Récord</small>
+<strong id="profileRecord">0</strong>
+</div>
+<div class="profile-stat">
+<span>🦴</span>
+<small>Huesos</small>
+<strong id="profileBones">0</strong>
+</div>
+</div>
+<div class="profile-details">
+<p>
+<span>Correo</span>
+<strong id="profileEmail">
           Sin correo
         </strong>
-      </p>
-
-      <p>
-        <span>Registro</span>
-        <strong id="profileRegistration">
+</p>
+<p>
+<span>Registro</span>
+<strong id="profileRegistration">
           Sin fecha
         </strong>
-      </p>
-
-    </div>
-
-    <div class="profile-actions">
-
-      <button
-        id="changePhotoButton"
-        class="profile-action-button"
-        type="button"
-      >
+</p>
+</div>
+<div class="profile-actions">
+<button class="profile-action-button" id="changePhotoButton" type="button">
         Cambiar foto
       </button>
-
-<input
-  id="profilePhotoInput"
-  type="file"
-  accept="image/jpeg,image/png,image/webp"
-  hidden
->
-
-
-      <button
-        id="changeNameButton"
-        class="profile-action-button"
-        type="button"
-      >
+<input accept="image/jpeg,image/png,image/webp" hidden="" id="profilePhotoInput" type="file"/>
+<button class="profile-action-button" id="changeNameButton" type="button">
         Cambiar nombre
       </button>
-
-      <button
-        id="changePasswordButton"
-        class="profile-action-button"
-        type="button"
-      >
+<button class="profile-action-button" id="changePasswordButton" type="button">
         Cambiar contraseña
       </button>
-
-      <button
-        id="logoutButton"
-        class="profile-action-button danger"
-        type="button"
-      >
+<button class="profile-action-button danger" id="logoutButton" type="button">
         Cerrar sesión
       </button>
-
-    </div>
-
-    <p
-      id="profileMessage"
-      class="profile-message"
-      aria-live="polite"
-    ></p>
-
-  </section>
 </div>
-
-
-
-
-    <!-- RULETA DIARIA -->
-    <div id="dailyWheelModal" class="daily-wheel-modal hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="dailyWheelTitle">
-      <div class="daily-wheel-card">
-        <button id="dailyWheelCloseButton" class="daily-wheel-close" type="button" aria-label="Cerrar">✕</button>
-        <h2 id="dailyWheelTitle">RULETA DIARIA</h2>
-        <p id="dailyWheelStatus">Preparando tu giro…</p>
-
-        <div class="daily-wheel-stage">
-          <div class="daily-wheel-pointer" aria-hidden="true">▼</div>
-          <div id="dailyWheelDisc" class="daily-wheel-disc">
-            <div id="dailyWheelSegments" class="daily-wheel-segments"></div>
-            <div class="daily-wheel-center" aria-hidden="true">🐶</div>
-          </div>
-        </div>
-
-        <div id="dailyWheelResult" class="daily-wheel-result hidden" aria-live="polite"></div>
-        <strong id="dailyWheelCountdown" class="daily-wheel-countdown">Disponible ahora</strong>
-        <button id="dailyWheelSpinButton" class="daily-wheel-spin" type="button">GIRAR AHORA</button>
-        <small class="daily-wheel-note">Un giro por día. El premio se guarda en tu cuenta.</small>
-      </div>
-    </div>
-
-    <!-- MISIONES Y LOGROS -->
-    <div id="missionsModal" class="missions-modal hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="missionsTitle">
-      <div class="missions-card">
-        <button id="missionsCloseButton" class="missions-close" type="button" aria-label="Cerrar">✕</button>
-        <h2 id="missionsTitle">MISIONES Y LOGROS</h2>
-        <p id="missionsSummary" class="missions-summary">Tus desafíos de JuniorGame</p>
-
-        <div class="missions-tabs" role="tablist">
-          <button class="missions-tab active" data-missions-tab="diarias" type="button">DIARIAS</button>
-          <button class="missions-tab" data-missions-tab="semanales" type="button">SEMANALES</button>
-          <button class="missions-tab" data-missions-tab="logros" type="button">LOGROS</button>
-        </div>
-
-        <div id="missionsList" class="missions-list"></div>
-      </div>
-    </div>
-
-    <!-- VENTANA EMERGENTE -->
-    <div
-      id="menuModal"
-      class="modal hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modalTitle"
-    >
-
-      <div class="modal-card">
-
-        <button
-          id="closeModalButton"
-          class="modal-close"
-          type="button"
-          aria-label="Cerrar ventana"
-        >
+<p aria-live="polite" class="profile-message" id="profileMessage"></p>
+</section>
+</div>
+<!-- RULETA DIARIA -->
+<div aria-hidden="true" aria-labelledby="dailyWheelTitle" aria-modal="true" class="daily-wheel-modal hidden" id="dailyWheelModal" role="dialog">
+<div class="daily-wheel-card">
+<button aria-label="Cerrar" class="daily-wheel-close" id="dailyWheelCloseButton" type="button">✕</button>
+<h2 id="dailyWheelTitle">RULETA DIARIA</h2>
+<p id="dailyWheelStatus">Preparando tu giro…</p>
+<div class="daily-wheel-stage">
+<div aria-hidden="true" class="daily-wheel-pointer">▼</div>
+<div class="daily-wheel-disc" id="dailyWheelDisc">
+<div class="daily-wheel-segments" id="dailyWheelSegments"></div>
+<div aria-hidden="true" class="daily-wheel-center">🐶</div>
+</div>
+</div>
+<div aria-live="polite" class="daily-wheel-result hidden" id="dailyWheelResult"></div>
+<strong class="daily-wheel-countdown" id="dailyWheelCountdown">Disponible ahora</strong>
+<button class="daily-wheel-spin" id="dailyWheelSpinButton" type="button">GIRAR AHORA</button>
+<small class="daily-wheel-note">Un giro por día. El premio se guarda en tu cuenta.</small>
+</div>
+</div>
+<!-- MISIONES Y LOGROS -->
+<div aria-hidden="true" aria-labelledby="missionsTitle" aria-modal="true" class="missions-modal hidden" id="missionsModal" role="dialog">
+<div class="missions-card">
+<button aria-label="Cerrar" class="missions-close" id="missionsCloseButton" type="button">✕</button>
+<h2 id="missionsTitle">MISIONES Y LOGROS</h2>
+<p class="missions-summary" id="missionsSummary">Tus desafíos de JuniorGame</p>
+<div class="missions-tabs" role="tablist">
+<button class="missions-tab active" data-missions-tab="diarias" type="button">DIARIAS</button>
+<button class="missions-tab" data-missions-tab="semanales" type="button">SEMANALES</button>
+<button class="missions-tab" data-missions-tab="logros" type="button">LOGROS</button>
+</div>
+<div class="missions-list" id="missionsList"></div>
+</div>
+</div>
+<!-- VENTANA EMERGENTE -->
+<div aria-labelledby="modalTitle" aria-modal="true" class="modal hidden" id="menuModal" role="dialog">
+<div class="modal-card">
+<button aria-label="Cerrar ventana" class="modal-close" id="closeModalButton" type="button">
           ×
         </button>
-
-        <div
-          id="modalIcon"
-          class="modal-icon"
-          aria-hidden="true"
-        >
+<div aria-hidden="true" class="modal-icon" id="modalIcon">
           🐾
         </div>
-
-        <h2 id="modalTitle">
+<h2 id="modalTitle">
           Próximamente
         </h2>
-
-        <p id="modalText">
+<p id="modalText">
           Esta sección estará disponible próximamente.
         </p>
-
-        <button
-          id="acceptModalButton"
-          class="modal-accept"
-          type="button"
-        >
+<button class="modal-accept" id="acceptModalButton" type="button">
           ENTENDIDO
         </button>
+</div>
+</div>
 
-      </div>
-
-    </div>
-
-   <div class="dog-platform">
-    <img src="Fondos-JuniorGame/Caja.png"
-     class="dog-wood" alt="">
-    <img src="Fondos-JuniorGame/Estrella.png"
-     class="menu-dog" alt="Estrella">
-   </div>
-
-  </main>
-
-<script
-  type="module"
-  src="js/menu-auth.js?v=1"
-></script>
-
-<script
-  type="module"
-  src="js/profile.js?v=1"
-></script>
-
+</main>
+<script src="js/menu-auth.js?v=1" type="module"></script>
+<script src="js/profile.js?v=1" type="module"></script>
 <script src="js/audio.js"></script>
 <script src="js/ruleta.js?v=20260726-menu1"></script>
 <script src="js/misiones.js?v=20260726-menu1"></script>
-
-<script type="module" src="js/menu.js?v=25"></script>
-
+<script src="js/menu.js?v=26" type="module"></script>
 </body>
-
 </html>

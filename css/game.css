@@ -3349,3 +3349,28 @@ button, a {
   .biome-climate-badge strong { max-width: 112px; }
   .biome-collectible, .secret-world-object.biome-collectible { font-size: 48px !important; }
 }
+
+/* Biomas 2.0: lectura visual clara entre recompensas y peligros. */
+.biome-collectible[data-reward-type="recompensa"] {
+  text-shadow: 0 0 10px rgba(107,255,153,.9);
+}
+.biome-collectible[data-reward-type="potenciador"] {
+  text-shadow: 0 0 10px rgba(91,190,255,.95);
+}
+.obstaculo-prueba {
+  border-radius: 50%;
+  filter: drop-shadow(0 0 5px rgba(255,45,45,.95)) drop-shadow(0 5px 5px rgba(0,0,0,.35));
+  animation: biomeDangerPulse .58s ease-in-out infinite alternate;
+}
+@keyframes biomeDangerPulse {
+  from { transform: scale(.93) rotate(-5deg); }
+  to { transform: scale(1.07) rotate(5deg); }
+}
+.biome-motion-hoja { animation: biomeLeafSpin 1.25s ease-in-out infinite alternate !important; }
+.biome-motion-copo { animation: biomeSnowDrift 1.4s ease-in-out infinite alternate !important; }
+.biome-motion-orbita, .biome-motion-flotar { animation: biomeOrbitFloat 1.1s ease-in-out infinite alternate !important; }
+.biome-motion-diagonal { animation: biomeCometTilt .7s ease-in-out infinite alternate !important; }
+@keyframes biomeLeafSpin { from { transform: rotate(-25deg) scale(.9); } to { transform: rotate(28deg) scale(1.05); } }
+@keyframes biomeSnowDrift { from { transform: rotate(-12deg) translateY(-3px); } to { transform: rotate(12deg) translateY(4px); } }
+@keyframes biomeOrbitFloat { from { transform: rotate(-8deg) scale(.92); } to { transform: rotate(14deg) scale(1.1); } }
+@keyframes biomeCometTilt { from { transform: rotate(-32deg) scale(.95); } to { transform: rotate(-20deg) scale(1.08); } }

@@ -13,12 +13,12 @@
       nombre: "La Granja",
       emoji: "🌾",
       objetos: [
-        { simbolo: "🌽", nombre: "mazorca", peso: 24 },
-        { simbolo: "🍎", nombre: "manzana", peso: 22 },
-        { simbolo: "🥕", nombre: "zanahoria", peso: 20 },
-        { simbolo: "🥚", nombre: "huevo de granja", peso: 16 },
-        { simbolo: "🌻", nombre: "girasol", peso: 12 },
-        { simbolo: "🔔", nombre: "campana dorada", peso: 5, legendario: true }
+        { simbolo: "🌽", nombre: "mazorca", peso: 24, tipo: "recompensa", recompensa: { tipo: "puntos", cantidad: 2 }, movimiento: "rebote" },
+        { simbolo: "🍎", nombre: "manzana", peso: 22, tipo: "recompensa", recompensa: { tipo: "puntos", cantidad: 2 }, movimiento: "rebote" },
+        { simbolo: "🥕", nombre: "zanahoria", peso: 20, tipo: "recompensa", recompensa: { tipo: "monedas", cantidad: 2 }, movimiento: "zigzag" },
+        { simbolo: "🥚", nombre: "huevo de granja", peso: 16, tipo: "potenciador", recompensa: { tipo: "escudo", cantidad: 1 }, movimiento: "suave" },
+        { simbolo: "🌻", nombre: "girasol", peso: 12, tipo: "recompensa", recompensa: { tipo: "monedas", cantidad: 4 }, movimiento: "giro" },
+        { simbolo: "🔔", nombre: "campana dorada", peso: 5, tipo: "legendario", legendario: true, recompensa: { tipo: "diamantes", cantidad: 1 }, movimiento: "legendario" }
       ],
       obstaculos: [
         { nombre: "fardo", simbolo: "🌾", tamano: 50 },
@@ -37,12 +37,12 @@
       nombre: "Bosque Encantado",
       emoji: "🌲",
       objetos: [
-        { simbolo: "🍄", nombre: "hongo", peso: 25 },
-        { simbolo: "🌰", nombre: "bellota", peso: 22 },
-        { simbolo: "🍂", nombre: "hoja de otoño", peso: 20 },
-        { simbolo: "🪺", nombre: "nido", peso: 13 },
-        { simbolo: "🫐", nombre: "frutos del bosque", peso: 15 },
-        { simbolo: "🌱", nombre: "semilla ancestral", peso: 5, legendario: true }
+        { simbolo: "🍄", nombre: "hongo", peso: 25, tipo: "potenciador", recompensa: { tipo: "escudo", cantidad: 1 }, movimiento: "zigzag" },
+        { simbolo: "🌰", nombre: "bellota", peso: 22, tipo: "recompensa", recompensa: { tipo: "monedas", cantidad: 3 }, movimiento: "rebote" },
+        { simbolo: "🍂", nombre: "hoja de otoño", peso: 20, tipo: "recompensa", recompensa: { tipo: "puntos", cantidad: 2 }, movimiento: "hoja" },
+        { simbolo: "🪺", nombre: "nido", peso: 13, tipo: "recompensa", recompensa: { tipo: "vida", cantidad: 1 }, movimiento: "suave" },
+        { simbolo: "🫐", nombre: "frutos del bosque", peso: 15, tipo: "recompensa", recompensa: { tipo: "puntos", cantidad: 3 }, movimiento: "zigzag" },
+        { simbolo: "🌱", nombre: "semilla ancestral", peso: 5, tipo: "legendario", legendario: true, recompensa: { tipo: "diamantes", cantidad: 1 }, movimiento: "legendario" }
       ],
       obstaculos: [
         { nombre: "tronco", simbolo: "🪵", tamano: 54 },
@@ -62,12 +62,12 @@
       nombre: "Valle Nevado",
       emoji: "❄️",
       objetos: [
-        { simbolo: "❄️", nombre: "copo de nieve", peso: 28 },
-        { simbolo: "🧤", nombre: "guante", peso: 18 },
-        { simbolo: "🧣", nombre: "bufanda", peso: 16 },
-        { simbolo: "🎁", nombre: "regalo invernal", peso: 15 },
-        { simbolo: "⛄", nombre: "muñeco de nieve", peso: 16 },
-        { simbolo: "💠", nombre: "cristal del norte", peso: 7, legendario: true }
+        { simbolo: "❄️", nombre: "copo de nieve", peso: 28, tipo: "recompensa", recompensa: { tipo: "puntos", cantidad: 2 }, movimiento: "copo" },
+        { simbolo: "🧤", nombre: "guante", peso: 18, tipo: "recompensa", recompensa: { tipo: "monedas", cantidad: 2 }, movimiento: "zigzag" },
+        { simbolo: "🧣", nombre: "bufanda", peso: 16, tipo: "potenciador", recompensa: { tipo: "escudo", cantidad: 1 }, movimiento: "hoja" },
+        { simbolo: "🎁", nombre: "regalo invernal", peso: 15, tipo: "recompensa", recompensa: { tipo: "monedas", cantidad: 5 }, movimiento: "rebote" },
+        { simbolo: "⛄", nombre: "muñeco de nieve", peso: 16, tipo: "recompensa", recompensa: { tipo: "vida", cantidad: 1 }, movimiento: "suave" },
+        { simbolo: "💠", nombre: "cristal del norte", peso: 7, tipo: "legendario", legendario: true, recompensa: { tipo: "diamantes", cantidad: 1 }, movimiento: "legendario" }
       ],
       obstaculos: [
         { nombre: "hielo", simbolo: "🧊", tamano: 50 },
@@ -86,12 +86,12 @@
       nombre: "Desierto Antiguo",
       emoji: "🏜️",
       objetos: [
-        { simbolo: "🏺", nombre: "vasija antigua", peso: 24 },
-        { simbolo: "🪙", nombre: "moneda del desierto", peso: 22 },
-        { simbolo: "💎", nombre: "gema enterrada", peso: 13 },
-        { simbolo: "🌵", nombre: "flor de cactus", peso: 18 },
-        { simbolo: "🪶", nombre: "pluma del oasis", peso: 17 },
-        { simbolo: "☀️", nombre: "ojo solar", peso: 6, legendario: true }
+        { simbolo: "🏺", nombre: "vasija antigua", peso: 24, tipo: "recompensa", recompensa: { tipo: "monedas", cantidad: 3 }, movimiento: "rebote" },
+        { simbolo: "🪙", nombre: "moneda del desierto", peso: 22, tipo: "recompensa", recompensa: { tipo: "monedas", cantidad: 4 }, movimiento: "giro" },
+        { simbolo: "💎", nombre: "gema enterrada", peso: 13, tipo: "recompensa", recompensa: { tipo: "diamantes", cantidad: 1 }, movimiento: "zigzag" },
+        { simbolo: "🌵", nombre: "flor de cactus", peso: 18, tipo: "recompensa", recompensa: { tipo: "puntos", cantidad: 3 }, movimiento: "suave" },
+        { simbolo: "🪶", nombre: "pluma del oasis", peso: 17, tipo: "potenciador", recompensa: { tipo: "escudo", cantidad: 1 }, movimiento: "hoja" },
+        { simbolo: "☀️", nombre: "ojo solar", peso: 6, tipo: "legendario", legendario: true, recompensa: { tipo: "diamantes", cantidad: 1 }, movimiento: "legendario" }
       ],
       obstaculos: [
         { nombre: "cactus", simbolo: "🌵", tamano: 50 },
@@ -110,12 +110,12 @@
       nombre: "Galaxia Infinita",
       emoji: "🌌",
       objetos: [
-        { simbolo: "⭐", nombre: "estrella", peso: 28 },
-        { simbolo: "🪐", nombre: "mini planeta", peso: 18 },
-        { simbolo: "🛰️", nombre: "satélite", peso: 16 },
-        { simbolo: "👽", nombre: "señal alienígena", peso: 14 },
-        { simbolo: "☄️", nombre: "fragmento de cometa", peso: 17 },
-        { simbolo: "💫", nombre: "estrella eterna", peso: 7, legendario: true }
+        { simbolo: "⭐", nombre: "estrella", peso: 28, tipo: "recompensa", recompensa: { tipo: "puntos", cantidad: 3 }, movimiento: "flotar" },
+        { simbolo: "🪐", nombre: "mini planeta", peso: 18, tipo: "recompensa", recompensa: { tipo: "monedas", cantidad: 4 }, movimiento: "orbita" },
+        { simbolo: "🛰️", nombre: "satélite", peso: 16, tipo: "potenciador", recompensa: { tipo: "escudo", cantidad: 1 }, movimiento: "diagonal" },
+        { simbolo: "👽", nombre: "señal alienígena", peso: 14, tipo: "recompensa", recompensa: { tipo: "vida", cantidad: 1 }, movimiento: "flotar" },
+        { simbolo: "☄️", nombre: "fragmento de cometa", peso: 17, tipo: "recompensa", recompensa: { tipo: "monedas", cantidad: 5 }, movimiento: "diagonal" },
+        { simbolo: "💫", nombre: "estrella eterna", peso: 7, tipo: "legendario", legendario: true, recompensa: { tipo: "diamantes", cantidad: 1 }, movimiento: "legendario" }
       ],
       obstaculos: [
         { nombre: "meteorito", simbolo: "☄️", tamano: 54 },
@@ -259,26 +259,75 @@
 
   function obtenerObjeto() {
     const bioma = BIOMAS[estado.biomaId] || BIOMAS.granja;
-    const lista = bioma.objetos.map(x => ({ ...x, peso: x.peso * (x.legendario && estado.eventoHasta > Date.now() ? 2.2 : 1) }));
+    const lista = bioma.objetos.map(x => ({
+      ...x,
+      peso: x.peso * (x.legendario && estado.eventoHasta > Date.now() ? 2.2 : 1)
+    }));
     const obj = elegirPonderado(lista);
-    return { simbolo: obj.simbolo, nombre: obj.nombre, mundo: estado.biomaId, legendario: Boolean(obj.legendario), bioma: true };
+    return {
+      ...obj,
+      mundo: estado.biomaId,
+      bioma: true,
+      legendario: Boolean(obj.legendario)
+    };
   }
 
   function obtenerObstaculo() {
     const bioma = BIOMAS[estado.biomaId] || BIOMAS.granja;
-    return bioma.obstaculos[Math.floor(Math.random() * bioma.obstaculos.length)];
+    return { ...bioma.obstaculos[Math.floor(Math.random() * bioma.obstaculos.length)], peligroso: true };
+  }
+
+  function reproducirFanfarriaLegendaria() {
+    const ctx = asegurarAudio();
+    if (!ctx || ctx.state !== "running") return;
+    const ahora = ctx.currentTime + .03;
+    [72, 76, 79, 84].forEach((nota, i) => tocarNota(nota, .55, ahora + i * .11, "sine", .11));
+  }
+
+  function entregarRecompensaObjeto(objeto) {
+    const juego = window.JuniorGame;
+    const recompensa = objeto?.recompensa || { tipo: "puntos", cantidad: 1 };
+    const cantidad = Math.max(1, Number(recompensa.cantidad) || 1);
+    if (!juego) return `${cantidad}`;
+
+    if (recompensa.tipo === "monedas") {
+      juego.actualizarRecursoHUD?.("monedas", (Number(juego.estado?.monedas) || 0) + cantidad, { animar: true });
+      return `+${cantidad} monedas`;
+    }
+    if (recompensa.tipo === "diamantes") {
+      juego.actualizarRecursoHUD?.("diamantes", (Number(juego.estado?.diamantes) || 0) + cantidad, { animar: true });
+      return `+${cantidad} diamante${cantidad === 1 ? "" : "s"}`;
+    }
+    if (recompensa.tipo === "vida") {
+      if (typeof juego.agregarVida === "function") juego.agregarVida(cantidad);
+      else juego.estado.vidas = Math.min(juego.estado.vidasMaximas || 10, (Number(juego.estado.vidas) || 0) + cantidad);
+      return `+${cantidad} vida`;
+    }
+    if (recompensa.tipo === "escudo") {
+      juego.estado.escudo = Math.min(5, (Number(juego.estado.escudo) || 0) + cantidad);
+      juego.actualizarEscudo?.();
+      return `+${cantidad} escudo`;
+    }
+    juego.actualizarPuntos?.(cantidad, 0);
+    return `+${cantidad} puntos`;
   }
 
   function registrarCaptura(objeto) {
     if (!objeto?.bioma) return;
+    const texto = entregarRecompensaObjeto(objeto);
+    window.AudioFX?.bonus?.();
     if (objeto.legendario) {
-      window.AudioFX?.bonus?.();
-      window.JuniorGame?.actualizarRecursoHUD?.("diamantes", (window.JuniorGame?.estado?.diamantes || 0) + 1, { animar: true });
-      window.SistemaMundos?.mostrarMensaje?.(`${objeto.simbolo} ¡${objeto.nombre}! +1 diamante`);
+      reproducirFanfarriaLegendaria();
       guardarDescubrimiento(objeto);
+      window.SistemaMundos?.mostrarAviso?.({
+        emoji: objeto.simbolo,
+        nombre: `¡${objeto.nombre}!`,
+        mensaje: `Objeto legendario encontrado · ${texto}`
+      });
     } else {
-      window.SistemaMundos?.mostrarMensaje?.(`${objeto.simbolo} ${objeto.nombre}`);
+      window.SistemaMundos?.mostrarMensaje?.(`${objeto.simbolo} ${objeto.nombre} · ${texto}`);
     }
+    window.dispatchEvent(new CustomEvent("juniorgame:objetoBioma", { detail: objeto }));
   }
 
   function guardarDescubrimiento(objeto) {
@@ -379,7 +428,12 @@
     };
     const objetoOriginal = mundos.obtenerObjetoCaida.bind(mundos);
     mundos.obtenerObjetoCaida = function () {
-      return objetoOriginal() || obtenerObjeto();
+      const secreto = objetoOriginal();
+      if (secreto) return secreto;
+      // Los huesos siguen siendo el objeto principal. Aproximadamente 28% de
+      // las apariciones normales se convierten en recompensas del bioma.
+      const probabilidad = estado.eventoHasta > Date.now() ? 0.38 : 0.28;
+      return Math.random() < probabilidad ? obtenerObjeto() : null;
     };
     const registrarOriginal = mundos.registrarCapturaObjeto.bind(mundos);
     mundos.registrarCapturaObjeto = function (objeto) {
@@ -394,18 +448,42 @@
       if (!bones || bones.__biomasPatched) return false;
       bones.__biomasPatched = true;
       const crear = bones.crearHueso.bind(bones);
+      const mover = bones.moverHueso.bind(bones);
+
       bones.crearHueso = function () {
         crear();
         const h = this.huesoActual;
-        if (h?.objetoMundo && h.elemento) {
-          const actual = window.SistemaMundos?.obtenerObjetoCaida?.();
-          // El objeto ya se eligió dentro del creador; recuperamos datos por texto.
+        if (h?.objetoMundo && h.elemento && !window.SistemaMundos?.mundoSecretoActual) {
           const bioma = BIOMAS[estado.biomaId];
           const dato = bioma?.objetos.find(o => o.simbolo === h.elemento.textContent);
-          h.datosObjeto = dato ? { ...dato, bioma: true, mundo: estado.biomaId } : actual;
-          h.elemento.classList.add("biome-collectible");
+          h.datosObjeto = dato ? { ...dato, bioma: true, mundo: estado.biomaId } : null;
+          h.movimiento = h.datosObjeto?.movimiento || "suave";
+          h.baseX = h.x;
+          h.fase = Math.random() * Math.PI * 2;
+          h.elemento.classList.add("biome-collectible", `biome-motion-${h.movimiento}`);
+          h.elemento.dataset.rewardType = h.datosObjeto?.tipo || "recompensa";
           if (h.datosObjeto?.legendario) h.elemento.classList.add("legendary-biome-object");
         }
+      };
+
+      bones.moverHueso = function (deltaTime) {
+        const h = this.huesoActual;
+        mover(deltaTime);
+        if (!h?.datosObjeto || !h.elemento) return;
+        h.fase += deltaTime;
+        const area = window.JuniorGame?.elementos?.areaJuego;
+        const limite = Math.max(0, (area?.clientWidth || 360) - this.tamanoHueso);
+        let desplazamiento = 0;
+        if (["zigzag", "hoja", "copo", "flotar", "orbita"].includes(h.movimiento)) {
+          const amplitud = h.movimiento === "hoja" ? 42 : h.movimiento === "orbita" ? 52 : 28;
+          desplazamiento = Math.sin(h.fase * (h.movimiento === "copo" ? 2.2 : 3.2)) * amplitud;
+        } else if (h.movimiento === "diagonal") {
+          desplazamiento = h.fase * 34;
+        } else if (h.movimiento === "rebote") {
+          desplazamiento = Math.sin(h.fase * 5.5) * 14;
+        }
+        h.x = Math.max(0, Math.min(limite, (h.baseX ?? h.x) + desplazamiento));
+        h.elemento.style.left = `${h.x}px`;
       };
       return true;
     };

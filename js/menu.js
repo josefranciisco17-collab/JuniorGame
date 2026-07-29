@@ -1,13 +1,19 @@
 "use strict";
 
 import {
-  auth
+  auth,
+  db
 } from "./firebase-config.js";
 
 import {
   onAuthStateChanged,
   getIdTokenResult
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+import {
+  doc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const modal =
@@ -46,28 +52,80 @@ document.addEventListener("DOMContentLoaded", () => {
     diamonds: document.getElementById("menuPlayerDiamonds")
   };
 
-  function syncMenuHeader() {
-    const sourceName = document.getElementById("profileName");
-    const sourcePhoto = document.getElementById("profilePhoto");
-    const sourceLevel = document.getElementById("profileLevel");
-    const sourceCoins = document.getElementById("profileCoins");
-    const sourceDiamonds = document.getElementById("profileDiamonds");
+  const numberFormatter = new Intl.NumberFormat("es-MX");
+  let stopHeaderProfile = null;
 
-    if (headerFields.name && sourceName) headerFields.name.textContent = sourceName.textContent || "Jugador";
-    if (headerFields.photo && sourcePhoto?.src) headerFields.photo.src = sourcePhoto.src;
-    if (headerFields.level && sourceLevel) headerFields.level.textContent = sourceLevel.textContent || "1";
-    if (headerFields.coins && sourceCoins) headerFields.coins.textContent = sourceCoins.textContent || "0";
-    if (headerFields.diamonds && sourceDiamonds) headerFields.diamonds.textContent = sourceDiamonds.textContent || "0";
+  function toSafeInteger(value, fallback = 0) {
+    const number = Number(value);
+    return Number.isFinite(number)
+      ? Math.max(0, Math.floor(number))
+      : fallback;
   }
 
-  const profileObserver = new MutationObserver(syncMenuHeader);
-  ["profileName", "profileLevel", "profileCoins", "profileDiamonds"].forEach((id) => {
-    const node = document.getElementById(id);
-    if (node) profileObserver.observe(node, { childList: true, characterData: true, subtree: true });
-  });
-  const sourceProfilePhoto = document.getElementById("profilePhoto");
-  if (sourceProfilePhoto) profileObserver.observe(sourceProfilePhoto, { attributes: true, attributeFilter: ["src"] });
-  syncMenuHeader();
+  function updateHeaderFromProfile(data = {}, user = null) {
+    const name =
+      data.customName ||
+      data.displayName ||
+      data.name ||
+      user?.displayName ||
+      "Jugador";
+
+    const photo =
+      data.customPhoto ||
+      data.photoURL ||
+      data.photo ||
+      user?.photoURL ||
+      "";
+
+    const level = Math.max(
+      1,
+      toSafeInteger(
+        data.nivelActual ??
+        data.progreso?.nivelActual ??
+        data.nivel,
+        1
+      )
+    );
+
+    const coins = toSafeInteger(data.coins ?? data.monedas, 0);
+    const diamonds = toSafeInteger(data.diamonds ?? data.diamantes, 0);
+
+    if (headerFields.name) headerFields.name.textContent = name;
+    if (headerFields.level) headerFields.level.textContent = String(level);
+    if (headerFields.coins) headerFields.coins.textContent = numberFormatter.format(coins);
+    if (headerFields.diamonds) headerFields.diamonds.textContent = numberFormatter.format(diamonds);
+
+    if (headerFields.photo && photo) {
+      headerFields.photo.src = photo;
+      headerFields.photo.alt = `Foto de ${name}`;
+    }
+  }
+
+  function startHeaderProfileListener(user) {
+    stopHeaderProfile?.();
+    stopHeaderProfile = null;
+
+    if (!user) {
+      updateHeaderFromProfile({}, null);
+      return;
+    }
+
+    updateHeaderFromProfile({}, user);
+
+    stopHeaderProfile = onSnapshot(
+      doc(db, "users", user.uid),
+      (snapshot) => {
+        updateHeaderFromProfile(
+          snapshot.exists() ? snapshot.data() : {},
+          user
+        );
+      },
+      (error) => {
+        console.error("No se pudo cargar el encabezado del perfil:", error);
+        updateHeaderFromProfile({}, user);
+      }
+    );
+  }
 
   headerProfileButton?.addEventListener("click", () => {
     document.getElementById("exitButton")?.click();
@@ -213,6 +271,8 @@ window.location.href = "shop.html";
 
 
 onAuthStateChanged(auth, async (usuario) => {
+  startHeaderProfileListener(usuario);
+
   if (!adminConsoleButton) {
     return;
   }

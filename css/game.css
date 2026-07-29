@@ -2618,3 +2618,65 @@ body.raza-fantasma-activa .dog{
   opacity:.58;
   filter:drop-shadow(0 0 18px rgba(194,224,255,.95));
 }
+
+/* =========================================================
+   PERRITOS JR — PERSONAJE TRANSPARENTE Y ANIMADO
+========================================================= */
+.active-pet{
+  position:absolute;
+  z-index:18;
+  width:clamp(52px,9.5vw,84px);
+  height:clamp(48px,8.8vw,78px);
+  pointer-events:none;
+  transform-origin:50% 88%;
+  will-change:left,top,transform;
+  filter:drop-shadow(0 8px 5px rgba(0,0,0,.36));
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+.active-pet-image{
+  display:block;
+  max-width:100%;
+  max-height:100%;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  user-select:none;
+  -webkit-user-drag:none;
+  transform-origin:50% 88%;
+}
+.active-pet.pet-facing-left{transform:scaleX(-1)}
+.active-pet.pet-recovering{animation:petRecover .34s ease-out}
+.pet-state-idle .active-pet-image{animation:petIdle 1.65s ease-in-out infinite}
+.pet-state-walk .active-pet-image{animation:petWalk .42s linear infinite}
+.pet-state-run .active-pet-image{animation:petRun .25s linear infinite}
+.pet-state-jump .active-pet-image{animation:petJump .38s ease-out infinite alternate}
+.pet-state-fall .active-pet-image{animation:petFall .32s ease-in infinite alternate}
+.pet-state-celebrate .active-pet-image{animation:petCelebrate .42s ease-in-out infinite}
+.pet-state-hurt .active-pet-image{animation:petHurt .18s linear 4}
+.pet-state-sleep .active-pet-image{animation:petSleep 2.1s ease-in-out infinite;filter:saturate(.8) brightness(.9)}
+.pet-state-sad .active-pet-image{animation:petSad 1.4s ease-in-out infinite;filter:saturate(.72)}
+@keyframes petIdle{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(.8deg)}}
+@keyframes petWalk{0%,100%{transform:translateY(0) rotate(-1deg) scaleY(1)}25%{transform:translateY(-4px) rotate(1.5deg) scaleY(.98)}50%{transform:translateY(0) rotate(-1deg) scaleY(1.02)}75%{transform:translateY(-4px) rotate(1.5deg) scaleY(.98)}}
+@keyframes petRun{0%,100%{transform:translateY(0) rotate(-3deg) scaleX(1.03) scaleY(.97)}50%{transform:translateY(-7px) rotate(3deg) scaleX(.98) scaleY(1.03)}}
+@keyframes petJump{from{transform:translateY(1px) rotate(-5deg) scale(1.03)}to{transform:translateY(-5px) rotate(4deg) scale(.98)}}
+@keyframes petFall{from{transform:rotate(5deg) scaleY(1.04)}to{transform:rotate(-3deg) scaleY(.97)}}
+@keyframes petCelebrate{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-13px) rotate(5deg) scale(1.06)}}
+@keyframes petHurt{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-6px) rotate(-5deg)}75%{transform:translateX(6px) rotate(5deg)}}
+@keyframes petSleep{0%,100%{transform:translateY(4px) rotate(-2deg) scaleY(.92)}50%{transform:translateY(5px) rotate(-2deg) scaleY(.88)}}
+@keyframes petSad{0%,100%{transform:translateY(3px) rotate(-2deg)}50%{transform:translateY(6px) rotate(2deg) scaleY(.95)}}
+@keyframes petRecover{0%{opacity:.2;transform:scale(.72)}100%{opacity:1;transform:scale(1)}}
+.pet-button-icon{width:28px;height:28px;border-radius:50%;overflow:hidden;display:grid;place-items:center}
+.pet-button-icon img{width:100%;height:100%;object-fit:cover;display:block}
+.pet-option{grid-template-columns:56px 1fr 24px}
+.pet-option-image{width:52px;height:52px;object-fit:cover;border-radius:15px;border:2px solid rgba(255,229,135,.35)}
+.pet-option.locked{opacity:.58}
+@media(max-width:430px){
+  .active-pet{width:clamp(46px,13vw,64px);height:clamp(44px,12vw,60px)}
+  .pet-option{grid-template-columns:48px 1fr 20px}
+  .pet-option-image{width:44px;height:44px;border-radius:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .active-pet-image,.active-pet.pet-recovering{animation:none!important}
+}

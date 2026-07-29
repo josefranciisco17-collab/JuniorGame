@@ -1,75 +1,51 @@
 "use strict";
 
 /*
-  JuniorGame - Fase 2: motor modular de mascotas.
-
-  Incluye:
-  - Una mascota equipada a la vez.
-  - Seguimiento animado del perro.
-  - Nivel y experiencia guardados en el dispositivo.
-  - Habilidades pasivas independientes.
-  - API preparada para ruleta, cofres, tienda y mundos secretos.
+  JuniorGame — Perritos Jr
+  - Usa imágenes PNG con fondo transparente dentro de la partida.
+  - Sigue al jugador con retraso natural.
+  - Cambia entre reposo, caminar, correr, saltar, caer, dormir,
+    celebrar y recibir daño mediante animaciones CSS.
+  - Conserva nivel/experiencia local y sincroniza la mascota equipada
+    con la clave que usa la Tienda Oficial.
 */
 window.SistemaMascotas = {
   activo: false,
-  mascotaEquipada: "cachorro",
+  mascotaEquipada: "perrito-junior",
   mascotaElemento: null,
+  mascotaImagen: null,
   cuadroAnimacion: null,
+  estadoAnimacion: "idle",
+  ultimoEstadoJuego: { pausado: false, terminado: false, vidas: 3, puntos: 0 },
   tiempoAnterior: performance.now(),
-  ultimoAtaqueGato: 0,
-  ultimoBonusZorro: 0,
-  interfaz: {},
+  xVisual: null,
+  yVisual: null,
   progreso: {},
+  interfaz: {},
 
   catalogo: {
-    cachorro: {
-      nombre: "Cachorro",
-      icono: "🐕",
-      rareza: "Común",
-      descripcion: "Ayuda a atraer el hueso activo hacia el perro.",
-      habilidad: "Imán de compañía"
-    },
-    gato: {
-      nombre: "Gato aliado",
-      icono: "🐈",
-      rareza: "Rara",
-      descripcion: "Ahuyenta automáticamente al gato enemigo.",
-      habilidad: "Defensa felina"
-    },
-    buho: {
-      nombre: "Búho",
-      icono: "🦉",
-      rareza: "Rara",
-      descripcion: "Aumenta la suerte para cajas y premios especiales.",
-      habilidad: "Vista afortunada"
-    },
-    robot: {
-      nombre: "Robot",
-      icono: "🤖",
-      rareza: "Épica",
-      descripcion: "Atrae monedas y diamantes visibles hacia el jugador.",
-      habilidad: "Recolector automático"
-    },
-    zorro: {
-      nombre: "Zorro",
-      icono: "🦊",
-      rareza: "Épica",
-      descripcion: "Puede duplicar ocasionalmente una captura normal.",
-      habilidad: "Golpe de suerte"
-    }
+    "perrito-junior": { nombre: "Junior", rareza: "Común", imagen: "Fondos-JuniorGame/perritos-jr/game/junior.png", tarjeta: "Fondos-JuniorGame/perritos-jr/junior.png", habilidad: "+3% experiencia", descripcion: "Aumenta la experiencia obtenida en partida.", bonus: "experiencia", valor: 0.03 },
+    "perrito-rocky":  { nombre: "Rocky",  rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game/rocky.png",  tarjeta: "Fondos-JuniorGame/perritos-jr/rocky.png",  habilidad: "+5% monedas", descripcion: "Aumenta las monedas obtenidas al terminar la partida.", bonus: "monedas", valor: 0.05 },
+    "perrito-luna":   { nombre: "Luna",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game/luna.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/luna.png",   habilidad: "Diamantes extra", descripcion: "Puede encontrar diamantes adicionales.", bonus: "diamantes", valor: 0.04 },
+    "perrito-max":    { nombre: "Max",    rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game/max.png",    tarjeta: "Fondos-JuniorGame/perritos-jr/max.png",    habilidad: "Recarga rápida", descripcion: "Reduce ligeramente el tiempo de recarga de habilidades.", bonus: "recarga", valor: 0.05 },
+    "perrito-nala":   { nombre: "Nala",   rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game/nala.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/nala.png",   habilidad: "Atracción", descripcion: "Ayuda a acercar huesos próximos al jugador.", bonus: "iman", valor: 125 },
+    "perrito-toby":   { nombre: "Toby",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game/toby.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/toby.png",   habilidad: "+5% velocidad", descripcion: "Aumenta ligeramente la velocidad de movimiento.", bonus: "velocidad", valor: 0.05 },
+    "perrito-bolt":   { nombre: "Bolt",   rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game/bolt.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/bolt.png",   habilidad: "Huesos dorados", descripcion: "Mejora la probabilidad de recompensas doradas.", bonus: "dorado", valor: 0.06 },
+    "perrito-coco":   { nombre: "Coco",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game/coco.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/coco.png",   habilidad: "+3% experiencia", descripcion: "Aumenta la experiencia de progreso.", bonus: "experiencia", valor: 0.03 },
+    "perrito-milo":   { nombre: "Milo",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game/milo.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/milo.png",   habilidad: "Protector", descripcion: "Tiene una pequeña probabilidad de evitar una pérdida de vida.", bonus: "proteccion", valor: 0.10 },
+    "perrito-kira":   { nombre: "Kira",   rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game/kira.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/kira.png",   habilidad: "Imán prolongado", descripcion: "Extiende los efectos de atracción.", bonus: "imanDuracion", valor: 0.12 }
   },
 
   iniciar() {
     if (this.activo) return;
     this.activo = true;
-
     this.cargarDatos();
     this.crearInterfaz();
     this.configurarEventos();
-    this.instalarGananciaExperiencia();
+    this.instalarGanchos();
     this.crearMascotaVisual();
+    this.aplicarBonificacionesBase();
     this.actualizarInterfaz();
-
     this.tiempoAnterior = performance.now();
     this.cuadroAnimacion = requestAnimationFrame(this.actualizar.bind(this));
   },
@@ -80,26 +56,25 @@ window.SistemaMascotas = {
     this.cuadroAnimacion = null;
     this.mascotaElemento?.remove();
     this.mascotaElemento = null;
+    this.mascotaImagen = null;
   },
 
   cargarDatos() {
-    const equipada = localStorage.getItem("juniorGame.mascotaEquipada");
+    const equipada = localStorage.getItem("juniorGame.perritoJrEquipado") || localStorage.getItem("juniorGame.mascotaEquipada");
     if (equipada && this.catalogo[equipada]) this.mascotaEquipada = equipada;
-
     try {
-      this.progreso = JSON.parse(localStorage.getItem("juniorGame.progresoMascotas") || "{}") || {};
+      this.progreso = JSON.parse(localStorage.getItem("juniorGame.progresoPerritosJr") || "{}") || {};
     } catch {
       this.progreso = {};
     }
-
     Object.keys(this.catalogo).forEach((id) => {
-      if (!this.progreso[id]) this.progreso[id] = { nivel: 1, experiencia: 0, desbloqueada: true };
+      if (!this.progreso[id]) this.progreso[id] = { nivel: 1, experiencia: 0, desbloqueada: id === "perrito-junior" };
     });
     this.guardarProgreso();
   },
 
   guardarProgreso() {
-    localStorage.setItem("juniorGame.progresoMascotas", JSON.stringify(this.progreso));
+    localStorage.setItem("juniorGame.progresoPerritosJr", JSON.stringify(this.progreso));
   },
 
   crearInterfaz() {
@@ -111,62 +86,54 @@ window.SistemaMascotas = {
       icono: document.getElementById("petButtonIcon"),
       nivel: document.getElementById("petButtonLevel")
     };
-
     const lista = this.interfaz.lista;
     if (!lista) return;
-    lista.innerHTML = "";
-
-    Object.entries(this.catalogo).forEach(([id, mascota]) => {
+    lista.innerHTML = Object.entries(this.catalogo).map(([id, mascota]) => {
       const datos = this.obtenerProgreso(id);
-      const opcion = document.createElement("button");
-      opcion.type = "button";
-      opcion.className = "pet-option";
-      opcion.dataset.mascota = id;
-      opcion.innerHTML = `
-        <span class="pet-option-icon" aria-hidden="true">${mascota.icono}</span>
-        <span class="pet-option-copy">
-          <strong>${mascota.nombre}</strong>
-          <small>${mascota.rareza} · ${mascota.habilidad}</small>
-          <span>${mascota.descripcion}</span>
-          <em data-pet-progress="${id}">Nivel ${datos.nivel} · ${datos.experiencia}/${this.experienciaNecesaria(datos.nivel)} XP</em>
-        </span>
+      return `<button type="button" class="pet-option" data-mascota="${id}">
+        <img class="pet-option-image" src="${mascota.tarjeta}" alt="${mascota.nombre}">
+        <span class="pet-option-copy"><strong>${mascota.nombre}</strong><small>${mascota.rareza} · ${mascota.habilidad}</small><span>${mascota.descripcion}</span><em data-pet-progress="${id}">Nivel ${datos.nivel} · ${datos.experiencia}/${this.experienciaNecesaria(datos.nivel)} XP</em></span>
         <span class="pet-option-check" aria-hidden="true">✓</span>
-      `;
-      opcion.addEventListener("click", () => {
-        this.equipar(id);
-        this.cerrarSelector();
-      });
-      lista.appendChild(opcion);
-    });
+      </button>`;
+    }).join("");
   },
 
   configurarEventos() {
     this.interfaz.boton?.addEventListener("click", () => this.abrirSelector());
     this.interfaz.cerrar?.addEventListener("click", () => this.cerrarSelector());
-    this.interfaz.modal?.addEventListener("click", (evento) => {
-      if (evento.target === this.interfaz.modal) this.cerrarSelector();
+    this.interfaz.modal?.addEventListener("click", (e) => { if (e.target === this.interfaz.modal) this.cerrarSelector(); });
+    this.interfaz.lista?.addEventListener("click", (e) => {
+      const boton = e.target.closest("[data-mascota]");
+      if (!boton) return;
+      const id = boton.dataset.mascota;
+      if (!this.obtenerProgreso(id).desbloqueada) {
+        this.mostrarMensaje("🔒 Desbloquea este Perrito Jr en la Tienda Oficial");
+        return;
+      }
+      this.equipar(id);
+      this.cerrarSelector();
+    });
+    window.addEventListener("storage", (e) => {
+      if (e.key === "juniorGame.perritoJrEquipado" && this.catalogo[e.newValue]) this.equipar(e.newValue, false);
     });
   },
 
-  abrirSelector() {
-    this.interfaz.modal?.classList.remove("hidden");
-    this.interfaz.modal?.setAttribute("aria-hidden", "false");
-    this.actualizarOpciones();
-  },
+  abrirSelector() { this.interfaz.modal?.classList.remove("hidden"); this.interfaz.modal?.setAttribute("aria-hidden", "false"); this.actualizarOpciones(); },
+  cerrarSelector() { this.interfaz.modal?.classList.add("hidden"); this.interfaz.modal?.setAttribute("aria-hidden", "true"); },
 
-  cerrarSelector() {
-    this.interfaz.modal?.classList.add("hidden");
-    this.interfaz.modal?.setAttribute("aria-hidden", "true");
-  },
-
-  equipar(id) {
-    if (!this.catalogo[id] || !this.obtenerProgreso(id).desbloqueada) return false;
+  equipar(id, guardar = true) {
+    if (!this.catalogo[id]) return false;
     this.mascotaEquipada = id;
-    localStorage.setItem("juniorGame.mascotaEquipada", id);
+    this.progreso[id] = { ...this.obtenerProgreso(id), desbloqueada: true };
+    if (guardar) {
+      localStorage.setItem("juniorGame.perritoJrEquipado", id);
+      localStorage.setItem("juniorGame.mascotaEquipada", id);
+      this.guardarProgreso();
+    }
     this.crearMascotaVisual();
+    this.aplicarBonificacionesBase();
     this.actualizarInterfaz();
-    this.mostrarMensaje(`${this.catalogo[id].icono} ${this.catalogo[id].nombre} te acompaña`);
-    window.SistemaMisiones?.registrar?.("mascota_equipada", 1, { mascota: id });
+    this.mostrarMensaje(`${this.catalogo[id].nombre} te acompaña`);
     return true;
   },
 
@@ -175,222 +142,218 @@ window.SistemaMascotas = {
     const area = window.JuniorGame?.elementos?.areaJuego || document.getElementById("gameArea");
     const mascota = this.catalogo[this.mascotaEquipada];
     if (!area || !mascota) return;
-
     const elemento = document.createElement("div");
     elemento.id = "activePet";
-    elemento.className = `active-pet pet-${this.mascotaEquipada}`;
-    elemento.textContent = mascota.icono;
-    elemento.setAttribute("aria-label", `${mascota.nombre}, mascota equipada`);
+    elemento.className = "active-pet pet-state-idle";
+    elemento.dataset.pet = this.mascotaEquipada;
+    elemento.setAttribute("aria-label", `${mascota.nombre}, Perrito Jr equipado`);
+    const imagen = document.createElement("img");
+    imagen.className = "active-pet-image";
+    imagen.src = mascota.imagen;
+    imagen.alt = "";
+    imagen.draggable = false;
+    elemento.appendChild(imagen);
     area.appendChild(elemento);
     this.mascotaElemento = elemento;
+    this.mascotaImagen = imagen;
+    this.xVisual = null;
+    this.yVisual = null;
   },
 
-  obtenerProgreso(id = this.mascotaEquipada) {
-    return this.progreso[id] || { nivel: 1, experiencia: 0, desbloqueada: false };
-  },
-
-  experienciaNecesaria(nivel) {
-    return 25 + Math.max(0, nivel - 1) * 20;
-  },
+  obtenerProgreso(id = this.mascotaEquipada) { return this.progreso[id] || { nivel: 1, experiencia: 0, desbloqueada: false }; },
+  experienciaNecesaria(nivel) { return 40 + Math.max(0, nivel - 1) * 25; },
 
   agregarExperiencia(cantidad = 1, id = this.mascotaEquipada) {
     const datos = this.obtenerProgreso(id);
     if (!datos.desbloqueada) return;
-    datos.experiencia += Math.max(0, Number(cantidad) || 0);
-
+    const mascota = this.catalogo[id];
+    const multiplicador = mascota?.bonus === "experiencia" ? 1 + mascota.valor : 1;
+    datos.experiencia += Math.max(0, Number(cantidad) || 0) * multiplicador;
     let subio = false;
-    while (datos.nivel < 20 && datos.experiencia >= this.experienciaNecesaria(datos.nivel)) {
+    while (datos.nivel < 100 && datos.experiencia >= this.experienciaNecesaria(datos.nivel)) {
       datos.experiencia -= this.experienciaNecesaria(datos.nivel);
       datos.nivel += 1;
       subio = true;
     }
-
     this.progreso[id] = datos;
     this.guardarProgreso();
     this.actualizarInterfaz();
-    if (subio) this.mostrarMensaje(`⭐ ${this.catalogo[id].nombre} subió al nivel ${datos.nivel}`);
+    if (subio) { this.cambiarEstado("celebrate", 900); this.mostrarMensaje(`⭐ ${mascota.nombre} subió al nivel ${datos.nivel}`); }
   },
 
-  instalarGananciaExperiencia() {
+  instalarGanchos() {
     const juego = window.JuniorGame;
-    if (!juego || juego.__mascotasXPInstalado || typeof juego.actualizarPuntos !== "function") return;
-
-    const original = juego.actualizarPuntos.bind(juego);
-    juego.actualizarPuntos = (...argumentos) => {
-      const resultado = original(...argumentos);
-      const avance = Math.max(0, Number(argumentos[1] ?? 1) || 0);
-      if (avance > 0) this.agregarExperiencia(avance);
-      this.probarSuerteZorro(avance);
-      return resultado;
-    };
-    juego.__mascotasXPInstalado = true;
+    if (!juego || juego.__perritosJrInstalado) return;
+    if (typeof juego.actualizarPuntos === "function") {
+      const originalPuntos = juego.actualizarPuntos.bind(juego);
+      juego.actualizarPuntos = (...args) => {
+        const antes = Number(juego.estado?.puntos) || 0;
+        const resultado = originalPuntos(...args);
+        const despues = Number(juego.estado?.puntos) || 0;
+        if (despues > antes) {
+          this.agregarExperiencia(despues - antes);
+          this.cambiarEstado("celebrate", 420);
+        }
+        return resultado;
+      };
+    }
+    if (typeof juego.perderVida === "function") {
+      const originalVida = juego.perderVida.bind(juego);
+      juego.perderVida = (...args) => {
+        if (this.intentarProteccion()) return false;
+        this.cambiarEstado("hurt", 700);
+        return originalVida(...args);
+      };
+    }
+    juego.__perritosJrInstalado = true;
   },
 
-  actualizar() {
+  intentarProteccion() {
+    const mascota = this.catalogo[this.mascotaEquipada];
+    if (mascota?.bonus !== "proteccion") return false;
+    const nivel = this.obtenerProgreso().nivel;
+    const probabilidad = Math.min(0.20, mascota.valor + nivel * 0.001);
+    if (Math.random() >= probabilidad) return false;
+    this.cambiarEstado("celebrate", 900);
+    this.mostrarMensaje("🛡️ Milo evitó la pérdida de una vida");
+    return true;
+  },
+
+  aplicarBonificacionesBase() {
+    const jugador = window.JuniorPlayer;
+    if (!jugador) return;
+    if (!jugador.__velocidadBasePerritos) jugador.__velocidadBasePerritos = jugador.velocidadMovimiento;
+    const mascota = this.catalogo[this.mascotaEquipada];
+    jugador.velocidadMovimiento = jugador.__velocidadBasePerritos * (mascota?.bonus === "velocidad" ? 1 + mascota.valor : 1);
+    document.body.dataset.perritoJr = this.mascotaEquipada;
+    document.body.dataset.petGoldBonus = mascota?.bonus === "dorado" ? String(mascota.valor) : "0";
+    document.body.dataset.petCoinBonus = mascota?.bonus === "monedas" ? String(mascota.valor) : "0";
+    document.body.dataset.petDiamondBonus = mascota?.bonus === "diamantes" ? String(mascota.valor) : "0";
+    document.body.dataset.petCooldownBonus = mascota?.bonus === "recarga" ? String(mascota.valor) : "0";
+  },
+
+  actualizar(tiempoActual) {
     if (!this.activo) return;
     const juego = window.JuniorGame;
-    if (juego?.estado?.iniciado && !juego.estado.pausado && !juego.estado.terminado) {
-      this.seguirPerro();
+    const dt = Math.min((tiempoActual - this.tiempoAnterior) / 1000, 0.05);
+    this.tiempoAnterior = tiempoActual;
+    if (juego?.estado?.iniciado) {
+      this.detectarEventosJuego(juego);
+      this.seguirPerro(dt);
       this.aplicarHabilidadPasiva();
     }
     this.cuadroAnimacion = requestAnimationFrame(this.actualizar.bind(this));
   },
 
-  seguirPerro() {
+  detectarEventosJuego(juego) {
+    if (juego.estado.pausado && !this.ultimoEstadoJuego.pausado) this.cambiarEstado("sleep");
+    if (!juego.estado.pausado && this.ultimoEstadoJuego.pausado && !juego.estado.terminado) this.cambiarEstado("idle");
+    if (juego.estado.terminado && !this.ultimoEstadoJuego.terminado) this.cambiarEstado("sad");
+    this.ultimoEstadoJuego = { pausado: juego.estado.pausado, terminado: juego.estado.terminado, vidas: juego.estado.vidas, puntos: juego.estado.puntos };
+  },
+
+  seguirPerro(dt) {
     const mascota = this.mascotaElemento;
     const perro = window.JuniorPlayer?.obtenerPerro?.();
     const area = window.JuniorPlayer?.obtenerAreaJuego?.();
-    if (!mascota || !perro || !area) return;
+    const jugador = window.JuniorPlayer;
+    const juego = window.JuniorGame;
+    if (!mascota || !perro || !area || !jugador) return;
 
     const rectArea = area.getBoundingClientRect();
     const rectPerro = perro.getBoundingClientRect();
-    const direccionDerecha = window.JuniorPlayer?.ultimaDireccion === "derecha";
-    const separacion = 16;
-    const xObjetivo = direccionDerecha
-      ? rectPerro.left - rectArea.left - mascota.offsetWidth - separacion
+    const derecha = jugador.ultimaDireccion === "derecha";
+    const anchoMascota = mascota.offsetWidth || 62;
+    const separacion = Math.max(14, rectPerro.width * 0.16);
+    const xObjetivo = derecha
+      ? rectPerro.left - rectArea.left - anchoMascota - separacion
       : rectPerro.right - rectArea.left + separacion;
-    const yObjetivo = rectPerro.bottom - rectArea.top - mascota.offsetHeight * 0.76;
+    const sueloVisual = rectPerro.bottom - rectArea.top - mascota.offsetHeight * 0.90;
+    const yObjetivo = sueloVisual - Math.max(0, jugador.alturaSalto * 0.45);
 
-    const xActual = parseFloat(mascota.style.left) || xObjetivo;
-    const yActual = parseFloat(mascota.style.top) || yObjetivo;
-    const x = xActual + (xObjetivo - xActual) * 0.13;
-    const y = yActual + (yObjetivo - yActual) * 0.16;
+    if (this.xVisual === null) this.xVisual = xObjetivo;
+    if (this.yVisual === null) this.yVisual = yObjetivo;
+    const distancia = xObjetivo - this.xVisual;
+    const factorX = 1 - Math.pow(0.0009, dt);
+    const factorY = 1 - Math.pow(0.0025, dt);
+    this.xVisual += distancia * factorX;
+    this.yVisual += (yObjetivo - this.yVisual) * factorY;
 
-    mascota.style.left = `${Math.max(4, Math.min(area.clientWidth - mascota.offsetWidth - 4, x))}px`;
-    mascota.style.top = `${Math.max(70, Math.min(area.clientHeight - mascota.offsetHeight - 90, y))}px`;
-    mascota.classList.toggle("pet-facing-left", !direccionDerecha);
+    if (Math.abs(distancia) > area.clientWidth * 0.62) {
+      this.xVisual = xObjetivo;
+      this.yVisual = yObjetivo;
+      mascota.classList.add("pet-recovering");
+      setTimeout(() => mascota.classList.remove("pet-recovering"), 350);
+    }
+
+    mascota.style.left = `${Math.max(2, Math.min(area.clientWidth - anchoMascota - 2, this.xVisual))}px`;
+    mascota.style.top = `${Math.max(58, Math.min(area.clientHeight - mascota.offsetHeight - 72, this.yVisual))}px`;
+    mascota.classList.toggle("pet-facing-left", !derecha);
+
+    if (juego.estado.pausado) return this.cambiarEstado("sleep");
+    if (juego.estado.terminado) return;
+    if (jugador.saltando) return this.cambiarEstado(jugador.velocidadVertical >= 0 ? "jump" : "fall");
+    if (jugador.moviendoIzquierda || jugador.moviendoDerecha) {
+      return this.cambiarEstado(Math.abs(distancia) > 95 ? "run" : "walk");
+    }
+    if (!["celebrate", "hurt"].includes(this.estadoAnimacion)) this.cambiarEstado("idle");
+  },
+
+  cambiarEstado(estado, duracion = 0) {
+    if (!this.mascotaElemento || this.estadoAnimacion === estado) return;
+    this.estadoAnimacion = estado;
+    const clases = [...this.mascotaElemento.classList].filter((c) => c.startsWith("pet-state-"));
+    clases.forEach((c) => this.mascotaElemento.classList.remove(c));
+    this.mascotaElemento.classList.add(`pet-state-${estado}`);
+    if (duracion > 0) {
+      clearTimeout(this.__estadoTimer);
+      this.__estadoTimer = setTimeout(() => {
+        if (this.estadoAnimacion === estado) this.cambiarEstado("idle");
+      }, duracion);
+    }
   },
 
   aplicarHabilidadPasiva() {
-    const metodos = {
-      cachorro: () => this.accionCachorro(),
-      gato: () => this.accionGato(),
-      buho: () => this.accionBuho(),
-      robot: () => this.accionRobot(),
-      zorro: () => {}
-    };
-    metodos[this.mascotaEquipada]?.();
-  },
-
-  accionCachorro() {
+    const mascota = this.catalogo[this.mascotaEquipada];
+    if (mascota?.bonus !== "iman") return;
     const hueso = window.JuniorBones?.huesoActual;
     const perro = window.JuniorPlayer?.obtenerPerro?.();
     const area = window.JuniorPlayer?.obtenerAreaJuego?.();
     if (!hueso?.elemento || !perro || !area || hueso.atrapado) return;
-
-    const nivel = this.obtenerProgreso().nivel;
-    const rectArea = area.getBoundingClientRect();
-    const rectPerro = perro.getBoundingClientRect();
-    const rectHueso = hueso.elemento.getBoundingClientRect();
-    const centroPerro = rectPerro.left - rectArea.left + rectPerro.width / 2;
-    const centroHueso = rectHueso.left - rectArea.left + rectHueso.width / 2;
-    const distancia = centroPerro - centroHueso;
-    const alcance = 105 + nivel * 4;
-
-    if (Math.abs(distancia) <= alcance) {
-      hueso.x += Math.sign(distancia) * Math.min(Math.abs(distancia), 0.55 + nivel * 0.035);
+    const rp = perro.getBoundingClientRect();
+    const rh = hueso.elemento.getBoundingClientRect();
+    const ra = area.getBoundingClientRect();
+    const dx = (rp.left + rp.width / 2) - (rh.left + rh.width / 2);
+    if (Math.abs(dx) <= mascota.valor + this.obtenerProgreso().nivel * 2) {
+      hueso.x += Math.sign(dx) * Math.min(Math.abs(dx), 0.7);
       hueso.elemento.style.left = `${hueso.x}px`;
-      this.mascotaElemento?.classList.add("pet-working");
-      setTimeout(() => this.mascotaElemento?.classList.remove("pet-working"), 120);
     }
-  },
-
-  accionGato() {
-    const enemigo = window.SistemaEnemigos?.enemigoActual;
-    if (!enemigo || enemigo.nombre !== "gato") return;
-
-    const nivel = this.obtenerProgreso().nivel;
-    const recarga = Math.max(12000, 26000 - nivel * 500);
-    if (performance.now() - this.ultimoAtaqueGato < recarga) return;
-
-    this.ultimoAtaqueGato = performance.now();
-    this.mascotaElemento?.classList.add("pet-attack");
-    window.setTimeout(() => this.mascotaElemento?.classList.remove("pet-attack"), 520);
-    window.SistemaEnemigos?.derrotarEnemigo?.("mascota");
-    this.mostrarMensaje("🐈 ¡El gato aliado ahuyentó al enemigo!");
-  },
-
-  accionBuho() {
-    // Los sistemas de cajas, ruleta y mundos pueden consultar este multiplicador.
-    document.body.dataset.petLuck = String(this.obtenerMultiplicadorSuerte());
-  },
-
-  accionRobot() {
-    const area = window.JuniorPlayer?.obtenerAreaJuego?.();
-    const perro = window.JuniorPlayer?.obtenerPerro?.();
-    if (!area || !perro) return;
-
-    const objetivos = area.querySelectorAll(
-      ".falling-coin,.falling-diamond,.moneda-caida,.diamante-caido,[data-recurso='moneda'],[data-recurso='diamante']"
-    );
-    if (!objetivos.length) return;
-
-    const rectArea = area.getBoundingClientRect();
-    const rectPerro = perro.getBoundingClientRect();
-    const destinoX = rectPerro.left - rectArea.left + rectPerro.width / 2;
-    const destinoY = rectPerro.top - rectArea.top + rectPerro.height / 2;
-
-    objetivos.forEach((elemento) => {
-      const rect = elemento.getBoundingClientRect();
-      const x = rect.left - rectArea.left;
-      const y = rect.top - rectArea.top;
-      const distancia = Math.hypot(destinoX - x, destinoY - y);
-      const alcance = 150 + this.obtenerProgreso().nivel * 5;
-      if (distancia > alcance) return;
-      elemento.style.left = `${x + (destinoX - x) * 0.075}px`;
-      elemento.style.top = `${y + (destinoY - y) * 0.075}px`;
-    });
-  },
-
-  probarSuerteZorro(avance) {
-    if (this.mascotaEquipada !== "zorro" || avance <= 0) return;
-    const nivel = this.obtenerProgreso().nivel;
-    const probabilidad = Math.min(0.18, 0.06 + nivel * 0.006);
-    const ahora = performance.now();
-    if (ahora - this.ultimoBonusZorro < 2800 || Math.random() >= probabilidad) return;
-
-    this.ultimoBonusZorro = ahora;
-    const juego = window.JuniorGame;
-    if (!juego || juego.estado.terminado) return;
-    juego.estado.puntos += 1;
-    juego.actualizarMarcador?.();
-    this.mostrarMensaje("🦊 ¡Golpe de suerte! +1 hueso");
-  },
-
-  obtenerMultiplicadorSuerte() {
-    if (this.mascotaEquipada !== "buho") return 1;
-    return 1.12 + Math.min(0.28, this.obtenerProgreso().nivel * 0.014);
-  },
-
-  obtenerBonusRareza() {
-    if (this.mascotaEquipada === "buho") return this.obtenerMultiplicadorSuerte();
-    if (this.mascotaEquipada === "zorro") return 1.06 + this.obtenerProgreso().nivel * 0.006;
-    return 1;
   },
 
   actualizarInterfaz() {
     const mascota = this.catalogo[this.mascotaEquipada];
     const datos = this.obtenerProgreso();
-    if (this.interfaz.icono) this.interfaz.icono.textContent = mascota?.icono || "🐾";
+    if (this.interfaz.icono) {
+      this.interfaz.icono.innerHTML = `<img src="${mascota?.tarjeta || ""}" alt="">`;
+    }
     if (this.interfaz.nivel) this.interfaz.nivel.textContent = `Nv. ${datos.nivel}`;
     this.actualizarOpciones();
-
-    document.querySelectorAll("[data-pet-progress]").forEach((elemento) => {
-      const id = elemento.dataset.petProgress;
-      const progreso = this.obtenerProgreso(id);
-      elemento.textContent = `Nivel ${progreso.nivel} · ${progreso.experiencia}/${this.experienciaNecesaria(progreso.nivel)} XP`;
+    document.querySelectorAll("[data-pet-progress]").forEach((el) => {
+      const p = this.obtenerProgreso(el.dataset.petProgress);
+      el.textContent = `Nivel ${p.nivel} · ${Math.floor(p.experiencia)}/${this.experienciaNecesaria(p.nivel)} XP`;
     });
   },
 
   actualizarOpciones() {
     this.interfaz.lista?.querySelectorAll(".pet-option").forEach((opcion) => {
-      opcion.classList.toggle("equipped", opcion.dataset.mascota === this.mascotaEquipada);
+      const id = opcion.dataset.mascota;
+      opcion.classList.toggle("equipped", id === this.mascotaEquipada);
+      opcion.classList.toggle("locked", !this.obtenerProgreso(id).desbloqueada);
     });
   },
 
   mostrarMensaje(texto) {
-    const anterior = document.querySelector(".pet-toast");
-    anterior?.remove();
+    document.querySelector(".pet-toast")?.remove();
     const mensaje = document.createElement("div");
     mensaje.className = "pet-toast";
     mensaje.textContent = texto;
@@ -401,5 +364,5 @@ window.SistemaMascotas = {
 };
 
 window.addEventListener("DOMContentLoaded", () => {
-  window.setTimeout(() => window.SistemaMascotas.iniciar(), 80);
+  window.setTimeout(() => window.SistemaMascotas.iniciar(), 110);
 });

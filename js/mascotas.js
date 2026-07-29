@@ -29,8 +29,6 @@ window.SistemaMascotas = {
   ultimoMovimiento: false,
   tiempoQuieto: 0,
   tiempoCorriendo: 0,
-  sentadoDesde: 0,
-  audioMascotasActivo: true,
   proximoSonidoAmbiente: 7,
   estadoBloqueadoHasta: 0,
   visibleAntes: true,
@@ -180,7 +178,6 @@ window.SistemaMascotas = {
     this.aplicarBonificacionesBase();
     this.actualizarInterfaz();
     this.mostrarMensaje(`${this.catalogo[id].nombre} te acompaña`);
-    this.reproducirSonido("happy", { minimoTipo: 1200, volumen: 0.46, rate: 1.08 });
     return true;
   },
 
@@ -405,33 +402,36 @@ window.SistemaMascotas = {
     if (moviendo) {
       const corriendo = Math.abs(distancia) > 82;
       this.tiempoQuieto = 0;
-      this.sentadoDesde = 0;
       this.tiempoCorriendo = corriendo ? this.tiempoCorriendo + dt : 0;
       return this.cambiarEstado(corriendo ? "run" : "walk");
     }
 
     this.tiempoCorriendo = 0;
     this.tiempoQuieto += dt;
-
-    // Después de unos segundos quieto, adopta una postura sentada.
-    // Si la espera continúa, termina descansando sin sonidos repetitivos.
     if (!["celebrate", "hurt", "bark", "land"].includes(this.estadoAnimacion)) {
-      if (this.tiempoQuieto >= 14) {
-        this.cambiarEstado("sleep");
-      } else if (this.tiempoQuieto >= 5.5) {
-        this.cambiarEstado("sit");
-      } else {
-        this.cambiarEstado("idle");
-      }
+      this.cambiarEstado("idle");
     }
   },
 
   actualizarSonidosNaturales(dt, juego) {
-    // Los sonidos ambientales automáticos se desactivan para no cansar al jugador.
-    // El Perrito Jr conserva sonidos solo en eventos especiales: equipar, daño,
-    // salto ocasional, celebración y subida de nivel.
     if (juego.estado.pausado || juego.estado.terminado || document.hidden) return;
-    this.proximoSonidoAmbiente = Math.max(0, this.proximoSonidoAmbiente - dt);
+    this.proximoSonidoAmbiente -= dt;
+
+    if (this.estadoAnimacion === "run" && this.tiempoCorriendo > 2.8 && this.proximoSonidoAmbiente <= 0) {
+      this.reproducirSonido("pant", { minimoTipo: 5200, volumen: 0.40 });
+      this.proximoSonidoAmbiente = 5 + Math.random() * 5;
+      return;
+    }
+
+    if (this.estadoAnimacion === "idle" && this.tiempoQuieto > 4 && this.proximoSonidoAmbiente <= 0) {
+      const ladrar = Math.random() < 0.58;
+      this.cambiarEstado(ladrar ? "bark" : "idle", ladrar ? 650 : 0);
+      this.reproducirSonido(ladrar ? "bark" : "pant", {
+        minimoTipo: 6500,
+        volumen: ladrar ? 0.62 : 0.28
+      });
+      this.proximoSonidoAmbiente = 8 + Math.random() * 10;
+    }
   },
 
   prepararAudio() {
@@ -440,13 +440,6 @@ window.SistemaMascotas = {
   },
 
   reproducirSonido(tipo = "bark", opciones = {}) {
-    if (this.audioMascotasActivo === false) return false;
-    const efectosDesactivados =
-      document.body.classList.contains("effects-muted") ||
-      localStorage.getItem("juniorGame.efectosActivos") === "false" ||
-      localStorage.getItem("juniorGame.effectsEnabled") === "false";
-    if (efectosDesactivados) return false;
-
     const mapa = {
       yip: "bark",
       bark: "bark",
@@ -484,7 +477,7 @@ window.SistemaMascotas = {
 
     if (estado === "celebrate") this.reproducirSonido("happy", { minimoTipo: 1800, volumen: 0.72 });
     if (estado === "hurt") this.reproducirSonido("hurt", { minimoTipo: 1400, volumen: 0.75 });
-    if (estado === "jump" && Math.random() < 0.08) this.reproducirSonido("bark", { minimoTipo: 2500, volumen: 0.45, rate: 1.08 });
+    if (estado === "jump" && Math.random() < 0.16) this.reproducirSonido("bark", { minimoTipo: 2500, volumen: 0.45, rate: 1.08 });
 
     clearTimeout(this.__estadoTimer);
     if (duracion > 0) {

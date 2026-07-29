@@ -1,0 +1,242 @@
+{
+  "atrapar_huesos_blancos.wav": {
+    "categoria": "huesos",
+    "uso": "Hueso normal"
+  },
+  "atrapar_huesos_dorados.wav": {
+    "categoria": "huesos",
+    "uso": "Hueso dorado"
+  },
+  "atrapar_corazones.wav": {
+    "categoria": "vidas",
+    "uso": "Corazón/vida"
+  },
+  "recoger_monedas.wav": {
+    "categoria": "monedas",
+    "uso": "Moneda"
+  },
+  "diamantes_abonados.wav": {
+    "categoria": "diamantes",
+    "uso": "Diamante abonado"
+  },
+  "bonus_activado.wav": {
+    "categoria": "premios",
+    "uso": "Bonus genérico"
+  },
+  "dog.wav": {
+    "categoria": "perro",
+    "uso": "Ladrido estilizado sintético"
+  },
+  "game_over.wav": {
+    "categoria": "partida",
+    "uso": "Game over"
+  },
+  "level_up.wav": {
+    "categoria": "niveles",
+    "uso": "Subir nivel"
+  },
+  "notificacion.wav": {
+    "categoria": "ui",
+    "uso": "Notificación"
+  },
+  "se_cae_el_hueso.wav": {
+    "categoria": "huesos",
+    "uso": "Hueso caído"
+  },
+  "golpe_de_piedra.wav": {
+    "categoria": "impactos",
+    "uso": "Golpe de piedra"
+  },
+  "piedra_cae_al_suelo.wav": {
+    "categoria": "impactos",
+    "uso": "Piedra al suelo"
+  },
+  "seleccionar_cualquier_boton.wav": {
+    "categoria": "ui",
+    "uso": "Botón"
+  },
+  "victory.wav": {
+    "categoria": "niveles",
+    "uso": "Victoria"
+  },
+  "caja_aparece.wav": {
+    "categoria": "cofres",
+    "uso": "Caja aparece"
+  },
+  "caja_golpe.wav": {
+    "categoria": "cofres",
+    "uso": "Golpe caja"
+  },
+  "caja_abre.wav": {
+    "categoria": "cofres",
+    "uso": "Abrir caja"
+  },
+  "caja_premio.wav": {
+    "categoria": "cofres",
+    "uso": "Premio caja"
+  },
+  "raza_comun.wav": {
+    "categoria": "razas",
+    "uso": "Raza común"
+  },
+  "raza_rara.wav": {
+    "categoria": "razas",
+    "uso": "Raza rara"
+  },
+  "raza_epica.wav": {
+    "categoria": "razas",
+    "uso": "Raza épica"
+  },
+  "raza_legendaria.wav": {
+    "categoria": "razas",
+    "uso": "Raza legendaria"
+  },
+  "raza_equipada.wav": {
+    "categoria": "razas",
+    "uso": "Raza equipada"
+  },
+  "ruleta_inicio.wav": {
+    "categoria": "ruleta",
+    "uso": "Inicio de giro"
+  },
+  "ruleta_giro.wav": {
+    "categoria": "ruleta",
+    "uso": "Bucle de giro"
+  },
+  "ruleta_freno.wav": {
+    "categoria": "ruleta",
+    "uso": "Desaceleración"
+  },
+  "ruleta_premio_normal.wav": {
+    "categoria": "ruleta",
+    "uso": "Premio normal"
+  },
+  "ruleta_premio_raro.wav": {
+    "categoria": "ruleta",
+    "uso": "Premio raro"
+  },
+  "ruleta_premio_legendario.wav": {
+    "categoria": "ruleta",
+    "uso": "Premio legendario"
+  },
+  "habilidad_embestida.wav": {
+    "categoria": "habilidades",
+    "uso": "Embestida"
+  },
+  "habilidad_iman.wav": {
+    "categoria": "habilidades",
+    "uso": "Iman"
+  },
+  "habilidad_ladrido.wav": {
+    "categoria": "habilidades",
+    "uso": "Ladrido"
+  },
+  "habilidad_escudo.wav": {
+    "categoria": "habilidades",
+    "uso": "Escudo"
+  },
+  "habilidad_superladrido.wav": {
+    "categoria": "habilidades",
+    "uso": "Superladrido"
+  },
+  "habilidad_olfato.wav": {
+    "categoria": "habilidades",
+    "uso": "Olfato"
+  },
+  "habilidad_impacto.wav": {
+    "categoria": "habilidades",
+    "uso": "Impacto"
+  },
+  "habilidad_tormenta_polar.wav": {
+    "categoria": "habilidades",
+    "uso": "Tormenta Polar"
+  },
+  "habilidad_buena_fortuna.wav": {
+    "categoria": "habilidades",
+    "uso": "Buena Fortuna"
+  },
+  "habilidad_comandante.wav": {
+    "categoria": "habilidades",
+    "uso": "Comandante"
+  },
+  "habilidad_rebote.wav": {
+    "categoria": "habilidades",
+    "uso": "Rebote"
+  },
+  "habilidad_furia.wav": {
+    "categoria": "habilidades",
+    "uso": "Furia"
+  },
+  "habilidad_mente_agil.wav": {
+    "categoria": "habilidades",
+    "uso": "Mente Agil"
+  },
+  "habilidad_magia.wav": {
+    "categoria": "habilidades",
+    "uso": "Magia"
+  },
+  "habilidad_guardia.wav": {
+    "categoria": "habilidades",
+    "uso": "Guardia"
+  },
+  "habilidad_ninja.wav": {
+    "categoria": "habilidades",
+    "uso": "Ninja"
+  },
+  "habilidad_aurora.wav": {
+    "categoria": "habilidades",
+    "uso": "Aurora"
+  },
+  "habilidad_energia_feliz.wav": {
+    "categoria": "habilidades",
+    "uso": "Energia Feliz"
+  },
+  "habilidad_torbellino.wav": {
+    "categoria": "habilidades",
+    "uso": "Torbellino"
+  },
+  "habilidad_rescate.wav": {
+    "categoria": "habilidades",
+    "uso": "Rescate"
+  },
+  "habilidad_protector.wav": {
+    "categoria": "habilidades",
+    "uso": "Protector"
+  },
+  "habilidad_espiritu_leal.wav": {
+    "categoria": "habilidades",
+    "uso": "Espiritu Leal"
+  },
+  "habilidad_carisma.wav": {
+    "categoria": "habilidades",
+    "uso": "Carisma"
+  },
+  "ui_abrir.wav": {
+    "categoria": "ui",
+    "uso": "Abrir ventana"
+  },
+  "ui_cerrar.wav": {
+    "categoria": "ui",
+    "uso": "Cerrar ventana"
+  },
+  "ui_error.wav": {
+    "categoria": "ui",
+    "uso": "Error"
+  },
+  "ui_compra.wav": {
+    "categoria": "tienda",
+    "uso": "Compra exitosa"
+  },
+  "ui_equipar.wav": {
+    "categoria": "tienda",
+    "uso": "Equipar"
+  },
+  "chat_enviado.wav": {
+    "categoria": "chat",
+    "uso": "Mensaje enviado"
+  },
+  "chat_recibido.wav": {
+    "categoria": "chat",
+    "uso": "Mensaje recibido"
+  }
+}

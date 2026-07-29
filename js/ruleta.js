@@ -429,7 +429,7 @@ window.SistemaRuleta = {
       await this.reclamarPremio(seleccion.premio);
       this.mostrarResultado(seleccion.premio);
       window.SistemaMisiones?.registrar?.("ruleta_girada", 1, { premio: seleccion.premio.id });
-      window.AudioFX?.bonus?.();
+      window.AudioFX?.ruletaPremio?.("normal");
     } catch (error) {
       console.error("No se pudo entregar el premio:", error);
       if (this.interfaz.estado) {

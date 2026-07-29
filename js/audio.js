@@ -33,97 +33,97 @@
   const CONFIGURACION = {
 
     huesoBlanco: {
-      archivo: "atrapar_huesos_blancos.mp3",
+      archivo: "atrapar_huesos_blancos.wav",
       volumen: 0.70,
       instancias: 6
     },
 
     huesoDorado: {
-      archivo: "atrapar_huesos_dorados.mp3",
+      archivo: "atrapar_huesos_dorados.wav",
       volumen: 0.90,
       instancias: 4
     },
 
     corazon: {
-      archivo: "atrapar_corazones.mp3",
+      archivo: "atrapar_corazones.wav",
       volumen: 0.85,
       instancias: 3
     },
 
     monedas: {
-      archivo: "recoger_monedas.mp3",
+      archivo: "recoger_monedas.wav",
       volumen: 0.80,
       instancias: 4
     },
 
     diamantes: {
-      archivo: "diamantes_abonados.mp3",
+      archivo: "diamantes_abonados.wav",
       volumen: 0.90,
       instancias: 3
     },
 
     bonus: {
-      archivo: "bonus_activado.mp3",
+      archivo: "bonus_activado.wav",
       volumen: 0.95,
       instancias: 3
     },
 
     ruleta: {
-      archivo: "ruleta.mp3",
+      archivo: "ruleta_giro.wav",
       volumen: 0.72,
       instancias: 1
     },
 
     perro: {
-      archivo: "dog.mp3",
+      archivo: "dog.wav",
       volumen: 0.75,
       instancias: 2
     },
 
     gameOver: {
-      archivo: "game_over.mp3",
+      archivo: "game_over.wav",
       volumen: 1.00,
       instancias: 2
     },
 
     nivel: {
-      archivo: "level_up.mp3",
+      archivo: "level_up.wav",
       volumen: 0.90,
       instancias: 2
     },
 
     notificacion: {
-      archivo: "notificacion.mp3",
+      archivo: "notificacion.wav",
       volumen: 0.55,
       instancias: 3
     },
 
     huesoCaido: {
-      archivo: "se_cae_el_hueso.mp3",
+      archivo: "se_cae_el_hueso.wav",
       volumen: 0.50,
       instancias: 4
     },
 
     golpePiedra: {
-      archivo: "golpe_de_piedra.mp3",
+      archivo: "golpe_de_piedra.wav",
       volumen: 0.90,
       instancias: 3
     },
 
     piedraSuelo: {
-      archivo: "piedra_cae_al_suelo.mp3",
+      archivo: "piedra_cae_al_suelo.wav",
       volumen: 0.75,
       instancias: 3
     },
 
     boton: {
-      archivo: "seleccionar_cualquier_boton.mp3",
+      archivo: "seleccionar_cualquier_boton.wav",
       volumen: 0.35,
       instancias: 5
     },
 
     victoria: {
-      archivo: "victory.mp3",
+      archivo: "victory.wav",
       volumen: 1.00,
       instancias: 2
     },
@@ -153,34 +153,73 @@
     },
 
     razaComun: {
-      archivo: "raza_comun.ogg",
+      archivo: "raza_comun.wav",
       volumen: 0.70,
       instancias: 2
     },
 
     razaRara: {
-      archivo: "raza_rara.ogg",
+      archivo: "raza_rara.wav",
       volumen: 0.78,
       instancias: 2
     },
 
     razaEpica: {
-      archivo: "raza_epica.ogg",
+      archivo: "raza_epica.wav",
       volumen: 0.88,
       instancias: 2
     },
 
     razaLegendaria: {
-      archivo: "raza_legendaria.ogg",
+      archivo: "raza_legendaria.wav",
       volumen: 0.95,
       instancias: 2
     },
 
     razaEquipada: {
-      archivo: "raza_equipada.ogg",
+      archivo: "raza_equipada.wav",
       volumen: 0.72,
       instancias: 2
-    }
+    },
+
+    ruletaInicio: { archivo: "ruleta_inicio.wav", volumen: 0.70, instancias: 1 },
+    ruletaFreno: { archivo: "ruleta_freno.wav", volumen: 0.72, instancias: 1 },
+    ruletaPremioNormal: { archivo: "ruleta_premio_normal.wav", volumen: 0.82, instancias: 2 },
+    ruletaPremioRaro: { archivo: "ruleta_premio_raro.wav", volumen: 0.90, instancias: 2 },
+    ruletaPremioLegendario: { archivo: "ruleta_premio_legendario.wav", volumen: 0.96, instancias: 2 },
+
+    habilidadEmbestida: { archivo: "habilidad_embestida.wav", volumen: 0.78, instancias: 2 },
+    habilidadIman: { archivo: "habilidad_iman.wav", volumen: 0.78, instancias: 2 },
+    habilidadLadrido: { archivo: "habilidad_ladrido.wav", volumen: 0.78, instancias: 2 },
+    habilidadEscudo: { archivo: "habilidad_escudo.wav", volumen: 0.78, instancias: 2 },
+    habilidadSuperladrido: { archivo: "habilidad_superladrido.wav", volumen: 0.78, instancias: 2 },
+    habilidadOlfato: { archivo: "habilidad_olfato.wav", volumen: 0.78, instancias: 2 },
+    habilidadImpacto: { archivo: "habilidad_impacto.wav", volumen: 0.78, instancias: 2 },
+    habilidadTormentaPolar: { archivo: "habilidad_tormenta_polar.wav", volumen: 0.78, instancias: 2 },
+    habilidadBuenaFortuna: { archivo: "habilidad_buena_fortuna.wav", volumen: 0.78, instancias: 2 },
+    habilidadComandante: { archivo: "habilidad_comandante.wav", volumen: 0.78, instancias: 2 },
+    habilidadRebote: { archivo: "habilidad_rebote.wav", volumen: 0.78, instancias: 2 },
+    habilidadFuria: { archivo: "habilidad_furia.wav", volumen: 0.78, instancias: 2 },
+    habilidadMenteAgil: { archivo: "habilidad_mente_agil.wav", volumen: 0.78, instancias: 2 },
+    habilidadMagia: { archivo: "habilidad_magia.wav", volumen: 0.78, instancias: 2 },
+    habilidadGuardia: { archivo: "habilidad_guardia.wav", volumen: 0.78, instancias: 2 },
+    habilidadNinja: { archivo: "habilidad_ninja.wav", volumen: 0.78, instancias: 2 },
+    habilidadAurora: { archivo: "habilidad_aurora.wav", volumen: 0.78, instancias: 2 },
+    habilidadEnergiaFeliz: { archivo: "habilidad_energia_feliz.wav", volumen: 0.78, instancias: 2 },
+    habilidadTorbellino: { archivo: "habilidad_torbellino.wav", volumen: 0.78, instancias: 2 },
+    habilidadRescate: { archivo: "habilidad_rescate.wav", volumen: 0.78, instancias: 2 },
+    habilidadProtector: { archivo: "habilidad_protector.wav", volumen: 0.78, instancias: 2 },
+    habilidadEspirituLeal: { archivo: "habilidad_espiritu_leal.wav", volumen: 0.78, instancias: 2 },
+    habilidadCarisma: { archivo: "habilidad_carisma.wav", volumen: 0.78, instancias: 2 },
+
+    uiAbrir: { archivo: "ui_abrir.wav", volumen: 0.32, instancias: 3 },
+    uiCerrar: { archivo: "ui_cerrar.wav", volumen: 0.32, instancias: 3 },
+    uiError: { archivo: "ui_error.wav", volumen: 0.42, instancias: 2 },
+    uiCompra: { archivo: "ui_compra.wav", volumen: 0.62, instancias: 2 },
+    uiEquipar: { archivo: "ui_equipar.wav", volumen: 0.48, instancias: 2 },
+    chatEnviado: { archivo: "chat_enviado.wav", volumen: 0.30, instancias: 3 },
+    chatRecibido: { archivo: "chat_recibido.wav", volumen: 0.34, instancias: 3 },
+
   };
 
   const CONFIGURACION_MUSICA = {
@@ -433,6 +472,8 @@
   */
   function iniciarRuleta() {
 
+    reproducir("ruletaInicio");
+
     if (
       silenciado ||
       efectosSilenciados
@@ -477,6 +518,8 @@
     Detiene y reinicia el sonido de la ruleta.
   */
   function detenerRuleta() {
+
+    reproducir("ruletaFreno");
 
     const audio = bancos.ruleta?.[0];
 
@@ -803,6 +846,52 @@
         reproducir("razaComun");
       }
     },
+
+
+    ruletaPremio(tipo = "normal") {
+      const valor = String(tipo || "normal").toLowerCase();
+      if (valor.includes("legend")) reproducir("ruletaPremioLegendario");
+      else if (valor.includes("rar") || valor.includes("epic")) reproducir("ruletaPremioRaro");
+      else reproducir("ruletaPremioNormal");
+    },
+
+    habilidad(nombre) {
+      const mapa = {
+        "embestida": "habilidadEmbestida",
+        "iman": "habilidadIman",
+        "ladrido": "habilidadLadrido",
+        "escudo": "habilidadEscudo",
+        "superladrido": "habilidadSuperladrido",
+        "olfato": "habilidadOlfato",
+        "impacto": "habilidadImpacto",
+        "tormenta_polar": "habilidadTormentaPolar",
+        "buena_fortuna": "habilidadBuenaFortuna",
+        "comandante": "habilidadComandante",
+        "rebote": "habilidadRebote",
+        "furia": "habilidadFuria",
+        "mente_agil": "habilidadMenteAgil",
+        "magia": "habilidadMagia",
+        "guardia": "habilidadGuardia",
+        "ninja": "habilidadNinja",
+        "aurora": "habilidadAurora",
+        "energia_feliz": "habilidadEnergiaFeliz",
+        "torbellino": "habilidadTorbellino",
+        "rescate": "habilidadRescate",
+        "protector": "habilidadProtector",
+        "espiritu_leal": "habilidadEspirituLeal",
+        "carisma": "habilidadCarisma",
+      };
+      const clave = String(nombre || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+      reproducir(mapa[clave] || "bonus");
+    },
+
+    uiAbrir() { reproducir("uiAbrir"); },
+    uiCerrar() { reproducir("uiCerrar"); },
+    uiError() { reproducir("uiError"); },
+    uiCompra() { reproducir("uiCompra"); },
+    uiEquipar() { reproducir("uiEquipar"); },
+    chatEnviado() { reproducir("chatEnviado"); },
+    chatRecibido() { reproducir("chatRecibido"); },
 
     reproducirMusica,
     pausarMusica,

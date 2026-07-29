@@ -646,7 +646,7 @@ window.SistemaHabilidades = {
     document.body.classList.add("habilidad-dash-activa");
     perro.classList.add("perro-dash");
     window.SistemaSupervivencia?.activarInvulnerabilidad?.(500);
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("embestida");
     this.mostrarMensaje("⚡ ¡Embestida!");
 
     window.setTimeout(() => {
@@ -669,7 +669,7 @@ window.SistemaHabilidades = {
     const duracion = this.catalogo.iman.duracion;
     this.efectosHasta.iman = performance.now() + duracion;
     document.body.classList.add("habilidad-iman-activa");
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("iman");
     this.mostrarMensaje("🧲 ¡Imán activado por 8 segundos!");
     window.setTimeout(() => {
       if (!this.estaActiva("iman")) document.body.classList.remove("habilidad-iman-activa");
@@ -714,7 +714,7 @@ window.SistemaHabilidades = {
     if (!juego) return false;
     juego.estado.escudo = Math.max(2, Number(juego.estado.escudo) || 0);
     juego.actualizarEscudo?.();
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("escudo");
     this.mostrarMensaje("🛡️ ¡Escudo doble activado!");
     return true;
   },
@@ -779,7 +779,7 @@ window.SistemaHabilidades = {
     const destruyo = this.eliminarObstaculoActual("superladrido");
     const derroto = this.derrotarEnemigoActual("superladrido");
     this.crearEstallido("🔊", "estallido-ladrido");
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("superladrido");
     this.mostrarMensaje(
       destruyo || derroto
         ? "🔊 ¡Superladrido! Peligro despejado"
@@ -792,7 +792,7 @@ window.SistemaHabilidades = {
     this.activarEfecto("iman", 10000, "habilidad-iman-activa");
     this.activarEfecto("olfato", 10000, "raza-olfato-activa");
     this.cargasTemporales.autoCapturas = 1;
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("olfato");
     this.mostrarMensaje("👃 ¡Olfato Maestro! El próximo hueso no escapará");
     return true;
   },
@@ -801,7 +801,7 @@ window.SistemaHabilidades = {
     const destruyo = this.eliminarObstaculoActual("impacto");
     this.crearEstallido("💥", "estallido-impacto");
     window.SistemaSupervivencia?.activarInvulnerabilidad?.(900);
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("impacto");
     this.mostrarMensaje(destruyo ? "💥 ¡Impacto! Obstáculo destruido" : "💥 ¡Impacto protector!");
     return true;
   },
@@ -809,14 +809,14 @@ window.SistemaHabilidades = {
   usarTormentaPolar() {
     this.activarEfecto("tormentaPolar", 9000, "raza-tormenta-activa");
     this.activarEfecto("congelarObjetos", 9000);
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("tormenta_polar");
     this.mostrarMensaje("❄️ ¡Tormenta Polar! Todo cae más despacio");
     return true;
   },
 
   usarBuenaFortuna() {
     this.activarEfecto("buenaFortuna", 12000, "raza-fortuna-activa");
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("buena_fortuna");
     this.mostrarMensaje("🍀 ¡Buena Fortuna! Aumentan los huesos dorados");
     return true;
   },
@@ -824,7 +824,7 @@ window.SistemaHabilidades = {
   usarComandante() {
     this.cargasTemporales.autoCapturas = 3;
     this.crearEstallido("🐕‍🦺", "estallido-comandante");
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("comandante");
     this.mostrarMensaje("🐕‍🦺 ¡Comandante! La manada atrapará 3 huesos");
     return true;
   },
@@ -832,7 +832,7 @@ window.SistemaHabilidades = {
   usarRebote() {
     this.cargasTemporales.rebotes = 5;
     this.activarEfecto("rebote", 14000, "raza-rebote-activa");
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("rebote");
     this.mostrarMensaje("🔁 ¡Rebote! Los próximos 5 huesos dan punto extra");
     return true;
   },
@@ -848,7 +848,7 @@ window.SistemaHabilidades = {
     window.SistemaSupervivencia?.activarInvulnerabilidad?.(1200);
 
     window.setTimeout(() => this.restaurarVelocidadJugador(), 8100);
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("furia");
     this.mostrarMensaje("🔥 ¡Furia! Movimiento acelerado");
     return true;
   },
@@ -865,7 +865,7 @@ window.SistemaHabilidades = {
     this.activarEfecto("menteAgil", 10000, "raza-mente-activa");
     this.activarEfecto("congelarObjetos", 10000);
     this.cargasTemporales.rebotes = 3;
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("mente_agil");
     this.mostrarMensaje("🧠 ¡Mente Ágil! Tiempo lento y 3 puntos extra");
     return true;
   },
@@ -891,7 +891,7 @@ window.SistemaHabilidades = {
     juego.estado.escudo = Math.max(2, Number(juego.estado.escudo) || 0);
     juego.actualizarEscudo?.();
     this.activarEfecto("guardia", 10000, "raza-guardia-activa");
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("guardia");
     this.mostrarMensaje("🛡️ ¡Guardia! Dos cargas de protección");
     return true;
   },
@@ -908,7 +908,7 @@ window.SistemaHabilidades = {
 
     window.SistemaSupervivencia?.activarInvulnerabilidad?.(900);
     this.crearEstallido("🥷", "estallido-ninja");
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("ninja");
     this.mostrarMensaje("🥷 ¡Travesura Ninja! Teletransporte");
     return true;
   },
@@ -917,7 +917,7 @@ window.SistemaHabilidades = {
     this.activarEfecto("aurora", 11000, "raza-aurora-activa");
     this.activarEfecto("buenaFortuna", 11000);
     this.activarEfecto("congelarObjetos", 11000);
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("aurora");
     this.mostrarMensaje("🌌 ¡Aurora! Fortuna y calma durante 11 segundos");
     return true;
   },
@@ -927,7 +927,7 @@ window.SistemaHabilidades = {
     this.enfriamientosHasta[clave] = 0;
     this.cargasTemporales.rebotes = 2;
     this.crearEstallido("⚡", "estallido-energia");
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("energia_feliz");
     this.mostrarMensaje("⚡ ¡Energía Feliz! Dos puntos extra preparados");
     return true;
   },
@@ -935,7 +935,7 @@ window.SistemaHabilidades = {
   usarTorbellino() {
     this.activarEfecto("iman", 12000, "habilidad-iman-activa");
     this.activarEfecto("torbellino", 12000, "raza-torbellino-activa");
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("torbellino");
     this.mostrarMensaje("🌪️ ¡Torbellino! Atracción reforzada");
     return true;
   },
@@ -948,7 +948,7 @@ window.SistemaHabilidades = {
     juego.estado.vidas = Math.min(juego.estado.vidasMaximas || 10, antes + 1);
     juego.actualizarVidas?.();
     this.cargasTemporales.salvacion = 1;
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("rescate");
     this.mostrarMensaje(
       juego.estado.vidas > antes
         ? "🛟 ¡Rescate! Recuperaste una vida"
@@ -964,7 +964,7 @@ window.SistemaHabilidades = {
     juego.estado.escudo = Math.max(3, Number(juego.estado.escudo) || 0);
     juego.actualizarEscudo?.();
     this.activarEfecto("protector", 12000, "raza-protector-activa");
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("protector");
     this.mostrarMensaje("❤️ ¡Protector! Escudo triple");
     return true;
   },
@@ -972,7 +972,7 @@ window.SistemaHabilidades = {
   usarEspirituLeal() {
     this.cargasTemporales.lealtad = 2;
     this.activarEfecto("lealtad", 18000, "raza-lealtad-activa");
-    window.AudioFX?.bonus?.();
+    window.AudioFX?.habilidad?.("espiritu_leal");
     this.mostrarMensaje("✨ ¡Espíritu Leal! Perdona 2 huesos escapados");
     return true;
   },

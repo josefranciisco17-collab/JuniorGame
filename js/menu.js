@@ -37,6 +37,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const howToPlayButton =
     document.getElementById("howToPlayButton");
 
+  // Chat Global: se crea dinámicamente para no depender de cambios manuales en menu.html.
+  const menuButtons = document.querySelector(".menu-buttons");
+  let chatButton = document.getElementById("chatGlobalButton");
+
+  if (!chatButton && menuButtons) {
+    chatButton = document.createElement("button");
+    chatButton.id = "chatGlobalButton";
+    chatButton.type = "button";
+    chatButton.className = "wood-button menu-feature-button";
+
+    const chatIcon = document.createElement("span");
+    chatIcon.className = "button-icon";
+    chatIcon.textContent = "💬";
+
+    const chatText = document.createElement("span");
+    chatText.className = "button-text";
+    chatText.textContent = "CHAT GLOBAL";
+
+    const chatBadge = document.createElement("span");
+    chatBadge.id = "chatUnreadBadge";
+    chatBadge.className = "chat-unread-badge hidden";
+    chatBadge.textContent = "NUEVO";
+
+    chatButton.append(chatIcon, chatText, chatBadge);
+    menuButtons.appendChild(chatButton);
+  }
+
 const adminConsoleButton =
   document.getElementById("adminConsoleButton");
 
@@ -81,6 +108,13 @@ window.location.href = "shop.html";
         "Ajustes",
         "Aquí podrás configurar música, sonidos y controles."
       );
+    }
+  );
+
+  chatButton?.addEventListener(
+    "click",
+    () => {
+      window.location.href = "chat.html";
     }
   );
 

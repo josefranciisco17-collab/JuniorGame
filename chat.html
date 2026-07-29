@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#4a210b">
+  <title>Chat Global | JuniorGame</title>
+  <link rel="stylesheet" href="css/chat.css">
+</head>
+<body>
+  <main class="chat-app">
+    <header class="chat-header">
+      <button id="backButton" class="icon-button" type="button" aria-label="Volver al menú">←</button>
+      <div class="header-title">
+        <strong>Chat JuniorGame</strong>
+        <span id="onlineSummary">Conectando…</span>
+      </div>
+      <button id="adminPanelButton" class="icon-button hidden" type="button" aria-label="Herramientas de administrador">👑</button>
+    </header>
+
+    <nav id="channelTabs" class="channel-tabs" aria-label="Canales del chat">
+      <button class="channel-tab active" data-channel="global" type="button">🌎 Global</button>
+      <button class="channel-tab" data-channel="ayuda" type="button">🎮 Ayuda</button>
+      <button class="channel-tab" data-channel="records" type="button">🏆 Récords</button>
+      <button class="channel-tab" data-channel="intercambio" type="button">💎 Intercambio</button>
+      <button class="channel-tab" data-channel="oficial" type="button">📢 Oficial</button>
+    </nav>
+
+    <section id="pinnedMessage" class="pinned-message hidden" aria-live="polite"></section>
+
+    <section id="messages" class="messages" aria-live="polite" aria-label="Mensajes del chat">
+      <p class="empty-state">Cargando mensajes…</p>
+    </section>
+
+    <section id="replyBar" class="reply-bar hidden">
+      <div><span>Respondiendo a </span><strong id="replyName"></strong></div>
+      <button id="cancelReplyButton" type="button" aria-label="Cancelar respuesta">✕</button>
+    </section>
+
+    <form id="messageForm" class="composer" autocomplete="off">
+      <label class="sr-only" for="messageInput">Escribe un mensaje</label>
+      <textarea id="messageInput" maxlength="300" rows="1" placeholder="Escribe un mensaje…" required></textarea>
+      <button id="sendButton" type="submit">Enviar</button>
+    </form>
+    <div class="composer-info">
+      <span id="typingStatus"></span>
+      <span id="charCounter">0/300</span>
+    </div>
+  </main>
+
+  <dialog id="messageActionsDialog" class="chat-dialog">
+    <div class="dialog-content">
+      <h2>Opciones del mensaje</h2>
+      <button id="replyAction" type="button">↩️ Responder</button>
+      <button id="reportAction" type="button">🚨 Reportar</button>
+      <button id="deleteAction" class="danger hidden" type="button">🗑️ Eliminar</button>
+      <button id="closeActions" class="secondary" type="button">Cerrar</button>
+    </div>
+  </dialog>
+
+  <dialog id="adminDialog" class="chat-dialog">
+    <form id="adminForm" class="dialog-content">
+      <h2>Mensaje oficial</h2>
+      <label for="adminMessage">Mensaje</label>
+      <textarea id="adminMessage" maxlength="300" rows="4" required></textarea>
+      <label class="check-row"><input id="pinAdminMessage" type="checkbox"> Fijar mensaje en este canal</label>
+      <button type="submit">Publicar como JuniorGame Oficial</button>
+      <button id="closeAdminDialog" class="secondary" type="button">Cancelar</button>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script type="module" src="js/chat.js"></script>
+</body>
+</html>

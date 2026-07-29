@@ -88,8 +88,17 @@ function answerQuestion() {
     else if (/cuánt|cuantos|usuarios/.test(q)) answer = `Revisé ${nf.format(state.users.length)} perfiles y encontré ${nf.format(state.findings.length)} alertas.`;
     else if (/diamante/.test(q)) answer = `La suma aproximada visible es de ${nf.format(state.totals.diamonds)} diamantes. Este valor no sustituye la conciliación contra Stripe.`;
     else if (/moneda/.test(q)) answer = `La suma aproximada visible es de ${nf.format(state.totals.coins)} monedas.`;
+    else if (/quién|quien|más diamantes|mayor diamante/.test(q)) {
+      const top = state.users.map(u => ({ uid: u.uid, ...getUserValues(u.data) })).sort((a,b) => b.diamonds-a.diamonds)[0];
+      answer = top ? `${top.name || top.email || top.uid} tiene el mayor saldo visible: ${nf.format(top.diamonds)} diamantes.` : "No hay datos suficientes.";
+    }
+    else if (/más monedas|mayor moneda/.test(q)) {
+      const top = state.users.map(u => ({ uid: u.uid, ...getUserValues(u.data) })).sort((a,b) => b.coins-a.coins)[0];
+      answer = top ? `${top.name || top.email || top.uid} tiene el mayor saldo visible: ${nf.format(top.coins)} monedas.` : "No hay datos suficientes.";
+    }
+    else if (/incompleto|faltan datos/.test(q)) answer = `Detecté ${state.findings.filter(f => f.title === "Perfil incompleto").length} perfiles incompletos.`;
     else if (/arreglar|corregir|hacer/.test(q)) answer = "Abre el módulo Usuarios, revisa cada UID señalado y confirma el dato correcto antes de modificarlo. Esta versión solo analiza y recomienda.";
-    else answer = `Resumen: ${state.users.length} perfiles, ${warnings} advertencias y ${risks} riesgos. Puedes preguntar por usuarios, diamantes, monedas o prioridades.`;
+    else answer = `Resumen: ${state.users.length} perfiles, ${warnings} advertencias y ${risks} riesgos. Puedes preguntar por usuarios, diamantes, monedas, perfiles incompletos o prioridades.`;
   }
   $('assistantAnswer').textContent = answer;
 }

@@ -211,44 +211,30 @@ onAuthStateChanged(
 
 
 /* =======================================
-   NAVEGACIÓN DE LA NUEVA CONSOLA
+   NAVEGACIÓN DE LA CONSOLA PRO
 ======================================= */
 const pageTitle = document.getElementById("pageTitle");
-const overviewView = document.getElementById("overviewView");
-const assistantView = document.getElementById("assistantView");
-const placeholderView = document.getElementById("placeholderView");
-const placeholderTitle = document.getElementById("placeholderTitle");
-const placeholderText = document.getElementById("placeholderText");
-const placeholderIcon = document.getElementById("placeholderIcon");
 const sidebar = document.getElementById("adminSidebar");
 const togglePassword = document.getElementById("togglePassword");
-
-const viewConfig = {
-  overview: ["Panel general", "", ""],
-  assistant: ["Asistente IA", "", ""],
-  economia: ["Economía", "◇", "Aquí se integrarán controles de monedas, diamantes y vidas."],
-  stripe: ["Stripe", "▣", "Aquí se integrarán transacciones, conciliación y compras pendientes."],
-  codigos: ["Códigos", "⌁", "Aquí podrás crear y administrar códigos promocionales."],
-  anuncios: ["Anuncios", "◈", "Aquí podrás publicar mensajes globales y privados."],
-  configuracion: ["Configuración", "⚙", "Aquí estarán los ajustes de seguridad y operación general."]
+const viewNames = {
+  overview: "Panel general",
+  economia: "Economía",
+  analytics: "Analíticas",
+  stripe: "Stripe",
+  codigos: "Códigos",
+  anuncios: "Anuncios",
+  assistant: "Asistente IA",
+  configuracion: "Configuración"
 };
 
 function openAdminView(name) {
-  if (!viewConfig[name]) return;
-  overviewView?.classList.add("hidden");
-  assistantView?.classList.add("hidden");
-  placeholderView?.classList.add("hidden");
-  document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("active", item.dataset.view === name));
-  pageTitle.textContent = viewConfig[name][0];
-  if (name === "overview") overviewView?.classList.remove("hidden");
-  else if (name === "assistant") assistantView?.classList.remove("hidden");
-  else {
-    placeholderTitle.textContent = viewConfig[name][0];
-    placeholderIcon.textContent = viewConfig[name][1];
-    placeholderText.textContent = viewConfig[name][2];
-    placeholderView?.classList.remove("hidden");
-  }
+  if (!viewNames[name]) return;
+  document.querySelectorAll(".admin-view").forEach((view) => view.classList.add("hidden"));
+  document.getElementById(`${name}View`)?.classList.remove("hidden");
+  document.querySelectorAll(".nav-item[data-view]").forEach((item) => item.classList.toggle("active", item.dataset.view === name));
+  if (pageTitle) pageTitle.textContent = viewNames[name];
   sidebar?.classList.remove("open");
+  window.dispatchEvent(new CustomEvent("juniorgame:view-change", { detail: { view: name } }));
 }
 
 document.querySelectorAll("[data-view]").forEach((button) => button.addEventListener("click", () => openAdminView(button.dataset.view)));

@@ -47,41 +47,25 @@
 
 
         <section id="cuentasView" class="admin-view hidden">
-          <div class="section-heading">
-            <div><span class="eyebrow">SEGURIDAD Y RECURSOS</span><h2>Control de cuentas</h2><p>Entrega o retira recursos y administra suspensiones con confirmación, permisos y registro de auditoría.</p></div>
-            <span class="healthy-badge">Acciones protegidas</span>
-          </div>
+          <div class="section-heading"><div><span class="eyebrow">CENTRO DE JUGADORES</span><h2>Control total de cuentas</h2><p>Perfil, economía, inventario, moderación y auditoría en un solo espacio protegido.</p></div><span class="healthy-badge">Registro obligatorio</span></div>
           <section class="account-control-grid">
-            <article class="panel-card account-search-panel">
-              <div class="panel-title"><div><span class="eyebrow">1. SELECCIONAR JUGADOR</span><h3>Buscar cuenta</h3></div></div>
-              <label class="field-label" for="accountSearch">Nombre, correo, UID o ID JF</label>
-              <div class="account-search-row"><input id="accountSearch" type="search" autocomplete="off" placeholder="Escribe al menos 2 caracteres"><button id="accountSearchButton" class="secondary-button" type="button">Buscar</button></div>
-              <div id="accountSearchResults" class="account-search-results"><div class="empty-inline">Busca y selecciona un jugador.</div></div>
-            </article>
-            <article class="panel-card selected-account-panel">
-              <div class="panel-title"><div><span class="eyebrow">CUENTA SELECCIONADA</span><h3 id="selectedAccountName">Ninguna</h3></div><span id="selectedAccountStatus" class="account-state neutral">Sin seleccionar</span></div>
-              <div id="selectedAccountDetails" class="selected-account-details"><div class="empty-inline">Aquí aparecerán los saldos y el estado de la cuenta.</div></div>
-            </article>
+            <article class="panel-card account-search-panel"><div class="panel-title"><div><span class="eyebrow">JUGADOR</span><h3>Buscar cuenta</h3></div></div><label class="field-label" for="accountSearch">Nombre, correo, UID o ID JF</label><div class="account-search-row"><input id="accountSearch" type="search" autocomplete="off" placeholder="Escribe al menos 2 caracteres"><button id="accountSearchButton" class="secondary-button" type="button">Buscar</button></div><div id="accountSearchResults" class="account-search-results"><div class="empty-inline">Busca y selecciona un jugador.</div></div></article>
+            <article class="panel-card selected-account-panel"><div class="panel-title"><div><span class="eyebrow">PERFIL COMPLETO</span><h3 id="selectedAccountName">Ninguna cuenta</h3></div><span id="selectedAccountStatus" class="account-state neutral">Sin seleccionar</span></div><div id="selectedAccountDetails" class="selected-account-details"><div class="empty-inline">Aquí aparecerán foto, identidad, progreso, saldos y estado.</div></div></article>
           </section>
-          <section class="account-actions-grid">
-            <article class="panel-card operation-card">
-              <div class="panel-title"><div><span class="eyebrow">2. OPERACIÓN</span><h3>Monedas y diamantes</h3></div></div>
-              <div class="operation-tabs" role="group" aria-label="Tipo de recurso"><button class="operation-tab active" data-resource="monedas" type="button">Monedas</button><button class="operation-tab" data-resource="diamantes" type="button">Diamantes</button></div>
-              <div class="operation-tabs" role="group" aria-label="Tipo de movimiento"><button class="operation-tab active" data-direction="add" type="button">Regalar</button><button class="operation-tab danger-tab" data-direction="remove" type="button">Quitar</button></div>
-              <label class="field-label" for="resourceAmount">Cantidad</label><input id="resourceAmount" type="number" min="1" max="1000000" step="1" inputmode="numeric" placeholder="Ej. 500">
-              <label class="field-label" for="resourceReason">Motivo obligatorio</label><textarea id="resourceReason" rows="3" maxlength="240" placeholder="Ej. Premio de evento, corrección de compra o sanción administrativa"></textarea>
-              <div id="operationPreview" class="operation-preview">Selecciona una cuenta y escribe una cantidad.</div>
-              <button id="executeResourceOperation" class="primary-button" type="button" disabled>Confirmar operación</button>
-            </article>
-            <article class="panel-card moderation-card">
-              <div class="panel-title"><div><span class="eyebrow">MODERACIÓN</span><h3>Banear o desbanear</h3></div></div>
-              <p class="muted-note">El baneo deshabilita el acceso en Firebase Authentication y guarda el motivo en el perfil. No elimina la cuenta ni sus compras.</p>
-              <label class="field-label" for="banReason">Motivo de la suspensión</label><textarea id="banReason" rows="4" maxlength="240" placeholder="Describe claramente el motivo"></textarea>
-              <label class="confirm-row"><input id="confirmModeration" type="checkbox"><span>Confirmo que revisé la cuenta y comprendo el impacto.</span></label>
-              <div class="moderation-buttons"><button id="banAccountButton" class="danger-button" type="button" disabled>Banear cuenta</button><button id="unbanAccountButton" class="success-button" type="button" disabled>Desbanear cuenta</button></div>
-            </article>
+          <div class="control-tabs" role="tablist"><button class="control-tab active" data-control-panel="economy" type="button">Economía</button><button class="control-tab" data-control-panel="inventory" type="button">Inventario</button><button class="control-tab" data-control-panel="moderation" type="button">Moderación</button><button class="control-tab" data-control-panel="history" type="button">Historial</button></div>
+          <section id="controlPanelEconomy" class="control-panel account-actions-grid">
+            <article class="panel-card operation-card"><div class="panel-title"><div><span class="eyebrow">RECURSOS</span><h3>Dar o retirar</h3></div></div><div class="operation-tabs" role="group"><button class="operation-tab active" data-resource="monedas" type="button">Monedas</button><button class="operation-tab" data-resource="diamantes" type="button">Diamantes</button><button class="operation-tab" data-resource="vidas" type="button">Vidas</button></div><div class="operation-tabs" role="group"><button class="operation-tab active" data-direction="add" type="button">Regalar</button><button class="operation-tab danger-tab" data-direction="remove" type="button">Quitar</button></div><label class="field-label" for="resourceAmount">Cantidad</label><input id="resourceAmount" type="number" min="1" max="1000000" step="1" inputmode="numeric"><label class="field-label" for="resourceReason">Motivo obligatorio</label><textarea id="resourceReason" rows="3" maxlength="240" placeholder="Premio, corrección o sanción"></textarea><div id="operationPreview" class="operation-preview">Selecciona una cuenta.</div><button id="executeResourceOperation" class="primary-button" type="button" disabled>Confirmar operación</button></article>
+            <article class="panel-card"><div class="panel-title"><div><span class="eyebrow">SEGURIDAD</span><h3>Confirmación reforzada</h3></div></div><p class="muted-note">Cada cambio guarda saldo anterior, saldo nuevo, administrador, fecha y motivo. Los saldos nunca quedan negativos.</p><div class="health-stack"><div class="health-item good"><b>Monedas sincronizadas</b><span>coins y monedas</span></div><div class="health-item good"><b>Diamantes sincronizados</b><span>diamonds y diamantes</span></div><div class="health-item good"><b>Vidas controladas</b><span>Máximo administrativo: 99</span></div></div></article>
           </section>
-          <article class="panel-card audit-panel"><div class="panel-title"><div><span class="eyebrow">AUDITORÍA</span><h3>Últimas acciones administrativas</h3></div><button id="refreshAudit" class="secondary-button" type="button">Actualizar</button></div><div id="accountAuditList" class="data-list"><div class="empty-inline">No se ha cargado el historial.</div></div></article>
+          <section id="controlPanelInventory" class="control-panel hidden account-actions-grid">
+            <article class="panel-card"><div class="panel-title"><div><span class="eyebrow">INVENTARIO ACTUAL</span><h3>Contenido del jugador</h3></div></div><div id="inventorySummary" class="inventory-summary"><div class="empty-inline">Selecciona un jugador.</div></div></article>
+            <article class="panel-card form-panel"><div class="panel-title"><div><span class="eyebrow">GESTIONAR OBJETO</span><h3>Entregar, retirar o equipar</h3></div></div><label>Categoría<select id="inventoryCategory"><option value="articulos">Artículos / skins</option><option value="perritos">Perritos Jr</option><option value="razas">Razas / habilidades</option></select></label><label>ID exacto del objeto<input id="inventoryItemId" type="text" maxlength="80" placeholder="Ej. sombrero-rojo"></label><label>Acción<select id="inventoryAction"><option value="grant">Entregar</option><option value="remove">Retirar</option><option value="equip">Equipar</option><option value="unequip">Desequipar</option></select></label><label>Motivo<textarea id="inventoryReason" rows="3" maxlength="240"></textarea></label><button id="executeInventoryOperation" class="primary-button" type="button" disabled>Aplicar al inventario</button></article>
+          </section>
+          <section id="controlPanelModeration" class="control-panel hidden account-actions-grid">
+            <article class="panel-card moderation-card"><div class="panel-title"><div><span class="eyebrow">SANCIONES</span><h3>Acceso a la cuenta</h3></div></div><label>Duración de suspensión<select id="suspensionDuration"><option value="1">1 hora</option><option value="24">24 horas</option><option value="168">7 días</option><option value="720">30 días</option></select></label><label class="field-label" for="banReason">Motivo obligatorio</label><textarea id="banReason" rows="4" maxlength="240"></textarea><label class="confirm-row"><input id="confirmModeration" type="checkbox"><span>Confirmo que revisé la cuenta y comprendo el impacto.</span></label><div class="moderation-button-grid"><button id="suspendAccountButton" class="warning-button" type="button" disabled>Suspender temporalmente</button><button id="unsuspendAccountButton" class="secondary-button" type="button" disabled>Quitar suspensión</button><button id="banAccountButton" class="danger-button" type="button" disabled>Ban permanente</button><button id="unbanAccountButton" class="success-button" type="button" disabled>Desbanear</button></div></article>
+            <article class="panel-card moderation-card"><div class="panel-title"><div><span class="eyebrow">COMUNIDAD</span><h3>Chat y eventos</h3></div></div><div class="moderation-button-grid"><button id="muteChatButton" class="warning-button" type="button" disabled>Silenciar chat</button><button id="unmuteChatButton" class="secondary-button" type="button" disabled>Reactivar chat</button><button id="blockEventsButton" class="danger-button" type="button" disabled>Bloquear eventos</button><button id="unblockEventsButton" class="success-button" type="button" disabled>Permitir eventos</button><button id="warnAccountButton" class="secondary-button wide-action" type="button" disabled>Registrar advertencia</button></div><p class="muted-note">Estas acciones se reflejan en el perfil y quedan registradas en auditoría.</p></article>
+          </section>
+          <section id="controlPanelHistory" class="control-panel hidden"><article class="panel-card audit-panel"><div class="panel-title"><div><span class="eyebrow">AUDITORÍA</span><h3>Historial administrativo</h3></div><button id="refreshAudit" class="secondary-button" type="button">Actualizar</button></div><div class="audit-filter-row"><input id="auditSearch" type="search" placeholder="Filtrar por jugador, acción o motivo"><select id="auditType"><option value="">Todas las acciones</option><option value="adjustBalance">Economía</option><option value="inventory">Inventario</option><option value="moderation">Moderación</option></select></div><div id="accountAuditList" class="data-list"><div class="empty-inline">No se ha cargado el historial.</div></div></article></section>
           <div id="accountOperationMessage" class="account-operation-message" aria-live="polite"></div>
         </section>
 
@@ -109,6 +93,6 @@
   <script type="module" src="./users.js?v=42"></script>
   <script type="module" src="./assistant.js?v=2"></script>
   <script type="module" src="./operations.js?v=1"></script>
-  <script type="module" src="./accounts.js?v=1"></script>
+  <script type="module" src="./accounts.js?v=4"></script>
 </body>
 </html>

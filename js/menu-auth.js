@@ -50,6 +50,15 @@ onAuthStateChanged(auth, async (usuario) => {
 
     const datosUsuario = documentoUsuario.data();
 
+    const suspensionHasta = datosUsuario.suspendedUntil?.toDate
+      ? datosUsuario.suspendedUntil.toDate()
+      : datosUsuario.suspendedUntil ? new Date(datosUsuario.suspendedUntil) : null;
+    if (datosUsuario.banned === true || (datosUsuario.suspended === true && suspensionHasta && suspensionHasta > new Date())) {
+      await auth.signOut();
+      window.location.replace(`login.html?blocked=${datosUsuario.banned === true ? "banned" : "suspended"}`);
+      return;
+    }
+
     /*
       Comprobamos que también tenga su ID corto
       con formato JF-XXXXX.

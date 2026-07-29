@@ -68,12 +68,14 @@ async function loadProfile() {
   profile.__name = safeName(profile, user);
   profile.__photo = safePhoto(profile, user);
   profile.__playerId = safePlayerId(profile);
+  const mutedUntil = profile.chatMutedUntil?.toDate ? profile.chatMutedUntil.toDate() : profile.chatMutedUntil ? new Date(profile.chatMutedUntil) : null;
+  profile.__adminMuted = profile.chatMuted === true && (!mutedUntil || mutedUntil > new Date());
 }
 async function checkModeration() {
   const snap = await getDoc(doc(db, "chatModeration", user.uid));
   const data = snap.exists() ? snap.data() : {};
   if (data.banned === true) throw new Error("Tu acceso al chat fue bloqueado por moderación.");
-  const muted = data.muted === true || (data.mutedUntil?.toDate && data.mutedUntil.toDate() > new Date());
+  const muted = profile.__adminMuted || data.muted === true || (data.mutedUntil?.toDate && data.mutedUntil.toDate() > new Date());
   els.input.disabled = muted; els.send.disabled = muted;
   if (muted) toast("Estás silenciado temporalmente.");
 }

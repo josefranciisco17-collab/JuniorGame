@@ -232,128 +232,47 @@ function displayName(data = {}) {
 }
 
 app.post("/admin/player-operation", requireAdmin, async (req, res) => {
-  const uid = cleanText(req.body.uid, 128);
-  const action = cleanText(req.body.action, 40);
-  const reason = cleanText(req.body.reason, 240);
-
-  if (!uid) return res.status(400).json({ error: "Falta el UID del jugador." });
-  if (reason.length < 5) return res.status(400).json({ error: "Escribe un motivo de al menos 5 caracteres." });
-  if (!["adjustBalance", "ban", "unban"].includes(action)) {
-    return res.status(400).json({ error: "La acción solicitada no es válida." });
-  }
-
-  const userRef = db.collection("users").doc(uid);
-  const auditRef = db.collection("adminAuditLogs").doc();
-
-  try {
-    const profileSnapshot = await userRef.get();
-    if (!profileSnapshot.exists) return res.status(404).json({ error: "No se encontró el perfil del jugador." });
-
-    const profile = profileSnapshot.data() || {};
-    let actionLabel = "";
-    let responseUser = {};
-
-    if (action === "adjustBalance") {
-      const resource = cleanText(req.body.resource, 20);
-      const direction = cleanText(req.body.direction, 10);
-      const amount = Number(req.body.amount);
-
-      if (!["monedas", "diamantes"].includes(resource)) {
-        return res.status(400).json({ error: "El recurso no es válido." });
-      }
-      if (!["add", "remove"].includes(direction)) {
-        return res.status(400).json({ error: "El tipo de movimiento no es válido." });
-      }
-      if (!Number.isSafeInteger(amount) || amount < 1 || amount > 1_000_000) {
-        return res.status(400).json({ error: "La cantidad debe estar entre 1 y 1,000,000." });
-      }
-
-      const result = await db.runTransaction(async (transaction) => {
-        const latestSnapshot = await transaction.get(userRef);
-        if (!latestSnapshot.exists) throw new Error("El perfil dejó de existir.");
-        const latest = latestSnapshot.data() || {};
-        const legacyField = resource === "monedas" ? "coins" : "diamonds";
-        const current = Number(latest[resource] ?? latest[legacyField] ?? 0);
-        const safeCurrent = Number.isFinite(current) ? Math.max(0, Math.trunc(current)) : 0;
-        const requestedDelta = direction === "add" ? amount : -amount;
-        const next = Math.max(0, safeCurrent + requestedDelta);
-        const appliedDelta = next - safeCurrent;
-
-        /*
-         * JuniorGame conserva dos nombres históricos para cada saldo:
-         * coins/monedas y diamonds/diamantes.
-         * El menú prioriza coins y diamonds, por eso ambos campos deben
-         * actualizarse juntos para evitar saldos diferentes en pantalla.
-         */
-        transaction.update(userRef, {
-          [resource]: next,
-          [legacyField]: next,
-          ultimaOperacionAdminAt: FieldValue.serverTimestamp(),
-          ultimaOperacionAdminPor: req.admin.uid
-        });
-        transaction.set(auditRef, {
-          action,
-          actionLabel: `${direction === "add" ? "Entrega" : "Retiro"} de ${resource}`,
-          targetUid: uid,
-          targetName: displayName(latest),
-          resource,
-          requestedAmount: amount,
-          appliedDelta,
-          previousBalance: safeCurrent,
-          newBalance: next,
-          reason,
-          adminUid: req.admin.uid,
-          adminEmail: req.admin.email || "",
-          createdAt: FieldValue.serverTimestamp()
-        });
-        return { next, safeCurrent, appliedDelta };
-      });
-
-      actionLabel = `${direction === "add" ? "Se agregaron" : "Se retiraron"} ${Math.abs(result.appliedDelta)} ${resource}.`;
-      responseUser = { [resource]: result.next };
+  const uid=cleanText(req.body.uid,128), action=cleanText(req.body.action,40), reason=cleanText(req.body.reason,240);
+  const allowed=["adjustBalance","inventory","ban","unban","suspend","unsuspend","muteChat","unmuteChat","blockEvents","unblockEvents","warn"];
+  if(!uid)return res.status(400).json({error:"Falta el UID del jugador."});
+  if(reason.length<5)return res.status(400).json({error:"Escribe un motivo de al menos 5 caracteres."});
+  if(!allowed.includes(action))return res.status(400).json({error:"La acción solicitada no es válida."});
+  if(uid===req.admin.uid && ["ban","suspend"].includes(action))return res.status(400).json({error:"No puedes bloquear tu propia cuenta administrativa."});
+  const userRef=db.collection("users").doc(uid), auditRef=db.collection("adminAuditLogs").doc();
+  try{
+    const snap=await userRef.get(); if(!snap.exists)return res.status(404).json({error:"No se encontró el perfil del jugador."});
+    const profile=snap.data()||{}; let label="", responseUser={};
+    const audit=async extra=>auditRef.set({action,actionLabel:label,targetUid:uid,targetName:displayName(profile),reason,adminUid:req.admin.uid,adminEmail:req.admin.email||"",createdAt:FieldValue.serverTimestamp(),...extra});
+    if(action==="adjustBalance"){
+      const resource=cleanText(req.body.resource,20),direction=cleanText(req.body.direction,10),amount=Number(req.body.amount);
+      if(!["monedas","diamantes","vidas"].includes(resource)||!["add","remove"].includes(direction))return res.status(400).json({error:"Movimiento no válido."});
+      if(!Number.isSafeInteger(amount)||amount<1||amount>1000000)return res.status(400).json({error:"Cantidad inválida."});
+      const aliases=resource==="monedas"?["coins","monedas"]:resource==="diamantes"?["diamonds","diamantes"]:["lives","vidas"];
+      const result=await db.runTransaction(async tx=>{const latestSnap=await tx.get(userRef),latest=latestSnap.data()||{},current=Math.max(0,Math.trunc(Number(latest[aliases[0]]??latest[aliases[1]]??(resource==="vidas"?3:0))||0)),cap=resource==="vidas"?99:Number.MAX_SAFE_INTEGER,next=Math.max(0,Math.min(cap,current+(direction==="add"?amount:-amount))),delta=next-current;tx.update(userRef,{[aliases[0]]:next,[aliases[1]]:next,ultimaOperacionAdminAt:FieldValue.serverTimestamp(),ultimaOperacionAdminPor:req.admin.uid});label=`${direction==="add"?"Entrega":"Retiro"} de ${resource}`;tx.set(auditRef,{action,actionLabel:label,targetUid:uid,targetName:displayName(latest),resource,requestedAmount:amount,appliedDelta:delta,previousBalance:current,newBalance:next,reason,adminUid:req.admin.uid,adminEmail:req.admin.email||"",createdAt:FieldValue.serverTimestamp()});return{next,aliases}});responseUser={[result.aliases[0]]:result.next,[result.aliases[1]]:result.next};label=`${direction==="add"?"Se agregaron":"Se retiraron"} ${amount} ${resource}.`;
+    } else if(action==="inventory"){
+      const category=cleanText(req.body.category,20),itemId=cleanText(req.body.itemId,80),invAction=cleanText(req.body.inventoryAction,20);
+      if(!["articulos","perritos","razas"].includes(category)||!itemId||!["grant","remove","equip","unequip"].includes(invAction))return res.status(400).json({error:"Datos de inventario no válidos."});
+      const map={articulos:{owned:"inventarioArticulos",equipped:"skinEquipada"},perritos:{owned:"perritosJrComprados",equipped:"perritoEquipado"},razas:{owned:"razasCompradas",equipped:"razaEquipada"}},cfg=map[category],update={ultimaOperacionAdminAt:FieldValue.serverTimestamp(),ultimaOperacionAdminPor:req.admin.uid};
+      if(invAction==="grant")update[`${cfg.owned}.${itemId}`]=true;
+      if(invAction==="remove"){update[`${cfg.owned}.${itemId}`]=FieldValue.delete();if(profile[cfg.equipped]===itemId)update[cfg.equipped]=FieldValue.delete();}
+      if(invAction==="equip"){update[`${cfg.owned}.${itemId}`]=true;update[cfg.equipped]=itemId;}
+      if(invAction==="unequip")update[cfg.equipped]=FieldValue.delete();
+      await userRef.update(update);label=`Inventario: ${invAction} ${itemId}`;await audit({category,itemId,inventoryAction:invAction});responseUser={};
+    } else {
+      const hours=Math.max(1,Math.min(720,Number(req.body.durationHours)||24)), now=Date.now(), until=new Date(now+hours*3600000); let update={};
+      if(action==="ban"){await getAuth().updateUser(uid,{disabled:true});update={banned:true,disabled:true,banReason:reason,bannedAt:FieldValue.serverTimestamp(),bannedBy:req.admin.uid};label="Cuenta baneada permanentemente";}
+      if(action==="unban"){await getAuth().updateUser(uid,{disabled:false});update={banned:false,disabled:false,banReason:FieldValue.delete(),bannedAt:FieldValue.delete(),bannedBy:FieldValue.delete(),unbannedAt:FieldValue.serverTimestamp(),unbannedBy:req.admin.uid};label="Cuenta desbaneada";}
+      if(action==="suspend"){update={suspended:true,suspendedUntil:until,suspensionReason:reason,suspendedBy:req.admin.uid};label=`Cuenta suspendida ${hours} horas`;}
+      if(action==="unsuspend"){update={suspended:false,suspendedUntil:FieldValue.delete(),suspensionReason:FieldValue.delete(),unsuspendedAt:FieldValue.serverTimestamp()};label="Suspensión retirada";}
+      if(action==="muteChat"){update={chatMuted:true,chatMutedUntil:until,chatMuteReason:reason};label=`Chat silenciado ${hours} horas`;}
+      if(action==="unmuteChat"){update={chatMuted:false,chatMutedUntil:FieldValue.delete(),chatMuteReason:FieldValue.delete()};label="Chat reactivado";}
+      if(action==="blockEvents"){update={eventsBlocked:true,eventsBlockReason:reason};label="Participación en eventos bloqueada";}
+      if(action==="unblockEvents"){update={eventsBlocked:false,eventsBlockReason:FieldValue.delete()};label="Participación en eventos reactivada";}
+      if(action==="warn"){update={warnings:FieldValue.increment(1),lastWarningReason:reason,lastWarningAt:FieldValue.serverTimestamp()};label="Advertencia registrada";}
+      await userRef.update(update);await audit({durationHours:["suspend","muteChat"].includes(action)?hours:null});responseUser=update;
     }
-
-    if (action === "ban" || action === "unban") {
-      const disabled = action === "ban";
-      await getAuth().updateUser(uid, { disabled });
-      const update = disabled ? {
-        banned: true,
-        disabled: true,
-        banReason: reason,
-        bannedAt: FieldValue.serverTimestamp(),
-        bannedBy: req.admin.uid
-      } : {
-        banned: false,
-        disabled: false,
-        banReason: FieldValue.delete(),
-        bannedAt: FieldValue.delete(),
-        bannedBy: FieldValue.delete(),
-        unbannedAt: FieldValue.serverTimestamp(),
-        unbannedBy: req.admin.uid
-      };
-      await userRef.update(update);
-      actionLabel = disabled ? "Cuenta baneada" : "Cuenta desbaneada";
-      await auditRef.set({
-        action,
-        actionLabel,
-        targetUid: uid,
-        targetName: displayName(profile),
-        reason,
-        adminUid: req.admin.uid,
-        adminEmail: req.admin.email || "",
-        createdAt: FieldValue.serverTimestamp()
-      });
-      responseUser = { banned: disabled, disabled };
-    }
-
-    return res.json({ ok: true, message: actionLabel, user: responseUser });
-  } catch (error) {
-    console.error("Error en operación administrativa:", error);
-    if (error.code === "auth/user-not-found") {
-      return res.status(404).json({ error: "La cuenta no existe en Firebase Authentication." });
-    }
-    return res.status(500).json({ error: "No se pudo completar la operación administrativa." });
-  }
+    return res.json({ok:true,message:label,user:responseUser});
+  }catch(error){console.error("Error en operación administrativa:",error);if(error.code==="auth/user-not-found")return res.status(404).json({error:"La cuenta no existe en Firebase Authentication."});return res.status(500).json({error:"No se pudo completar la operación administrativa."});}
 });
 
 app.get("/admin/audit", requireAdmin, async (_req, res) => {

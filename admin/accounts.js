@@ -1,207 +1,25 @@
 "use strict";
-
 import { auth, db } from "../js/firebase-config.js";
-import {
-  collection,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-const API_URL = "https://juniorgame-stripe.onrender.com";
-const numberFormat = new Intl.NumberFormat("es-MX");
-const els = {
-  search: document.getElementById("accountSearch"),
-  searchButton: document.getElementById("accountSearchButton"),
-  results: document.getElementById("accountSearchResults"),
-  selectedName: document.getElementById("selectedAccountName"),
-  selectedStatus: document.getElementById("selectedAccountStatus"),
-  selectedDetails: document.getElementById("selectedAccountDetails"),
-  amount: document.getElementById("resourceAmount"),
-  reason: document.getElementById("resourceReason"),
-  preview: document.getElementById("operationPreview"),
-  execute: document.getElementById("executeResourceOperation"),
-  banReason: document.getElementById("banReason"),
-  confirmModeration: document.getElementById("confirmModeration"),
-  ban: document.getElementById("banAccountButton"),
-  unban: document.getElementById("unbanAccountButton"),
-  audit: document.getElementById("accountAuditList"),
-  refreshAudit: document.getElementById("refreshAudit"),
-  message: document.getElementById("accountOperationMessage")
-};
-
-let users = [];
-let selectedUser = null;
-let resource = "monedas";
-let direction = "add";
-let busy = false;
-
-const safe = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char]));
-const num = (value) => Number.isFinite(Number(value)) ? Number(value) : 0;
-const userName = (data) => data.nombre || data.customName || data.name || data.displayName || "Usuario sin nombre";
-const userEmail = (data) => data.email || "Sin correo";
-const userJf = (data) => data.playerId || data.jfId || data.JF_ID || data["JF-ID"] || data.shortId || "Sin ID JF";
-const userBalance = (data, key) => key === "monedas" ? num(data.monedas ?? data.coins) : num(data.diamantes ?? data.diamonds);
-
-function setMessage(text, type = "") {
-  if (!els.message) return;
-  els.message.textContent = text;
-  els.message.className = `account-operation-message ${type}`.trim();
-}
-
-async function authorizedFetch(path, options = {}) {
-  const current = auth.currentUser;
-  if (!current) throw new Error("La sesión administrativa expiró.");
-  const token = await current.getIdToken(true);
-  const response = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      ...(options.headers || {})
-    }
-  });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(payload.error || "La operación no pudo completarse.");
-  return payload;
-}
-
-async function loadUsers() {
-  els.results.innerHTML = '<div class="empty-inline">Cargando cuentas…</div>';
-  const snapshot = await getDocs(collection(db, "users"));
-  users = snapshot.docs.map((doc) => ({ uid: doc.id, data: doc.data() }));
-  renderSearch();
-}
-
-function renderSearch() {
-  const term = (els.search?.value || "").trim().toLowerCase();
-  if (term.length < 2) {
-    els.results.innerHTML = '<div class="empty-inline">Escribe al menos 2 caracteres.</div>';
-    return;
-  }
-  const found = users.filter(({ uid, data }) => [uid, userName(data), userEmail(data), userJf(data)].some((value) => String(value).toLowerCase().includes(term))).slice(0, 12);
-  if (!found.length) {
-    els.results.innerHTML = '<div class="empty-inline">No se encontraron coincidencias.</div>';
-    return;
-  }
-  els.results.innerHTML = found.map(({ uid, data }) => `
-    <button class="account-result" type="button" data-account-uid="${safe(uid)}">
-      <span><strong>${safe(userName(data))}</strong><small>${safe(userEmail(data))}</small></span>
-      <span class="account-result-id">${safe(userJf(data))}</span>
-    </button>`).join("");
-  els.results.querySelectorAll("[data-account-uid]").forEach((button) => button.addEventListener("click", () => selectUser(button.dataset.accountUid)));
-}
-
-function selectUser(uid) {
-  selectedUser = users.find((item) => item.uid === uid) || null;
-  if (!selectedUser) return;
-  const data = selectedUser.data;
-  const banned = data.banned === true || data.disabled === true;
-  els.selectedName.textContent = userName(data);
-  els.selectedStatus.textContent = banned ? "Baneada" : "Activa";
-  els.selectedStatus.className = `account-state ${banned ? "banned" : "active"}`;
-  els.selectedDetails.innerHTML = `
-    <div><span>Correo</span><strong>${safe(userEmail(data))}</strong></div>
-    <div><span>ID JF</span><strong>${safe(userJf(data))}</strong></div>
-    <div><span>Monedas</span><strong>${numberFormat.format(userBalance(data, "monedas"))}</strong></div>
-    <div><span>Diamantes</span><strong>${numberFormat.format(userBalance(data, "diamantes"))}</strong></div>
-    <div class="uid-line"><span>UID</span><strong>${safe(selectedUser.uid)}</strong></div>`;
-  updateControls();
-}
-
-function updateControls() {
-  const amount = Math.trunc(num(els.amount?.value));
-  const reason = (els.reason?.value || "").trim();
-  const valid = Boolean(selectedUser && amount > 0 && amount <= 1_000_000 && reason.length >= 5 && !busy);
-  els.execute.disabled = !valid;
-  if (!selectedUser) els.preview.textContent = "Selecciona una cuenta y escribe una cantidad.";
-  else if (!amount) els.preview.textContent = "Escribe una cantidad válida.";
-  else {
-    const current = userBalance(selectedUser.data, resource);
-    const next = direction === "add" ? current + amount : Math.max(0, current - amount);
-    els.preview.innerHTML = `<strong>${direction === "add" ? "Regalar" : "Quitar"} ${numberFormat.format(amount)} ${resource}</strong><span>Saldo actual: ${numberFormat.format(current)} · Saldo estimado: ${numberFormat.format(next)}</span>`;
-  }
-  const moderationValid = Boolean(selectedUser && els.confirmModeration?.checked && (els.banReason?.value || "").trim().length >= 5 && !busy);
-  const banned = selectedUser?.data?.banned === true || selectedUser?.data?.disabled === true;
-  els.ban.disabled = !moderationValid || banned;
-  els.unban.disabled = !moderationValid || !banned;
-}
-
-async function runOperation(action, extra = {}) {
-  if (!selectedUser || busy) return;
-  busy = true;
-  updateControls();
-  setMessage("Procesando operación protegida…");
-  try {
-    const payload = await authorizedFetch("/admin/player-operation", {
-      method: "POST",
-      body: JSON.stringify({ uid: selectedUser.uid, action, ...extra })
-    });
-    selectedUser.data = { ...selectedUser.data, ...(payload.user || {}) };
-    const index = users.findIndex((item) => item.uid === selectedUser.uid);
-    if (index >= 0) users[index] = selectedUser;
-    selectUser(selectedUser.uid);
-    setMessage(payload.message || "Operación realizada correctamente.", "success");
-    if (els.amount) els.amount.value = "";
-    if (els.reason) els.reason.value = "";
-    if (els.banReason) els.banReason.value = "";
-    if (els.confirmModeration) els.confirmModeration.checked = false;
-    await loadAudit();
-  } catch (error) {
-    console.error(error);
-    setMessage(error.message, "error");
-  } finally {
-    busy = false;
-    updateControls();
-  }
-}
-
-async function loadAudit() {
-  try {
-    const payload = await authorizedFetch("/admin/audit", { method: "GET" });
-    const items = Array.isArray(payload.items) ? payload.items : [];
-    if (!items.length) {
-      els.audit.innerHTML = '<div class="empty-inline">Todavía no hay acciones registradas.</div>';
-      return;
-    }
-    els.audit.innerHTML = items.map((data) => {
-      const when = data.createdAt ? new Date(data.createdAt).toLocaleString("es-MX") : "Pendiente";
-      return `<div class="data-row"><div><strong>${safe(data.actionLabel || data.action)}</strong><span>${safe(data.targetName || data.targetUid)} · ${safe(data.reason || "Sin motivo")}</span></div><div class="value">${safe(when)}</div></div>`;
-    }).join("");
-  } catch (error) {
-    els.audit.innerHTML = `<div class="empty-inline">No fue posible cargar la auditoría: ${safe(error.message)}</div>`;
-  }
-}
-
-document.querySelectorAll("[data-resource]").forEach((button) => button.addEventListener("click", () => {
-  resource = button.dataset.resource;
-  document.querySelectorAll("[data-resource]").forEach((item) => item.classList.toggle("active", item === button));
-  updateControls();
-}));
-document.querySelectorAll("[data-direction]").forEach((button) => button.addEventListener("click", () => {
-  direction = button.dataset.direction;
-  document.querySelectorAll("[data-direction]").forEach((item) => item.classList.toggle("active", item === button));
-  updateControls();
-}));
-
-els.searchButton?.addEventListener("click", renderSearch);
-els.search?.addEventListener("input", renderSearch);
-els.search?.addEventListener("keydown", (event) => { if (event.key === "Enter") renderSearch(); });
-[els.amount, els.reason, els.banReason, els.confirmModeration].forEach((element) => {
-  element?.addEventListener("input", updateControls);
-  element?.addEventListener("change", updateControls);
-});
-els.execute?.addEventListener("click", () => runOperation("adjustBalance", {
-  resource,
-  direction,
-  amount: Math.trunc(num(els.amount.value)),
-  reason: els.reason.value.trim()
-}));
-els.ban?.addEventListener("click", () => runOperation("ban", { reason: els.banReason.value.trim() }));
-els.unban?.addEventListener("click", () => runOperation("unban", { reason: els.banReason.value.trim() }));
-els.refreshAudit?.addEventListener("click", loadAudit);
-
-window.addEventListener("juniorgame:view-change", (event) => {
-  if (event.detail?.view === "cuentas") {
-    loadUsers().catch((error) => setMessage(error.message, "error"));
-    loadAudit();
-  }
-});
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+const API_URL="https://juniorgame-stripe.onrender.com", nf=new Intl.NumberFormat("es-MX"), df=new Intl.DateTimeFormat("es-MX",{dateStyle:"medium",timeStyle:"short"});
+const $=id=>document.getElementById(id), els={search:$("accountSearch"),searchButton:$("accountSearchButton"),results:$("accountSearchResults"),name:$("selectedAccountName"),status:$("selectedAccountStatus"),details:$("selectedAccountDetails"),amount:$("resourceAmount"),reason:$("resourceReason"),preview:$("operationPreview"),execute:$("executeResourceOperation"),banReason:$("banReason"),confirm:$("confirmModeration"),duration:$("suspensionDuration"),ban:$("banAccountButton"),unban:$("unbanAccountButton"),suspend:$("suspendAccountButton"),unsuspend:$("unsuspendAccountButton"),mute:$("muteChatButton"),unmute:$("unmuteChatButton"),blockEvents:$("blockEventsButton"),unblockEvents:$("unblockEventsButton"),warn:$("warnAccountButton"),invSummary:$("inventorySummary"),invCategory:$("inventoryCategory"),invItem:$("inventoryItemId"),invAction:$("inventoryAction"),invReason:$("inventoryReason"),invExecute:$("executeInventoryOperation"),audit:$("accountAuditList"),auditSearch:$("auditSearch"),auditType:$("auditType"),refreshAudit:$("refreshAudit"),message:$("accountOperationMessage")};
+let users=[],selected=null,resource="monedas",direction="add",busy=false,auditItems=[];
+const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const num=v=>Number.isFinite(Number(v))?Number(v):0, name=d=>d.nombre||d.customName||d.name||d.displayName||"Usuario sin nombre", email=d=>d.email||"Sin correo", jf=d=>d.playerId||d.jfId||d.JF_ID||d["JF-ID"]||d.shortId||"Sin ID JF";
+const balance=(d,k)=>k==="monedas"?num(d.coins??d.monedas):k==="diamantes"?num(d.diamonds??d.diamantes):num(d.lives??d.vidas??3);
+const dateValue=v=>{try{const d=v?.toDate?v.toDate():v?new Date(v):null;return d&&!isNaN(d)?df.format(d):"Sin registro"}catch{return"Sin registro"}};
+function message(t,type=""){els.message.textContent=t;els.message.className=`account-operation-message ${type}`.trim()}
+async function api(path,options={}){const u=auth.currentUser;if(!u)throw Error("La sesión administrativa expiró.");const token=await u.getIdToken(true),r=await fetch(API_URL+path,{...options,headers:{"Content-Type":"application/json",Authorization:`Bearer ${token}`,...(options.headers||{})}}),p=await r.json().catch(()=>({}));if(!r.ok)throw Error(p.error||"No se pudo completar la operación.");return p}
+async function loadUsers(){els.results.innerHTML='<div class="empty-inline">Cargando…</div>';const s=await getDocs(collection(db,"users"));users=s.docs.map(x=>({uid:x.id,data:x.data()}));renderSearch()}
+function renderSearch(){const t=(els.search.value||"").trim().toLowerCase();if(t.length<2){els.results.innerHTML='<div class="empty-inline">Escribe al menos 2 caracteres.</div>';return}const f=users.filter(({uid,data})=>[uid,name(data),email(data),jf(data)].some(v=>String(v).toLowerCase().includes(t))).slice(0,15);els.results.innerHTML=f.length?f.map(({uid,data})=>`<button class="account-result" type="button" data-uid="${safe(uid)}"><span><strong>${safe(name(data))}</strong><small>${safe(email(data))}</small></span><span class="account-result-id">${safe(jf(data))}</span></button>`).join(""):'<div class="empty-inline">Sin coincidencias.</div>';els.results.querySelectorAll('[data-uid]').forEach(b=>b.addEventListener('click',()=>selectUser(b.dataset.uid)))}
+function accountState(d){const until=d.suspendedUntil?.toDate?d.suspendedUntil.toDate():d.suspendedUntil?new Date(d.suspendedUntil):null;if(d.banned||d.disabled)return["Baneada","banned"];if(d.suspended&&until&&until>new Date())return["Suspendida","suspended"];return["Activa","active"]}
+function countTrue(o){return o&&typeof o==='object'?Object.values(o).filter(Boolean).length:0}
+function renderInventory(){if(!selected){els.invSummary.innerHTML='<div class="empty-inline">Selecciona un jugador.</div>';return}const d=selected.data, inv=d.inventarioArticulos||{}, pets=d.perritosJrComprados||{}, races=d.razasCompradas||{};els.invSummary.innerHTML=`<div class="inventory-stat"><b>${countTrue(inv)}</b><span>Artículos</span></div><div class="inventory-stat"><b>${countTrue(pets)}</b><span>Perritos Jr</span></div><div class="inventory-stat"><b>${countTrue(races)}</b><span>Razas</span></div><div class="inventory-equipped"><span>Skin</span><strong>${safe(d.skinEquipada||"Ninguna")}</strong><span>Perrito</span><strong>${safe(d.perritoEquipado||d.mascotaEquipada||"Ninguno")}</strong><span>Raza</span><strong>${safe(d.razaEquipada||"Ninguna")}</strong></div>`}
+function selectUser(uid){selected=users.find(x=>x.uid===uid)||null;if(!selected)return;const d=selected.data,[label,klass]=accountState(d),photo=d.customPhoto||d.photoURL||d.profilePhoto||"";els.name.textContent=name(d);els.status.textContent=label;els.status.className=`account-state ${klass}`;els.details.innerHTML=`<div class="profile-identity">${photo?`<img src="${safe(photo)}" alt="Foto de perfil">`:`<span>${safe(name(d).slice(0,1).toUpperCase())}</span>`}<div><strong>${safe(name(d))}</strong><small>${safe(email(d))}</small></div></div><div><span>ID JF</span><strong>${safe(jf(d))}</strong></div><div><span>UID</span><strong>${safe(selected.uid)}</strong></div><div><span>Registro</span><strong>${safe(dateValue(d.createdAt||d.fechaRegistro))}</strong></div><div><span>Última conexión</span><strong>${safe(dateValue(d.lastSeen||d.ultimaConexion||d.updatedAt))}</strong></div><div><span>Nivel</span><strong>${nf.format(num(d.nivelActual??d.level??d.progreso?.nivelActual))}</strong></div><div><span>Monedas</span><strong>${nf.format(balance(d,"monedas"))}</strong></div><div><span>Diamantes</span><strong>${nf.format(balance(d,"diamantes"))}</strong></div><div><span>Vidas</span><strong>${nf.format(balance(d,"vidas"))}</strong></div>`;renderInventory();updateControls()}
+function updateControls(){const amount=Math.trunc(num(els.amount.value)),reason=(els.reason.value||"").trim(),valid=!!(selected&&amount>0&&amount<=1000000&&reason.length>=5&&!busy);els.execute.disabled=!valid;if(!selected)els.preview.textContent="Selecciona una cuenta.";else if(!amount)els.preview.textContent="Escribe una cantidad válida.";else{const current=balance(selected.data,resource),max=resource==="vidas"?99:Infinity,next=direction==="add"?Math.min(max,current+amount):Math.max(0,current-amount);els.preview.innerHTML=`<strong>${direction==="add"?"Regalar":"Quitar"} ${nf.format(amount)} ${resource}</strong><span>Actual: ${nf.format(current)} · Nuevo: ${nf.format(next)}</span>`}const mod=!!(selected&&els.confirm.checked&&(els.banReason.value||"").trim().length>=5&&!busy);[els.ban,els.unban,els.suspend,els.unsuspend,els.mute,els.unmute,els.blockEvents,els.unblockEvents,els.warn].forEach(x=>x.disabled=!mod);els.invExecute.disabled=!(selected&&(els.invItem.value||"").trim().length>=2&&(els.invReason.value||"").trim().length>=5&&!busy)}
+async function run(action,extra={}){if(!selected||busy)return;busy=true;updateControls();message("Procesando operación protegida…");try{const p=await api('/admin/player-operation',{method:'POST',body:JSON.stringify({uid:selected.uid,action,...extra})});selected.data={...selected.data,...(p.user||{})};const i=users.findIndex(x=>x.uid===selected.uid);if(i>=0)users[i]=selected;selectUser(selected.uid);message(p.message||"Operación completada.","success");[els.amount,els.reason,els.banReason,els.invItem,els.invReason].forEach(x=>{if(x)x.value=""});els.confirm.checked=false;await loadAudit()}catch(e){console.error(e);message(e.message,"error")}finally{busy=false;updateControls()}}
+async function loadAudit(){try{const p=await api('/admin/audit');auditItems=Array.isArray(p.items)?p.items:[];renderAudit()}catch(e){els.audit.innerHTML=`<div class="empty-inline">${safe(e.message)}</div>`}}
+function renderAudit(){const t=(els.auditSearch.value||"").toLowerCase(),type=els.auditType.value;const f=auditItems.filter(x=>(!type||(type==='moderation'&&!['adjustBalance','inventory'].includes(x.action))||x.action===type)&&(!t||[x.actionLabel,x.targetName,x.targetUid,x.reason].some(v=>String(v||'').toLowerCase().includes(t))));els.audit.innerHTML=f.length?f.map(x=>`<div class="data-row audit-row"><div><strong>${safe(x.actionLabel||x.action)}</strong><span>${safe(x.targetName||x.targetUid)} · ${safe(x.reason||"Sin motivo")}</span><small>${safe(x.adminEmail||x.adminUid||"")}</small></div><div class="value">${safe(x.createdAt?df.format(new Date(x.createdAt)):"Pendiente")}</div></div>`).join(''):'<div class="empty-inline">No hay acciones para este filtro.</div>'}
+document.querySelectorAll('[data-control-panel]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.control-tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.control-panel').forEach(x=>x.classList.add('hidden'));$('controlPanel'+b.dataset.controlPanel[0].toUpperCase()+b.dataset.controlPanel.slice(1)).classList.remove('hidden')}));
+document.querySelectorAll('[data-resource]').forEach(b=>b.addEventListener('click',()=>{resource=b.dataset.resource;document.querySelectorAll('[data-resource]').forEach(x=>x.classList.toggle('active',x===b));updateControls()}));document.querySelectorAll('[data-direction]').forEach(b=>b.addEventListener('click',()=>{direction=b.dataset.direction;document.querySelectorAll('[data-direction]').forEach(x=>x.classList.toggle('active',x===b));updateControls()}));
+els.searchButton?.addEventListener('click',renderSearch);els.search?.addEventListener('input',renderSearch);[els.amount,els.reason,els.banReason,els.confirm,els.invItem,els.invReason].forEach(x=>{x?.addEventListener('input',updateControls);x?.addEventListener('change',updateControls)});els.execute?.addEventListener('click',()=>run('adjustBalance',{resource,direction,amount:Math.trunc(num(els.amount.value)),reason:els.reason.value.trim()}));els.invExecute?.addEventListener('click',()=>run('inventory',{category:els.invCategory.value,itemId:els.invItem.value.trim(),inventoryAction:els.invAction.value,reason:els.invReason.value.trim()}));els.suspend?.addEventListener('click',()=>run('suspend',{durationHours:Number(els.duration.value),reason:els.banReason.value.trim()}));els.unsuspend?.addEventListener('click',()=>run('unsuspend',{reason:els.banReason.value.trim()}));els.ban?.addEventListener('click',()=>run('ban',{reason:els.banReason.value.trim()}));els.unban?.addEventListener('click',()=>run('unban',{reason:els.banReason.value.trim()}));els.mute?.addEventListener('click',()=>run('muteChat',{durationHours:Number(els.duration.value),reason:els.banReason.value.trim()}));els.unmute?.addEventListener('click',()=>run('unmuteChat',{reason:els.banReason.value.trim()}));els.blockEvents?.addEventListener('click',()=>run('blockEvents',{reason:els.banReason.value.trim()}));els.unblockEvents?.addEventListener('click',()=>run('unblockEvents',{reason:els.banReason.value.trim()}));els.warn?.addEventListener('click',()=>run('warn',{reason:els.banReason.value.trim()}));els.refreshAudit?.addEventListener('click',loadAudit);els.auditSearch?.addEventListener('input',renderAudit);els.auditType?.addEventListener('change',renderAudit);window.addEventListener('juniorgame:view-change',e=>{if(e.detail?.view==='cuentas'){loadUsers().catch(x=>message(x.message,'error'));loadAudit()}});

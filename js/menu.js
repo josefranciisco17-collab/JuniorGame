@@ -209,7 +209,7 @@ window.location.href = "shop.html";
 );
 
 
-  // Centro de Configuración · Fase 3
+  // Centro de Configuración · Fase 4
   const settingsCenter = document.getElementById("settingsCenter");
   const settingsCloseButton = document.getElementById("settingsCloseButton");
   const settingsBackButton = document.getElementById("settingsBackButton");
@@ -233,7 +233,7 @@ window.location.href = "shop.html";
   }
   applyMenuLanguage(localeSettings);
 
-  // Centro de Configuración · Fase 3: Juego, Apariencia y Notificaciones
+  // Centro de Configuración · Fase 4: Cuenta, Accesibilidad, Privacidad y Acerca de
   const SETTINGS_KEY = "juniorGame.settings.v1";
   const defaultAppSettings = {
     musicEnabled: true,
@@ -250,7 +250,11 @@ window.location.href = "shop.html";
     notifyWheel: true,
     notifyMissions: true,
     notifyEvents: true,
-    notifyProfessor: true
+    notifyProfessor: true,
+    highContrast: false,
+    reduceMotion: false,
+    colorBlindMode: "off",
+    vibrationIntensity: "medium"
   };
 
   function loadAppSettings() {
@@ -295,6 +299,9 @@ window.location.href = "shop.html";
     root.dataset.jgShadows = appSettings.shadows ? "on" : "off";
     root.dataset.jgGraphics = appSettings.graphics;
     root.dataset.jgBatterySaver = appSettings.batterySaver ? "on" : "off";
+    root.dataset.jgHighContrast = appSettings.highContrast ? "on" : "off";
+    root.dataset.jgReduceMotion = appSettings.reduceMotion ? "on" : "off";
+    root.dataset.jgColorBlind = appSettings.colorBlindMode;
     window.dispatchEvent(new CustomEvent("juniorgame:settings-changed", { detail: { ...appSettings } }));
   }
 
@@ -313,7 +320,9 @@ window.location.href = "shop.html";
     graphics: [["low", "🔋", "Baja"], ["medium", "✨", "Media"], ["high", "💎", "Alta"]],
     theme: [["auto", "🔄", "Automático"], ["dark", "🌙", "Oscuro"], ["light", "☀️", "Claro"]],
     textSize: [["small", "A", "Pequeño"], ["normal", "🔤", "Normal"], ["large", "🔠", "Grande"]],
-    animations: [["full", "🎬", "Completas"], ["reduced", "🧘", "Reducidas"], ["off", "⏸️", "Desactivadas"]]
+    animations: [["full", "🎬", "Completas"], ["reduced", "🧘", "Reducidas"], ["off", "⏸️", "Desactivadas"]],
+    colorBlindMode: [["off", "🎨", "Desactivado"], ["protanopia", "🔴", "Protanopia"], ["deuteranopia", "🟢", "Deuteranopia"], ["tritanopia", "🔵", "Tritanopia"]],
+    vibrationIntensity: [["low", "〰️", "Suave"], ["medium", "📳", "Media"], ["high", "💥", "Fuerte"]]
   };
 
   function choiceLabel(list, value) {
@@ -324,10 +333,10 @@ window.location.href = "shop.html";
     game: { icon: "🎮", title: "Juego", subtitle: "Sonido, vibración y rendimiento" },
     appearance: { icon: "🎨", title: "Apariencia", subtitle: "Personaliza el aspecto de JuniorGame" },
     notifications: { icon: "🔔", title: "Notificaciones", subtitle: "Controla los avisos dentro del juego" },
-    account: { icon: "👤", title: "Cuenta", subtitle: "Administra tu perfil y tus vínculos", options: [["🖼️","Foto y nombre","Abrir perfil del jugador"],["🔗","Vincular cuenta","Google / Apple"],["🧾","Restaurar compras","Recuperar compras compatibles"],["🚪","Cerrar sesión","Salir de tu cuenta"]] },
-    accessibility: { icon: "♿", title: "Accesibilidad", subtitle: "Haz el juego más cómodo para ti", options: [["🔠","Letras grandes","Aumentar tamaño"],["◐","Alto contraste","Mejorar legibilidad"],["🧘","Reducir movimiento","Menos animaciones"],["🎨","Modo para daltónicos","Paletas accesibles"]] },
-    privacy: { icon: "🔒", title: "Privacidad", subtitle: "Controla permisos y datos", options: [["🛡️","Privacidad","Política de privacidad"],["📜","Términos","Términos del servicio"],["🔑","Permisos","Revisar accesos"],["🧹","Borrar caché","Limpiar datos temporales"],["↺","Restablecer ajustes","Volver a valores iniciales"]] },
-    about: { icon: "ℹ️", title: "Acerca del juego", subtitle: "Información de JuniorGame", options: [["🎮","JuniorGame","Production 2026"],["🏷️","Versión","Centro de Configuración · Fase 3"],["👥","Créditos","JFAM & Co. Game Studios"],["📚","Licencias","Recursos y tecnologías"],["🔄","Buscar actualizaciones","Comprobar versión disponible"]] },
+    account: { icon: "👤", title: "Cuenta", subtitle: "Administra tu perfil y tu sesión" },
+    accessibility: { icon: "♿", title: "Accesibilidad", subtitle: "Haz el juego más cómodo para ti" },
+    privacy: { icon: "🔒", title: "Privacidad", subtitle: "Controla permisos y datos locales" },
+    about: { icon: "ℹ️", title: "Acerca del juego", subtitle: "Información de JuniorGame" },
     lab: { icon: "🧪", title: "Laboratorio · BETA", subtitle: "Prueba funciones experimentales", options: [["🌦️","Clima dinámico","Experimento disponible próximamente"],["🤖","IA del Profesor Junior","Funciones inteligentes"],["⚙️","Nuevas físicas","Pruebas de movimiento"],["🎬","Animaciones beta","Efectos experimentales"],["🎉","Eventos beta","Contenido anticipado"]] }
   };
 
@@ -372,6 +381,137 @@ window.location.href = "shop.html";
       { key: "notifyEvents", icon: "🎉", title: "Eventos", description: appSettings.notifyEvents ? "Avisos activados" : "Avisos desactivados", toggle: true },
       { key: "notifyProfessor", icon: "🎓", title: "Profesor Junior", description: appSettings.notifyProfessor ? "Avisos activados" : "Avisos desactivados", toggle: true }
     ];
+  }
+
+
+  function accountOptions() {
+    return [
+      { key: "openProfile", icon: "👤", title: "Mi perfil", description: "Foto, nombre, correo e ID de jugador" },
+      { key: "changePhoto", icon: "🖼️", title: "Cambiar foto", description: "Seleccionar una nueva imagen de perfil" },
+      { key: "changeName", icon: "✏️", title: "Cambiar nombre", description: "Actualizar el nombre visible" },
+      { key: "changePassword", icon: "🔑", title: "Cambiar contraseña", description: "Enviar recuperación de contraseña" },
+      { key: "linkedAccounts", icon: "🔗", title: "Cuentas vinculadas", description: "Google y Apple · Preparado para una fase futura" },
+      { key: "restorePurchases", icon: "🧾", title: "Restaurar compras", description: "Disponible al integrar compras nativas" },
+      { key: "logout", icon: "🚪", title: "Cerrar sesión", description: "Salir de esta cuenta", danger: true }
+    ];
+  }
+
+  function accessibilityOptions() {
+    return [
+      { key: "textSize", icon: "🔠", title: "Tamaño del texto", description: choiceLabel(CHOICES.textSize, appSettings.textSize), choices: CHOICES.textSize },
+      { key: "highContrast", icon: "◐", title: "Alto contraste", description: appSettings.highContrast ? "Activado" : "Desactivado", toggle: true },
+      { key: "reduceMotion", icon: "🧘", title: "Reducir movimiento", description: appSettings.reduceMotion ? "Activado" : "Desactivado", toggle: true },
+      { key: "colorBlindMode", icon: "🎨", title: "Modo para daltónicos", description: choiceLabel(CHOICES.colorBlindMode, appSettings.colorBlindMode), choices: CHOICES.colorBlindMode },
+      { key: "vibrationIntensity", icon: "📳", title: "Intensidad de vibración", description: choiceLabel(CHOICES.vibrationIntensity, appSettings.vibrationIntensity), choices: CHOICES.vibrationIntensity }
+    ];
+  }
+
+  function permissionsSummary() {
+    const notifications = typeof Notification === "undefined" ? "No disponible" : Notification.permission;
+    const vibration = navigator.vibrate ? "Compatible" : "No compatible";
+    return `Notificaciones: ${notifications} · Vibración: ${vibration}`;
+  }
+
+  function privacyOptions() {
+    return [
+      { key: "privacyPolicy", icon: "🛡️", title: "Política de privacidad", description: "Consulta cómo se usan los datos" },
+      { key: "terms", icon: "📜", title: "Términos del servicio", description: "Condiciones de uso de JuniorGame" },
+      { key: "permissions", icon: "🔑", title: "Permisos del dispositivo", description: permissionsSummary() },
+      { key: "clearCache", icon: "🧹", title: "Borrar caché", description: "Limpia archivos temporales sin cerrar sesión" },
+      { key: "resetSettings", icon: "↺", title: "Restablecer configuración", description: "Vuelve los ajustes a sus valores iniciales", danger: true }
+    ];
+  }
+
+  function aboutOptions() {
+    return [
+      { key: "gameInfo", icon: "🎮", title: "JuniorGame", description: "JuniorGame Production · 2026" },
+      { key: "version", icon: "🏷️", title: "Versión", description: "Centro de Configuración · Fase 4" },
+      { key: "credits", icon: "👥", title: "Créditos", description: "JFAM & Co. Game Studios" },
+      { key: "licenses", icon: "📚", title: "Licencias", description: "Firebase, recursos web y tecnologías del proyecto" },
+      { key: "checkUpdates", icon: "🔄", title: "Buscar actualizaciones", description: "Actualiza archivos almacenados y recarga el juego" },
+      { key: "reportError", icon: "🐞", title: "Reportar un error", description: "Copia información técnica para compartirla" }
+    ];
+  }
+
+  function triggerProfileAction(targetId) {
+    closeSettingsCenter();
+    window.setTimeout(() => {
+      document.getElementById("headerProfileButton")?.click();
+      if (targetId) window.setTimeout(() => document.getElementById(targetId)?.click(), 180);
+    }, 250);
+  }
+
+  async function clearTemporaryCache() {
+    try {
+      if ("caches" in window) {
+        const names = await caches.keys();
+        await Promise.all(names.map((name) => caches.delete(name)));
+      }
+      mostrarModal("✅", "Caché borrada", "Los archivos temporales se limpiaron. Tu cuenta y tus ajustes permanecen intactos.");
+    } catch (error) {
+      mostrarModal("⚠️", "No se pudo borrar", "El navegador no permitió limpiar toda la caché.");
+    }
+  }
+
+  function resetAllSettings() {
+    if (!window.confirm("¿Restablecer todos los ajustes de JuniorGame? Tu cuenta y progreso no se eliminarán.")) return;
+    localStorage.removeItem(SETTINGS_KEY);
+    localStorage.removeItem("juniorGame.localeSettings");
+    appSettings = { ...defaultAppSettings };
+    localeSettings = detectLocaleSettings();
+    saveAppSettings();
+    saveLocaleSettings(localeSettings);
+    applyAppSettings();
+    applyMenuLanguage(localeSettings);
+    mostrarModal("✅", "Configuración restablecida", "Los ajustes volvieron a sus valores iniciales.");
+    showSettingsHome();
+  }
+
+  function handlePhase4Action(option, sectionKey) {
+    vibrateTap();
+    if (sectionKey === "account") {
+      if (option.key === "openProfile") return triggerProfileAction();
+      if (option.key === "changePhoto") return triggerProfileAction("changePhotoButton");
+      if (option.key === "changeName") return triggerProfileAction("changeNameButton");
+      if (option.key === "changePassword") return triggerProfileAction("changePasswordButton");
+      if (option.key === "logout") return triggerProfileAction("logoutButton");
+      return mostrarModal(option.icon, option.title, option.key === "linkedAccounts" ? "La vinculación con Google y Apple quedará habilitada al integrar los proveedores nativos." : "La restauración se habilitará al conectar las compras de Google Play y App Store.");
+    }
+    if (sectionKey === "accessibility") {
+      if (option.toggle) {
+        appSettings[option.key] = !appSettings[option.key];
+        if (option.key === "reduceMotion") appSettings.animations = appSettings.reduceMotion ? "reduced" : "full";
+        saveAppSettings(); applyAppSettings(); renderPhase4Section(sectionKey); return;
+      }
+      return openAppPicker(option, sectionKey);
+    }
+    if (sectionKey === "privacy") {
+      if (option.key === "clearCache") return clearTemporaryCache();
+      if (option.key === "resetSettings") return resetAllSettings();
+      if (option.key === "permissions") return mostrarModal("🔑", "Permisos del dispositivo", permissionsSummary());
+      return mostrarModal(option.icon, option.title, "Este apartado informativo ya está preparado. El texto legal definitivo se añadirá antes de publicar el juego en las tiendas.");
+    }
+    if (sectionKey === "about") {
+      if (option.key === "checkUpdates") {
+        if (navigator.serviceWorker?.getRegistrations) navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((reg) => reg.update()));
+        window.setTimeout(() => location.reload(), 350); return;
+      }
+      if (option.key === "reportError") {
+        const info = `JuniorGame Fase 4 | ${navigator.userAgent} | ${new Date().toISOString()}`;
+        navigator.clipboard?.writeText(info);
+        return mostrarModal("🐞", "Información copiada", "Se copió la información técnica para adjuntarla a un reporte.");
+      }
+      return mostrarModal(option.icon, option.title, option.description);
+    }
+  }
+
+  function renderPhase4Section(key) {
+    const source = key === "account" ? accountOptions() : key === "accessibility" ? accessibilityOptions() : key === "privacy" ? privacyOptions() : aboutOptions();
+    settingsOptionList?.replaceChildren(...source.map((option) => {
+      const button = createOptionButton(option, () => handlePhase4Action(option, key));
+      if (option.danger) button.classList.add("is-danger");
+      return button;
+    }));
   }
 
   function renderFunctionalSection(key) {
@@ -486,13 +626,20 @@ window.location.href = "shop.html";
       if (settingsSubtitle) settingsSubtitle.textContent = section.subtitle;
       if (settingsSectionTitle) settingsSectionTitle.textContent = section.title;
       renderFunctionalSection(key);
+    } else if (["account", "accessibility", "privacy", "about"].includes(key)) {
+      const section = staticSections[key];
+      if (!section) return;
+      if (settingsTitle) settingsTitle.textContent = `${section.icon} ${section.title}`;
+      if (settingsSubtitle) settingsSubtitle.textContent = section.subtitle;
+      if (settingsSectionTitle) settingsSectionTitle.textContent = section.title;
+      renderPhase4Section(key);
     } else {
       const section = staticSections[key];
       if (!section || !settingsOptionList) return;
       if (settingsTitle) settingsTitle.textContent = `${section.icon} ${section.title}`;
       if (settingsSubtitle) settingsSubtitle.textContent = section.subtitle;
       if (settingsSectionTitle) settingsSectionTitle.textContent = section.title;
-      settingsOptionList.replaceChildren(...section.options.map(([icon,title,description]) => createOptionButton({icon,title,description}, () => mostrarModal(icon, title, "Esta opción quedará funcional en las siguientes fases del Centro de Configuración."))));
+      settingsOptionList.replaceChildren(...section.options.map(([icon,title,description]) => createOptionButton({icon,title,description}, () => mostrarModal(icon, title, "Esta opción quedará funcional en una actualización futura."))));
     }
     settingsScrollArea?.scrollTo({ top: 0, behavior: "auto" });
     localStorage.setItem("juniorGame.settingsLastSection", key);

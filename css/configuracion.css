@@ -68,3 +68,15 @@ html[data-jg-shadows="off"] button{box-shadow:none!important;text-shadow:none!im
 html[data-jg-particles="off"] .jg-settings-card::after{display:none}
 html[data-jg-graphics="low"] .jg-settings-layer{backdrop-filter:none;-webkit-backdrop-filter:none}
 html[data-jg-battery-saver="on"] .jg-settings-card::after{display:none}
+
+
+/* Fase 4 · Cuenta, Accesibilidad, Privacidad y Acerca de */
+.jg-settings-option.is-danger{border-color:rgba(255,104,104,.58);background:linear-gradient(180deg,rgba(111,42,32,.95),rgba(57,20,17,.97))}
+.jg-settings-option.is-danger .jg-settings-option-copy strong{color:#ffd5cf}
+html[data-jg-high-contrast="on"] .jg-settings-sheet{background:#050505;border-color:#fff}
+html[data-jg-high-contrast="on"] .jg-settings-option,html[data-jg-high-contrast="on"] .jg-settings-choice{background:#000;border-color:#fff;color:#fff}
+html[data-jg-high-contrast="on"] .jg-settings-option-copy small,html[data-jg-high-contrast="on"] .jg-settings-header-copy p{color:#fff}
+html[data-jg-reduce-motion="on"] *,html[data-jg-reduce-motion="on"] *::before,html[data-jg-reduce-motion="on"] *::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+html[data-jg-color-blind="protanopia"] .jg-settings-card{filter:saturate(.72) hue-rotate(12deg)}
+html[data-jg-color-blind="deuteranopia"] .jg-settings-card{filter:saturate(.68) hue-rotate(-12deg)}
+html[data-jg-color-blind="tritanopia"] .jg-settings-card{filter:saturate(.7) hue-rotate(32deg)}

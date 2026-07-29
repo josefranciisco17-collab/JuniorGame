@@ -7,6 +7,7 @@
 <meta content="#2b1609" name="theme-color"/>
 <title>JuniorGame</title>
 <link href="css/menu-v2.css?v=5" rel="stylesheet"/>
+<link href="css/configuracion.css?v=1" rel="stylesheet"/>
 </head>
 <body class="menu-redesign-v5">
 <main class="menu-page">
@@ -218,13 +219,48 @@
 </div>
 </div>
 
+<!-- CENTRO DE CONFIGURACIÓN · FASE 1 -->
+<div aria-hidden="true" aria-labelledby="settingsCenterTitle" aria-modal="true" class="jg-settings-layer hidden" id="settingsCenter" role="dialog">
+  <section class="jg-settings-sheet">
+    <div class="jg-settings-handle" aria-hidden="true"></div>
+    <header class="jg-settings-header">
+      <button aria-label="Regresar" class="jg-settings-back" id="settingsBackButton" type="button" hidden>‹</button>
+      <div class="jg-settings-header-copy">
+        <h2 id="settingsCenterTitle">⚙️ Centro de Configuración</h2>
+        <p id="settingsCenterSubtitle">Personaliza tu experiencia de juego</p>
+      </div>
+      <button aria-label="Cerrar ajustes" class="jg-settings-close" id="settingsCloseButton" type="button">×</button>
+    </header>
+    <div class="jg-settings-scroll" id="settingsScrollArea">
+      <div class="jg-settings-section active" data-settings-view="home">
+        <div class="jg-settings-grid">
+          <button class="jg-settings-card" data-section="region" type="button"><span class="jg-settings-card-icon">🌍</span><strong>Región e Idioma</strong><small>Idioma, región, moneda, fecha y hora</small><span class="jg-settings-card-arrow">›</span></button>
+          <button class="jg-settings-card" data-section="game" type="button"><span class="jg-settings-card-icon">🎮</span><strong>Juego</strong><small>Música, sonido, vibración y rendimiento</small><span class="jg-settings-card-arrow">›</span></button>
+          <button class="jg-settings-card" data-section="appearance" type="button"><span class="jg-settings-card-icon">🎨</span><strong>Apariencia</strong><small>Tema, animaciones, sombras y partículas</small><span class="jg-settings-card-arrow">›</span></button>
+          <button class="jg-settings-card" data-section="notifications" type="button"><span class="jg-settings-card-icon">🔔</span><strong>Notificaciones</strong><small>Ruleta, misiones, eventos y novedades</small><span class="jg-settings-card-arrow">›</span></button>
+          <button class="jg-settings-card" data-section="account" type="button"><span class="jg-settings-card-icon">👤</span><strong>Cuenta</strong><small>Perfil, vínculos y restaurar compras</small><span class="jg-settings-card-arrow">›</span></button>
+          <button class="jg-settings-card" data-section="accessibility" type="button"><span class="jg-settings-card-icon">♿</span><strong>Accesibilidad</strong><small>Texto, contraste y reducción de movimiento</small><span class="jg-settings-card-arrow">›</span></button>
+          <button class="jg-settings-card" data-section="privacy" type="button"><span class="jg-settings-card-icon">🔒</span><strong>Privacidad</strong><small>Permisos, datos y restablecimiento</small><span class="jg-settings-card-arrow">›</span></button>
+          <button class="jg-settings-card" data-section="about" type="button"><span class="jg-settings-card-icon">ℹ️</span><strong>Acerca del juego</strong><small>Versión, créditos y licencias</small><span class="jg-settings-card-arrow">›</span></button>
+          <button class="jg-settings-card" data-section="lab" type="button"><em class="jg-settings-beta">BETA</em><span class="jg-settings-card-icon">🧪</span><strong>Laboratorio</strong><small>Funciones experimentales de JuniorGame</small><span class="jg-settings-card-arrow">›</span></button>
+        </div>
+        <p class="jg-settings-footer-note">JuniorGame guarda la navegación del centro de configuración en este dispositivo.</p>
+      </div>
+      <div class="jg-settings-section" data-settings-view="detail">
+        <h3 class="jg-settings-section-title" id="settingsSectionTitle">Configuración</h3>
+        <div class="jg-settings-option-list" id="settingsOptionList"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
 </main>
 <script src="js/menu-auth.js?v=1" type="module"></script>
 <script src="js/profile.js?v=1" type="module"></script>
 <script src="js/audio.js"></script>
 <script src="js/ruleta.js?v=20260726-menu1"></script>
 <script src="js/misiones.js?v=20260726-menu1"></script>
-<script src="js/menu.js?v=28" type="module"></script>
+<script src="js/menu.js?v=29" type="module"></script>
 <script src="js/profesor-junior.js?v=1" type="module"></script>
 </body>
 </html>

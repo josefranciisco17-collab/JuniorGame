@@ -203,16 +203,87 @@ window.location.href = "shop.html";
 );
 
 
-  settingsButton?.addEventListener(
-    "click",
-    () => {
-      mostrarModal(
-        "⚙️",
-        "Ajustes",
-        "Aquí podrás configurar música, sonidos y controles."
-      );
-    }
-  );
+  // Centro de Configuración · Fase 1
+  const settingsCenter = document.getElementById("settingsCenter");
+  const settingsCloseButton = document.getElementById("settingsCloseButton");
+  const settingsBackButton = document.getElementById("settingsBackButton");
+  const settingsTitle = document.getElementById("settingsCenterTitle");
+  const settingsSubtitle = document.getElementById("settingsCenterSubtitle");
+  const settingsSectionTitle = document.getElementById("settingsSectionTitle");
+  const settingsOptionList = document.getElementById("settingsOptionList");
+  const settingsScrollArea = document.getElementById("settingsScrollArea");
+  const settingsHomeView = settingsCenter?.querySelector('[data-settings-view="home"]');
+  const settingsDetailView = settingsCenter?.querySelector('[data-settings-view="detail"]');
+
+  const settingsSections = {
+    region: { icon: "🌍", title: "Región e Idioma", subtitle: "Configura tu experiencia internacional", options: [["🌐","Idioma del juego","Español (México)"],["📍","Región","México"],["💵","Moneda","Peso mexicano (MXN)"],["📅","Formato de fecha","29/07/2026"],["🕒","Formato de hora","24 horas"],["🗣️","Idioma de voces","Automático · Próximamente"],["✨","Detectar automáticamente","Usar configuración del dispositivo"]] },
+    game: { icon: "🎮", title: "Juego", subtitle: "Sonido, controles y rendimiento", options: [["🎵","Música","Control de música"],["🔊","Efectos de sonido","Sonidos del juego"],["📳","Vibración","Respuesta táctil"],["🎞️","FPS","30 / 60 cuadros"],["✨","Calidad gráfica","Efectos y rendimiento"],["🔋","Ahorro de batería","Reducir consumo"]] },
+    appearance: { icon: "🎨", title: "Apariencia", subtitle: "Personaliza el aspecto de JuniorGame", options: [["🌓","Tema","Automático, claro u oscuro"],["🔤","Tamaño del texto","Normal"],["🎬","Animaciones","Completas"],["✨","Partículas","Activadas"],["🌑","Sombras","Activadas"]] },
+    notifications: { icon: "🔔", title: "Notificaciones", subtitle: "Elige qué avisos deseas recibir", options: [["🎡","Ruleta diaria","Aviso de giro disponible"],["📋","Misiones","Progreso y recompensas"],["🎉","Eventos","Eventos y temporadas"],["🎓","Profesor Junior","Consejos y mensajes"]] },
+    account: { icon: "👤", title: "Cuenta", subtitle: "Administra tu perfil y tus vínculos", options: [["🖼️","Foto y nombre","Abrir perfil del jugador"],["🔗","Vincular cuenta","Google / Apple"],["🧾","Restaurar compras","Recuperar compras compatibles"],["🚪","Cerrar sesión","Salir de tu cuenta"]] },
+    accessibility: { icon: "♿", title: "Accesibilidad", subtitle: "Haz el juego más cómodo para ti", options: [["🔠","Letras grandes","Aumentar tamaño"],["◐","Alto contraste","Mejorar legibilidad"],["🧘","Reducir movimiento","Menos animaciones"],["🎨","Modo para daltónicos","Paletas accesibles"]] },
+    privacy: { icon: "🔒", title: "Privacidad", subtitle: "Controla permisos y datos", options: [["🛡️","Privacidad","Política de privacidad"],["📜","Términos","Términos del servicio"],["🔑","Permisos","Revisar accesos"],["🧹","Borrar caché","Limpiar datos temporales"],["↺","Restablecer ajustes","Volver a valores iniciales"]] },
+    about: { icon: "ℹ️", title: "Acerca del juego", subtitle: "Información de JuniorGame", options: [["🎮","JuniorGame","Production 2026"],["🏷️","Versión","Centro de Configuración · Fase 1"],["👥","Créditos","JFAM & Co. Game Studios"],["📚","Licencias","Recursos y tecnologías"],["🔄","Buscar actualizaciones","Comprobar versión disponible"]] },
+    lab: { icon: "🧪", title: "Laboratorio · BETA", subtitle: "Prueba funciones experimentales", options: [["🌦️","Clima dinámico","Experimento disponible próximamente"],["🤖","IA del Profesor Junior","Funciones inteligentes"],["⚙️","Nuevas físicas","Pruebas de movimiento"],["🎬","Animaciones beta","Efectos experimentales"],["🎉","Eventos beta","Contenido anticipado"]] }
+  };
+
+  function showSettingsHome() {
+    settingsHomeView?.classList.add("active");
+    settingsDetailView?.classList.remove("active");
+    if (settingsBackButton) settingsBackButton.hidden = true;
+    if (settingsTitle) settingsTitle.textContent = "⚙️ Centro de Configuración";
+    if (settingsSubtitle) settingsSubtitle.textContent = "Personaliza tu experiencia de juego";
+    settingsScrollArea?.scrollTo({ top: 0, behavior: "instant" });
+    localStorage.setItem("juniorGame.settingsLastSection", "home");
+  }
+
+  function showSettingsSection(key) {
+    const section = settingsSections[key];
+    if (!section || !settingsOptionList) return;
+    settingsHomeView?.classList.remove("active");
+    settingsDetailView?.classList.add("active");
+    if (settingsBackButton) settingsBackButton.hidden = false;
+    if (settingsTitle) settingsTitle.textContent = `${section.icon} ${section.title}`;
+    if (settingsSubtitle) settingsSubtitle.textContent = section.subtitle;
+    if (settingsSectionTitle) settingsSectionTitle.textContent = section.title;
+    settingsOptionList.replaceChildren(...section.options.map(([icon,title,description]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "jg-settings-option";
+      button.innerHTML = `<span aria-hidden="true">${icon}</span><span class="jg-settings-option-copy"><strong>${title}</strong><small>${description}</small></span><span aria-hidden="true">›</span>`;
+      button.addEventListener("click", () => mostrarModal(icon, title, "Esta opción quedará funcional en las siguientes fases del Centro de Configuración."));
+      return button;
+    }));
+    settingsScrollArea?.scrollTo({ top: 0, behavior: "instant" });
+    localStorage.setItem("juniorGame.settingsLastSection", key);
+  }
+
+  function openSettingsCenter() {
+    if (!settingsCenter) return;
+    showSettingsHome();
+    settingsCenter.classList.remove("hidden", "is-closing");
+    settingsCenter.setAttribute("aria-hidden", "false");
+    document.body.classList.add("jg-settings-open");
+    settingsCloseButton?.focus({ preventScroll: true });
+  }
+
+  function closeSettingsCenter() {
+    if (!settingsCenter || settingsCenter.classList.contains("hidden")) return;
+    settingsCenter.classList.add("is-closing");
+    window.setTimeout(() => {
+      settingsCenter.classList.add("hidden");
+      settingsCenter.classList.remove("is-closing");
+      settingsCenter.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("jg-settings-open");
+      settingsButton?.focus({ preventScroll: true });
+    }, 220);
+  }
+
+  settingsButton?.addEventListener("click", openSettingsCenter);
+  settingsCloseButton?.addEventListener("click", closeSettingsCenter);
+  settingsBackButton?.addEventListener("click", showSettingsHome);
+  settingsCenter?.querySelectorAll(".jg-settings-card").forEach((card) => card.addEventListener("click", () => showSettingsSection(card.dataset.section)));
+  settingsCenter?.addEventListener("click", (event) => { if (event.target === settingsCenter) closeSettingsCenter(); });
 
   chatButton?.addEventListener(
     "click",
@@ -255,6 +326,10 @@ window.location.href = "shop.html";
     "keydown",
     (event) => {
       if (event.key === "Escape") {
+        if (settingsCenter && !settingsCenter.classList.contains("hidden")) {
+          closeSettingsCenter();
+          return;
+        }
         cerrarModal();
       }
     }

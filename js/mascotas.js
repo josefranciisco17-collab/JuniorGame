@@ -25,6 +25,13 @@ window.SistemaMascotas = {
   interfaz: {},
   audioContexto: null,
   ultimoSonidoEn: 0,
+  ultimoSalto: false,
+  ultimoMovimiento: false,
+  tiempoQuieto: 0,
+  tiempoCorriendo: 0,
+  proximoSonidoAmbiente: 7,
+  estadoBloqueadoHasta: 0,
+  visibleAntes: true,
 
   estilosRaza: {
     "perrito-junior": { pelaje: "#b86b2d", claro: "#f2dfbd", oscuro: "#6f351c" },
@@ -70,10 +77,13 @@ window.SistemaMascotas = {
     this.activo = false;
     if (this.cuadroAnimacion) cancelAnimationFrame(this.cuadroAnimacion);
     this.cuadroAnimacion = null;
+    clearTimeout(this.__estadoTimer);
     this.mascotaElemento?.remove();
     this.mascotaElemento = null;
     this.mascotaImagen = null;
     this.spriteController = null;
+    this.xVisual = null;
+    this.yVisual = null;
   },
 
   cargarDatos() {
@@ -116,10 +126,15 @@ window.SistemaMascotas = {
   },
 
   configurarEventos() {
-    window.addEventListener("pointerdown", () => this.prepararAudio()?.resume?.().catch(() => {}), { once: true, passive: true });
+    const activarAudio = () => window.AudioPerritosJr?.desbloquear?.();
+    window.addEventListener("pointerdown", activarAudio, { once: true, passive: true });
+    window.addEventListener("keydown", activarAudio, { once: true });
+
     this.interfaz.boton?.addEventListener("click", () => this.abrirSelector());
     this.interfaz.cerrar?.addEventListener("click", () => this.cerrarSelector());
-    this.interfaz.modal?.addEventListener("click", (e) => { if (e.target === this.interfaz.modal) this.cerrarSelector(); });
+    this.interfaz.modal?.addEventListener("click", (e) => {
+      if (e.target === this.interfaz.modal) this.cerrarSelector();
+    });
     this.interfaz.lista?.addEventListener("click", (e) => {
       const boton = e.target.closest("[data-mascota]");
       if (!boton) return;
@@ -132,7 +147,18 @@ window.SistemaMascotas = {
       this.cerrarSelector();
     });
     window.addEventListener("storage", (e) => {
-      if (e.key === "juniorGame.perritoJrEquipado" && this.catalogo[e.newValue]) this.equipar(e.newValue, false);
+      if (e.key === "juniorGame.perritoJrEquipado" && this.catalogo[e.newValue]) {
+        this.equipar(e.newValue, false);
+      }
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        this.visibleAntes = false;
+        return;
+      }
+      this.visibleAntes = true;
+      this.tiempoAnterior = performance.now();
+      if (this.activo && !this.mascotaElemento?.isConnected) this.crearMascotaVisual();
     });
   },
 
@@ -269,22 +295,38 @@ window.SistemaMascotas = {
   actualizar(tiempoActual) {
     if (!this.activo) return;
     const juego = window.JuniorGame;
-    const dt = Math.min((tiempoActual - this.tiempoAnterior) / 1000, 0.05);
+    const dt = Math.min(Math.max((tiempoActual - this.tiempoAnterior) / 1000, 0), 0.05);
     this.tiempoAnterior = tiempoActual;
-    this.spriteController?.tick(dt);
+
+    if (!document.hidden) this.spriteController?.tick(dt);
+
     if (juego?.estado?.iniciado) {
       this.detectarEventosJuego(juego);
       this.seguirPerro(dt);
       this.aplicarHabilidadPasiva();
+      this.actualizarSonidosNaturales(dt, juego);
     }
     this.cuadroAnimacion = requestAnimationFrame(this.actualizar.bind(this));
   },
 
   detectarEventosJuego(juego) {
-    if (juego.estado.pausado && !this.ultimoEstadoJuego.pausado) this.cambiarEstado("sleep");
-    if (!juego.estado.pausado && this.ultimoEstadoJuego.pausado && !juego.estado.terminado) this.cambiarEstado("idle");
-    if (juego.estado.terminado && !this.ultimoEstadoJuego.terminado) this.cambiarEstado("sad");
-    this.ultimoEstadoJuego = { pausado: juego.estado.pausado, terminado: juego.estado.terminado, vidas: juego.estado.vidas, puntos: juego.estado.puntos };
+    if (juego.estado.pausado && !this.ultimoEstadoJuego.pausado) {
+      this.cambiarEstado("sleep");
+      this.reproducirSonido("pant", { minimoTipo: 3500, volumen: 0.55 });
+    }
+    if (!juego.estado.pausado && this.ultimoEstadoJuego.pausado && !juego.estado.terminado) {
+      this.cambiarEstado("idle");
+    }
+    if (juego.estado.terminado && !this.ultimoEstadoJuego.terminado) {
+      this.cambiarEstado("sad");
+      this.reproducirSonido("hurt", { minimoTipo: 3500, volumen: 0.65 });
+    }
+    this.ultimoEstadoJuego = {
+      pausado: Boolean(juego.estado.pausado),
+      terminado: Boolean(juego.estado.terminado),
+      vidas: Number(juego.estado.vidas) || 0,
+      puntos: Number(juego.estado.puntos) || 0
+    };
   },
 
   seguirPerro(dt) {
@@ -293,24 +335,28 @@ window.SistemaMascotas = {
     const area = window.JuniorPlayer?.obtenerAreaJuego?.();
     const jugador = window.JuniorPlayer;
     const juego = window.JuniorGame;
-    if (!mascota || !perro || !area || !jugador) return;
+    if (!mascota || !perro || !area || !jugador || !juego) return;
 
     const rectArea = area.getBoundingClientRect();
     const rectPerro = perro.getBoundingClientRect();
     const derecha = jugador.ultimaDireccion === "derecha";
-    const anchoMascota = mascota.offsetWidth || 62;
-    const separacion = Math.max(14, rectPerro.width * 0.16);
+    const anchoMascota = mascota.offsetWidth || 72;
+    const altoMascota = mascota.offsetHeight || anchoMascota;
+    const separacion = Math.max(12, rectPerro.width * 0.12);
     const xObjetivo = derecha
       ? rectPerro.left - rectArea.left - anchoMascota - separacion
       : rectPerro.right - rectArea.left + separacion;
-    const sueloVisual = rectPerro.bottom - rectArea.top - mascota.offsetHeight * 0.90;
-    const yObjetivo = sueloVisual - Math.max(0, jugador.alturaSalto * 0.45);
+
+    const sueloPerro = rectPerro.bottom - rectArea.top;
+    const saltoMascota = Math.max(0, Number(jugador.alturaSalto) || 0) * 0.42;
+    const yObjetivo = sueloPerro - altoMascota * 0.89 - saltoMascota;
 
     if (this.xVisual === null) this.xVisual = xObjetivo;
     if (this.yVisual === null) this.yVisual = yObjetivo;
+
     const distancia = xObjetivo - this.xVisual;
-    const factorX = 1 - Math.pow(0.0009, dt);
-    const factorY = 1 - Math.pow(0.0025, dt);
+    const factorX = 1 - Math.pow(0.0012, dt);
+    const factorY = 1 - Math.pow(0.0022, dt);
     this.xVisual += distancia * factorX;
     this.yVisual += (yObjetivo - this.yVisual) * factorY;
 
@@ -318,20 +364,69 @@ window.SistemaMascotas = {
       this.xVisual = xObjetivo;
       this.yVisual = yObjetivo;
       mascota.classList.add("pet-recovering");
-      setTimeout(() => mascota.classList.remove("pet-recovering"), 350);
+      window.setTimeout(() => mascota.classList.remove("pet-recovering"), 260);
     }
 
+    const margenInferior = 64;
     mascota.style.left = `${Math.max(2, Math.min(area.clientWidth - anchoMascota - 2, this.xVisual))}px`;
-    mascota.style.top = `${Math.max(58, Math.min(area.clientHeight - mascota.offsetHeight - 72, this.yVisual))}px`;
+    mascota.style.top = `${Math.max(48, Math.min(area.clientHeight - altoMascota - margenInferior, this.yVisual))}px`;
     this.spriteController?.setFacing(!derecha);
 
-    if (juego.estado.pausado) return this.cambiarEstado("sleep");
-    if (juego.estado.terminado) return;
-    if (jugador.saltando) return this.cambiarEstado(jugador.velocidadVertical >= 0 ? "jump" : "fall");
-    if (jugador.moviendoIzquierda || jugador.moviendoDerecha) {
-      return this.cambiarEstado(Math.abs(distancia) > 95 ? "run" : "walk");
+    if (juego.estado.pausado) {
+      this.ultimoMovimiento = false;
+      return this.cambiarEstado("sleep");
     }
-    if (!["celebrate", "hurt"].includes(this.estadoAnimacion)) this.cambiarEstado("idle");
+    if (juego.estado.terminado) return;
+
+    const saltando = Boolean(jugador.saltando);
+    if (saltando) {
+      this.ultimoSalto = true;
+      this.ultimoMovimiento = false;
+      return this.cambiarEstado(Number(jugador.velocidadVertical) >= 0 ? "jump" : "fall");
+    }
+
+    if (this.ultimoSalto) {
+      this.ultimoSalto = false;
+      this.cambiarEstado("land", 250);
+      this.reproducirSonido("pant", { minimoTipo: 1600, volumen: 0.30, rate: 1.12 });
+      return;
+    }
+
+    const moviendo = Boolean(jugador.moviendoIzquierda || jugador.moviendoDerecha);
+    this.ultimoMovimiento = moviendo;
+    if (moviendo) {
+      const corriendo = Math.abs(distancia) > 82;
+      this.tiempoQuieto = 0;
+      this.tiempoCorriendo = corriendo ? this.tiempoCorriendo + dt : 0;
+      return this.cambiarEstado(corriendo ? "run" : "walk");
+    }
+
+    this.tiempoCorriendo = 0;
+    this.tiempoQuieto += dt;
+    if (!["celebrate", "hurt", "bark", "land"].includes(this.estadoAnimacion)) {
+      this.cambiarEstado("idle");
+    }
+  },
+
+  actualizarSonidosNaturales(dt, juego) {
+    if (juego.estado.pausado || juego.estado.terminado || document.hidden) return;
+    this.proximoSonidoAmbiente -= dt;
+
+    if (this.estadoAnimacion === "run" && this.tiempoCorriendo > 2.8 && this.proximoSonidoAmbiente <= 0) {
+      this.reproducirSonido("pant", { minimoTipo: 5200, volumen: 0.40 });
+      this.proximoSonidoAmbiente = 5 + Math.random() * 5;
+      return;
+    }
+
+    if (this.estadoAnimacion === "idle" && this.tiempoQuieto > 4 && this.proximoSonidoAmbiente <= 0) {
+      const ladrar = Math.random() < 0.58;
+      this.cambiarEstado(ladrar ? "bark" : "idle", ladrar ? 650 : 0);
+      this.reproducirSonido(ladrar ? "bark" : "pant", {
+        minimoTipo: 6500,
+        volumen: ladrar ? 0.62 : 0.28
+      });
+      this.proximoSonidoAmbiente = 8 + Math.random() * 10;
+    }
   },
 
   prepararAudio() {
@@ -339,33 +434,49 @@ window.SistemaMascotas = {
     return window.AudioPerritosJr;
   },
 
-  reproducirSonido(tipo = "yip") {
+  reproducirSonido(tipo = "bark", opciones = {}) {
     const mapa = {
       yip: "bark",
+      bark: "bark",
       celebrate: "happy",
+      happy: "happy",
       hurt: "hurt",
+      pant: "pant",
       sleep: "pant"
     };
-    window.AudioPerritosJr?.reproducir?.(mapa[tipo] || "bark");
+    return window.AudioPerritosJr?.reproducir?.(mapa[tipo] || "bark", {
+      ...opciones,
+      mascota: this.mascotaEquipada
+    });
   },
 
   cambiarEstado(estado, duracion = 0) {
-    if (!this.mascotaElemento) return;
-    const estadoSprite = estado === "fall" ? "fall" : estado;
-    if (this.estadoAnimacion === estadoSprite && duracion <= 0) return;
-    this.estadoAnimacion = estadoSprite;
-    this.spriteController?.setState(estadoSprite, duracion > 0);
+    if (!this.mascotaElemento || !this.spriteController) return;
+    const ahora = performance.now();
+    const bloqueados = new Set(["celebrate", "hurt", "bark", "land"]);
+    if (ahora < this.estadoBloqueadoHasta && !bloqueados.has(estado)) return;
+    if (this.estadoAnimacion === estado && duracion <= 0) return;
 
-    if (estadoSprite === "celebrate") this.reproducirSonido("celebrate");
-    if (estadoSprite === "hurt") this.reproducirSonido("hurt");
-    if (estadoSprite === "jump" && Math.random() < 0.22) this.reproducirSonido("yip");
-    if (estadoSprite === "run" && Math.random() < 0.004) this.reproducirSonido("sleep");
+    this.estadoAnimacion = estado;
+    if (duracion > 0) this.estadoBloqueadoHasta = ahora + duracion;
+    const volver = () => {
+      if (this.estadoAnimacion === estado) {
+        this.estadoBloqueadoHasta = 0;
+        this.cambiarEstado("idle");
+      }
+    };
+    this.spriteController.setState(estado, {
+      reiniciar: duracion > 0,
+      onComplete: duracion > 0 ? volver : null
+    });
 
+    if (estado === "celebrate") this.reproducirSonido("happy", { minimoTipo: 1800, volumen: 0.72 });
+    if (estado === "hurt") this.reproducirSonido("hurt", { minimoTipo: 1400, volumen: 0.75 });
+    if (estado === "jump" && Math.random() < 0.16) this.reproducirSonido("bark", { minimoTipo: 2500, volumen: 0.45, rate: 1.08 });
+
+    clearTimeout(this.__estadoTimer);
     if (duracion > 0) {
-      clearTimeout(this.__estadoTimer);
-      this.__estadoTimer = setTimeout(() => {
-        if (this.estadoAnimacion === estadoSprite) this.cambiarEstado("idle");
-      }, duracion);
+      this.__estadoTimer = window.setTimeout(volver, duracion + 40);
     }
   },
 

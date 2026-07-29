@@ -2897,3 +2897,108 @@ body.raza-fantasma-activa .dog{
     min-height:58px;
   }
 }
+
+/* =====================================================
+   PERRITOS JR — MOVIMIENTO VIVO COMPLETO
+   Respiración, reacción corporal, salto, aterrizaje y cola
+   integrados sobre las hojas de sprites.
+===================================================== */
+.active-pet.active-pet-sprite{
+  contain:layout paint style;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  touch-action:none;
+}
+.active-pet.active-pet-sprite[data-pet-state="idle"]{
+  animation:petAliveBreath 1.8s ease-in-out infinite;
+}
+.active-pet.active-pet-sprite[data-pet-state="walk"]{
+  animation:petAliveWalk .42s linear infinite;
+}
+.active-pet.active-pet-sprite[data-pet-state="run"]{
+  animation:petAliveRun .25s linear infinite;
+}
+.active-pet.active-pet-sprite[data-pet-state="jump"]{
+  animation:petAliveJump .38s ease-out both;
+}
+.active-pet.active-pet-sprite[data-pet-state="fall"]{
+  animation:petAliveFall .32s ease-in both;
+}
+.active-pet.active-pet-sprite[data-pet-state="land"]{
+  animation:petAliveLand .24s ease-out both;
+}
+.active-pet.active-pet-sprite[data-pet-state="celebrate"],
+.active-pet.active-pet-sprite[data-pet-state="bark"]{
+  animation:petAliveCelebrate .52s ease-in-out both;
+}
+.active-pet.active-pet-sprite[data-pet-state="sleep"]{
+  animation:petAliveSleep 2.4s ease-in-out infinite;
+}
+.active-pet.active-pet-sprite[data-pet-state="hurt"]{
+  animation:petAliveHurt .18s linear 4;
+}
+.active-pet.active-pet-sprite[data-pet-state="sad"]{
+  animation:petAliveSad 1.8s ease-in-out infinite;
+}
+
+@keyframes petAliveBreath{
+  0%,100%{translate:0 0;scale:1 1}
+  50%{translate:0 -1.5px;scale:1.012 .992}
+}
+@keyframes petAliveWalk{
+  0%,100%{translate:0 0;rotate:-.6deg}
+  25%,75%{translate:0 -2px;rotate:.6deg}
+  50%{translate:0 0;rotate:-.6deg}
+}
+@keyframes petAliveRun{
+  0%,100%{translate:0 0;rotate:-1.8deg;scale:1.02 .98}
+  50%{translate:0 -4px;rotate:1.8deg;scale:.99 1.01}
+}
+@keyframes petAliveJump{
+  0%{scale:1.04 .96;rotate:-4deg}
+  100%{scale:.98 1.03;rotate:3deg}
+}
+@keyframes petAliveFall{
+  0%{scale:.98 1.03;rotate:3deg}
+  100%{scale:1.02 .98;rotate:-2deg}
+}
+@keyframes petAliveLand{
+  0%{scale:.96 1.06;translate:0 -2px}
+  45%{scale:1.08 .86;translate:0 2px}
+  100%{scale:1 1;translate:0 0}
+}
+@keyframes petAliveCelebrate{
+  0%,100%{translate:0 0;rotate:0deg}
+  35%{translate:0 -9px;rotate:-4deg;scale:1.04}
+  70%{translate:0 -3px;rotate:4deg;scale:1.02}
+}
+@keyframes petAliveSleep{
+  0%,100%{translate:0 3px;scale:1 .93;filter:saturate(.82) brightness(.92)}
+  50%{translate:0 4px;scale:1.015 .90;filter:saturate(.82) brightness(.9)}
+}
+@keyframes petAliveHurt{
+  0%,100%{translate:0 0;rotate:0deg}
+  25%{translate:-5px 0;rotate:-4deg}
+  75%{translate:5px 0;rotate:4deg}
+}
+@keyframes petAliveSad{
+  0%,100%{translate:0 2px;rotate:-1deg;filter:saturate(.72)}
+  50%{translate:0 4px;rotate:1deg;filter:saturate(.66)}
+}
+
+@media (hover:none) and (pointer:coarse){
+  .active-pet.active-pet-sprite{
+    image-rendering:auto;
+    transform:translateZ(0);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .active-pet.active-pet-sprite{
+    animation-duration:1.6s!important;
+    animation-iteration-count:infinite!important;
+  }
+  .active-pet.active-pet-sprite[data-pet-state="walk"],
+  .active-pet.active-pet-sprite[data-pet-state="run"]{
+    animation-duration:.7s!important;
+  }
+}

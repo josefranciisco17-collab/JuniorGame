@@ -2,44 +2,55 @@
 
 window.PerritoJrSpriteController = class PerritoJrSpriteController {
   constructor(elemento, idMascota) {
+    if (!(elemento instanceof HTMLElement)) {
+      throw new TypeError("PerritoJrSpriteController requiere un HTMLElement válido.");
+    }
     this.elemento = elemento;
-    this.idMascota = idMascota.replace(/^perrito-/, "");
+    this.idMascota = String(idMascota || "perrito-junior").replace(/^perrito-/, "");
     this.estado = "idle";
     this.frame = 0;
     this.acumulado = 0;
     this.mirandoIzquierda = false;
+    this.terminado = false;
+    this.onComplete = null;
     this.aplicarHoja();
   }
 
   obtenerConfig(estado = this.estado) {
-    const manifest = window.PerritosJrAnimations;
-    return manifest.states[estado] || manifest.states.idle;
+    const manifiesto = window.PerritosJrAnimations;
+    if (!manifiesto?.states) throw new Error("No se cargó PerritosJrAnimations.");
+    return manifiesto.states[estado] || manifiesto.states.idle;
   }
 
   rutaHoja(estado = this.estado) {
-    const manifest = window.PerritosJrAnimations;
-    const cfg = this.obtenerConfig(estado);
-    const archivo = cfg.source || estado;
-    return `${manifest.basePath}/${this.idMascota}/${archivo}.png`;
+    const manifiesto = window.PerritosJrAnimations;
+    const config = this.obtenerConfig(estado);
+    const archivo = config.source || estado;
+    return `${manifiesto.basePath}/${this.idMascota}/${archivo}.png`;
   }
 
   aplicarHoja() {
-    const cfg = this.obtenerConfig();
-    this.elemento.style.setProperty("--pet-frames", String(cfg.frames));
+    const config = this.obtenerConfig();
+    this.elemento.style.setProperty("--pet-frames", String(config.frames));
     this.elemento.style.backgroundImage = `url("${this.rutaHoja()}")`;
-    this.elemento.style.backgroundSize = `${cfg.frames * 100}% 100%`;
+    this.elemento.style.backgroundSize = `${config.frames * 100}% 100%`;
     this.elemento.style.backgroundRepeat = "no-repeat";
+    this.elemento.dataset.petState = this.estado;
     this.actualizarFrameVisual();
   }
 
-  setState(estado, reiniciar = false) {
+  setState(estado, opciones = {}) {
+    const opts = typeof opciones === "boolean" ? { reiniciar: opciones } : opciones;
     if (!window.PerritosJrAnimations.states[estado]) estado = "idle";
-    if (this.estado === estado && !reiniciar) return;
+    const reiniciar = Boolean(opts.reiniciar);
+    if (this.estado === estado && !reiniciar) return false;
     this.estado = estado;
     this.frame = 0;
     this.acumulado = 0;
-    this.elemento.dataset.petState = estado;
+    this.terminado = false;
+    this.onComplete = typeof opts.onComplete === "function" ? opts.onComplete : null;
     this.aplicarHoja();
+    return true;
   }
 
   setFacing(izquierda) {
@@ -48,26 +59,32 @@ window.PerritoJrSpriteController = class PerritoJrSpriteController {
   }
 
   tick(dt) {
-    const cfg = this.obtenerConfig();
-    const intervalo = 1 / cfg.fps;
-    this.acumulado += Math.max(0, dt || 0);
+    const config = this.obtenerConfig();
+    if (this.terminado && !config.loop) return;
+    const intervalo = 1 / Math.max(1, config.fps);
+    this.acumulado += Math.max(0, Number(dt) || 0);
+
     while (this.acumulado >= intervalo) {
       this.acumulado -= intervalo;
-      if (cfg.loop) {
-        this.frame = (this.frame + 1) % cfg.frames;
+      if (config.loop) {
+        this.frame = (this.frame + 1) % config.frames;
+      } else if (this.frame < config.frames - 1) {
+        this.frame += 1;
       } else {
-        this.frame = Math.min(cfg.frames - 1, this.frame + 1);
+        this.terminado = true;
+        const completar = this.onComplete;
+        this.onComplete = null;
+        if (typeof completar === "function") completar(this.estado);
+        break;
       }
       this.actualizarFrameVisual();
     }
   }
 
   actualizarFrameVisual() {
-    const cfg = this.obtenerConfig();
-    const visual = cfg.reverse ? (cfg.frames - 1 - this.frame) : this.frame;
-    const porcentaje = cfg.frames > 1
-      ? (visual / (cfg.frames - 1)) * 100
-      : 0;
+    const config = this.obtenerConfig();
+    const visual = config.reverse ? (config.frames - 1 - this.frame) : this.frame;
+    const porcentaje = config.frames > 1 ? (visual / (config.frames - 1)) * 100 : 0;
     this.elemento.style.backgroundPosition = `${porcentaje}% 0%`;
   }
 };

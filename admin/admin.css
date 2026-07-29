@@ -31,3 +31,28 @@
 .profile-identity>div strong{font-size:18px}
 .profile-identity>div small{display:block;margin-top:5px;color:var(--muted);overflow-wrap:anywhere}
 @media(max-width:620px){.account-result{align-items:center}.account-result-id{max-width:95px;text-align:right;overflow-wrap:anywhere}.account-result-avatar{width:46px;height:46px;flex-basis:46px}.account-result-copy em{white-space:normal}.profile-identity{grid-column:auto}}
+
+/* ===== Jugadores 360: tarjetas premium responsivas ===== */
+.gms-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:12px;margin-bottom:18px}
+.gms-toolbar input,.gms-toolbar select{width:100%;min-width:0;border:1px solid var(--border);background:#081422;color:#fff;border-radius:14px;padding:14px 15px;outline:none}
+.gms-toolbar input:focus,.gms-toolbar select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(92,124,255,.14)}
+.gms-player-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.gms-player-card{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:20px;padding:18px;background:linear-gradient(145deg,rgba(17,31,50,.98),rgba(10,21,36,.98));box-shadow:0 14px 34px rgba(0,0,0,.18);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
+.gms-player-card::after{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,rgba(92,124,255,.75),transparent);opacity:.65}
+.gms-player-card:hover{transform:translateY(-2px);border-color:rgba(92,124,255,.42);box-shadow:0 18px 42px rgba(0,0,0,.26)}
+.gms-player-card.admin-card{border-color:rgba(255,190,75,.42)}
+.gms-player-card.admin-card::after{background:linear-gradient(90deg,transparent,#f4bd55,transparent)}
+.gms-player-card.premium-card{border-color:rgba(139,92,246,.36)}
+.gms-player-card.premium-card::after{background:linear-gradient(90deg,transparent,#8b5cf6,transparent)}
+.gms-player-card-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:13px;align-items:center}
+.gms-player-avatar{position:relative;width:62px;height:62px;border-radius:18px;overflow:hidden;display:grid;place-items:center;flex:0 0 62px;background:linear-gradient(145deg,#29466e,#101d30);border:2px solid rgba(112,139,183,.35);font-size:24px;font-weight:900;color:#fff}
+.gms-player-avatar.admin-avatar{border-color:#e9b64d;box-shadow:0 0 0 4px rgba(233,182,77,.08)}
+.gms-player-avatar img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
+.gms-player-primary{min-width:0}.gms-player-name-row{display:flex;align-items:center;gap:8px;min-width:0}.gms-player-name-row h3{min-width:0;margin:0;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gms-player-primary p{margin:5px 0 7px;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gms-player-id{display:inline-flex;padding:5px 8px;border-radius:999px;background:rgba(92,124,255,.1);color:#aab9ff;font-size:10px;font-weight:850;letter-spacing:.03em}
+.gms-role-badge{flex:0 0 auto;padding:4px 7px;border-radius:999px;background:rgba(244,189,85,.13);color:#f4bd55;font-size:9px;font-weight:900;letter-spacing:.08em}
+.gms-status{display:inline-flex!important;align-items:center;gap:6px;align-self:start;padding:7px 9px!important;border-radius:999px!important;font-size:10px!important;font-weight:900!important;white-space:nowrap}.gms-status i{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 0 4px color-mix(in srgb,currentColor 15%,transparent)}
+.gms-player-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:17px 0 14px}.gms-player-stats>div{min-width:0;padding:11px;border:1px solid rgba(156,180,210,.11);border-radius:13px;background:rgba(7,17,31,.64)}.gms-player-stats span,.gms-player-stats strong{display:block}.gms-player-stats span{color:var(--muted);font-size:10px;margin-bottom:6px}.gms-player-stats strong{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gms-open-account{width:100%;border:1px solid rgba(92,124,255,.28);background:linear-gradient(135deg,rgba(92,124,255,.16),rgba(124,92,255,.12));color:#eef2ff;border-radius:13px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;font-weight:850;cursor:pointer}.gms-open-account:hover{border-color:rgba(92,124,255,.65);background:linear-gradient(135deg,rgba(92,124,255,.28),rgba(124,92,255,.2))}.gms-open-account b{font-size:19px;color:#aab9ff}.gms-empty{grid-column:1/-1;padding:30px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:16px}
+@media(max-width:1100px){.gms-player-grid{grid-template-columns:1fr}}
+@media(max-width:620px){.gms-toolbar{grid-template-columns:1fr}.gms-player-card{padding:15px;border-radius:18px}.gms-player-card-top{grid-template-columns:auto minmax(0,1fr)}.gms-player-card-top>.gms-status{grid-column:1/-1;justify-self:start;margin-top:2px}.gms-player-avatar{width:56px;height:56px;flex-basis:56px;border-radius:16px}.gms-player-stats{gap:6px}.gms-player-stats>div{padding:10px 8px}.gms-player-stats strong{font-size:12px}.gms-player-name-row h3{font-size:16px}}
+@media(max-width:390px){.gms-player-stats{grid-template-columns:1fr 1fr}.gms-player-stats>div:first-child{grid-column:1/-1}.gms-player-primary p{white-space:normal;overflow-wrap:anywhere}}

@@ -10,7 +10,63 @@ function status(d){const until=date(d.suspendedUntil);if(d.banned||d.disabled)re
 function countTrue(o){return o&&typeof o==="object"?Object.values(o).filter(Boolean).length:0}
 async function loadUsers(force=false){if(users.length&&!force)return users;const s=await getDocs(collection(db,"users"));users=s.docs.map(x=>({uid:x.id,data:x.data()}));renderAll();return users}
 async function api(path){const u=auth.currentUser;if(!u)throw Error("La sesión administrativa expiró.");const r=await fetch(API+path,{headers:{Authorization:`Bearer ${await u.getIdToken(true)}`}}),p=await r.json().catch(()=>({}));if(!r.ok)throw Error(p.error||"No se pudo consultar el backend.");return p}
-function renderPlayers(){const q=($("gmsPlayerSearch")?.value||"").trim().toLowerCase(),filter=$("gmsPlayerState")?.value||"all";const active=users.filter(x=>status(x.data)==="active").length,suspended=users.filter(x=>status(x.data)==="suspended").length,banned=users.filter(x=>status(x.data)==="banned").length,incomplete=users.filter(x=>!x.data.email||name(x.data)==="Usuario sin nombre"||jf(x.data)==="Sin ID JF").length;$("gmsActivePlayers").textContent=nf.format(active);$("gmsSuspendedPlayers").textContent=nf.format(suspended);$("gmsBannedPlayers").textContent=nf.format(banned);$("gmsIncompletePlayers").textContent=nf.format(incomplete);const f=users.filter(x=>(filter==="all"||status(x.data)===filter)&&(!q||[x.uid,name(x.data),email(x.data),jf(x.data)].some(v=>String(v).toLowerCase().includes(q)))).slice(0,100);$("gmsPlayerDirectory").innerHTML=f.length?`<table class="gms-table"><thead><tr><th>Jugador</th><th>ID JF</th><th>Estado</th><th>Nivel</th><th>Monedas</th><th>Diamantes</th><th></th></tr></thead><tbody>${f.map(x=>{const d=x.data,st=status(d);return `<tr><td><div class="gms-user-cell"><span class="gms-avatar">${safe(name(d).slice(0,1).toUpperCase())}</span><div><strong>${safe(name(d))}</strong><small>${safe(email(d))}</small></div></div></td><td>${safe(jf(d))}</td><td><span class="gms-status ${st}">${st==="active"?"Activa":st==="suspended"?"Suspendida":"Baneada"}</span></td><td>${nf.format(num(d.nivelActual??d.level??d.progreso?.nivelActual))}</td><td>${nf.format(num(d.coins??d.monedas))}</td><td>${nf.format(num(d.diamonds??d.diamantes))}</td><td><button class="gms-open-account" data-account-search="${safe(jf(d)!=="Sin ID JF"?jf(d):email(d))}" type="button">Gestionar</button></td></tr>`}).join("")}</tbody></table>`:'<div class="gms-empty">No hay jugadores que coincidan.</div>';document.querySelectorAll("[data-account-search]").forEach(b=>b.addEventListener("click",()=>{document.querySelector('[data-view="cuentas"]')?.click();setTimeout(()=>{const i=$("accountSearch");if(i){i.value=b.dataset.accountSearch;i.dispatchEvent(new Event("input"))}},150)}))}
+function avatarUrl(d){return d.customPhoto||d.photoURL||d.photoUrl||d.avatar||d.profilePhoto||""}
+function isAdminProfile(d){return d.admin===true||d.isAdmin===true||d.role==="admin"||d.rol==="admin"}
+function renderPlayers(){
+  const q=($('gmsPlayerSearch')?.value||'').trim().toLowerCase();
+  const filter=$('gmsPlayerState')?.value||'all';
+  const active=users.filter(x=>status(x.data)==='active').length;
+  const suspended=users.filter(x=>status(x.data)==='suspended').length;
+  const banned=users.filter(x=>status(x.data)==='banned').length;
+  const incomplete=users.filter(x=>!x.data.email||name(x.data)==='Usuario sin nombre'||jf(x.data)==='Sin ID JF').length;
+  $('gmsActivePlayers').textContent=nf.format(active);
+  $('gmsSuspendedPlayers').textContent=nf.format(suspended);
+  $('gmsBannedPlayers').textContent=nf.format(banned);
+  $('gmsIncompletePlayers').textContent=nf.format(incomplete);
+
+  const list=users.filter(x=>(filter==='all'||status(x.data)===filter)&&(!q||[x.uid,name(x.data),email(x.data),jf(x.data)].some(v=>String(v).toLowerCase().includes(q)))).slice(0,100);
+  const directory=$('gmsPlayerDirectory');
+  if(!directory)return;
+  directory.classList.remove('gms-table-wrap');
+  directory.classList.add('gms-player-grid');
+  directory.innerHTML=list.length?list.map(x=>{
+    const d=x.data,st=status(d),photo=avatarUrl(d),initial=safe(name(d).slice(0,1).toUpperCase());
+    const coins=num(d.coins??d.monedas),diamonds=num(d.diamonds??d.diamantes),level=num(d.nivelActual??d.level??d.progreso?.nivelActual);
+    const admin=isAdminProfile(d),vip=diamonds>=10000;
+    const accent=admin?' admin-card':vip?' premium-card':'';
+    const stateLabel=st==='active'?'Activo':st==='suspended'?'Suspendido':'Baneado';
+    return `<article class="gms-player-card${accent}">
+      <div class="gms-player-card-top">
+        <div class="gms-player-avatar${admin?' admin-avatar':''}">
+          ${photo?`<img src="${safe(photo)}" alt="Foto de ${safe(name(d))}" loading="lazy" onerror="this.remove();this.parentElement.querySelector('span').hidden=false">`:''}
+          <span${photo?' hidden':''}>${initial}</span>
+        </div>
+        <div class="gms-player-primary">
+          <div class="gms-player-name-row"><h3>${safe(name(d))}</h3>${admin?'<span class="gms-role-badge">ADMIN</span>':''}</div>
+          <p>${safe(email(d))}</p>
+          <div class="gms-player-id">ID JF · ${safe(jf(d))}</div>
+        </div>
+        <span class="gms-status ${st}"><i></i>${stateLabel}</span>
+      </div>
+      <div class="gms-player-stats">
+        <div><span>Nivel</span><strong>${nf.format(level)}</strong></div>
+        <div><span>Monedas</span><strong>🪙 ${nf.format(coins)}</strong></div>
+        <div><span>Diamantes</span><strong>💎 ${nf.format(diamonds)}</strong></div>
+      </div>
+      <button class="gms-open-account" data-account-search="${safe(jf(d)!=='Sin ID JF'?jf(d):email(d))}" type="button">
+        <span>Gestionar jugador</span><b>→</b>
+      </button>
+    </article>`;
+  }).join(''):'<div class="gms-empty">No hay jugadores que coincidan con la búsqueda.</div>';
+
+  directory.querySelectorAll('[data-account-search]').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelector('[data-view="cuentas"]')?.click();
+    setTimeout(()=>{
+      const i=$('accountSearch');
+      if(i){i.value=b.dataset.accountSearch;i.dispatchEvent(new Event('input',{bubbles:true}));$('accountSearchButton')?.click()}
+    },180)
+  }))
+}
 function tally(values){const m=new Map();values.filter(Boolean).forEach(v=>m.set(String(v),1+(m.get(String(v))||0)));return [...m.entries()].sort((a,b)=>b[1]-a[1])}
 function renderInventory(){let items=0,pets=0,races=0,equipped=0,withItems=0,withPets=0,withRaces=0;const eq=[];users.forEach(({data:d})=>{const a=countTrue(d.inventarioArticulos),p=countTrue(d.perritosJrComprados),r=countTrue(d.razasCompradas);items+=a;pets+=p;races+=r;if(a)withItems++;if(p)withPets++;if(r)withRaces++;const vals=[d.skinEquipada,d.perritoEquipado||d.mascotaEquipada,d.razaEquipada].filter(Boolean);if(vals.length){equipped++;eq.push(...vals)}});$("gmsTotalItems").textContent=nf.format(items);$("gmsTotalPets").textContent=nf.format(pets);$("gmsTotalRaces").textContent=nf.format(races);$("gmsEquippedPlayers").textContent=nf.format(equipped);const top=tally(eq).slice(0,10);$("gmsPopularEquipment").innerHTML=top.length?top.map(([k,v],i)=>`<div class="data-row"><div><strong>#${i+1} ${safe(k)}</strong><span>Equipado actualmente</span></div><div class="value">${nf.format(v)} jugadores</div></div>`).join(""):'<div class="empty-inline">Aún no hay equipamiento registrado.</div>';const total=users.length||1;$("gmsInventoryCoverage").innerHTML=[["Con artículos",withItems],["Con Perritos Jr.",withPets],["Con razas",withRaces],["Con algo equipado",equipped]].map(([l,v])=>{const p=Math.round(v/total*100);return `<div class="bar-item"><header><span>${l}</span><b>${v} · ${p}%</b></header><div class="bar-track"><div class="bar-fill" style="width:${p}%"></div></div></div>`}).join("")}
 function renderModeration(){const cases=users.filter(x=>{const d=x.data;return status(d)!=="active"||d.chatMuted||d.mutedUntil||d.eventsBlocked||num(d.adminWarnings)>0});const banned=users.filter(x=>status(x.data)==="banned").length,suspended=users.filter(x=>status(x.data)==="suspended").length,muted=users.filter(x=>x.data.chatMuted||(date(x.data.mutedUntil)&&date(x.data.mutedUntil)>new Date())).length,events=users.filter(x=>x.data.eventsBlocked).length;$("gmsModBanned").textContent=banned;$("gmsModSuspended").textContent=suspended;$("gmsModMuted").textContent=muted;$("gmsModEvents").textContent=events;$("gmsModerationCases").innerHTML=cases.length?cases.map(x=>{const d=x.data,t=[];if(status(d)==="banned")t.push("Baneo");if(status(d)==="suspended")t.push("Suspensión");if(d.chatMuted||d.mutedUntil)t.push("Chat silenciado");if(d.eventsBlocked)t.push("Eventos bloqueados");if(num(d.adminWarnings))t.push(`${num(d.adminWarnings)} advertencias`);return `<div class="data-row gms-case"><div><strong>${safe(name(d))}</strong><span>${safe(email(d))}</span><div class="gms-case-tags">${t.map(a=>`<span class="gms-tag">${safe(a)}</span>`).join("")}</div></div><div class="value">${safe(jf(d))}</div></div>`}).join(""):'<div class="empty-inline">No hay medidas activas.</div>'}

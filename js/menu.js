@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
     chatBadge.textContent = "NUEVO";
 
     chatButton.append(chatIcon, chatText, chatBadge);
-    menuButtons.appendChild(chatButton);
+    menuButtons.insertBefore(chatButton, document.getElementById("exitButton"));
   }
 
 const adminConsoleButton =

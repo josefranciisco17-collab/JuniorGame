@@ -1,293 +1,215 @@
 :root {
-  --madera-clara: #cf843c;
-  --madera-media: #9c4c19;
-  --madera-oscura: #5d2709;
-  --borde-madera: #421a05;
-  --crema: #fff4d8;
-  --dorado: #ffb62d;
-  --verde: #4b9a4a;
-  --rojo: #b74336;
+  --wood-light: #d38b3d;
+  --wood-mid: #9c4d1a;
+  --wood-dark: #4f2108;
+  --wood-border: #351405;
+  --cream: #fff2cf;
+  --gold: #ffc13a;
+  --green: #55ad3d;
+  --blue: #159bdd;
+  --purple: #a13adb;
+  --shadow: 0 8px 0 #2b1003, 0 16px 32px rgba(0,0,0,.35);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { min-height: 100%; font-family: Arial, Helvetica, sans-serif; background: #1f0f05; color: var(--crema); }
+html { min-height: 100%; background: #1b0d04; }
+body { min-height: 100%; color: var(--cream); font-family: Arial, Helvetica, sans-serif; background: #1b0d04; }
 button, a { font: inherit; }
 button { cursor: pointer; touch-action: manipulation; }
 .hidden { display: none !important; }
 
-.articles-page {
-  width: 100%;
-  max-width: 520px;
+.shop-shell {
   min-height: 100dvh;
-  margin: 0 auto;
-  padding: max(14px, env(safe-area-inset-top)) 14px max(28px, env(safe-area-inset-bottom));
+  padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
   background:
-    linear-gradient(rgba(20, 9, 2, .24), rgba(28, 12, 3, .58)),
+    linear-gradient(rgba(30,12,2,.28), rgba(20,8,2,.55)),
     url("../Fondos-JuniorGame/granja.png") center/cover fixed;
 }
 
-.articles-header {
-  display: grid;
-  grid-template-columns: 48px 1fr auto;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  border: 4px solid var(--borde-madera);
-  border-radius: 22px;
-  background: linear-gradient(180deg, var(--madera-clara), var(--madera-media) 55%, var(--madera-oscura));
-  box-shadow: inset 0 3px rgba(255,255,255,.15), 0 6px #301003, 0 14px 24px rgba(0,0,0,.34);
+.wood-panel,
+.wood-panel-soft {
+  border: 4px solid var(--wood-border);
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 2px, transparent 2px 28px),
+    linear-gradient(180deg, var(--wood-light), var(--wood-mid) 58%, var(--wood-dark));
+  box-shadow: inset 0 3px rgba(255,255,255,.15), var(--shadow);
 }
+.wood-panel-soft { box-shadow: inset 0 3px rgba(255,255,255,.12), 0 5px 0 #2b1003, 0 10px 18px rgba(0,0,0,.26); }
 
-.back-button {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  color: var(--crema);
-  text-decoration: none;
-  font-size: 28px;
-  font-weight: 900;
-  border: 3px solid var(--borde-madera);
-  border-radius: 13px;
-  background: rgba(60,22,3,.36);
-}
-
-.eyebrow { font-size: 10px; font-weight: 900; letter-spacing: 1.3px; opacity: .88; }
-.articles-header h1 { margin-top: 2px; color: var(--dorado); font-size: clamp(21px, 6vw, 29px); text-shadow: 0 2px #8b4704, 0 4px 7px rgba(0,0,0,.35); }
-.diamond-balance { min-width: 70px; padding: 8px 10px; display: flex; justify-content: center; gap: 6px; border: 3px solid var(--borde-madera); border-radius: 14px; background: rgba(51,19,3,.45); font-size: 17px; }
-
-.main-tabs { margin-top: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
-.main-tab {
-  min-height: 48px;
-  padding: 7px 4px;
-  color: var(--crema);
-  font-weight: 900;
-  border: 3px solid var(--borde-madera);
-  border-radius: 14px;
-  background: linear-gradient(180deg, #b86c2c, #6d2f0c);
-  box-shadow: 0 4px #301003;
-}
-.main-tab.active { color: #2b1405; background: linear-gradient(180deg, #ffd665, #f0a51c); transform: translateY(2px); box-shadow: 0 2px #8a4704; }
-
-.section-view { margin-top: 15px; }
-.mannequin-card, .info-banner, .power-rule, .selected-power-card {
-  border: 4px solid var(--borde-madera);
-  border-radius: 22px;
-  background: linear-gradient(180deg, rgba(204,127,55,.96), rgba(100,40,8,.97));
-  box-shadow: inset 0 3px rgba(255,255,255,.14), 0 6px #301003, 0 13px 22px rgba(0,0,0,.3);
-}
-.mannequin-card { padding: 12px; }
-.mannequin-stage {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4/5;
-  overflow: hidden;
-  border: 4px solid var(--borde-madera);
+.shop-header {
+  max-width: 1500px;
+  margin: 0 auto 14px;
+  min-height: 88px;
+  padding: 10px 14px;
   border-radius: 18px;
-  background: radial-gradient(circle at 50% 35%, #ffe9a9 0, #ddb45e 34%, #8a4a18 72%, #492105 100%);
-}
-.stage-light { position: absolute; inset: 0; background: linear-gradient(100deg, transparent 22%, rgba(255,255,255,.23) 48%, transparent 70%); animation: shine 4.8s linear infinite; }
-@keyframes shine { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
-.mannequin-base { position: absolute; z-index: 2; left: 50%; bottom: 2%; width: 88%; height: 94%; object-fit: contain; transform: translateX(-50%); transition: filter .25s ease; }
-.clothing-layers { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
-.clothing-layer { position: absolute; display: grid; place-items: center; font-size: clamp(42px, 14vw, 78px); line-height: 1; animation: dressIn .32s ease-out; filter: drop-shadow(0 5px 3px rgba(0,0,0,.3)); }
-.clothing-layer img { width: 100%; height: 100%; object-fit: contain; }
-@keyframes dressIn { from { opacity: 0; transform: translate(-50%, -55px) scale(.72); } to { opacity: 1; } }
-.preview-badge { position: absolute; z-index: 8; left: 10px; bottom: 10px; padding: 7px 10px; border-radius: 999px; color: #3a2300; background: #ffd24f; font-size: 12px; font-weight: 900; box-shadow: 0 3px 7px rgba(0,0,0,.28); }
-
-.outfit-summary { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.outfit-summary div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.outfit-summary small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .87; }
-.small-button { flex: 0 0 auto; padding: 8px 10px; color: var(--crema); font-size: 12px; font-weight: 900; border: 2px solid var(--borde-madera); border-radius: 11px; background: rgba(62,22,3,.42); }
-.save-outfit-button { width: 100%; margin-top: 11px; padding: 12px; color: white; font-weight: 1000; border: 3px solid #174719; border-radius: 14px; background: linear-gradient(180deg, #65b85b, #28722c); box-shadow: 0 4px #123d15; }
-.save-outfit-button:disabled { color: #d8c9b2; border-color: #422a1b; background: linear-gradient(#78604c, #4e392a); box-shadow: 0 4px #2b1b12; opacity: .78; }
-.save-help { margin-top: 7px; text-align: center; font-size: 12px; opacity: .9; }
-
-.subcategories { margin-top: 16px; display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 7px; scrollbar-width: none; }
-.subcategories::-webkit-scrollbar { display: none; }
-.subcategory-button { flex: 0 0 auto; padding: 9px 12px; color: var(--crema); font-weight: 900; border: 3px solid var(--borde-madera); border-radius: 999px; background: linear-gradient(#b86d2e, #6d2f0c); }
-.subcategory-button.active { color: #2d1605; background: linear-gradient(#ffe083, #f3ad26); }
-
-.catalog-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.item-card { position: relative; min-width: 0; padding: 12px 10px 11px; text-align: center; border: 4px solid var(--borde-madera); border-radius: 18px; background: linear-gradient(180deg, #c77b37, #79340e); box-shadow: inset 0 2px rgba(255,255,255,.14), 0 5px #301003; }
-.item-icon { min-height: 65px; display: grid; place-items: center; font-size: 51px; filter: drop-shadow(0 4px 2px rgba(0,0,0,.3)); }
-.item-card h3 { margin-top: 5px; font-size: 15px; line-height: 1.15; }
-.item-description { min-height: 47px; margin-top: 6px; font-size: 12px; line-height: 1.3; opacity: .9; }
-.item-meta { margin-top: 7px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
-.rarity, .price, .status-label { padding: 4px 7px; border-radius: 999px; font-size: 10px; font-weight: 900; background: rgba(53,19,3,.4); }
-.status-label.owned { background: #23732d; }
-.status-label.preview { color: #332000; background: #ffd45c; }
-.item-actions { margin-top: 9px; display: grid; gap: 7px; }
-.item-button { min-height: 38px; padding: 7px 6px; color: white; font-size: 12px; font-weight: 1000; border: 3px solid var(--borde-madera); border-radius: 11px; background: linear-gradient(#d58a40, #884313); box-shadow: 0 3px #301003; }
-.item-button.buy { background: linear-gradient(#5fae55, #26712c); border-color: #173f18; box-shadow: 0 3px #123714; }
-.item-button.equipped { background: linear-gradient(#f5c54a, #b56c09); color: #351b04; }
-.item-button:disabled { opacity: .65; filter: grayscale(.4); }
-
-.info-banner, .power-rule, .selected-power-card { display: flex; align-items: center; gap: 12px; padding: 14px; }
-.info-banner > span, .power-rule > span, .selected-power-card > span { font-size: 38px; }
-.info-banner p, .power-rule p { margin-top: 4px; font-size: 13px; line-height: 1.35; }
-.selected-power-card { margin-top: 12px; }
-.selected-power-card div { display: flex; flex-direction: column; gap: 3px; }
-.selected-power-card small { opacity: .84; }
-.power-grid .item-card { min-height: 260px; }
-
-.articles-message { position: sticky; bottom: 10px; z-index: 30; min-height: 0; margin-top: 14px; padding: 0; text-align: center; font-weight: 900; border-radius: 12px; transition: .2s; }
-.articles-message:not(:empty) { padding: 10px; border: 3px solid var(--borde-madera); background: #fff0c9; color: #3c1b05; box-shadow: 0 5px 15px rgba(0,0,0,.3); }
-.articles-message.error:not(:empty) { color: white; background: #a83c31; }
-
-.purchase-modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; }
-.purchase-backdrop { position: absolute; inset: 0; background: rgba(27,11,2,.8); backdrop-filter: blur(6px); }
-.purchase-card { position: relative; z-index: 2; width: 100%; max-width: 330px; padding: 25px 20px 20px; text-align: center; border: 5px solid var(--borde-madera); border-radius: 24px; background: linear-gradient(#c77b37, #672b0b); box-shadow: 0 8px #301003, 0 24px 45px rgba(0,0,0,.48); }
-.modal-close { position: absolute; right: 9px; top: 6px; width: 40px; height: 40px; color: white; font-size: 30px; border: 0; background: transparent; }
-.purchase-icon { font-size: 57px; }
-.purchase-card h2 { margin-top: 4px; color: var(--dorado); }
-.purchase-card p { margin-top: 11px; line-height: 1.4; }
-.purchase-card > strong { display: block; margin-top: 13px; font-size: 24px; }
-.purchase-actions { margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-.purchase-actions button { min-height: 44px; color: white; font-weight: 900; border: 3px solid var(--borde-madera); border-radius: 12px; box-shadow: 0 4px #301003; }
-.secondary-action { background: linear-gradient(#a56431, #68300f); }
-.primary-action { background: linear-gradient(#61b158, #26712c); }
-
-@media (max-width: 365px) {
-  .articles-page { padding-left: 9px; padding-right: 9px; }
-  .articles-header { grid-template-columns: 43px 1fr auto; padding: 9px; }
-  .diamond-balance { min-width: 58px; padding: 7px 6px; }
-  .catalog-grid { gap: 7px; }
-  .item-card { padding-left: 7px; padding-right: 7px; }
-}
-
-.item-image{
-  width: 92px;
-  height: 92px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-  pointer-events: none;
-  user-select: none;
-}
-
-
-/* ==========================================================
-   FASE 1 PROFESIONAL — COLECCIÓN DE RAZAS
-   ========================================================== */
-
-.breed-hero,
-.selected-breed-card {
-  border: 4px solid var(--borde-madera);
-  border-radius: 22px;
-  background: linear-gradient(180deg, rgba(204,127,55,.96), rgba(100,40,8,.97));
-  box-shadow: inset 0 3px rgba(255,255,255,.14), 0 6px #301003, 0 13px 22px rgba(0,0,0,.3);
-}
-
-.breed-hero {
-  display: flex;
+  display: grid;
+  grid-template-columns: 62px 1fr auto;
   align-items: center;
   gap: 12px;
-  padding: 14px;
+}
+.back-button {
+  width: 54px; height: 54px; display: grid; place-items: center;
+  color: white; text-decoration: none; font-size: 34px; font-weight: 1000;
+  border: 4px solid var(--wood-border); border-radius: 14px;
+  background: linear-gradient(#ad6428, #6b2d0c); box-shadow: 0 4px #2b1003;
+}
+.shop-title { text-align: center; min-width: 0; }
+.shop-title h1 { color: var(--gold); font-size: clamp(25px, 4vw, 50px); line-height: 1; text-shadow: 0 3px #7a3c03, 0 6px 7px rgba(0,0,0,.45); }
+.shop-title p { margin-top: 4px; font-weight: 900; letter-spacing: 1px; font-size: clamp(10px, 1.5vw, 18px); }
+.diamond-balance {
+  min-width: 116px; padding: 12px 14px; display: flex; justify-content: center; align-items: center; gap: 9px;
+  border: 4px solid var(--wood-border); border-radius: 14px; background: rgba(27,12,4,.68);
+  font-size: clamp(18px, 2.2vw, 28px); font-weight: 1000;
 }
 
-.breed-hero-icon {
-  flex: 0 0 auto;
-  font-size: 42px;
-  filter: drop-shadow(0 4px 3px rgba(0,0,0,.34));
+.shop-layout { max-width: 1500px; margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0,1fr); gap: 14px; align-items: start; }
+.category-sidebar { position: sticky; top: 10px; padding: 10px; border-radius: 18px; display: grid; gap: 10px; }
+.category-button {
+  position: relative; min-height: 92px; padding: 10px 12px; display: grid; grid-template-columns: 58px 1fr; align-items: center; gap: 10px;
+  color: var(--cream); border: 4px solid var(--wood-border); border-radius: 16px; background: linear-gradient(#9f511c, #5f280b); box-shadow: 0 5px #2b1003;
+  font-size: 22px; font-weight: 1000; text-align: left;
+}
+.category-button.active { color: #2a1203; background: linear-gradient(#ffd762, #eea51b); transform: translateY(2px); box-shadow: 0 3px #7a3d05; }
+.category-icon { font-size: 42px; display: grid; place-items: center; }
+.category-dog-icon img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
+.new-badge { position: absolute; right: -5px; top: -10px; padding: 5px 8px; border-radius: 999px; background: #e63b2f; color: white; border: 2px solid white; font-size: 11px; }
+.sidebar-note { padding: 20px 12px; font-size: 17px; line-height: 1.55; text-align: center; }
+
+.shop-content { min-width: 0; }
+.section-heading { border-radius: 17px; padding: 14px 18px; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.section-heading h2 { color: var(--gold); font-size: clamp(22px, 3vw, 34px); }
+.section-heading p { margin-top: 4px; opacity: .95; }
+.live-status { flex: 0 0 auto; padding: 7px 10px; border-radius: 999px; background: rgba(25,90,31,.8); font-size: 12px; font-weight: 900; }
+.shop-section { margin-top: 14px; }
+
+.catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 13px; }
+.item-card {
+  min-width: 0; overflow: hidden; border: 4px solid var(--wood-border); border-radius: 18px;
+  background: linear-gradient(180deg, #c27631, #7b350e 58%, #512006);
+  box-shadow: inset 0 3px rgba(255,255,255,.12), 0 6px #2b1003, 0 12px 20px rgba(0,0,0,.28);
+  display: flex; flex-direction: column;
+}
+.item-visual { height: 180px; display: grid; place-items: center; background: radial-gradient(circle, #f0c76f, #8c4616 72%); overflow: hidden; }
+.item-visual img { width: 100%; height: 100%; object-fit: contain; }
+.item-visual .emoji-fallback { font-size: 78px; }
+.item-copy { padding: 13px; display: flex; flex-direction: column; flex: 1; }
+.item-copy h3 { font-size: 22px; text-align: center; }
+.item-ability { margin-top: 7px; color: #ffd86a; font-weight: 900; text-align: center; }
+.item-description { margin-top: 7px; min-height: 44px; line-height: 1.35; text-align: center; opacity: .95; }
+.item-meta { margin-top: auto; padding-top: 12px; display: flex; justify-content: center; flex-wrap: wrap; gap: 7px; }
+.pill { padding: 6px 9px; border-radius: 999px; background: rgba(52,20,3,.48); font-size: 12px; font-weight: 900; }
+.item-button { width: 100%; margin-top: 11px; padding: 11px; border: 3px solid #15451b; border-radius: 13px; color: white; background: linear-gradient(#63bd55, #25772e); box-shadow: 0 4px #123913; font-weight: 1000; }
+.item-button.secondary { border-color: #174d72; background: linear-gradient(#45bce8, #1674ae); box-shadow: 0 4px #0b3c60; }
+.item-button.equipped { border-color: #315b0d; background: linear-gradient(#94cf3a, #4c8b17); }
+.item-button:disabled { opacity: .78; cursor: default; }
+
+.selected-card, .rule-card { margin-bottom: 13px; padding: 14px 17px; border-radius: 17px; }
+.selected-card div { display: grid; gap: 4px; }
+.selected-card strong { font-size: 22px; }
+.rule-card p { margin-top: 4px; }
+
+.pets-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(350px, .9fr); gap: 14px; }
+.pets-heading { margin-bottom: 12px; }
+.pets-heading h2 { color: var(--gold); font-size: 28px; }
+.pets-heading p { margin-top: 4px; }
+.pets-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+.pet-card {
+  position: relative; overflow: hidden; border: 3px solid var(--wood-border); border-radius: 16px; background: linear-gradient(180deg, #4b7799, #1d3445);
+  box-shadow: 0 5px #251004; text-align: center;
+}
+.pet-card.selected { outline: 4px solid #a6f23d; box-shadow: 0 0 18px #8ee82e, 0 5px #251004; }
+.pet-card[data-rarity="Épico"] { background: linear-gradient(180deg, #783d8c, #351c44); }
+.pet-card[data-rarity="Común"] { background: linear-gradient(180deg, #6a8f2d, #304512); }
+.pet-card-image { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+.pet-card-copy { padding: 8px; }
+.pet-card h3 { font-size: 19px; }
+.pet-rarity { display: block; margin-top: 2px; font-size: 12px; font-weight: 1000; }
+.pet-price-button { width: 100%; margin-top: 7px; padding: 8px; border: 0; border-radius: 9px; color: white; background: linear-gradient(#25b8ef,#0875b8); font-weight: 1000; }
+.pet-card[data-rarity="Épico"] .pet-price-button { background: linear-gradient(#bd49ed,#6b1cab); }
+.pet-card.selected .pet-price-button { background: linear-gradient(#78c338,#397e18); }
+
+.pet-preview { border-radius: 18px; padding: 13px; position: sticky; top: 10px; }
+.pet-preview h3 { text-align: center; color: var(--gold); font-size: 24px; }
+.preview-stage { position: relative; margin-top: 10px; aspect-ratio: 4/3; overflow: hidden; border: 4px solid var(--wood-border); border-radius: 15px; background: linear-gradient(#75c9f4 0 55%, #7eb643 55% 100%); }
+.preview-stage::before { content: ""; position: absolute; inset: 0; background: url("../Fondos-JuniorGame/granja.png") center/cover; opacity: .68; }
+.preview-ground { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; height: 28%; background: linear-gradient(transparent,#7a4b20); }
+.preview-main-dog { position: absolute; z-index: 3; width: 42%; right: 10%; bottom: 13%; object-fit: contain; animation: runBob .72s ease-in-out infinite alternate; }
+.preview-pet { position: absolute; z-index: 4; width: 25%; left: 22%; bottom: 13%; border-radius: 28%; object-fit: cover; animation: petFollow .72s ease-in-out infinite alternate .12s; }
+@keyframes runBob { to { transform: translateY(-7px) rotate(-1deg); } }
+@keyframes petFollow { to { transform: translate(7px,-5px) rotate(1deg); } }
+.pet-detail { margin-top: 11px; display: grid; grid-template-columns: 86px 1fr; gap: 12px; align-items: center; }
+.pet-detail > img { width: 86px; height: 86px; border-radius: 50%; object-fit: cover; border: 4px solid var(--wood-border); }
+.detail-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.detail-title-row strong { font-size: 25px; }
+.equipped-pill { padding: 5px 8px; border-radius: 7px; background: #438e1f; font-size: 11px; font-weight: 1000; }
+.pet-detail-copy small { color: #a8e943; font-weight: 1000; }
+.pet-detail-copy p { margin-top: 4px; }
+.passive-card { margin-top: 12px; padding: 12px; display: grid; grid-template-columns: 55px 1fr; gap: 10px; align-items: center; border: 3px solid var(--wood-border); border-radius: 14px; background: rgba(65,25,5,.42); }
+.passive-paw { font-size: 42px; }
+.passive-card p { margin-top: 4px; }
+
+.articles-message { position: fixed; z-index: 80; left: 50%; bottom: max(20px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(92vw, 560px); padding: 12px 16px; border-radius: 14px; text-align: center; font-weight: 900; background: rgba(28,90,30,.96); box-shadow: 0 6px 18px rgba(0,0,0,.4); pointer-events: none; opacity: 0; transition: opacity .2s; }
+.articles-message.visible { opacity: 1; }
+.articles-message.error { background: rgba(150,38,31,.97); }
+
+.purchase-modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 18px; }
+.purchase-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.72); backdrop-filter: blur(3px); }
+.purchase-card { position: relative; z-index: 2; width: min(92vw, 430px); padding: 24px; border-radius: 20px; text-align: center; }
+.modal-close { position: absolute; right: 10px; top: 7px; border: 0; background: transparent; color: white; font-size: 35px; }
+.purchase-image { width: 150px; height: 150px; margin: 0 auto 8px; object-fit: contain; border-radius: 18px; }
+.purchase-icon { font-size: 70px; }
+.purchase-card h2 { color: var(--gold); }
+.purchase-card p { margin: 10px 0; line-height: 1.4; }
+.purchase-card > strong { font-size: 24px; }
+.purchase-actions { margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.purchase-actions button { padding: 12px; border: 3px solid var(--wood-border); border-radius: 12px; color: white; font-weight: 1000; }
+.secondary-action { background: linear-gradient(#8b6a52,#55402e); }
+.primary-action { background: linear-gradient(#62bd54,#26772e); }
+
+@media (max-width: 900px) {
+  .shop-layout { grid-template-columns: 1fr; }
+  .category-sidebar { position: static; grid-template-columns: repeat(4, minmax(0,1fr)); padding: 8px; }
+  .category-button { min-height: 70px; grid-template-columns: 1fr; gap: 2px; text-align: center; font-size: clamp(11px, 3vw, 16px); }
+  .category-icon { font-size: 28px; }
+  .category-dog-icon img { width: 34px; height: 34px; }
+  .sidebar-note { display: none; }
+  .pets-layout { grid-template-columns: 1fr; }
+  .pet-preview { position: static; }
 }
 
-.breed-hero p {
-  margin-top: 4px;
-  font-size: 13px;
-  line-height: 1.35;
+@media (max-width: 600px) {
+  .shop-shell { padding-left: 7px; padding-right: 7px; }
+  .shop-header { min-height: 74px; grid-template-columns: 48px 1fr auto; padding: 8px; gap: 6px; }
+  .back-button { width: 43px; height: 43px; font-size: 28px; }
+  .shop-title h1 { font-size: clamp(22px, 7vw, 30px); }
+  .shop-title p { font-size: 9px; }
+  .diamond-balance { min-width: 78px; padding: 8px; font-size: 16px; }
+  .category-sidebar { gap: 5px; }
+  .category-button { min-height: 66px; border-width: 3px; border-radius: 13px; }
+  .new-badge { font-size: 8px; padding: 3px 5px; }
+  .section-heading { padding: 11px 12px; }
+  .live-status { display: none; }
+  .catalog-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
+  .item-visual { height: 132px; }
+  .item-copy { padding: 9px; }
+  .item-copy h3 { font-size: 17px; }
+  .item-description { min-height: 54px; font-size: 12px; }
+  .item-meta { gap: 4px; }
+  .pill { padding: 5px 7px; font-size: 10px; }
+  .item-button { padding: 9px 5px; font-size: 12px; }
+  .pets-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; }
+  .pet-card h3 { font-size: 14px; }
+  .pet-card-copy { padding: 5px; }
+  .pet-price-button { padding: 6px 2px; font-size: 11px; }
+  .pet-rarity { font-size: 9px; }
+  .pet-preview h3 { font-size: 20px; }
+  .pet-detail { grid-template-columns: 72px 1fr; }
+  .pet-detail > img { width: 72px; height: 72px; }
+  .detail-title-row strong { font-size: 21px; }
 }
 
-.selected-breed-card {
-  margin-top: 12px;
-  padding: 13px;
-  display: grid;
-  grid-template-columns: 54px 1fr;
-  align-items: center;
-  gap: 11px;
-  background: linear-gradient(180deg, #5d9b54, #28652e);
-  border-color: #173f18;
-  box-shadow: inset 0 2px rgba(255,255,255,.16), 0 5px #123714;
-}
-
-.selected-breed-card > span {
-  width: 52px;
-  height: 52px;
-  display: grid;
-  place-items: center;
-  border: 3px solid rgba(255,255,255,.45);
-  border-radius: 50%;
-  background: rgba(20,70,25,.34);
-  font-size: 34px;
-}
-
-.selected-breed-card div {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.selected-breed-card small {
-  opacity: .85;
-  font-weight: 800;
-}
-
-.selected-breed-card strong {
-  color: #fff6bf;
-  font-size: 18px;
-}
-
-.selected-breed-card p {
-  margin-top: 2px;
-  font-size: 12px;
-  line-height: 1.3;
-  opacity: .92;
-}
-
-.breeds-grid .item-card {
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-}
-
-.breeds-grid .item-icon {
-  min-height: 82px;
-  font-size: 64px;
-}
-
-.breeds-grid .item-description {
-  min-height: 64px;
-}
-
-.breed-ability {
-  margin-top: 7px;
-  padding: 7px;
-  border: 2px solid rgba(255,222,139,.38);
-  border-radius: 11px;
-  color: #fff2bd;
-  background: rgba(63,22,3,.33);
-  font-size: 11px;
-  font-weight: 900;
-  line-height: 1.25;
-}
-
-.breeds-grid .item-actions {
-  margin-top: auto;
-  padding-top: 9px;
-}
-
-.status-label.equipped {
-  color: #2d1805;
-  background: linear-gradient(#ffe183, #f2ad25);
-}
-
-@media (max-width: 430px) {
-  .main-tabs {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .main-tab {
-    min-height: 44px;
-  }
+@media (max-width: 390px) {
+  .shop-title p { display: none; }
+  .category-button { font-size: 10px; }
+  .pets-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
 }

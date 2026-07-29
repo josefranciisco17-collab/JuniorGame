@@ -2,117 +2,133 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#2b1609">
   <title>Tienda Oficial | JuniorGame</title>
-  <link rel="stylesheet" href="css/articulos.css?v=20260726-tienda-oficial1">
+  <link rel="stylesheet" href="css/articulos.css?v=20260729-tienda-responsive1">
 </head>
 <body>
-  <main class="articles-page">
-    <header class="articles-header">
+  <main class="shop-shell">
+    <header class="shop-header wood-panel">
       <a class="back-button" href="index.html" aria-label="Volver al menú">←</a>
-      <div>
-        <p class="eyebrow">CATÁLOGO JUNIORGAME</p>
-        <h1>📦 TIENDA OFICIAL</h1>
+      <div class="shop-title">
+        <h1>TIENDA OFICIAL</h1>
+        <p>CATÁLOGO JUNIORGAME</p>
       </div>
-      <div class="diamond-balance" aria-label="Saldo de diamantes">
-        <span>💎</span>
+      <div class="diamond-balance" aria-label="Saldo de diamantes en tiempo real">
+        <span aria-hidden="true">💎</span>
         <strong id="diamondBalance">0</strong>
       </div>
     </header>
 
-    <nav class="main-tabs" aria-label="Categorías principales">
-      <button class="main-tab active" type="button" data-section="ropa">👕 Ropa</button>
-      <button class="main-tab" type="button" data-section="skins">🎨 Skins</button>
-      <button class="main-tab" type="button" data-section="razas">🐕 Razas</button>
-      <button class="main-tab" type="button" data-section="poderes">⚡ Poderes</button>
-    </nav>
-
-    <section id="wardrobeSection" class="section-view">
-      <div class="mannequin-card">
-        <div class="mannequin-stage" id="mannequinStage">
-          <div class="stage-light" aria-hidden="true"></div>
-          <img id="mannequinBase" class="mannequin-base" src="Fondos-JuniorGame/usuarioropa.png" alt="Maniquí para probar artículos">
-          <div id="clothingLayers" class="clothing-layers" aria-live="polite"></div>
-          <span id="previewBadge" class="preview-badge hidden">🟡 Modo prueba</span>
-        </div>
-
-        <div class="outfit-summary">
-          <div>
-            <strong>Outfit actual</strong>
-            <small id="outfitSummary">Sin artículos equipados</small>
-          </div>
-          <button id="clearPreviewButton" class="small-button" type="button">Quitar prueba</button>
-        </div>
-
-        <button id="saveOutfitButton" class="save-outfit-button" type="button" disabled>
-          🔒 Guardar Outfit
+    <div class="shop-layout">
+      <aside class="category-sidebar wood-panel" aria-label="Categorías de la tienda">
+        <button class="category-button active" type="button" data-section="skins">
+          <span class="category-icon">🎨</span><span>SKINS</span>
         </button>
-        <p id="saveHelp" class="save-help">Compra y equipa al menos un artículo para guardar.</p>
-      </div>
+        <button class="category-button" type="button" data-section="razas">
+          <span class="category-icon">🐾</span><span>RAZAS</span>
+        </button>
+        <button class="category-button" type="button" data-section="poderes">
+          <span class="category-icon">⚡</span><span>PODERES</span>
+        </button>
+        <button class="category-button category-new" type="button" data-section="perritos">
+          <span class="new-badge">¡NUEVO!</span>
+          <span class="category-icon category-dog-icon"><img src="Fondos-JuniorGame/perritos-jr/junior.png" alt=""></span>
+          <span>PERRITOS JR</span>
+        </button>
+        <p class="sidebar-note">Tus compañeros te acompañan en cada partida y te dan habilidades especiales.</p>
+      </aside>
 
-      <div class="subcategories" id="clothingCategories" aria-label="Tipos de ropa"></div>
-      <div id="clothingCatalog" class="catalog-grid"></div>
-    </section>
-
-    <section id="skinsSection" class="section-view hidden">
-      <div class="info-banner">
-        <span>🐶</span>
-        <div>
-          <strong>Cambia el pelaje</strong>
-          <p>Prueba un color y compra el que quieras conservar.</p>
+      <section class="shop-content">
+        <div class="section-heading wood-panel-soft">
+          <div>
+            <h2 id="sectionTitle">SKINS</h2>
+            <p id="sectionDescription">Personaliza el pelaje del perro principal.</p>
+          </div>
+          <span id="liveStatus" class="live-status">● Firebase</span>
         </div>
-      </div>
-      <div id="skinsCatalog" class="catalog-grid"></div>
-    </section>
 
-    <section id="breedsSection" class="section-view hidden">
-      <div class="breed-hero">
-        <span class="breed-hero-icon" aria-hidden="true">🐕</span>
-        <div>
-          <strong>Colección de razas</strong>
-          <p>Cada raza cuesta 💎80. Compra una y equípala para preparar su habilidad exclusiva.</p>
-        </div>
-      </div>
+        <section id="skinsSection" class="shop-section">
+          <div id="skinsCatalog" class="catalog-grid"></div>
+        </section>
 
-      <div id="selectedBreedCard" class="selected-breed-card">
-        <span id="selectedBreedIcon" aria-hidden="true">🐾</span>
-        <div>
-          <small>Raza equipada</small>
-          <strong id="selectedBreedName">Perro original</strong>
-          <p id="selectedBreedAbility">Sin habilidad de raza conectada todavía.</p>
-        </div>
-      </div>
+        <section id="breedsSection" class="shop-section hidden">
+          <div id="selectedBreedCard" class="selected-card wood-panel-soft">
+            <div>
+              <small>Raza equipada</small>
+              <strong id="selectedBreedName">Perro original</strong>
+              <span id="selectedBreedAbility">Sin habilidad exclusiva equipada.</span>
+            </div>
+          </div>
+          <div id="breedsCatalog" class="catalog-grid"></div>
+        </section>
 
-      <div id="breedsCatalog" class="catalog-grid breeds-grid"></div>
-    </section>
+        <section id="powersSection" class="shop-section hidden">
+          <div class="rule-card wood-panel-soft">
+            <strong>Un poder por partida</strong>
+            <p>El poder seleccionado queda preparado para la siguiente partida.</p>
+          </div>
+          <div class="selected-card wood-panel-soft">
+            <div>
+              <small>Poder seleccionado</small>
+              <strong id="selectedPowerName">Ninguno</strong>
+            </div>
+          </div>
+          <div id="powersCatalog" class="catalog-grid"></div>
+        </section>
 
-    <section id="powersSection" class="section-view hidden">
-      <div class="power-rule">
-        <span>⚡</span>
-        <div>
-          <strong>Un poder por partida</strong>
-          <p>El poder comprado se consume al iniciar una partida nueva o al volver a empezar después de perder.</p>
-        </div>
-      </div>
-      <div id="selectedPowerCard" class="selected-power-card">
-        <span id="selectedPowerIcon">🚫</span>
-        <div>
-          <small>Poder seleccionado</small>
-          <strong id="selectedPowerName">Ninguno</strong>
-        </div>
-      </div>
-      <div id="powersCatalog" class="catalog-grid power-grid"></div>
-    </section>
+        <section id="petsSection" class="shop-section hidden">
+          <div class="pets-layout">
+            <div>
+              <div class="pets-heading">
+                <h2>PERRITOS JR 🐾</h2>
+                <p>Elige a tu compañero y mejoren juntos en cada partida.</p>
+              </div>
+              <div id="petsCatalog" class="pets-grid"></div>
+            </div>
 
-    <p id="articlesMessage" class="articles-message" aria-live="polite"></p>
+            <aside class="pet-preview wood-panel-soft">
+              <h3>VISTA EN PARTIDA</h3>
+              <div class="preview-stage">
+                <div class="preview-ground"></div>
+                <img id="previewMainDog" class="preview-main-dog" src="Fondos-JuniorGame/usuario1.png" alt="Perro principal">
+                <img id="previewPetImage" class="preview-pet" src="Fondos-JuniorGame/perritos-jr/junior.png" alt="Perrito Jr equipado">
+              </div>
+              <div class="pet-detail">
+                <img id="selectedPetImage" src="Fondos-JuniorGame/perritos-jr/junior.png" alt="">
+                <div class="pet-detail-copy">
+                  <div class="detail-title-row">
+                    <strong id="selectedPetName">Junior</strong>
+                    <span id="selectedPetStatus" class="equipped-pill">EQUIPADO</span>
+                  </div>
+                  <small id="selectedPetRarity">Común</small>
+                  <p id="selectedPetAbility">+3% experiencia.</p>
+                  <p id="selectedPetLevel">Nivel 1</p>
+                </div>
+              </div>
+              <div class="passive-card">
+                <span class="passive-paw">🐾</span>
+                <div>
+                  <strong>HABILIDAD PASIVA</strong>
+                  <p id="selectedPetPassive">Aumenta la experiencia obtenida en partida.</p>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <p id="articlesMessage" class="articles-message" aria-live="polite"></p>
+      </section>
+    </div>
   </main>
 
   <div id="purchaseModal" class="purchase-modal hidden" role="dialog" aria-modal="true" aria-labelledby="purchaseTitle">
-    <div class="purchase-backdrop"></div>
-    <section class="purchase-card">
+    <div class="purchase-backdrop" data-close-modal></div>
+    <section class="purchase-card wood-panel">
       <button id="closePurchaseModal" class="modal-close" type="button" aria-label="Cerrar">×</button>
-      <div id="purchaseIcon" class="purchase-icon">🎩</div>
+      <img id="purchaseImage" class="purchase-image hidden" alt="">
+      <div id="purchaseIcon" class="purchase-icon">💎</div>
       <h2 id="purchaseTitle">Confirmar compra</h2>
       <p id="purchaseDescription"></p>
       <strong id="purchasePrice">💎 0</strong>
@@ -123,7 +139,7 @@
     </section>
   </div>
 
-  <script src="js/audio.js?v=20260726-razas-audio1"></script>
-  <script type="module" src="js/articulos.js?v=20260726-razas-audio1"></script>
+  <script src="js/audio.js?v=20260729-tienda-responsive1"></script>
+  <script type="module" src="js/articulos.js?v=20260729-tienda-responsive1"></script>
 </body>
 </html>

@@ -1,0 +1,452 @@
+"use strict";
+
+/*
+  JuniorGame - Motor de biomas, clima y música dinámica.
+  - Objetos coleccionables distintos por mundo.
+  - Obstáculos temáticos por mundo.
+  - Climas variables y eventos raros.
+  - Música procedural exclusiva por bioma, sin reutilizar una sola pista.
+*/
+(function () {
+  const BIOMAS = {
+    granja: {
+      nombre: "La Granja",
+      emoji: "🌾",
+      objetos: [
+        { simbolo: "🌽", nombre: "mazorca", peso: 24 },
+        { simbolo: "🍎", nombre: "manzana", peso: 22 },
+        { simbolo: "🥕", nombre: "zanahoria", peso: 20 },
+        { simbolo: "🥚", nombre: "huevo de granja", peso: 16 },
+        { simbolo: "🌻", nombre: "girasol", peso: 12 },
+        { simbolo: "🔔", nombre: "campana dorada", peso: 5, legendario: true }
+      ],
+      obstaculos: [
+        { nombre: "fardo", simbolo: "🌾", tamano: 50 },
+        { nombre: "carretilla", simbolo: "🛒", tamano: 52 },
+        { nombre: "barril", simbolo: "🛢️", tamano: 48 },
+        { nombre: "cerca", simbolo: "🪵", tamano: 54 }
+      ],
+      climas: [
+        { id: "soleado", nombre: "Mañana soleada", icono: "☀️", peso: 45, intensidad: 0.35 },
+        { id: "brisa", nombre: "Brisa del campo", icono: "🍃", peso: 35, intensidad: 0.55 },
+        { id: "lluvia", nombre: "Lluvia de primavera", icono: "🌦️", peso: 20, intensidad: 0.60 }
+      ],
+      musica: { tempo: 104, escala: [60, 64, 67, 69, 67, 64], bajo: [36, 43, 41, 43], onda: "triangle", ambiente: "campo" }
+    },
+    bosque: {
+      nombre: "Bosque Encantado",
+      emoji: "🌲",
+      objetos: [
+        { simbolo: "🍄", nombre: "hongo", peso: 25 },
+        { simbolo: "🌰", nombre: "bellota", peso: 22 },
+        { simbolo: "🍂", nombre: "hoja de otoño", peso: 20 },
+        { simbolo: "🪺", nombre: "nido", peso: 13 },
+        { simbolo: "🫐", nombre: "frutos del bosque", peso: 15 },
+        { simbolo: "🌱", nombre: "semilla ancestral", peso: 5, legendario: true }
+      ],
+      obstaculos: [
+        { nombre: "tronco", simbolo: "🪵", tamano: 54 },
+        { nombre: "colmena", simbolo: "🐝", tamano: 46 },
+        { nombre: "rama", simbolo: "🌿", tamano: 52 },
+        { nombre: "piedraMusgo", simbolo: "🪨", tamano: 48 }
+      ],
+      climas: [
+        { id: "hojas", nombre: "Viento entre hojas", icono: "🍃", peso: 40, intensidad: 0.58 },
+        { id: "lluvia", nombre: "Lluvia del bosque", icono: "🌧️", peso: 30, intensidad: 0.72 },
+        { id: "niebla", nombre: "Niebla matutina", icono: "🌫️", peso: 23, intensidad: 0.50 },
+        { id: "arcoiris", nombre: "Arcoíris mágico", icono: "🌈", peso: 7, intensidad: 0.35, evento: true }
+      ],
+      musica: { tempo: 88, escala: [57, 60, 64, 67, 64, 60, 55, 57], bajo: [33, 40, 36, 38], onda: "sine", ambiente: "bosque" }
+    },
+    nieve: {
+      nombre: "Valle Nevado",
+      emoji: "❄️",
+      objetos: [
+        { simbolo: "❄️", nombre: "copo de nieve", peso: 28 },
+        { simbolo: "🧤", nombre: "guante", peso: 18 },
+        { simbolo: "🧣", nombre: "bufanda", peso: 16 },
+        { simbolo: "🎁", nombre: "regalo invernal", peso: 15 },
+        { simbolo: "⛄", nombre: "muñeco de nieve", peso: 16 },
+        { simbolo: "💠", nombre: "cristal del norte", peso: 7, legendario: true }
+      ],
+      obstaculos: [
+        { nombre: "hielo", simbolo: "🧊", tamano: 50 },
+        { nombre: "bolaNieve", simbolo: "⚪", tamano: 48 },
+        { nombre: "pinoNevado", simbolo: "🎄", tamano: 56 },
+        { nombre: "trineo", simbolo: "🛷", tamano: 56 }
+      ],
+      climas: [
+        { id: "nieve", nombre: "Nevada ligera", icono: "❄️", peso: 58, intensidad: 0.62 },
+        { id: "ventisca", nombre: "Ventisca", icono: "🌨️", peso: 32, intensidad: 0.92, evento: true },
+        { id: "aurora", nombre: "Aurora boreal", icono: "🌌", peso: 10, intensidad: 0.35, evento: true }
+      ],
+      musica: { tempo: 72, escala: [72, 76, 79, 83, 79, 76, 74, 72], bajo: [36, 43, 41, 38], onda: "sine", ambiente: "nieve" }
+    },
+    desierto: {
+      nombre: "Desierto Antiguo",
+      emoji: "🏜️",
+      objetos: [
+        { simbolo: "🏺", nombre: "vasija antigua", peso: 24 },
+        { simbolo: "🪙", nombre: "moneda del desierto", peso: 22 },
+        { simbolo: "💎", nombre: "gema enterrada", peso: 13 },
+        { simbolo: "🌵", nombre: "flor de cactus", peso: 18 },
+        { simbolo: "🪶", nombre: "pluma del oasis", peso: 17 },
+        { simbolo: "☀️", nombre: "ojo solar", peso: 6, legendario: true }
+      ],
+      obstaculos: [
+        { nombre: "cactus", simbolo: "🌵", tamano: 50 },
+        { nombre: "escorpion", simbolo: "🦂", tamano: 48 },
+        { nombre: "serpiente", simbolo: "🐍", tamano: 52 },
+        { nombre: "rocaArena", simbolo: "🪨", tamano: 52 }
+      ],
+      climas: [
+        { id: "calor", nombre: "Calor intenso", icono: "☀️", peso: 52, intensidad: 0.46 },
+        { id: "arena", nombre: "Tormenta de arena", icono: "🌪️", peso: 36, intensidad: 0.88, evento: true },
+        { id: "noche", nombre: "Noche fría", icono: "🌙", peso: 12, intensidad: 0.38 }
+      ],
+      musica: { tempo: 96, escala: [62, 63, 67, 69, 67, 63, 60, 62], bajo: [38, 45, 43, 40], onda: "triangle", ambiente: "desierto" }
+    },
+    espacio: {
+      nombre: "Galaxia Infinita",
+      emoji: "🌌",
+      objetos: [
+        { simbolo: "⭐", nombre: "estrella", peso: 28 },
+        { simbolo: "🪐", nombre: "mini planeta", peso: 18 },
+        { simbolo: "🛰️", nombre: "satélite", peso: 16 },
+        { simbolo: "👽", nombre: "señal alienígena", peso: 14 },
+        { simbolo: "☄️", nombre: "fragmento de cometa", peso: 17 },
+        { simbolo: "💫", nombre: "estrella eterna", peso: 7, legendario: true }
+      ],
+      obstaculos: [
+        { nombre: "meteorito", simbolo: "☄️", tamano: 54 },
+        { nombre: "asteroide", simbolo: "🪨", tamano: 52 },
+        { nombre: "sateliteRoto", simbolo: "🛰️", tamano: 52 },
+        { nombre: "agujero", simbolo: "⚫", tamano: 48 }
+      ],
+      climas: [
+        { id: "estrellas", nombre: "Lluvia de estrellas", icono: "🌠", peso: 52, intensidad: 0.54 },
+        { id: "meteoritos", nombre: "Tormenta de meteoritos", icono: "☄️", peso: 32, intensidad: 0.84, evento: true },
+        { id: "nebulosa", nombre: "Nebulosa luminosa", icono: "🌌", peso: 16, intensidad: 0.45, evento: true }
+      ],
+      musica: { tempo: 64, escala: [60, 67, 72, 74, 79, 74, 72, 67], bajo: [24, 31, 29, 26], onda: "sine", ambiente: "espacio" }
+    }
+  };
+
+  const estado = {
+    biomaId: "granja",
+    clima: null,
+    climaTimer: null,
+    particulasTimer: null,
+    eventoHasta: 0,
+    audio: null,
+    master: null,
+    musicGain: null,
+    ambientGain: null,
+    musicTimer: null,
+    paso: 0,
+    desbloqueado: false,
+    iniciado: false
+  };
+
+  function elegirPonderado(lista) {
+    const total = lista.reduce((s, x) => s + (Number(x.peso) || 1), 0);
+    let r = Math.random() * total;
+    for (const item of lista) {
+      r -= Number(item.peso) || 1;
+      if (r <= 0) return item;
+    }
+    return lista[0];
+  }
+
+  function crearUI() {
+    const area = document.getElementById("gameArea");
+    if (!area) return;
+    if (!document.getElementById("biomeWeatherLayer")) {
+      const layer = document.createElement("div");
+      layer.id = "biomeWeatherLayer";
+      layer.className = "biome-weather-layer";
+      layer.setAttribute("aria-hidden", "true");
+      area.prepend(layer);
+    }
+    if (!document.getElementById("biomeClimateBadge")) {
+      const badge = document.createElement("div");
+      badge.id = "biomeClimateBadge";
+      badge.className = "biome-climate-badge";
+      badge.innerHTML = '<span class="biome-climate-icon">🌤️</span><span><small>CLIMA</small><strong>Estable</strong></span>';
+      document.getElementById("game")?.appendChild(badge);
+    }
+  }
+
+  function limpiarParticulas() {
+    const layer = document.getElementById("biomeWeatherLayer");
+    if (layer) layer.innerHTML = "";
+    clearInterval(estado.particulasTimer);
+    estado.particulasTimer = null;
+  }
+
+  function simbolosClima(id) {
+    const mapas = {
+      lluvia: ["💧", "💧", "💦"], hojas: ["🍃", "🍂", "🌿"], brisa: ["🍃", "🌾"],
+      nieve: ["❄️", "❅", "✦"], ventisca: ["❄️", "❆", "💨"], aurora: ["✦", "✨"],
+      arena: ["·", "•", "〰"], calor: ["☀️", "·"], noche: ["✦", "⭐"],
+      estrellas: ["⭐", "✦", "✨"], meteoritos: ["☄️", "✦"], nebulosa: ["✦", "💫"],
+      soleado: ["✨"], arcoiris: ["✨", "🌈"]
+    };
+    return mapas[id] || ["✨"];
+  }
+
+  function crearParticula(clima) {
+    const layer = document.getElementById("biomeWeatherLayer");
+    if (!layer || document.hidden) return;
+    const p = document.createElement("span");
+    p.className = `weather-particle weather-${clima.id}`;
+    const sims = simbolosClima(clima.id);
+    p.textContent = sims[Math.floor(Math.random() * sims.length)];
+    p.style.left = `${Math.random() * 100}%`;
+    p.style.fontSize = `${12 + Math.random() * 20}px`;
+    p.style.opacity = String(0.35 + Math.random() * 0.55);
+    p.style.animationDuration = `${3.5 + Math.random() * 5}s`;
+    p.style.setProperty("--drift", `${-80 + Math.random() * 160}px`);
+    layer.appendChild(p);
+    setTimeout(() => p.remove(), 9000);
+  }
+
+  function aplicarClima(clima, anunciar = true) {
+    estado.clima = clima;
+    estado.eventoHasta = clima.evento ? Date.now() + 30000 : 0;
+    const body = document.body;
+    body.dataset.climate = clima.id;
+    const area = document.getElementById("gameArea");
+    if (area) area.dataset.climate = clima.id;
+    const badge = document.getElementById("biomeClimateBadge");
+    if (badge) {
+      badge.querySelector(".biome-climate-icon").textContent = clima.icono;
+      badge.querySelector("strong").textContent = clima.nombre;
+      badge.classList.toggle("event-active", Boolean(clima.evento));
+    }
+    limpiarParticulas();
+    const intervalo = Math.max(90, 520 - clima.intensidad * 400);
+    estado.particulasTimer = setInterval(() => crearParticula(clima), intervalo);
+    if (anunciar) {
+      window.SistemaMundos?.mostrarAviso?.({
+        emoji: clima.icono,
+        nombre: clima.evento ? `¡Evento: ${clima.nombre}!` : clima.nombre,
+        mensaje: clima.evento ? "Durante 30 segundos aumentan los objetos especiales." : "El clima del mundo ha cambiado."
+      });
+    }
+    actualizarAmbienteAudio();
+  }
+
+  function programarClima() {
+    clearTimeout(estado.climaTimer);
+    estado.climaTimer = setTimeout(() => {
+      const bioma = BIOMAS[estado.biomaId];
+      if (bioma && !window.SistemaMundos?.mundoSecretoActual) aplicarClima(elegirPonderado(bioma.climas), true);
+      programarClima();
+    }, 24000 + Math.random() * 26000);
+  }
+
+  function cambiarBioma(id, anunciar = false) {
+    const bioma = BIOMAS[id] || BIOMAS.granja;
+    estado.biomaId = id in BIOMAS ? id : "granja";
+    document.body.dataset.biome = estado.biomaId;
+    const area = document.getElementById("gameArea");
+    if (area) area.dataset.biome = estado.biomaId;
+    aplicarClima(elegirPonderado(bioma.climas), false);
+    iniciarMusicaBioma();
+    if (anunciar) window.SistemaMundos?.mostrarAviso?.({ emoji: bioma.emoji, nombre: bioma.nombre, mensaje: "Objetos, clima y música exclusivos activados." });
+  }
+
+  function obtenerObjeto() {
+    const bioma = BIOMAS[estado.biomaId] || BIOMAS.granja;
+    const lista = bioma.objetos.map(x => ({ ...x, peso: x.peso * (x.legendario && estado.eventoHasta > Date.now() ? 2.2 : 1) }));
+    const obj = elegirPonderado(lista);
+    return { simbolo: obj.simbolo, nombre: obj.nombre, mundo: estado.biomaId, legendario: Boolean(obj.legendario), bioma: true };
+  }
+
+  function obtenerObstaculo() {
+    const bioma = BIOMAS[estado.biomaId] || BIOMAS.granja;
+    return bioma.obstaculos[Math.floor(Math.random() * bioma.obstaculos.length)];
+  }
+
+  function registrarCaptura(objeto) {
+    if (!objeto?.bioma) return;
+    if (objeto.legendario) {
+      window.AudioFX?.bonus?.();
+      window.JuniorGame?.actualizarRecursoHUD?.("diamantes", (window.JuniorGame?.estado?.diamantes || 0) + 1, { animar: true });
+      window.SistemaMundos?.mostrarMensaje?.(`${objeto.simbolo} ¡${objeto.nombre}! +1 diamante`);
+      guardarDescubrimiento(objeto);
+    } else {
+      window.SistemaMundos?.mostrarMensaje?.(`${objeto.simbolo} ${objeto.nombre}`);
+    }
+  }
+
+  function guardarDescubrimiento(objeto) {
+    try {
+      const clave = "juniorGame.biomeDiscoveries";
+      const data = JSON.parse(localStorage.getItem(clave) || "{}");
+      data[estado.biomaId] = Array.from(new Set([...(data[estado.biomaId] || []), objeto.nombre]));
+      localStorage.setItem(clave, JSON.stringify(data));
+    } catch (_) {}
+  }
+
+  function midi(n) { return 440 * Math.pow(2, (n - 69) / 12); }
+
+  function asegurarAudio() {
+    if (estado.audio) return estado.audio;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    const ctx = new AC();
+    const master = ctx.createGain();
+    const music = ctx.createGain();
+    const ambient = ctx.createGain();
+    master.gain.value = 0.72;
+    music.gain.value = 0.18;
+    ambient.gain.value = 0.075;
+    music.connect(master); ambient.connect(master); master.connect(ctx.destination);
+    estado.audio = ctx; estado.master = master; estado.musicGain = music; estado.ambientGain = ambient;
+    return ctx;
+  }
+
+  function tocarNota(nota, duracion, cuando, tipo, ganancia = 0.12, destino) {
+    const ctx = asegurarAudio();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    osc.type = tipo || "sine";
+    osc.frequency.setValueAtTime(midi(nota), cuando);
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(tipo === "sine" ? 2600 : 1500, cuando);
+    gain.gain.setValueAtTime(0.0001, cuando);
+    gain.gain.exponentialRampToValueAtTime(ganancia, cuando + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, cuando + duracion);
+    osc.connect(filter); filter.connect(gain); gain.connect(destino || estado.musicGain);
+    osc.start(cuando); osc.stop(cuando + duracion + 0.06);
+  }
+
+  function pulsoMusical() {
+    if (!estado.audio || estado.audio.state !== "running" || document.hidden) return;
+    const bioma = BIOMAS[estado.biomaId] || BIOMAS.granja;
+    const cfg = bioma.musica;
+    const beat = 60 / cfg.tempo;
+    const now = estado.audio.currentTime + 0.04;
+    const i = estado.paso++;
+    const nota = cfg.escala[i % cfg.escala.length];
+    tocarNota(nota, beat * 0.82, now, cfg.onda, 0.10);
+    if (i % 2 === 0) tocarNota(cfg.bajo[Math.floor(i / 2) % cfg.bajo.length], beat * 1.6, now, "sine", 0.075);
+    if (estado.biomaId === "nieve" && i % 4 === 0) tocarNota(nota + 12, beat * 1.5, now + beat * .25, "sine", 0.045);
+    if (estado.biomaId === "espacio") tocarNota(nota - 12, beat * 2.2, now, "sine", 0.035);
+  }
+
+  function iniciarMusicaBioma() {
+    window.AudioFX?.pausarMusica?.();
+    clearInterval(estado.musicTimer);
+    estado.paso = 0;
+    const ctx = asegurarAudio();
+    if (!ctx) return;
+    const volumen = window.AudioFX?.obtenerVolumenMusica?.() ?? 1;
+    const silenciada = window.AudioFX?.estaMusicaSilenciada?.() || window.AudioFX?.estaSilenciado?.();
+    estado.musicGain.gain.setTargetAtTime(silenciada ? 0 : 0.18 * volumen, ctx.currentTime, 0.18);
+    const tempo = (BIOMAS[estado.biomaId] || BIOMAS.granja).musica.tempo;
+    estado.musicTimer = setInterval(pulsoMusical, (60000 / tempo));
+    pulsoMusical();
+  }
+
+  function actualizarAmbienteAudio() {
+    if (!estado.audio || !estado.ambientGain) return;
+    const intensidad = estado.clima?.intensidad || .4;
+    estado.ambientGain.gain.setTargetAtTime(0.035 + intensidad * 0.055, estado.audio.currentTime, .5);
+  }
+
+  function desbloquearAudio() {
+    const ctx = asegurarAudio();
+    if (!ctx) return;
+    ctx.resume().then(() => {
+      estado.desbloqueado = true;
+      iniciarMusicaBioma();
+    }).catch(() => {});
+  }
+
+  function parchearMundos() {
+    const mundos = window.SistemaMundos;
+    if (!mundos || mundos.__biomasPatched) return;
+    mundos.__biomasPatched = true;
+    const aplicarOriginal = mundos.aplicarFondoNormal.bind(mundos);
+    mundos.aplicarFondoNormal = function (mundo, opciones = {}) {
+      aplicarOriginal(mundo, opciones);
+      setTimeout(() => cambiarBioma(mundo?.id || "granja", opciones.mostrarAviso !== false), opciones.inmediato ? 0 : 400);
+    };
+    const objetoOriginal = mundos.obtenerObjetoCaida.bind(mundos);
+    mundos.obtenerObjetoCaida = function () {
+      return objetoOriginal() || obtenerObjeto();
+    };
+    const registrarOriginal = mundos.registrarCapturaObjeto.bind(mundos);
+    mundos.registrarCapturaObjeto = function (objeto) {
+      if (this.mundoSecretoActual) registrarOriginal();
+      else registrarCaptura(objeto || window.JuniorBones?.huesoActual?.datosObjeto);
+    };
+  }
+
+  function parchearBones() {
+    const intentar = () => {
+      const bones = window.JuniorBones;
+      if (!bones || bones.__biomasPatched) return false;
+      bones.__biomasPatched = true;
+      const crear = bones.crearHueso.bind(bones);
+      bones.crearHueso = function () {
+        crear();
+        const h = this.huesoActual;
+        if (h?.objetoMundo && h.elemento) {
+          const actual = window.SistemaMundos?.obtenerObjetoCaida?.();
+          // El objeto ya se eligió dentro del creador; recuperamos datos por texto.
+          const bioma = BIOMAS[estado.biomaId];
+          const dato = bioma?.objetos.find(o => o.simbolo === h.elemento.textContent);
+          h.datosObjeto = dato ? { ...dato, bioma: true, mundo: estado.biomaId } : actual;
+          h.elemento.classList.add("biome-collectible");
+          if (h.datosObjeto?.legendario) h.elemento.classList.add("legendary-biome-object");
+        }
+      };
+      return true;
+    };
+    if (!intentar()) setTimeout(intentar, 100);
+  }
+
+  function vigilarAudio() {
+    setInterval(() => {
+      if (!estado.audio || !estado.musicGain) return;
+      const volumen = window.AudioFX?.obtenerVolumenMusica?.() ?? 1;
+      const silenciada = window.AudioFX?.estaMusicaSilenciada?.() || window.AudioFX?.estaSilenciado?.();
+      const pausado = window.JuniorGame?.estado?.pausado || window.JuniorGame?.estado?.terminado;
+      estado.musicGain.gain.setTargetAtTime((silenciada || pausado) ? 0 : 0.18 * volumen, estado.audio.currentTime, .12);
+    }, 500);
+  }
+
+  function iniciar() {
+    if (estado.iniciado) return;
+    estado.iniciado = true;
+    crearUI();
+    parchearMundos();
+    parchearBones();
+    const id = window.SistemaMundos?.mundoNormalActual || "granja";
+    cambiarBioma(id, false);
+    programarClima();
+    vigilarAudio();
+    window.addEventListener("pointerdown", desbloquearAudio, { once: true, passive: true });
+    window.addEventListener("keydown", desbloquearAudio, { once: true });
+  }
+
+  window.SistemaBiomas = {
+    BIOMAS,
+    estado,
+    iniciar,
+    cambiarBioma,
+    obtenerObjeto,
+    obtenerObstaculo,
+    aplicarClima,
+    obtenerBiomaActual: () => BIOMAS[estado.biomaId] || BIOMAS.granja
+  };
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(iniciar, 80), { once: true });
+  else setTimeout(iniciar, 80);
+})();

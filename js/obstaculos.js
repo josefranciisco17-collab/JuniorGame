@@ -120,6 +120,7 @@ tipos: [
     }
 
     const tipo =
+      window.SistemaBiomas?.obtenerObstaculo?.() ||
       this.tipos[
         Math.floor(
           Math.random() * this.tipos.length
@@ -333,9 +334,7 @@ this.obstaculoActual = {
 
     obstaculo.golpeado = true;
 
-    if (obstaculo.tipo === "piedra") {
-      window.AudioFX?.golpePiedra?.();
-    }
+    window.AudioFX?.golpePiedra?.();
 
     juego.perderVida();
 
@@ -372,9 +371,7 @@ if (
   this.obstaculoActual.tamano
 ) {
 
-  if (this.obstaculoActual.tipo === "piedra") {
-    window.AudioFX?.piedraSuelo?.();
-  }
+  window.AudioFX?.piedraSuelo?.();
 
   this.eliminarObstaculo();
 }

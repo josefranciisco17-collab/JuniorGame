@@ -3244,3 +3244,108 @@ button, a {
   }
   #game > .ability-control-wrap .ability-button { min-height: 56px !important; }
 }
+
+/* ==========================================================
+   JuniorGame — Biomas, clima y objetos temáticos
+   ========================================================== */
+.biome-weather-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.weather-particle {
+  position: absolute;
+  top: -48px;
+  display: block;
+  will-change: transform, opacity;
+  animation: biomeWeatherFall linear forwards;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.18));
+}
+@keyframes biomeWeatherFall {
+  0% { transform: translate3d(0,-40px,0) rotate(0deg); opacity: 0; }
+  12% { opacity: .92; }
+  100% { transform: translate3d(var(--drift, 0), calc(100vh + 90px),0) rotate(380deg); opacity: .15; }
+}
+.weather-arena { color: rgba(255,216,135,.9); text-shadow: 0 0 5px rgba(255,185,70,.55); }
+.weather-lluvia { transform: scaleY(1.4); }
+.weather-ventisca { animation-timing-function: ease-in; }
+.weather-aurora, .weather-nebulosa { animation-duration: 8s !important; filter: drop-shadow(0 0 8px rgba(130,230,255,.85)); }
+
+.biome-climate-badge {
+  position: absolute;
+  z-index: 44;
+  top: calc(max(8px, env(safe-area-inset-top)) + 88px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 44vw;
+  padding: 7px 12px;
+  color: #fff;
+  background: rgba(10,20,42,.76);
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.24);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+.biome-climate-badge .biome-climate-icon { font-size: 20px; }
+.biome-climate-badge span:last-child { min-width: 0; display: grid; line-height: 1.05; }
+.biome-climate-badge small { font-size: 8px; letter-spacing: .16em; opacity: .68; }
+.biome-climate-badge strong { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+.biome-climate-badge.event-active { border-color: rgba(255,213,92,.72); box-shadow: 0 0 22px rgba(255,200,60,.24); }
+
+.biome-collectible,
+.secret-world-object.biome-collectible {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 54px !important;
+  line-height: 1 !important;
+  filter: drop-shadow(0 5px 5px rgba(0,0,0,.35));
+  animation: biomeObjectFloat .8s ease-in-out infinite alternate;
+}
+@keyframes biomeObjectFloat {
+  from { transform: rotate(-7deg) scale(.94); }
+  to { transform: rotate(7deg) scale(1.07); }
+}
+.legendary-biome-object {
+  filter: drop-shadow(0 0 8px #fff) drop-shadow(0 0 16px #ffd45f) !important;
+  animation: legendaryBiomePulse .55s ease-in-out infinite alternate !important;
+}
+@keyframes legendaryBiomePulse {
+  from { transform: scale(.92) rotate(-5deg); }
+  to { transform: scale(1.13) rotate(5deg); }
+}
+
+/* Iluminación específica por clima, sin ocultar el escenario. */
+#gameArea[data-climate="niebla"]::after,
+#gameArea[data-climate="ventisca"]::after,
+#gameArea[data-climate="arena"]::after,
+#gameArea[data-climate="calor"]::after,
+#gameArea[data-climate="noche"]::after,
+#gameArea[data-climate="aurora"]::after,
+#gameArea[data-climate="nebulosa"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+#gameArea[data-climate="niebla"]::after { background: linear-gradient(rgba(225,238,244,.24),rgba(220,232,238,.38)); backdrop-filter: blur(1px); }
+#gameArea[data-climate="ventisca"]::after { background: rgba(210,235,255,.16); }
+#gameArea[data-climate="arena"]::after { background: rgba(223,157,65,.18); }
+#gameArea[data-climate="calor"]::after { background: linear-gradient(rgba(255,190,77,.10),rgba(255,120,30,.08)); }
+#gameArea[data-climate="noche"]::after { background: rgba(5,16,48,.26); }
+#gameArea[data-climate="aurora"]::after { background: linear-gradient(120deg,rgba(75,255,186,.12),rgba(90,125,255,.12),rgba(210,80,255,.10)); }
+#gameArea[data-climate="nebulosa"]::after { background: radial-gradient(circle at 25% 25%,rgba(180,90,255,.16),transparent 42%),radial-gradient(circle at 80% 60%,rgba(50,190,255,.15),transparent 45%); }
+
+@media (max-width: 420px) {
+  .biome-climate-badge { top: calc(max(6px, env(safe-area-inset-top)) + 86px); max-width: 48vw; padding: 6px 9px; }
+  .biome-climate-badge strong { max-width: 112px; }
+  .biome-collectible, .secret-world-object.biome-collectible { font-size: 48px !important; }
+}

@@ -5,7 +5,7 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover"
   >
 
   <title>JuniorGame - Juego</title>
@@ -120,7 +120,30 @@
 
     </section>
 
-    <nav class="controls">
+    <aside class="ability-control-wrap" aria-label="Habilidad activa">
+      <button
+        id="abilityButton"
+        class="ability-button"
+        type="button"
+        aria-label="Usar habilidad"
+        disabled
+      >
+        <span id="abilityCooldownFill" class="ability-cooldown-fill" aria-hidden="true"></span>
+        <span id="abilityIcon" class="ability-icon" aria-hidden="true">🔒</span>
+        <span class="ability-copy">
+          <span id="abilityName" class="ability-name">HABILIDAD</span>
+          <strong id="abilityCooldown" class="ability-cooldown">0/3</strong>
+        </span>
+      </button>
+      <button
+        id="abilityConfigButton"
+        class="ability-config-button"
+        type="button"
+        aria-label="Información de habilidad"
+      >i</button>
+    </aside>
+
+    <nav class="controls" aria-label="Controles del jugador">
 
       <button
         id="leftButton"
@@ -130,26 +153,6 @@
       >
         ◀
       </button>
-
-      <div class="ability-control-wrap">
-        <button
-          id="abilityButton"
-          class="control-button ability-button"
-          type="button"
-          aria-label="Usar habilidad"
-        >
-          <span id="abilityCooldownFill" class="ability-cooldown-fill" aria-hidden="true"></span>
-          <span id="abilityIcon" class="ability-icon" aria-hidden="true">⚡</span>
-          <span id="abilityName" class="ability-name">HABILIDAD</span>
-          <strong id="abilityCooldown" class="ability-cooldown">LISTA</strong>
-        </button>
-        <button
-          id="abilityConfigButton"
-          class="ability-config-button"
-          type="button"
-          aria-label="Información de habilidad"
-        >⚙️</button>
-      </div>
 
       <button
         id="jumpButton"

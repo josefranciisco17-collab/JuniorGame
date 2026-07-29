@@ -17,7 +17,11 @@
 */
 window.SistemaHabilidades = {
   activo: false,
-  habilidadEquipada: "dash",
+  habilidadEquipada: null,
+  habilidadPartida: null,
+  usosMaximos: 3,
+  usosRestantes: 0,
+  claveInventario: "juniorGame.habilidadesUsos",
   razaEquipada: null,
   configuracionRazaActiva: null,
   enfriamientosHasta: {},
@@ -193,7 +197,7 @@ window.SistemaHabilidades = {
 
   catalogo: {
     dash: {
-      nombre: "Dash",
+      nombre: "Embestida",
       icono: "⚡",
       descripcion: "Avanza rápidamente y evita daño durante un instante.",
       recarga: 8000,
@@ -248,6 +252,8 @@ window.SistemaHabilidades = {
       if (guardada && this.catalogo[guardada]) this.habilidadEquipada = guardada;
     }
 
+    this.cargarUsos();
+    this.fijarHabilidadDePartida();
     this.crearInterfaz();
     this.configurarEventos();
     this.configurarEscudoAutomatico();
@@ -275,7 +281,112 @@ window.SistemaHabilidades = {
     );
   },
 
+  leerInventario() {
+    try {
+      const datos = JSON.parse(window.localStorage.getItem(this.claveInventario) || "{}");
+      return datos && typeof datos === "object" ? datos : {};
+    } catch (error) {
+      console.warn("No se pudo leer el inventario de habilidades:", error);
+      return {};
+    }
+  },
+
+  guardarInventario(inventario) {
+    try {
+      window.localStorage.setItem(this.claveInventario, JSON.stringify(inventario));
+    } catch (error) {
+      console.warn("No se pudo guardar el inventario de habilidades:", error);
+    }
+  },
+
+  obtenerClaveHabilidad() {
+    return this.razaEquipada || this.habilidadEquipada || "";
+  },
+
+  cargarUsos() {
+    const clave = this.obtenerClaveHabilidad();
+    if (!clave) {
+      this.usosRestantes = 0;
+      return 0;
+    }
+
+    const inventario = this.leerInventario();
+    let usos = Number(inventario[clave]);
+
+    /* Compatibilidad: una habilidad ya equipada se considera comprada
+       la primera vez que entra al nuevo sistema. */
+    if (!Number.isFinite(usos)) {
+      usos = this.usosMaximos;
+      inventario[clave] = usos;
+      this.guardarInventario(inventario);
+    }
+
+    this.usosRestantes = Math.max(0, Math.min(this.usosMaximos, Math.trunc(usos)));
+    return this.usosRestantes;
+  },
+
+  guardarUsos() {
+    const clave = this.obtenerClaveHabilidad();
+    if (!clave) return;
+    const inventario = this.leerInventario();
+    inventario[clave] = Math.max(0, Math.min(this.usosMaximos, this.usosRestantes));
+    this.guardarInventario(inventario);
+  },
+
+  comprarHabilidad(idRazaOId, usos = this.usosMaximos) {
+    const configuracion = this.catalogoRazas[idRazaOId] || null;
+    const idBase = configuracion?.habilidadBase || idRazaOId;
+    if (!this.catalogo[idBase]) return false;
+
+    const inventario = this.leerInventario();
+    inventario[idRazaOId] = Math.max(1, Math.min(this.usosMaximos, Number(usos) || this.usosMaximos));
+    this.guardarInventario(inventario);
+
+    if (!window.JuniorGame?.estado?.iniciado || window.JuniorGame?.estado?.terminado) {
+      if (configuracion) {
+        window.localStorage.setItem("juniorGame.razaEquipada", idRazaOId);
+        this.razaEquipada = idRazaOId;
+        this.configuracionRazaActiva = configuracion;
+      } else {
+        window.localStorage.setItem("juniorGame.habilidadEquipada", idBase);
+        this.habilidadEquipada = idBase;
+      }
+      this.usosRestantes = inventario[idRazaOId];
+      this.habilidadPartida = null;
+      this.fijarHabilidadDePartida();
+      this.crearInterfaz();
+      this.actualizarInterfaz();
+    }
+
+    window.dispatchEvent(new CustomEvent("juniorgame:habilidad-comprada", {
+      detail: { id: idRazaOId, usos: inventario[idRazaOId] }
+    }));
+    return true;
+  },
+
+  fijarHabilidadDePartida() {
+    const juego = window.JuniorGame;
+    if (!juego?.estado?.iniciado || juego.estado.terminado) return;
+    if (this.habilidadPartida) return;
+
+    this.habilidadPartida = this.obtenerClaveHabilidad() || null;
+    this.cargarUsos();
+  },
+
+  finalizarPartida() {
+    this.habilidadPartida = null;
+    this.enfriamientosHasta = {};
+    this.actualizarInterfaz();
+  },
+
   sincronizarRazaEquipada() {
+    const juegoEnCurso = Boolean(
+      window.JuniorGame?.estado?.iniciado &&
+      !window.JuniorGame?.estado?.terminado &&
+      this.habilidadPartida
+    );
+    if (juegoEnCurso) return this.configuracionRazaActiva;
+
     let idRaza = null;
 
     try {
@@ -406,6 +517,11 @@ window.SistemaHabilidades = {
   },
 
   equipar(id) {
+    if (window.JuniorGame?.estado?.iniciado && !window.JuniorGame?.estado?.terminado) {
+      this.mostrarMensaje("🔒 No puedes cambiar de habilidad durante la partida");
+      return false;
+    }
+
     if (this.configuracionRazaActiva) {
       this.mostrarMensaje("🐾 La habilidad depende de la raza equipada");
       return false;
@@ -414,6 +530,8 @@ window.SistemaHabilidades = {
     if (!this.catalogo[id]) return false;
     this.habilidadEquipada = id;
     window.localStorage.setItem("juniorGame.habilidadEquipada", id);
+    this.habilidadPartida = null;
+    this.cargarUsos();
     this.actualizarInterfaz();
     this.mostrarMensaje(`${this.catalogo[id].icono} ${this.catalogo[id].nombre} equipada`);
     return true;
@@ -448,6 +566,8 @@ window.SistemaHabilidades = {
       juego?.estado?.iniciado &&
       !juego.estado.pausado &&
       !juego.estado.terminado &&
+      this.habilidadPartida === this.obtenerClaveHabilidad() &&
+      this.usosRestantes > 0 &&
       performance.now() >= (
         this.enfriamientosHasta[this.razaEquipada || id] || 0
       )
@@ -470,6 +590,13 @@ window.SistemaHabilidades = {
     const habilidad = this.catalogo[id];
     if (!habilidad) return false;
 
+    this.fijarHabilidadDePartida();
+
+    if (this.usosRestantes <= 0) {
+      this.mostrarMensaje("🔒 Habilidad agotada. Compra otra en la Tienda Oficial");
+      return false;
+    }
+
     if (!this.puedeUsar(id)) {
       const restante = this.obtenerRecargaRestante(id);
       if (restante > 0) this.mostrarMensaje(`⏱️ ${habilidad.nombre}: ${Math.ceil(restante / 1000)} s`);
@@ -491,7 +618,11 @@ window.SistemaHabilidades = {
       ? Boolean(this[metodoExclusivo]())
       : Boolean(metodos[id]?.());
     if (ejecutada) {
-      this.iniciarRecarga(id);
+      this.usosRestantes = Math.max(0, this.usosRestantes - 1);
+      this.guardarUsos();
+      if (this.usosRestantes > 0) this.iniciarRecarga(id);
+      else this.enfriamientosHasta[this.razaEquipada || id] = 0;
+      this.actualizarInterfaz();
       window.SistemaMisiones?.registrar?.("habilidad_usada", 1, {
         habilidad: this.razaEquipada || id,
         habilidadBase: id
@@ -516,7 +647,7 @@ window.SistemaHabilidades = {
     perro.classList.add("perro-dash");
     window.SistemaSupervivencia?.activarInvulnerabilidad?.(500);
     window.AudioFX?.bonus?.();
-    this.mostrarMensaje("⚡ ¡Dash!");
+    this.mostrarMensaje("⚡ ¡Embestida!");
 
     window.setTimeout(() => {
       document.body.classList.remove("habilidad-dash-activa");
@@ -967,26 +1098,45 @@ window.SistemaHabilidades = {
   },
 
   actualizarInterfaz() {
-    const datos = this.obtenerDatosVisuales();
     const boton = this.interfaz.boton;
-    if (!datos || !boton) return;
+    if (!boton) return;
 
-    const restante = this.obtenerRecargaRestante();
-    const porcentaje = Math.max(0, Math.min(1, restante / datos.recarga));
-    const lista = Boolean(window.JuniorGame?.estado?.iniciado) && restante <= 0;
+    this.fijarHabilidadDePartida();
+    const datos = this.obtenerDatosVisuales();
+    const tieneHabilidad = Boolean(datos && this.obtenerClaveHabilidad());
+    const restanteRecarga = tieneHabilidad ? this.obtenerRecargaRestante() : 0;
+    const porcentaje = datos?.recarga
+      ? Math.max(0, Math.min(1, restanteRecarga / datos.recarga))
+      : 0;
+    const enPartida = Boolean(window.JuniorGame?.estado?.iniciado && !window.JuniorGame?.estado?.terminado);
+    const agotada = !tieneHabilidad || this.usosRestantes <= 0;
+    const bloqueada = agotada || !enPartida || restanteRecarga > 0;
 
-    if (this.interfaz.icono) this.interfaz.icono.textContent = datos.icono;
-    if (this.interfaz.nombre) this.interfaz.nombre.textContent = datos.nombre.toUpperCase();
+    if (this.interfaz.icono) {
+      this.interfaz.icono.textContent = agotada ? "🔒" : datos.icono;
+    }
+    if (this.interfaz.nombre) {
+      this.interfaz.nombre.textContent = agotada
+        ? "HABILIDAD"
+        : datos.nombre.toUpperCase();
+    }
     if (this.interfaz.recarga) {
-      this.interfaz.recarga.textContent = restante > 0 ? `${Math.ceil(restante / 1000)}s` : "LISTA";
+      this.interfaz.recarga.textContent = `${Math.max(0, this.usosRestantes)}/${this.usosMaximos}`;
     }
     if (this.interfaz.progreso) {
       this.interfaz.progreso.style.transform = `scaleY(${porcentaje})`;
     }
 
-    boton.classList.toggle("ready", lista);
-    boton.classList.toggle("cooldown", restante > 0);
-    boton.setAttribute("aria-label", `${datos.nombre}${restante > 0 ? `, disponible en ${Math.ceil(restante / 1000)} segundos` : ", lista"}`);
+    boton.disabled = bloqueada;
+    boton.classList.toggle("ready", !bloqueada);
+    boton.classList.toggle("cooldown", restanteRecarga > 0);
+    boton.classList.toggle("exhausted", agotada);
+    boton.classList.toggle("locked", !tieneHabilidad);
+
+    const etiqueta = agotada
+      ? "Habilidad bloqueada, sin usos"
+      : `${datos.nombre}, ${this.usosRestantes} de ${this.usosMaximos} usos${restanteRecarga > 0 ? `, disponible en ${Math.ceil(restanteRecarga / 1000)} segundos` : ""}`;
+    boton.setAttribute("aria-label", etiqueta);
     this.actualizarOpciones();
   },
 
@@ -1002,11 +1152,22 @@ window.SistemaHabilidades = {
 };
 
 window.addEventListener("storage", (evento) => {
-  if (evento.key !== "juniorGame.razaEquipada") return;
+  if (!["juniorGame.razaEquipada", "juniorGame.habilidadEquipada", "juniorGame.habilidadesUsos"].includes(evento.key)) return;
 
-  window.SistemaHabilidades.sincronizarRazaEquipada();
-  window.SistemaHabilidades.crearInterfaz();
-  window.SistemaHabilidades.actualizarInterfaz();
+  const sistema = window.SistemaHabilidades;
+  if (!window.JuniorGame?.estado?.iniciado || window.JuniorGame?.estado?.terminado) {
+    sistema.sincronizarRazaEquipada();
+    sistema.cargarUsos();
+    sistema.habilidadPartida = null;
+    sistema.crearInterfaz();
+    sistema.actualizarInterfaz();
+  }
+});
+
+window.addEventListener("juniorgame:habilidad-comprada", () => {
+  const sistema = window.SistemaHabilidades;
+  sistema.cargarUsos();
+  sistema.actualizarInterfaz();
 });
 
 window.addEventListener("focus", () => {

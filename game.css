@@ -1106,3 +1106,228 @@ a {
   .surprise-box{width:64px;height:64px}
   .surprise-box-body{font-size:55px}
 }
+
+/* =========================================================
+   HUD RESPONSIVO + HABILIDAD COMPACTA (2026-07-28)
+   ========================================================= */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+body,
+#game {
+  min-height: 100svh;
+  height: 100dvh;
+  overscroll-behavior: none;
+  -webkit-touch-callout: none;
+}
+
+/* Solo los controles reales reciben interacción táctil. */
+button,
+a {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+img,
+.game-area,
+.bone-layer,
+.box-layer,
+.catch-fx-layer,
+.resource-counter-glow,
+.ability-cooldown-fill {
+  -webkit-user-drag: none;
+}
+
+.resource-hud {
+  position: absolute;
+  z-index: 24;
+  top: calc(max(14px, env(safe-area-inset-top)) + 58px);
+  left: max(12px, env(safe-area-inset-left));
+  display: grid;
+  grid-template-columns: repeat(2, minmax(74px, auto));
+  gap: 7px;
+  max-width: calc(100% - 126px - env(safe-area-inset-left) - env(safe-area-inset-right));
+  pointer-events: none;
+}
+
+.resource-counter {
+  min-width: 78px;
+  height: 34px;
+  padding: 0 10px 0 7px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: visible;
+  white-space: nowrap;
+  border: 2px solid rgba(255,255,255,.62);
+  border-radius: 999px;
+  color: #fff;
+  font-size: clamp(13px, 3.8vw, 17px);
+  line-height: 1;
+  text-shadow: 0 2px 2px rgba(0,0,0,.55);
+  box-shadow: 0 4px 0 rgba(54,23,0,.55), 0 7px 12px rgba(0,0,0,.25);
+  background: linear-gradient(180deg, rgba(56,37,86,.94), rgba(27,18,46,.94));
+}
+
+.resource-counter strong {
+  min-width: 0;
+  overflow: visible;
+  text-overflow: clip;
+  font-variant-numeric: tabular-nums;
+}
+
+.resource-counter-icon { font-size: 18px; }
+
+.pet-button {
+  pointer-events: auto;
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-width: 82px;
+  height: 37px;
+  padding: 0 10px 0 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 2px solid rgba(255,255,255,.7);
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 900;
+  background: linear-gradient(180deg, #397dce, #174b91);
+  box-shadow: 0 4px 0 #0b2b58, 0 7px 12px rgba(0,0,0,.25);
+}
+
+.pet-button-icon { font-size: 21px; }
+
+.ability-control-wrap {
+  position: absolute;
+  z-index: 31;
+  top: calc(max(14px, env(safe-area-inset-top)) + 60px);
+  right: max(12px, env(safe-area-inset-right));
+  width: clamp(112px, 31vw, 145px);
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.ability-button {
+  position: relative;
+  width: 100%;
+  min-height: 48px;
+  padding: 6px 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,.8);
+  border-radius: 13px;
+  color: #fff;
+  background: linear-gradient(180deg, #8050d5, #4c238f);
+  box-shadow: 0 4px 0 #2b105c, 0 7px 13px rgba(0,0,0,.28);
+  text-shadow: 0 2px 2px rgba(0,0,0,.45);
+}
+
+.ability-button:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #2b105c, 0 3px 8px rgba(0,0,0,.25);
+}
+
+.ability-button:disabled,
+.ability-button.exhausted,
+.ability-button.locked {
+  filter: grayscale(.75);
+  opacity: .78;
+  cursor: default;
+}
+
+.ability-icon {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  font-size: clamp(18px, 5vw, 23px);
+  line-height: 1;
+}
+
+.ability-copy {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.05;
+}
+
+.ability-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(9px, 2.7vw, 12px);
+  font-weight: 900;
+  letter-spacing: .15px;
+}
+
+.ability-cooldown {
+  margin-top: 3px;
+  font-size: clamp(13px, 3.7vw, 17px);
+  font-variant-numeric: tabular-nums;
+}
+
+.ability-cooldown-fill {
+  position: absolute;
+  z-index: 1;
+  inset: auto 0 0;
+  height: 100%;
+  transform-origin: bottom;
+  background: rgba(24, 9, 55, .34);
+  pointer-events: none;
+}
+
+.ability-config-button {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.7);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  background: rgba(58,27,105,.9);
+  box-shadow: 0 2px 5px rgba(0,0,0,.3);
+}
+
+.controls {
+  gap: clamp(18px, 10vw, 56px);
+  justify-content: center;
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+
+.control-button { touch-action: none; }
+
+@media (max-width: 390px) {
+  .game-hud { left: 8px; right: 8px; gap: 5px; }
+  .resource-hud {
+    left: max(8px, env(safe-area-inset-left));
+    grid-template-columns: repeat(2, minmax(66px, auto));
+    gap: 5px;
+  }
+  .resource-counter { min-width: 69px; padding-right: 7px; }
+  .ability-control-wrap { right: max(8px, env(safe-area-inset-right)); width: 108px; }
+}
+
+@media (max-height: 700px) {
+  .resource-hud,
+  .ability-control-wrap {
+    top: calc(max(8px, env(safe-area-inset-top)) + 50px);
+  }
+  .pet-button { height: 32px; }
+  .ability-button { min-height: 43px; }
+}

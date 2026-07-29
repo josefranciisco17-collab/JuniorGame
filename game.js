@@ -686,6 +686,7 @@ configurarBotonesModal() {
     this.estado.terminado = true;
     this.estado.pausado = true;
 
+    window.SistemaHabilidades?.finalizarPartida?.();
     window.SistemaCajas?.detener?.();
 
 /*
@@ -746,3 +747,34 @@ window.setTimeout(() => {
 window.addEventListener("DOMContentLoaded", () => {
   window.JuniorGame.iniciar();
 });
+
+
+/* Previene zoom accidental y gestos del navegador en iPhone/iPad.
+   Solo se cancelan dentro del juego; los botones funcionales conservan el toque. */
+(() => {
+  let ultimoToque = 0;
+  const esZonaJuego = (objetivo) => Boolean(objetivo?.closest?.("#game"));
+
+  document.addEventListener("gesturestart", (evento) => {
+    if (esZonaJuego(evento.target)) evento.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener("gesturechange", (evento) => {
+    if (esZonaJuego(evento.target)) evento.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener("gestureend", (evento) => {
+    if (esZonaJuego(evento.target)) evento.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener("touchend", (evento) => {
+    if (!esZonaJuego(evento.target)) return;
+    const ahora = Date.now();
+    if (ahora - ultimoToque <= 320) evento.preventDefault();
+    ultimoToque = ahora;
+  }, { passive: false });
+
+  document.addEventListener("dblclick", (evento) => {
+    if (esZonaJuego(evento.target)) evento.preventDefault();
+  }, { passive: false });
+})();

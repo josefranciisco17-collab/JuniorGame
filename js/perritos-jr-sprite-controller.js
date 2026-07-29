@@ -24,11 +24,11 @@ window.PerritoJrSpriteController = class PerritoJrSpriteController {
   }
 
   aplicarHoja() {
-    const manifest = window.PerritosJrAnimations;
     const cfg = this.obtenerConfig();
-    this.elemento.style.setProperty("--pet-frame-size", `${manifest.frameSize}px`);
     this.elemento.style.setProperty("--pet-frames", String(cfg.frames));
     this.elemento.style.backgroundImage = `url("${this.rutaHoja()}")`;
+    this.elemento.style.backgroundSize = `${cfg.frames * 100}% 100%`;
+    this.elemento.style.backgroundRepeat = "no-repeat";
     this.actualizarFrameVisual();
   }
 
@@ -64,9 +64,10 @@ window.PerritoJrSpriteController = class PerritoJrSpriteController {
 
   actualizarFrameVisual() {
     const cfg = this.obtenerConfig();
-    const manifest = window.PerritosJrAnimations;
     const visual = cfg.reverse ? (cfg.frames - 1 - this.frame) : this.frame;
-    this.elemento.style.backgroundPosition = `${-visual * manifest.frameSize}px 0px`;
-    this.elemento.style.backgroundSize = `${cfg.frames * manifest.frameSize}px ${manifest.frameSize}px`;
+    const porcentaje = cfg.frames > 1
+      ? (visual / (cfg.frames - 1)) * 100
+      : 0;
+    this.elemento.style.backgroundPosition = `${porcentaje}% 0%`;
   }
 };

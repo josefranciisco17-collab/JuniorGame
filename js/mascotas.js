@@ -175,8 +175,21 @@ window.SistemaMascotas = {
 
     area.appendChild(elemento);
     this.mascotaElemento = elemento;
-    this.spriteController = new window.PerritoJrSpriteController(elemento, this.mascotaEquipada);
-    this.spriteController.setState("idle", true);
+
+    if (typeof window.PerritoJrSpriteController !== "function") {
+      console.error("Perritos Jr: no se cargó el controlador de sprites.");
+      elemento.style.backgroundImage = `url("${mascota.imagen}")`;
+      elemento.style.backgroundSize = "contain";
+      elemento.style.backgroundPosition = "center bottom";
+      elemento.style.backgroundRepeat = "no-repeat";
+      this.spriteController = null;
+    } else {
+      this.spriteController = new window.PerritoJrSpriteController(
+        elemento,
+        this.mascotaEquipada
+      );
+      this.spriteController.setState("idle", true);
+    }
     this.xVisual = null;
     this.yVisual = null;
   },

@@ -2867,3 +2867,33 @@ body.raza-fantasma-activa .dog{
 @media (prefers-reduced-motion:reduce){
   .active-pet.active-pet-sprite{transition:none!important}
 }
+
+
+/* PERRITOS JR FIX — hoja de sprites escalada al tamaño visible */
+.active-pet.active-pet-sprite{
+  display:block !important;
+  width:clamp(62px, 15vw, 92px) !important;
+  height:auto !important;
+  aspect-ratio:1 / 1 !important;
+  min-width:62px;
+  min-height:62px;
+  overflow:visible !important;
+  animation:none !important;
+  margin:0 !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  background-color:transparent;
+  background-repeat:no-repeat !important;
+  background-origin:border-box;
+  background-clip:border-box;
+}
+.active-pet.active-pet-sprite.pet-facing-left{
+  transform:scaleX(-1) !important;
+}
+@media(max-width:390px){
+  .active-pet.active-pet-sprite{
+    width:clamp(58px, 16vw, 74px) !important;
+    min-width:58px;
+    min-height:58px;
+  }
+}

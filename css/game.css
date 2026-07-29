@@ -3002,3 +3002,74 @@ body.raza-fantasma-activa .dog{
     animation-duration:.7s!important;
   }
 }
+
+/* =====================================================
+   PERRITOS JR V4 — VIDA NATURAL Y COMPATIBILIDAD MÓVIL
+   Respiración, postura sentada, cola/orejas representadas por los
+   cuadros de sprites, sombra dinámica y animaciones sin saltos.
+===================================================== */
+.active-pet.active-pet-sprite[data-pet-state="sit"]{
+  animation:petJrSitAlive 2.2s ease-in-out infinite;
+  transform-origin:50% 91%;
+}
+.active-pet.active-pet-sprite[data-pet-state="sit"] .active-pet-shadow{
+  transform:scaleX(.92) scaleY(.78);
+  opacity:.64;
+}
+.active-pet.active-pet-sprite[data-pet-state="idle"] .active-pet-shadow{
+  animation:petJrShadowBreath 1.8s ease-in-out infinite;
+}
+.active-pet.active-pet-sprite[data-pet-state="walk"] .active-pet-shadow{
+  animation:petJrShadowSteps .42s linear infinite;
+}
+.active-pet.active-pet-sprite[data-pet-state="run"] .active-pet-shadow{
+  animation:petJrShadowRun .25s linear infinite;
+}
+.active-pet.active-pet-sprite.pet-catch-reaction{
+  animation:petJrHappyNod .22s ease-out both!important;
+}
+@keyframes petJrSitAlive{
+  0%,100%{translate:0 2px;scale:1 .965;rotate:-.35deg}
+  50%{translate:0 0;scale:1.012 .985;rotate:.35deg}
+}
+@keyframes petJrShadowBreath{
+  0%,100%{transform:scaleX(.92);opacity:.58}
+  50%{transform:scaleX(.96);opacity:.64}
+}
+@keyframes petJrShadowSteps{
+  0%,100%{transform:scaleX(1);opacity:.64}
+  50%{transform:scaleX(.82);opacity:.48}
+}
+@keyframes petJrShadowRun{
+  0%,100%{transform:scaleX(1.18) scaleY(.68);opacity:.66}
+  50%{transform:scaleX(.70) scaleY(.55);opacity:.38}
+}
+@keyframes petJrHappyNod{
+  0%{translate:0 0;rotate:0deg}
+  45%{translate:0 -3px;rotate:-3deg;scale:1.035}
+  100%{translate:0 0;rotate:0deg;scale:1}
+}
+
+/* iOS Safari y Android: evita parpadeo al cambiar cuadros. */
+.active-pet.active-pet-sprite{
+  -webkit-transform-style:preserve-3d;
+  transform-style:preserve-3d;
+  -webkit-font-smoothing:antialiased;
+  isolation:isolate;
+}
+@supports (-webkit-touch-callout:none){
+  .active-pet.active-pet-sprite{
+    translate:0 0;
+    -webkit-backface-visibility:hidden;
+  }
+}
+@media (max-width:430px){
+  .active-pet.active-pet-sprite{
+    width:clamp(58px,16vw,76px)!important;
+  }
+}
+@media (min-width:900px){
+  .active-pet.active-pet-sprite{
+    width:clamp(78px,7vw,98px)!important;
+  }
+}

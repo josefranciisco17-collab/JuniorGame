@@ -8,6 +8,7 @@ window.PerritosJrAnimations = Object.freeze({
   basePath: "Fondos-JuniorGame/perritos-jr/sprites",
   states: Object.freeze({
     idle:      { frames: 6,  fps: 5,  loop: true },
+    sit:       { frames: 6,  fps: 3,  loop: true, source: "idle" },
     walk:      { frames: 8,  fps: 11, loop: true },
     run:       { frames: 10, fps: 16, loop: true },
     jump:      { frames: 6,  fps: 12, loop: false, holdLast: true },

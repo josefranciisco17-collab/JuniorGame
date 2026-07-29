@@ -3,7 +3,7 @@
 window.AudioPerritosJr = {
   preparado: false,
   desbloqueado: false,
-  volumen: 0.30,
+  volumen: 0.22,
   ultimoGlobal: 0,
   ultimaPorTipo: new Map(),
   sonidos: {
@@ -44,7 +44,7 @@ window.AudioPerritosJr = {
 
   reproducir(id, opciones = {}) {
     this.preparar();
-    if (document.hidden) return false;
+    if (!this.desbloqueado || document.hidden) return false;
     const ahora = performance.now();
     const minimoGlobal = Number(opciones.minimoGlobal ?? 380);
     const minimoTipo = Number(opciones.minimoTipo ?? 900);

@@ -28,8 +28,8 @@ const searchUser =
 const usersList =
   document.getElementById("usersList");
 
-const usersModuleButton =
-  document.querySelector(
+const usersModuleButtons =
+  document.querySelectorAll(
     '[data-module="usuarios"]'
   );
 
@@ -419,12 +419,9 @@ function filtrarUsuarios() {
    EVENTOS
 ======================================= */
 
-if (usersModuleButton) {
-  usersModuleButton.addEventListener(
-    "click",
-    abrirUsuarios
-  );
-}
+usersModuleButtons.forEach((button) => {
+  button.addEventListener("click", abrirUsuarios);
+});
 
 if (closeUsersBtn) {
   closeUsersBtn.addEventListener(

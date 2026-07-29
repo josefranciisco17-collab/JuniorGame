@@ -2,264 +2,132 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>JuniorGame Admin</title>
-
-  <link rel="stylesheet" href="./admin.css">
-  <link rel="stylesheet" href="./users.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08111f">
+  <title>JuniorGame Control Center</title>
+  <link rel="stylesheet" href="./admin.css?v=2">
+  <link rel="stylesheet" href="./users.css?v=2">
 </head>
 <body>
-  <!-- LOGIN -->
-  <main
-    id="loginView"
-    class="admin-login"
-  >
-    <section class="login-card">
-      <div class="login-logo">JG</div>
-
-      <h1>Consola Admin</h1>
-
-      <p class="login-subtitle">
-        Administración de JuniorGame
-      </p>
-
-      <form id="adminLoginForm">
-        <label for="adminEmail">
-          Correo electrónico
-        </label>
-
-        <input
-          id="adminEmail"
-          type="email"
-          autocomplete="email"
-          required
-        />
-
-        <label for="adminPassword">
-          Contraseña
-        </label>
-
-        <input
-          id="adminPassword"
-          type="password"
-          autocomplete="current-password"
-          required
-        />
-
-        <button
-          id="adminLoginButton"
-          type="submit"
-        >
-          Iniciar sesión
-        </button>
-      </form>
-
-      <p
-        id="adminLoginMessage"
-        class="login-message"
-        aria-live="polite"
-      ></p>
+  <main id="loginView" class="admin-login">
+    <section class="login-shell">
+      <div class="login-brand-panel">
+        <span class="brand-pill">JFAM &amp; Co. Game Studios</span>
+        <div class="brand-mark">JG</div>
+        <h1>Control Center</h1>
+        <p>Supervisión, seguridad y operación de JuniorGame desde un solo lugar.</p>
+        <div class="login-features">
+          <span>● Datos en tiempo real</span>
+          <span>● Acceso protegido por permisos</span>
+          <span>● Asistente inteligente integrado</span>
+        </div>
+      </div>
+      <section class="login-card">
+        <div class="login-card-header">
+          <span class="eyebrow">ACCESO RESTRINGIDO</span>
+          <h2>Iniciar sesión</h2>
+          <p>Usa una cuenta con permisos de administrador.</p>
+        </div>
+        <form id="adminLoginForm">
+          <label for="adminEmail">Correo electrónico</label>
+          <input id="adminEmail" type="email" autocomplete="email" placeholder="administrador@correo.com" required>
+          <label for="adminPassword">Contraseña</label>
+          <div class="password-field">
+            <input id="adminPassword" type="password" autocomplete="current-password" placeholder="••••••••" required>
+            <button id="togglePassword" class="icon-button" type="button" aria-label="Mostrar contraseña">◉</button>
+          </div>
+          <button id="adminLoginButton" class="primary-button" type="submit">Entrar al Control Center</button>
+        </form>
+        <p id="adminLoginMessage" class="login-message" aria-live="polite"></p>
+      </section>
     </section>
   </main>
 
-  <!-- DASHBOARD -->
-  <main
-    id="dashboardView"
-    class="dashboard hidden"
-  >
-    <header class="dashboard-header">
-      <div>
-        <p class="dashboard-kicker">
-          JuniorGame
-        </p>
-
-        <h1>
-          Consola Administrativa
-        </h1>
+  <main id="dashboardView" class="admin-app hidden">
+    <aside class="sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">JG</div>
+        <div><strong>Control Center</strong><small>JuniorGame Admin</small></div>
       </div>
+      <nav class="sidebar-nav" aria-label="Módulos administrativos">
+        <button class="nav-item active" data-view="overview" type="button"><span>⌂</span><b>Panel general</b></button>
+        <button class="nav-item" data-module="usuarios" type="button"><span>◎</span><b>Usuarios</b></button>
+        <button class="nav-item" data-view="economia" type="button"><span>◇</span><b>Economía</b></button>
+        <button class="nav-item" data-view="stripe" type="button"><span>▣</span><b>Stripe</b></button>
+        <button class="nav-item" data-view="codigos" type="button"><span>⌁</span><b>Códigos</b></button>
+        <button class="nav-item" data-view="anuncios" type="button"><span>◈</span><b>Anuncios</b></button>
+        <button class="nav-item ai-nav" data-view="assistant" type="button"><span>✦</span><b>Asistente IA</b><em>Nuevo</em></button>
+        <button class="nav-item" data-view="configuracion" type="button"><span>⚙</span><b>Configuración</b></button>
+      </nav>
+      <div class="sidebar-footer"><span class="status-dot"></span><div><strong>Sistema conectado</strong><small>Firebase operativo</small></div></div>
+    </aside>
 
-      <button
-        id="logoutButton"
-        class="logout-button"
-        type="button"
-      >
-        Cerrar sesión
-      </button>
-    </header>
+    <section class="app-main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="sidebarToggle" class="topbar-icon" type="button" aria-label="Abrir menú">☰</button>
+          <div><span class="eyebrow">CENTRO DE OPERACIONES</span><h1 id="pageTitle">Panel general</h1></div>
+        </div>
+        <div class="topbar-actions">
+          <span class="live-chip"><i></i> En vivo</span>
+          <button id="logoutButton" class="secondary-button" type="button">Cerrar sesión</button>
+        </div>
+      </header>
 
-    <section class="welcome-card">
-      <h2>
-        Bienvenido
-      </h2>
+      <div class="content-area">
+        <section id="overviewView" class="admin-view">
+          <div class="hero-panel">
+            <div><span class="eyebrow">RESUMEN EJECUTIVO</span><h2>Todo JuniorGame, bajo control.</h2><p>Consulta usuarios, recursos y alertas de integridad desde una consola centralizada.</p></div>
+            <button id="runQuickScan" class="primary-button compact" type="button">Ejecutar revisión</button>
+          </div>
+          <section class="metrics-grid" aria-label="Métricas">
+            <article class="metric-card"><span>Usuarios registrados</span><strong id="metricUsers">—</strong><small>Documentos en users</small></article>
+            <article class="metric-card"><span>Diamantes registrados</span><strong id="metricDiamonds">—</strong><small>Total aproximado</small></article>
+            <article class="metric-card"><span>Monedas registradas</span><strong id="metricCoins">—</strong><small>Total aproximado</small></article>
+            <article class="metric-card warning"><span>Alertas detectadas</span><strong id="metricAlerts">—</strong><small>Requieren revisión</small></article>
+          </section>
+          <section class="overview-grid">
+            <article class="panel-card activity-panel"><div class="panel-title"><div><span class="eyebrow">ESTADO DEL SISTEMA</span><h3>Servicios principales</h3></div><span class="healthy-badge">Operativo</span></div><div class="service-list"><div><span><i class="service-icon">F</i>Firebase Authentication</span><b>Protegido</b></div><div><span><i class="service-icon">DB</i>Cloud Firestore</span><b>Conectado</b></div><div><span><i class="service-icon">$</i>Stripe Backend</span><b>Configurado</b></div><div><span><i class="service-icon">AI</i>Motor inteligente local</span><b>Activo</b></div></div></article>
+            <article class="panel-card"><div class="panel-title"><div><span class="eyebrow">ACCESO RÁPIDO</span><h3>Operaciones frecuentes</h3></div></div><div class="quick-actions"><button data-module="usuarios" type="button">Abrir usuarios <span>→</span></button><button data-view="assistant" type="button">Analizar datos <span>→</span></button><button data-view="anuncios" type="button">Crear anuncio <span>→</span></button></div></article>
+          </section>
+        </section>
 
-      <p>
-        Desde aquí podrás administrar usuarios,
-        recursos, compras y configuraciones del juego.
-      </p>
+        <section id="assistantView" class="admin-view hidden">
+          <div class="assistant-hero">
+            <div class="assistant-orb">✦</div>
+            <div><span class="eyebrow">JUNIOR INTELLIGENCE</span><h2>Asistente inteligente</h2><p>Analiza los datos visibles para tu cuenta y señala posibles inconsistencias. No modifica saldos ni elimina información.</p></div>
+            <button id="runAssistantScan" class="primary-button compact" type="button">Analizar ahora</button>
+          </div>
+          <section class="assistant-summary metrics-grid">
+            <article class="metric-card"><span>Perfiles revisados</span><strong id="scanUsers">0</strong><small>Último análisis</small></article>
+            <article class="metric-card warning"><span>Advertencias</span><strong id="scanWarnings">0</strong><small>Datos incompletos</small></article>
+            <article class="metric-card danger"><span>Riesgos</span><strong id="scanRisks">0</strong><small>Valores anormales</small></article>
+            <article class="metric-card"><span>Estado</span><strong id="scanStatus">Listo</strong><small id="scanTime">Sin ejecutar</small></article>
+          </section>
+          <section class="assistant-layout">
+            <article class="panel-card"><div class="panel-title"><div><span class="eyebrow">HALLAZGOS</span><h3>Problemas detectados</h3></div></div><div id="assistantFindings" class="finding-list"><div class="empty-state"><span>✦</span><p>Ejecuta el análisis para revisar los perfiles.</p></div></div></article>
+            <article class="panel-card"><div class="panel-title"><div><span class="eyebrow">RECOMENDACIONES</span><h3>Siguiente acción</h3></div></div><div id="assistantRecommendations" class="recommendation-box"><p>El asistente preparará recomendaciones sin aplicar cambios automáticos.</p></div><div class="assistant-chat"><label for="assistantQuestion">Pregunta sobre el análisis</label><div class="assistant-input-row"><input id="assistantQuestion" type="text" placeholder="Ej. ¿Cuál es el problema más importante?"><button id="askAssistant" type="button">Preguntar</button></div><div id="assistantAnswer" class="assistant-answer" aria-live="polite">Estoy listo para ayudarte.</div></div></article>
+          </section>
+        </section>
+
+        <section id="placeholderView" class="admin-view hidden"><article class="placeholder-panel"><span id="placeholderIcon">◇</span><h2 id="placeholderTitle">Módulo</h2><p id="placeholderText">Este módulo conservará aquí sus herramientas administrativas.</p><button class="secondary-button" data-view="overview" type="button">Volver al panel</button></article></section>
+        <p id="dashboardMessage" class="dashboard-message" aria-live="polite"></p>
+      </div>
     </section>
-
-    <section class="dashboard-grid">
-      <button
-        class="module-card"
-        data-module="usuarios"
-        type="button"
-      >
-        <span class="module-icon">👥</span>
-        <span class="module-title">Usuarios</span>
-        <span class="module-description">
-          Buscar y administrar jugadores
-        </span>
-      </button>
-
-      <button
-        class="module-card"
-        data-module="economia"
-        type="button"
-      >
-        <span class="module-icon">🪙</span>
-        <span class="module-title">Economía</span>
-        <span class="module-description">
-          Monedas, diamantes y vidas
-        </span>
-      </button>
-
-      <button
-        class="module-card"
-        data-module="stripe"
-        type="button"
-      >
-        <span class="module-icon">💳</span>
-        <span class="module-title">Pagos</span>
-        <span class="module-description">
-          Compras y transacciones Stripe
-        </span>
-      </button>
-
-      <button
-        class="module-card"
-        data-module="codigos"
-        type="button"
-      >
-        <span class="module-icon">🎟️</span>
-        <span class="module-title">Códigos</span>
-        <span class="module-description">
-          Crear códigos promocionales
-        </span>
-      </button>
-
-      <button
-        class="module-card"
-        data-module="anuncios"
-        type="button"
-      >
-        <span class="module-icon">📢</span>
-        <span class="module-title">Anuncios</span>
-        <span class="module-description">
-          Publicar noticias y avisos
-        </span>
-      </button>
-
-      <button
-        class="module-card"
-        data-module="configuracion"
-        type="button"
-      >
-        <span class="module-icon">⚙️</span>
-        <span class="module-title">Configuración</span>
-        <span class="module-description">
-          Seguridad y ajustes generales
-        </span>
-      </button>
-    </section>
-
-    <p
-      id="dashboardMessage"
-      class="dashboard-message"
-      aria-live="polite"
-    ></p>
   </main>
 
-<!-- ========================= -->
-<!-- MODAL USUARIOS -->
-<!-- ========================= -->
-<div id="usersModal" class="modal hidden">
-
-  <div class="modal-content users-panel">
-
-    <div class="panel-header">
-      <h2>Usuarios</h2>
-
-      <button id="closeUsersBtn" class="close-btn">
-        ✕
-      </button>
+  <div id="usersModal" class="modal hidden">
+    <div class="modal-content users-panel">
+      <div class="panel-header"><div><span class="eyebrow">DIRECTORIO</span><h2>Usuarios</h2></div><button id="closeUsersBtn" class="close-btn" type="button">✕</button></div>
+      <div class="users-toolbar"><input type="text" id="searchUser" placeholder="Buscar por nombre, correo o ID..."><button id="refreshUsers" type="button">Actualizar</button></div>
+      <div id="usersList" class="users-list"><div class="loading">Cargando usuarios...</div></div>
     </div>
-
-    <div class="users-toolbar">
-
-      <input
-        type="text"
-        id="searchUser"
-        placeholder="Buscar por nombre, correo o ID..."
-      >
-
-      <button id="refreshUsers">
-        Actualizar
-      </button>
-
-    </div>
-
-    <div id="usersList" class="users-list">
-
-      <div class="loading">
-        Cargando usuarios...
-      </div>
-
-    </div>
-
   </div>
 
-</div>
+  <div id="userProfileModal" class="modal hidden"><div class="modal-content user-profile-panel"><div class="panel-header"><h2>Perfil del usuario</h2><button id="closeUserProfileBtn" class="close-btn" type="button">✕</button></div><div id="userProfileContent" class="user-profile-content"><div class="loading">Cargando perfil...</div></div></div></div>
 
-<!-- ========================= -->
-<!-- MODAL PERFIL DE USUARIO -->
-<!-- ========================= -->
-<div id="userProfileModal" class="modal hidden">
-
-  <div class="modal-content user-profile-panel">
-
-    <div class="panel-header">
-      <h2>Perfil del usuario</h2>
-
-      <button
-        id="closeUserProfileBtn"
-        class="close-btn"
-        type="button"
-      >
-        ✕
-      </button>
-    </div>
-
-    <div
-      id="userProfileContent"
-      class="user-profile-content"
-    >
-      <div class="loading">
-        Cargando perfil...
-      </div>
-    </div>
-
-  </div>
-
-</div>
-
-
-<script type="module"  src="./admin.js"></script>
-<script type="module" src="./users.js?v=40"></script>
-
+  <script type="module" src="./admin.js?v=2"></script>
+  <script type="module" src="./users.js?v=41"></script>
+  <script type="module" src="./assistant.js?v=1"></script>
 </body>
 </html>

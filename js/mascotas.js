@@ -317,14 +317,12 @@ window.SistemaMascotas = {
   detectarEventosJuego(juego) {
     if (juego.estado.pausado && !this.ultimoEstadoJuego.pausado) {
       this.cambiarEstado("sleep");
-      this.reproducirSonido("pant", { minimoTipo: 3500, volumen: 0.55 });
     }
     if (!juego.estado.pausado && this.ultimoEstadoJuego.pausado && !juego.estado.terminado) {
       this.cambiarEstado("idle");
     }
     if (juego.estado.terminado && !this.ultimoEstadoJuego.terminado) {
       this.cambiarEstado("sad");
-      this.reproducirSonido("hurt", { minimoTipo: 3500, volumen: 0.65 });
     }
     this.ultimoEstadoJuego = {
       pausado: Boolean(juego.estado.pausado),
@@ -393,7 +391,6 @@ window.SistemaMascotas = {
     if (this.ultimoSalto) {
       this.ultimoSalto = false;
       this.cambiarEstado("land", 250);
-      this.reproducirSonido("pant", { minimoTipo: 1600, volumen: 0.30, rate: 1.12 });
       return;
     }
 
@@ -414,24 +411,10 @@ window.SistemaMascotas = {
   },
 
   actualizarSonidosNaturales(dt, juego) {
-    if (juego.estado.pausado || juego.estado.terminado || document.hidden) return;
-    this.proximoSonidoAmbiente -= dt;
-
-    if (this.estadoAnimacion === "run" && this.tiempoCorriendo > 2.8 && this.proximoSonidoAmbiente <= 0) {
-      this.reproducirSonido("pant", { minimoTipo: 5200, volumen: 0.40 });
-      this.proximoSonidoAmbiente = 5 + Math.random() * 5;
-      return;
-    }
-
-    if (this.estadoAnimacion === "idle" && this.tiempoQuieto > 4 && this.proximoSonidoAmbiente <= 0) {
-      const ladrar = Math.random() < 0.58;
-      this.cambiarEstado(ladrar ? "bark" : "idle", ladrar ? 650 : 0);
-      this.reproducirSonido(ladrar ? "bark" : "pant", {
-        minimoTipo: 6500,
-        volumen: ladrar ? 0.62 : 0.28
-      });
-      this.proximoSonidoAmbiente = 8 + Math.random() * 10;
-    }
+    // Perrito Jr permanece completamente silencioso.
+    // Se conservan sus animaciones y movimientos, pero no se reproducen
+    // ladridos, jadeos, sonidos de descanso ni sonidos al aterrizar.
+    return;
   },
 
   prepararAudio() {
@@ -440,19 +423,9 @@ window.SistemaMascotas = {
   },
 
   reproducirSonido(tipo = "bark", opciones = {}) {
-    const mapa = {
-      yip: "bark",
-      bark: "bark",
-      celebrate: "happy",
-      happy: "happy",
-      hurt: "hurt",
-      pant: "pant",
-      sleep: "pant"
-    };
-    return window.AudioPerritosJr?.reproducir?.(mapa[tipo] || "bark", {
-      ...opciones,
-      mascota: this.mascotaEquipada
-    });
+    // Silencio total para Perrito Jr.
+    // Esta función se conserva para no romper llamadas existentes.
+    return false;
   },
 
   cambiarEstado(estado, duracion = 0) {

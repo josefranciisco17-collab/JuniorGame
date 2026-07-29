@@ -12,7 +12,10 @@ import {
 
 import {
   doc,
-  onSnapshot
+  onSnapshot,
+  getDoc,
+  setDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 import {
@@ -209,7 +212,7 @@ window.location.href = "shop.html";
 );
 
 
-  // Centro de Configuración · Fase 4
+  // Centro de Configuración · Fase 6
   const settingsCenter = document.getElementById("settingsCenter");
   const settingsCloseButton = document.getElementById("settingsCloseButton");
   const settingsBackButton = document.getElementById("settingsBackButton");
@@ -233,7 +236,7 @@ window.location.href = "shop.html";
   }
   applyMenuLanguage(localeSettings);
 
-  // Centro de Configuración · Fase 4: Cuenta, Accesibilidad, Privacidad y Acerca de
+  // Centro de Configuración · Fase 6: Cuenta, Accesibilidad, Privacidad y Acerca de
   const SETTINGS_KEY = "juniorGame.settings.v1";
   const defaultAppSettings = {
     musicEnabled: true,
@@ -254,7 +257,8 @@ window.location.href = "shop.html";
     highContrast: false,
     reduceMotion: false,
     colorBlindMode: "off",
-    vibrationIntensity: "medium"
+    vibrationIntensity: "medium",
+    cloudSyncEnabled: true
   };
 
   function loadAppSettings() {
@@ -268,7 +272,34 @@ window.location.href = "shop.html";
 
   let appSettings = loadAppSettings();
 
-  function saveAppSettings() {
+  const CLOUD_META_KEY = "juniorGame.settingsCloudMeta.v1";
+  let cloudReady = false;
+  let cloudSyncTimer = null;
+  let cloudStatus = "Esperando inicio de sesión";
+  let cloudLastSync = 0;
+
+  function loadCloudMeta() {
+    try {
+      return { lastLocalChange: 0, lastSync: 0, ...JSON.parse(localStorage.getItem(CLOUD_META_KEY) || "{}") };
+    } catch {
+      return { lastLocalChange: 0, lastSync: 0 };
+    }
+  }
+
+  function saveCloudMeta(patch = {}) {
+    const meta = { ...loadCloudMeta(), ...patch };
+    localStorage.setItem(CLOUD_META_KEY, JSON.stringify(meta));
+    cloudLastSync = Number(meta.lastSync || 0);
+    return meta;
+  }
+
+  function markLocalSettingsChanged() {
+    if (!cloudReady) return;
+    saveCloudMeta({ lastLocalChange: Date.now() });
+    scheduleCloudSync();
+  }
+
+  function saveAppSettings(markDirty = true) {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
     // Claves de compatibilidad para los demás módulos del juego.
     localStorage.setItem("juniorGame.musicEnabled", String(appSettings.musicEnabled));
@@ -283,6 +314,7 @@ window.location.href = "shop.html";
       events: appSettings.notifyEvents,
       professor: appSettings.notifyProfessor
     }));
+    if (markDirty) markLocalSettingsChanged();
   }
 
   function resolvedTheme() {
@@ -309,7 +341,7 @@ window.location.href = "shop.html";
     if (appSettings.vibrationEnabled && navigator.vibrate) navigator.vibrate(12);
   }
 
-  saveAppSettings();
+  saveAppSettings(false);
   applyAppSettings();
   window.matchMedia?.("(prefers-color-scheme: light)").addEventListener?.("change", () => {
     if (appSettings.theme === "auto") applyAppSettings();
@@ -390,6 +422,8 @@ window.location.href = "shop.html";
       { key: "changePhoto", icon: "🖼️", title: "Cambiar foto", description: "Seleccionar una nueva imagen de perfil" },
       { key: "changeName", icon: "✏️", title: "Cambiar nombre", description: "Actualizar el nombre visible" },
       { key: "changePassword", icon: "🔑", title: "Cambiar contraseña", description: "Enviar recuperación de contraseña" },
+      { key: "cloudSync", icon: "☁️", title: "Sincronización en la nube", description: cloudStatus },
+      { key: "cloudSyncEnabled", icon: "🔄", title: "Sincronización automática", description: appSettings.cloudSyncEnabled ? "Activada" : "Desactivada", toggle: true },
       { key: "linkedAccounts", icon: "🔗", title: "Cuentas vinculadas", description: "Google y Apple · Preparado para una fase futura" },
       { key: "restorePurchases", icon: "🧾", title: "Restaurar compras", description: "Disponible al integrar compras nativas" },
       { key: "logout", icon: "🚪", title: "Cerrar sesión", description: "Salir de esta cuenta", danger: true }
@@ -425,7 +459,7 @@ window.location.href = "shop.html";
   function aboutOptions() {
     return [
       { key: "gameInfo", icon: "🎮", title: "JuniorGame", description: "JuniorGame Production · 2026" },
-      { key: "version", icon: "🏷️", title: "Versión", description: "Centro de Configuración · Fase 4" },
+      { key: "version", icon: "🏷️", title: "Versión", description: "Centro de Configuración · Fase 6" },
       { key: "credits", icon: "👥", title: "Créditos", description: "JFAM & Co. Game Studios" },
       { key: "licenses", icon: "📚", title: "Licencias", description: "Firebase, recursos web y tecnologías del proyecto" },
       { key: "checkUpdates", icon: "🔄", title: "Buscar actualizaciones", description: "Actualiza archivos almacenados y recarga el juego" },
@@ -457,6 +491,7 @@ window.location.href = "shop.html";
     if (!window.confirm("¿Restablecer todos los ajustes de JuniorGame? Tu cuenta y progreso no se eliminarán.")) return;
     localStorage.removeItem(SETTINGS_KEY);
     localStorage.removeItem("juniorGame.localeSettings");
+    localStorage.removeItem(CLOUD_META_KEY);
     appSettings = { ...defaultAppSettings };
     localeSettings = detectLocaleSettings();
     saveAppSettings();
@@ -474,6 +509,14 @@ window.location.href = "shop.html";
       if (option.key === "changePhoto") return triggerProfileAction("changePhotoButton");
       if (option.key === "changeName") return triggerProfileAction("changeNameButton");
       if (option.key === "changePassword") return triggerProfileAction("changePasswordButton");
+      if (option.key === "cloudSync") return syncSettingsWithCloud({ forceUpload: true, showFeedback: true });
+      if (option.key === "cloudSyncEnabled") {
+        appSettings.cloudSyncEnabled = !appSettings.cloudSyncEnabled;
+        saveAppSettings();
+        renderPhase4Section("account");
+        if (appSettings.cloudSyncEnabled) syncSettingsWithCloud({ showFeedback: false });
+        return;
+      }
       if (option.key === "logout") return triggerProfileAction("logoutButton");
       return mostrarModal(option.icon, option.title, option.key === "linkedAccounts" ? "La vinculación con Google y Apple quedará habilitada al integrar los proveedores nativos." : "La restauración se habilitará al conectar las compras de Google Play y App Store.");
     }
@@ -497,7 +540,7 @@ window.location.href = "shop.html";
         window.setTimeout(() => location.reload(), 350); return;
       }
       if (option.key === "reportError") {
-        const info = `JuniorGame Fase 4 | ${navigator.userAgent} | ${new Date().toISOString()}`;
+        const info = `JuniorGame Fase 6 | ${navigator.userAgent} | ${new Date().toISOString()}`;
         navigator.clipboard?.writeText(info);
         return mostrarModal("🐞", "Información copiada", "Se copió la información técnica para adjuntarla a un reporte.");
       }
@@ -561,6 +604,118 @@ window.location.href = "shop.html";
     settingsPicker.setAttribute("aria-hidden", "false");
   }
 
+  function cloudStatusText() {
+    if (!auth.currentUser) return "Inicia sesión para sincronizar";
+    if (!appSettings.cloudSyncEnabled) return "Sincronización automática desactivada";
+    if (!cloudLastSync) return cloudStatus || "Aún no sincronizado";
+    try {
+      return `Última sincronización: ${new Intl.DateTimeFormat(localeSettings.language || "es-MX", { dateStyle: "short", timeStyle: "short" }).format(new Date(cloudLastSync))}`;
+    } catch {
+      return "Sincronizado en la nube";
+    }
+  }
+
+  function refreshCloudStatus() {
+    cloudStatus = cloudStatusText();
+    if (settingsDetailView?.classList.contains("active") && settingsSectionTitle?.textContent === "Cuenta") {
+      renderPhase4Section("account");
+    }
+  }
+
+  function scheduleCloudSync() {
+    if (!cloudReady || !appSettings.cloudSyncEnabled || !auth.currentUser) return;
+    window.clearTimeout(cloudSyncTimer);
+    cloudSyncTimer = window.setTimeout(() => syncSettingsWithCloud({ forceUpload: true, showFeedback: false }), 900);
+  }
+
+  function buildCloudPayload() {
+    return {
+      version: 1,
+      locale: { ...localeSettings },
+      app: { ...appSettings },
+      updatedAtClient: Date.now()
+    };
+  }
+
+  async function uploadSettingsToCloud(showFeedback = false) {
+    const user = auth.currentUser;
+    if (!user) {
+      cloudStatus = "Inicia sesión para sincronizar";
+      refreshCloudStatus();
+      if (showFeedback) mostrarModal("☁️", "Sincronización", "Debes iniciar sesión para guardar tus ajustes en la nube.");
+      return false;
+    }
+    try {
+      cloudStatus = "Sincronizando…";
+      refreshCloudStatus();
+      const payload = buildCloudPayload();
+      await setDoc(doc(db, "users", user.uid), {
+        centroConfiguracion: payload,
+        centroConfiguracionActualizadaEn: serverTimestamp()
+      }, { merge: true });
+      saveCloudMeta({ lastSync: payload.updatedAtClient, lastLocalChange: payload.updatedAtClient });
+      cloudStatus = "Sincronizado en la nube";
+      refreshCloudStatus();
+      if (showFeedback) mostrarModal("✅", "Ajustes sincronizados", "Tu idioma, región, sonido, apariencia, accesibilidad y notificaciones se guardaron en tu cuenta.");
+      return true;
+    } catch (error) {
+      console.error("No se pudieron sincronizar los ajustes:", error);
+      cloudStatus = "Error de sincronización · Toca para reintentar";
+      refreshCloudStatus();
+      if (showFeedback) mostrarModal("⚠️", "No se pudo sincronizar", "Revisa tu conexión y vuelve a intentarlo. Tus ajustes permanecen guardados en este dispositivo.");
+      return false;
+    }
+  }
+
+  function applyCloudPayload(payload) {
+    if (!payload || typeof payload !== "object") return;
+    if (payload.locale && typeof payload.locale === "object") {
+      localeSettings = { ...localeSettings, ...payload.locale };
+      saveLocaleSettings(localeSettings);
+      applyMenuLanguage(localeSettings);
+    }
+    if (payload.app && typeof payload.app === "object") {
+      appSettings = { ...defaultAppSettings, ...appSettings, ...payload.app };
+      saveAppSettings(false);
+      applyAppSettings();
+    }
+  }
+
+  async function syncSettingsWithCloud({ forceUpload = false, showFeedback = false } = {}) {
+    const user = auth.currentUser;
+    if (!user) return uploadSettingsToCloud(showFeedback);
+    if (!appSettings.cloudSyncEnabled && !forceUpload) {
+      cloudStatus = "Sincronización automática desactivada";
+      refreshCloudStatus();
+      return false;
+    }
+    try {
+      cloudStatus = "Comparando ajustes…";
+      refreshCloudStatus();
+      const snapshot = await getDoc(doc(db, "users", user.uid));
+      const remote = snapshot.exists() ? snapshot.data()?.centroConfiguracion : null;
+      const meta = loadCloudMeta();
+      const remoteTime = Number(remote?.updatedAtClient || 0);
+      const localTime = Number(meta.lastLocalChange || 0);
+
+      if (!forceUpload && remote && remoteTime > localTime) {
+        applyCloudPayload(remote);
+        saveCloudMeta({ lastSync: remoteTime, lastLocalChange: remoteTime });
+        cloudStatus = "Ajustes recuperados de la nube";
+        refreshCloudStatus();
+        if (showFeedback) mostrarModal("☁️", "Ajustes recuperados", "Se aplicó la configuración guardada en tu cuenta.");
+        return true;
+      }
+      return uploadSettingsToCloud(showFeedback);
+    } catch (error) {
+      console.error("No se pudieron comparar los ajustes:", error);
+      cloudStatus = "Sin conexión · Ajustes locales activos";
+      refreshCloudStatus();
+      if (showFeedback) mostrarModal("⚠️", "Sin conexión", "No fue posible acceder a la nube. El juego seguirá usando los ajustes guardados en este dispositivo.");
+      return false;
+    }
+  }
+
   function showSettingsHome() {
     hidePicker();
     settingsHomeView?.classList.add("active");
@@ -596,6 +751,7 @@ window.location.href = "shop.html";
         localeSettings.automatic = !localeSettings.automatic;
         if (localeSettings.automatic) localeSettings = { ...localeSettings, ...detectLocaleSettings(), automatic: true };
         saveLocaleSettings(localeSettings);
+        markLocalSettingsChanged();
         applyMenuLanguage(localeSettings);
         renderRegionSection();
         updateRegionHeader();
@@ -676,6 +832,7 @@ window.location.href = "shop.html";
       if (regionInfo) localeSettings.currency = regionInfo[3];
     }
     saveLocaleSettings(localeSettings);
+    markLocalSettingsChanged();
     applyMenuLanguage(localeSettings);
     hidePicker();
     updateRegionHeader();
@@ -785,6 +942,10 @@ window.location.href = "shop.html";
 
 onAuthStateChanged(auth, async (usuario) => {
   startHeaderProfileListener(usuario);
+  cloudReady = Boolean(usuario);
+  cloudStatus = usuario ? "Preparando sincronización…" : "Inicia sesión para sincronizar";
+  refreshCloudStatus();
+  if (usuario) await syncSettingsWithCloud({ showFeedback: false });
 
   if (!adminConsoleButton) {
     return;

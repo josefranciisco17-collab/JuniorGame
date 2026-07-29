@@ -1,219 +1,96 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-  >
-
-  <meta name="theme-color" content="#2b1609">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#090805">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>JuniorGame - Acceso</title>
-
-  <link rel="stylesheet" href="css/login.css?v=1">
+  <link rel="stylesheet" href="css/login.css?v=2">
 </head>
-
 <body>
-
   <main class="login-page">
+    <div class="login-background" aria-hidden="true"></div>
+    <div class="login-overlay" aria-hidden="true"></div>
+    <div class="light-particles" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
 
-    <div class="login-overlay"></div>
+    <section class="login-shell" aria-label="Acceso a JuniorGame">
+      <aside class="hero-panel" aria-hidden="true">
+        <div class="hero-glow"></div>
+        <img class="login-dog" src="Fondos-JuniorGame/Estrella.png" alt="" draggable="false">
+        <div class="dog-shadow"></div>
+        <p class="hero-message">¡Tu aventura comienza aquí!</p>
+      </aside>
 
-    <section class="login-card">
+      <section class="login-card">
+        <header class="login-header">
+          <div class="brand-kicker">JFAM &amp; Co. Game Studios</div>
+          <h1><span>Junior</span>Game</h1>
+          <p>Inicia sesión o crea tu cuenta</p>
+        </header>
 
-      <header class="login-header">
+        <div class="login-tabs" role="tablist" aria-label="Opciones de acceso">
+          <button id="loginTabButton" class="tab-button active" type="button" role="tab" aria-selected="true">Iniciar sesión</button>
+          <button id="registerTabButton" class="tab-button" type="button" role="tab" aria-selected="false">Crear cuenta</button>
+        </div>
 
-        <img
-          class="login-dog"
-          src="Fondos-JuniorGame/Estrella.png"
-          alt="Estrella"
-          draggable="false"
-        >
+        <form id="loginForm" class="auth-form" novalidate>
+          <label for="loginEmail">Correo electrónico</label>
+          <div class="field-wrapper">
+            <span class="field-icon" aria-hidden="true">✉</span>
+            <input id="loginEmail" name="email" type="email" inputmode="email" autocapitalize="none" autocomplete="email" placeholder="correo@ejemplo.com" required>
+          </div>
 
-        <h1>JuniorGame</h1>
+          <label for="loginPassword">Contraseña</label>
+          <div class="field-wrapper password-wrapper">
+            <span class="field-icon" aria-hidden="true">●</span>
+            <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="Tu contraseña" minlength="6" required>
+            <button type="button" class="toggle-password" data-target="loginPassword" aria-label="Mostrar u ocultar contraseña">👁</button>
+          </div>
 
-        <p>
-          Inicia sesión o crea tu cuenta
-        </p>
+          <button class="primary-button" type="submit"><span>ENTRAR</span></button>
+          <button id="forgotPasswordButton" class="link-button" type="button">Olvidé mi contraseña</button>
+        </form>
 
-      </header>
+        <form id="registerForm" class="auth-form hidden" novalidate>
+          <label for="registerName">Nombre del jugador</label>
+          <div class="field-wrapper">
+            <span class="field-icon" aria-hidden="true">★</span>
+            <input id="registerName" name="name" type="text" autocomplete="name" placeholder="Escribe tu nombre" maxlength="30" required>
+          </div>
 
-      <div class="login-tabs">
+          <label for="registerEmail">Correo electrónico</label>
+          <div class="field-wrapper">
+            <span class="field-icon" aria-hidden="true">✉</span>
+            <input id="registerEmail" name="email" type="email" inputmode="email" autocapitalize="none" autocomplete="email" placeholder="correo@ejemplo.com" required>
+          </div>
 
-        <button
-          id="loginTabButton"
-          class="tab-button active"
-          type="button"
-        >
-          Iniciar sesión
-        </button>
+          <label for="registerPassword">Contraseña</label>
+          <div class="field-wrapper password-wrapper">
+            <span class="field-icon" aria-hidden="true">●</span>
+            <input id="registerPassword" name="password" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+            <button type="button" class="toggle-password" data-target="registerPassword" aria-label="Mostrar u ocultar contraseña">👁</button>
+          </div>
 
-        <button
-          id="registerTabButton"
-          class="tab-button"
-          type="button"
-        >
-          Crear cuenta
-        </button>
+          <label for="registerPasswordConfirm">Confirmar contraseña</label>
+          <div class="field-wrapper password-wrapper">
+            <span class="field-icon" aria-hidden="true">✓</span>
+            <input id="registerPasswordConfirm" name="passwordConfirm" type="password" autocomplete="new-password" placeholder="Repite la contraseña" minlength="6" required>
+            <button type="button" class="toggle-password" data-target="registerPasswordConfirm" aria-label="Mostrar u ocultar contraseña">👁</button>
+          </div>
 
-      </div>
+          <button class="primary-button" type="submit"><span>CREAR CUENTA</span></button>
+        </form>
 
-      <form
-        id="loginForm"
-        class="auth-form"
-        novalidate
-      >
-
-        <label for="loginEmail">
-          Correo electrónico
-        </label>
-
-        <input
-          id="loginEmail"
-          name="email"
-          type="email"
-          autocomplete="email"
-          placeholder="correo@ejemplo.com"
-          required
-        >
-
-        <label for="loginPassword">
-          Contraseña
-        </label>
-
-
-<div class="password-wrapper">
-
-    <input
-        id="loginPassword"
-        name="password"
-        type="password"
-        autocomplete="current-password"
-        placeholder="Tu contraseña"
-        minlength="6"
-        required
-    >
-
-<button
-    type="button"
-    class="toggle-password"
-    data-target="loginPassword"
->
-    &#128065;
-</button>
-
-</div>
-
-        <button
-          class="primary-button"
-          type="submit"
-        >
-          ENTRAR
-        </button>
-
-        <button
-          id="forgotPasswordButton"
-          class="link-button"
-          type="button"
-        >
-          Olvidé mi contraseña
-        </button>
-
-      </form>
-
-      <form
-        id="registerForm"
-        class="auth-form hidden"
-        novalidate
-      >
-
-        <label for="registerName">
-          Nombre del jugador
-        </label>
-
-        <input
-          id="registerName"
-          name="name"
-          type="text"
-          autocomplete="name"
-          placeholder="Escribe tu nombre"
-          maxlength="30"
-          required
-        >
-
-        <label for="registerEmail">
-          Correo electrónico
-        </label>
-
-        <input
-          id="registerEmail"
-          name="email"
-          type="email"
-          autocomplete="email"
-          placeholder="correo@ejemplo.com"
-          required
-        >
-
-        <label for="registerPassword">
-          Contraseña
-        </label>
-
-        <input
-          id="registerPassword"
-          name="password"
-          type="password"
-          autocomplete="new-password"
-          placeholder="Mínimo 6 caracteres"
-          minlength="6"
-          required
-        >
-
-        <label for="registerPasswordConfirm">
-          Confirmar contraseña
-        </label>
-
-        <input
-          id="registerPasswordConfirm"
-          name="passwordConfirm"
-          type="password"
-          autocomplete="new-password"
-          placeholder="Repite la contraseña"
-          minlength="6"
-          required
-        >
-
-        <button
-          class="primary-button"
-          type="submit"
-        >
-          CREAR CUENTA
-        </button>
-
-      </form>
-
-      <p
-        id="authMessage"
-        class="auth-message"
-        aria-live="polite"
-      ></p>
-
-      <footer class="login-footer">
-        <span>JFAM &amp; Co. Game Studios</span>
-        <span>JuniorGame Production</span>
-      </footer>
-
+        <p id="authMessage" class="auth-message" aria-live="polite"></p>
+        <footer class="login-footer">JuniorGame Production</footer>
+      </section>
     </section>
-
   </main>
 
-  <script
-    type="module"
-    src="js/auth.js?v=1"
-  ></script>
-
+  <script type="module" src="js/auth.js?v=1"></script>
 </body>
-
 </html>

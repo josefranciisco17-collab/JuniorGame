@@ -279,8 +279,15 @@ app.post("/admin/player-operation", requireAdmin, async (req, res) => {
         const next = Math.max(0, safeCurrent + requestedDelta);
         const appliedDelta = next - safeCurrent;
 
+        /*
+         * JuniorGame conserva dos nombres históricos para cada saldo:
+         * coins/monedas y diamonds/diamantes.
+         * El menú prioriza coins y diamonds, por eso ambos campos deben
+         * actualizarse juntos para evitar saldos diferentes en pantalla.
+         */
         transaction.update(userRef, {
           [resource]: next,
+          [legacyField]: next,
           ultimaOperacionAdminAt: FieldValue.serverTimestamp(),
           ultimaOperacionAdminPor: req.admin.uid
         });
@@ -428,6 +435,7 @@ async function creditDiamonds(event) {
 
     transaction.update(userRef, {
       diamantes: FieldValue.increment(diamonds),
+      diamonds: FieldValue.increment(diamonds),
       ultimaCompraAt:
         FieldValue.serverTimestamp()
     });

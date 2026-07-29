@@ -209,7 +209,7 @@ window.location.href = "shop.html";
 );
 
 
-  // Centro de Configuración · Fase 2
+  // Centro de Configuración · Fase 3
   const settingsCenter = document.getElementById("settingsCenter");
   const settingsCloseButton = document.getElementById("settingsCloseButton");
   const settingsBackButton = document.getElementById("settingsBackButton");
@@ -233,14 +233,101 @@ window.location.href = "shop.html";
   }
   applyMenuLanguage(localeSettings);
 
+  // Centro de Configuración · Fase 3: Juego, Apariencia y Notificaciones
+  const SETTINGS_KEY = "juniorGame.settings.v1";
+  const defaultAppSettings = {
+    musicEnabled: true,
+    sfxEnabled: true,
+    vibrationEnabled: true,
+    fps: "60",
+    graphics: "high",
+    batterySaver: false,
+    theme: "auto",
+    textSize: "normal",
+    animations: "full",
+    particles: true,
+    shadows: true,
+    notifyWheel: true,
+    notifyMissions: true,
+    notifyEvents: true,
+    notifyProfessor: true
+  };
+
+  function loadAppSettings() {
+    try {
+      return { ...defaultAppSettings, ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}") };
+    } catch (error) {
+      console.warn("No se pudieron leer los ajustes:", error);
+      return { ...defaultAppSettings };
+    }
+  }
+
+  let appSettings = loadAppSettings();
+
+  function saveAppSettings() {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+    // Claves de compatibilidad para los demás módulos del juego.
+    localStorage.setItem("juniorGame.musicEnabled", String(appSettings.musicEnabled));
+    localStorage.setItem("juniorGame.sfxEnabled", String(appSettings.sfxEnabled));
+    localStorage.setItem("juniorGame.vibrationEnabled", String(appSettings.vibrationEnabled));
+    localStorage.setItem("juniorGame.targetFps", appSettings.fps);
+    localStorage.setItem("juniorGame.graphicsQuality", appSettings.graphics);
+    localStorage.setItem("juniorGame.batterySaver", String(appSettings.batterySaver));
+    localStorage.setItem("juniorGame.notifications", JSON.stringify({
+      wheel: appSettings.notifyWheel,
+      missions: appSettings.notifyMissions,
+      events: appSettings.notifyEvents,
+      professor: appSettings.notifyProfessor
+    }));
+  }
+
+  function resolvedTheme() {
+    if (appSettings.theme !== "auto") return appSettings.theme;
+    return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  }
+
+  function applyAppSettings() {
+    const root = document.documentElement;
+    root.dataset.jgTheme = resolvedTheme();
+    root.dataset.jgTextSize = appSettings.textSize;
+    root.dataset.jgAnimations = appSettings.animations;
+    root.dataset.jgParticles = appSettings.particles ? "on" : "off";
+    root.dataset.jgShadows = appSettings.shadows ? "on" : "off";
+    root.dataset.jgGraphics = appSettings.graphics;
+    root.dataset.jgBatterySaver = appSettings.batterySaver ? "on" : "off";
+    window.dispatchEvent(new CustomEvent("juniorgame:settings-changed", { detail: { ...appSettings } }));
+  }
+
+  function vibrateTap() {
+    if (appSettings.vibrationEnabled && navigator.vibrate) navigator.vibrate(12);
+  }
+
+  saveAppSettings();
+  applyAppSettings();
+  window.matchMedia?.("(prefers-color-scheme: light)").addEventListener?.("change", () => {
+    if (appSettings.theme === "auto") applyAppSettings();
+  });
+
+  const CHOICES = {
+    fps: [["30", "🎞️", "30 FPS"], ["60", "⚡", "60 FPS"]],
+    graphics: [["low", "🔋", "Baja"], ["medium", "✨", "Media"], ["high", "💎", "Alta"]],
+    theme: [["auto", "🔄", "Automático"], ["dark", "🌙", "Oscuro"], ["light", "☀️", "Claro"]],
+    textSize: [["small", "A", "Pequeño"], ["normal", "🔤", "Normal"], ["large", "🔠", "Grande"]],
+    animations: [["full", "🎬", "Completas"], ["reduced", "🧘", "Reducidas"], ["off", "⏸️", "Desactivadas"]]
+  };
+
+  function choiceLabel(list, value) {
+    return list.find(([id]) => id === value)?.[2] || value;
+  }
+
   const staticSections = {
-    game: { icon: "🎮", title: "Juego", subtitle: "Sonido, controles y rendimiento", options: [["🎵","Música","Control de música"],["🔊","Efectos de sonido","Sonidos del juego"],["📳","Vibración","Respuesta táctil"],["🎞️","FPS","30 / 60 cuadros"],["✨","Calidad gráfica","Efectos y rendimiento"],["🔋","Ahorro de batería","Reducir consumo"]] },
-    appearance: { icon: "🎨", title: "Apariencia", subtitle: "Personaliza el aspecto de JuniorGame", options: [["🌓","Tema","Automático, claro u oscuro"],["🔤","Tamaño del texto","Normal"],["🎬","Animaciones","Completas"],["✨","Partículas","Activadas"],["🌑","Sombras","Activadas"]] },
-    notifications: { icon: "🔔", title: "Notificaciones", subtitle: "Elige qué avisos deseas recibir", options: [["🎡","Ruleta diaria","Aviso de giro disponible"],["📋","Misiones","Progreso y recompensas"],["🎉","Eventos","Eventos y temporadas"],["🎓","Profesor Junior","Consejos y mensajes"]] },
+    game: { icon: "🎮", title: "Juego", subtitle: "Sonido, vibración y rendimiento" },
+    appearance: { icon: "🎨", title: "Apariencia", subtitle: "Personaliza el aspecto de JuniorGame" },
+    notifications: { icon: "🔔", title: "Notificaciones", subtitle: "Controla los avisos dentro del juego" },
     account: { icon: "👤", title: "Cuenta", subtitle: "Administra tu perfil y tus vínculos", options: [["🖼️","Foto y nombre","Abrir perfil del jugador"],["🔗","Vincular cuenta","Google / Apple"],["🧾","Restaurar compras","Recuperar compras compatibles"],["🚪","Cerrar sesión","Salir de tu cuenta"]] },
     accessibility: { icon: "♿", title: "Accesibilidad", subtitle: "Haz el juego más cómodo para ti", options: [["🔠","Letras grandes","Aumentar tamaño"],["◐","Alto contraste","Mejorar legibilidad"],["🧘","Reducir movimiento","Menos animaciones"],["🎨","Modo para daltónicos","Paletas accesibles"]] },
     privacy: { icon: "🔒", title: "Privacidad", subtitle: "Controla permisos y datos", options: [["🛡️","Privacidad","Política de privacidad"],["📜","Términos","Términos del servicio"],["🔑","Permisos","Revisar accesos"],["🧹","Borrar caché","Limpiar datos temporales"],["↺","Restablecer ajustes","Volver a valores iniciales"]] },
-    about: { icon: "ℹ️", title: "Acerca del juego", subtitle: "Información de JuniorGame", options: [["🎮","JuniorGame","Production 2026"],["🏷️","Versión","Centro de Configuración · Fase 2"],["👥","Créditos","JFAM & Co. Game Studios"],["📚","Licencias","Recursos y tecnologías"],["🔄","Buscar actualizaciones","Comprobar versión disponible"]] },
+    about: { icon: "ℹ️", title: "Acerca del juego", subtitle: "Información de JuniorGame", options: [["🎮","JuniorGame","Production 2026"],["🏷️","Versión","Centro de Configuración · Fase 3"],["👥","Créditos","JFAM & Co. Game Studios"],["📚","Licencias","Recursos y tecnologías"],["🔄","Buscar actualizaciones","Comprobar versión disponible"]] },
     lab: { icon: "🧪", title: "Laboratorio · BETA", subtitle: "Prueba funciones experimentales", options: [["🌦️","Clima dinámico","Experimento disponible próximamente"],["🤖","IA del Profesor Junior","Funciones inteligentes"],["⚙️","Nuevas físicas","Pruebas de movimiento"],["🎬","Animaciones beta","Efectos experimentales"],["🎉","Eventos beta","Contenido anticipado"]] }
   };
 
@@ -255,6 +342,83 @@ window.location.href = "shop.html";
       { key: "voiceLanguage", icon: "🗣️", title: t("voices"), description: `${localeSettings.voiceLanguage === "auto" ? "Automático" : labelFor(LANGUAGES, localeSettings.voiceLanguage)} · ${t("voiceSoon")}`, choices: [["auto", "🔄", "Automático"], ...LANGUAGES], disabled: true },
       { key: "automatic", icon: "✨", title: t("automatic"), description: `${t("automaticDesc")} · ${localeSettings.automatic ? t("enabled") : t("disabled")}`, toggle: true }
     ];
+  }
+
+  function gameOptions() {
+    return [
+      { key: "musicEnabled", icon: "🎵", title: "Música", description: appSettings.musicEnabled ? "Activada" : "Desactivada", toggle: true },
+      { key: "sfxEnabled", icon: "🔊", title: "Efectos de sonido", description: appSettings.sfxEnabled ? "Activados" : "Desactivados", toggle: true },
+      { key: "vibrationEnabled", icon: "📳", title: "Vibración", description: appSettings.vibrationEnabled ? "Activada" : "Desactivada", toggle: true },
+      { key: "fps", icon: "🎞️", title: "FPS", description: choiceLabel(CHOICES.fps, appSettings.fps), choices: CHOICES.fps },
+      { key: "graphics", icon: "✨", title: "Calidad gráfica", description: choiceLabel(CHOICES.graphics, appSettings.graphics), choices: CHOICES.graphics },
+      { key: "batterySaver", icon: "🔋", title: "Ahorro de batería", description: appSettings.batterySaver ? "Activado · 30 FPS y efectos reducidos" : "Desactivado", toggle: true }
+    ];
+  }
+
+  function appearanceOptions() {
+    return [
+      { key: "theme", icon: "🌓", title: "Tema", description: choiceLabel(CHOICES.theme, appSettings.theme), choices: CHOICES.theme },
+      { key: "textSize", icon: "🔤", title: "Tamaño del texto", description: choiceLabel(CHOICES.textSize, appSettings.textSize), choices: CHOICES.textSize },
+      { key: "animations", icon: "🎬", title: "Animaciones", description: choiceLabel(CHOICES.animations, appSettings.animations), choices: CHOICES.animations },
+      { key: "particles", icon: "✨", title: "Partículas", description: appSettings.particles ? "Activadas" : "Desactivadas", toggle: true },
+      { key: "shadows", icon: "🌑", title: "Sombras", description: appSettings.shadows ? "Activadas" : "Desactivadas", toggle: true }
+    ];
+  }
+
+  function notificationOptions() {
+    return [
+      { key: "notifyWheel", icon: "🎡", title: "Ruleta diaria", description: appSettings.notifyWheel ? "Avisos activados" : "Avisos desactivados", toggle: true },
+      { key: "notifyMissions", icon: "📋", title: "Misiones", description: appSettings.notifyMissions ? "Avisos activados" : "Avisos desactivados", toggle: true },
+      { key: "notifyEvents", icon: "🎉", title: "Eventos", description: appSettings.notifyEvents ? "Avisos activados" : "Avisos desactivados", toggle: true },
+      { key: "notifyProfessor", icon: "🎓", title: "Profesor Junior", description: appSettings.notifyProfessor ? "Avisos activados" : "Avisos desactivados", toggle: true }
+    ];
+  }
+
+  function renderFunctionalSection(key) {
+    const source = key === "game" ? gameOptions() : key === "appearance" ? appearanceOptions() : notificationOptions();
+    settingsOptionList?.replaceChildren(...source.map((option) => createOptionButton(option, () => {
+      vibrateTap();
+      if (option.toggle) {
+        appSettings[option.key] = !appSettings[option.key];
+        if (option.key === "batterySaver" && appSettings.batterySaver) {
+          appSettings.fps = "30";
+          appSettings.graphics = "low";
+          appSettings.animations = "reduced";
+          appSettings.particles = false;
+          appSettings.shadows = false;
+        }
+        saveAppSettings();
+        applyAppSettings();
+        renderFunctionalSection(key);
+        return;
+      }
+      openAppPicker(option, key);
+    })));
+  }
+
+  function openAppPicker(option, sectionKey) {
+    if (!settingsPicker || !settingsPickerList) return;
+    settingsPickerTitle.textContent = option.title;
+    settingsPickerSubtitle.textContent = "Selecciona una opción";
+    const current = appSettings[option.key];
+    settingsPickerList.replaceChildren(...option.choices.map(([value, icon, label]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `jg-settings-choice ${value === current ? "selected" : ""}`;
+      button.innerHTML = `<span class="jg-settings-choice-icon">${icon || ""}</span><strong>${label}</strong><span>${value === current ? "✓" : ""}</span>`;
+      button.addEventListener("click", () => {
+        vibrateTap();
+        appSettings[option.key] = value;
+        if ((option.key === "fps" && value === "60") || (option.key === "graphics" && value !== "low")) appSettings.batterySaver = false;
+        saveAppSettings();
+        applyAppSettings();
+        hidePicker();
+        renderFunctionalSection(sectionKey);
+      });
+      return button;
+    }));
+    settingsPicker.classList.remove("hidden");
+    settingsPicker.setAttribute("aria-hidden", "false");
   }
 
   function showSettingsHome() {
@@ -273,8 +437,9 @@ window.location.href = "shop.html";
     button.type = "button";
     button.className = "jg-settings-option";
     if (option.disabled) button.classList.add("is-disabled");
+    const toggleValue = Object.prototype.hasOwnProperty.call(appSettings, option.key) ? appSettings[option.key] : localeSettings[option.key];
     const suffix = option.toggle
-      ? `<span class="jg-settings-switch ${localeSettings[option.key] ? "on" : ""}" aria-hidden="true"><i></i></span>`
+      ? `<span class="jg-settings-switch ${toggleValue ? "on" : ""}" aria-hidden="true"><i></i></span>`
       : `<span aria-hidden="true">›</span>`;
     button.innerHTML = `<span aria-hidden="true">${option.icon}</span><span class="jg-settings-option-copy"><strong>${option.title}</strong><small>${option.description}</small></span>${suffix}`;
     button.addEventListener("click", onClick);
@@ -314,6 +479,13 @@ window.location.href = "shop.html";
     if (key === "region") {
       updateRegionHeader();
       renderRegionSection();
+    } else if (["game", "appearance", "notifications"].includes(key)) {
+      const section = staticSections[key];
+      if (!section) return;
+      if (settingsTitle) settingsTitle.textContent = `${section.icon} ${section.title}`;
+      if (settingsSubtitle) settingsSubtitle.textContent = section.subtitle;
+      if (settingsSectionTitle) settingsSectionTitle.textContent = section.title;
+      renderFunctionalSection(key);
     } else {
       const section = staticSections[key];
       if (!section || !settingsOptionList) return;

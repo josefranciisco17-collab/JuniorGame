@@ -39,3 +39,32 @@ body.jg-settings-open{overflow:hidden;touch-action:none}
 .jg-settings-choice.selected{border-color:#f1bd45;background:linear-gradient(180deg,#76501e,#4a2d12);box-shadow:0 0 0 2px rgba(241,189,69,.14)}
 .jg-settings-choice-icon{font-size:25px}.jg-settings-choice strong{font-size:14px}.jg-settings-choice>span:last-child{color:#ffe28e;font-size:18px;font-weight:900;text-align:center}
 .jg-settings-sheet{position:relative}
+
+/* Fase 3 · Juego, Apariencia y Notificaciones */
+html[data-jg-text-size="small"]{font-size:14px}
+html[data-jg-text-size="normal"]{font-size:16px}
+html[data-jg-text-size="large"]{font-size:18px}
+html[data-jg-text-size="large"] .jg-settings-option-copy strong{font-size:16px}
+html[data-jg-text-size="large"] .jg-settings-option-copy small{font-size:13px}
+html[data-jg-theme="light"] .jg-settings-sheet,
+html[data-jg-theme="light"] .jg-settings-picker{background:linear-gradient(180deg,#f6e6c7,#d7b879);color:#2b1609}
+html[data-jg-theme="light"] .jg-settings-header-copy,
+html[data-jg-theme="light"] .jg-settings-header-copy h2,
+html[data-jg-theme="light"] .jg-settings-section-title,
+html[data-jg-theme="light"] .jg-settings-picker-head h3{color:#2b1609;text-shadow:none}
+html[data-jg-theme="light"] .jg-settings-header-copy p,
+html[data-jg-theme="light"] .jg-settings-picker-head p{color:#6d4b2b}
+html[data-jg-theme="light"] .jg-settings-option,
+html[data-jg-theme="light"] .jg-settings-choice{background:linear-gradient(180deg,#fff8e9,#e9d3aa);color:#2d190d;border-color:#a9762e}
+html[data-jg-theme="light"] .jg-settings-option-copy small{color:#6e543a}
+html[data-jg-theme="light"] .jg-settings-choice.selected{background:linear-gradient(180deg,#ffe19a,#dba747)}
+html[data-jg-animations="reduced"] *,
+html[data-jg-animations="off"] *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+html[data-jg-shadows="off"] .jg-settings-sheet,
+html[data-jg-shadows="off"] .jg-settings-card,
+html[data-jg-shadows="off"] .jg-settings-option,
+html[data-jg-shadows="off"] .jg-settings-choice,
+html[data-jg-shadows="off"] button{box-shadow:none!important;text-shadow:none!important;filter:none!important}
+html[data-jg-particles="off"] .jg-settings-card::after{display:none}
+html[data-jg-graphics="low"] .jg-settings-layer{backdrop-filter:none;-webkit-backdrop-filter:none}
+html[data-jg-battery-saver="on"] .jg-settings-card::after{display:none}

@@ -811,6 +811,64 @@
   }
 
   /*
+    Sonido exclusivo para el salto del perrito.
+    Es un impulso corto, suave y moderno generado con Web Audio.
+    No modifica ni reutiliza los sonidos de huesos o recompensas.
+  */
+  function reproducirSaltoAmigable() {
+    if (silenciado || efectosSilenciados || volumenEfectos <= 0) return;
+
+    const ctx = obtenerContextoCaptura();
+    if (!ctx) {
+      reproducir("saltoAire");
+      return;
+    }
+
+    if (ctx.state === "suspended") {
+      ctx.resume().catch(() => {});
+    }
+
+    const ahora = ctx.currentTime + 0.008;
+    const master = ctx.createGain();
+    const filtro = ctx.createBiquadFilter();
+    const oscilador = ctx.createOscillator();
+    const gananciaTono = ctx.createGain();
+
+    master.gain.setValueAtTime(Math.min(0.22, 0.16 * volumenEfectos), ahora);
+
+    filtro.type = "lowpass";
+    filtro.frequency.setValueAtTime(2400, ahora);
+    filtro.frequency.exponentialRampToValueAtTime(4200, ahora + 0.09);
+    filtro.Q.setValueAtTime(0.55, ahora);
+
+    oscilador.type = "sine";
+    oscilador.frequency.setValueAtTime(310, ahora);
+    oscilador.frequency.exponentialRampToValueAtTime(690, ahora + 0.085);
+    oscilador.frequency.exponentialRampToValueAtTime(560, ahora + 0.13);
+
+    gananciaTono.gain.setValueAtTime(0.0001, ahora);
+    gananciaTono.gain.exponentialRampToValueAtTime(0.52, ahora + 0.014);
+    gananciaTono.gain.exponentialRampToValueAtTime(0.0001, ahora + 0.14);
+
+    oscilador.connect(filtro);
+    filtro.connect(gananciaTono);
+    gananciaTono.connect(master);
+    master.connect(ctx.destination);
+
+    oscilador.start(ahora);
+    oscilador.stop(ahora + 0.16);
+
+    setTimeout(() => {
+      try {
+        oscilador.disconnect();
+        filtro.disconnect();
+        gananciaTono.disconnect();
+        master.disconnect();
+      } catch (_) {}
+    }, 300);
+  }
+
+  /*
     Exponemos una API global para usarla
     desde game.js, bones.js, tienda, menú, etc.
   */
@@ -976,7 +1034,7 @@
       reproducir(mapa[clave] || "bonus");
     },
 
-    salto() { reproducir("saltoAire"); },
+    salto() { reproducirSaltoAmigable(); },
 
     uiAbrir() { reproducir("uiAbrir"); },
     uiCerrar() { reproducir("uiCerrar"); },

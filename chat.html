@@ -2,28 +2,30 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="theme-color" content="#4a210b">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#5a260d">
   <title>Chat Global | JuniorGame</title>
-  <link rel="stylesheet" href="css/chat.css">
+  <link rel="stylesheet" href="css/chat.css?v=2">
 </head>
 <body>
   <main class="chat-app">
     <header class="chat-header">
       <button id="backButton" class="icon-button" type="button" aria-label="Volver al menú">←</button>
+
       <div class="header-title">
         <strong>Chat JuniorGame</strong>
         <span id="onlineSummary">Conectando…</span>
       </div>
-      <button id="adminPanelButton" class="icon-button hidden" type="button" aria-label="Herramientas de administrador">👑</button>
+
+      <button id="adminPanelButton" class="icon-button admin-button hidden" type="button" aria-label="Herramientas de administrador">👑</button>
     </header>
 
     <nav id="channelTabs" class="channel-tabs" aria-label="Canales del chat">
-      <button class="channel-tab active" data-channel="global" type="button">🌎 Global</button>
-      <button class="channel-tab" data-channel="ayuda" type="button">🎮 Ayuda</button>
-      <button class="channel-tab" data-channel="records" type="button">🏆 Récords</button>
-      <button class="channel-tab" data-channel="intercambio" type="button">💎 Intercambio</button>
-      <button class="channel-tab" data-channel="oficial" type="button">📢 Oficial</button>
+      <button class="channel-tab active" data-channel="global" type="button">🌎 <span>Global</span></button>
+      <button class="channel-tab" data-channel="ayuda" type="button">🎮 <span>Ayuda</span></button>
+      <button class="channel-tab" data-channel="records" type="button">🏆 <span>Récords</span></button>
+      <button class="channel-tab" data-channel="intercambio" type="button">💎 <span>Intercambio</span></button>
+      <button class="channel-tab" data-channel="oficial" type="button">📢 <span>Oficial</span></button>
     </nav>
 
     <section id="pinnedMessage" class="pinned-message hidden" aria-live="polite"></section>
@@ -37,15 +39,21 @@
       <button id="cancelReplyButton" type="button" aria-label="Cancelar respuesta">✕</button>
     </section>
 
-    <form id="messageForm" class="composer" autocomplete="off">
-      <label class="sr-only" for="messageInput">Escribe un mensaje</label>
-      <textarea id="messageInput" maxlength="300" rows="1" placeholder="Escribe un mensaje…" required></textarea>
-      <button id="sendButton" type="submit">Enviar</button>
-    </form>
-    <div class="composer-info">
-      <span id="typingStatus"></span>
-      <span id="charCounter">0/300</span>
-    </div>
+    <footer class="composer-panel">
+      <form id="messageForm" class="composer" autocomplete="off">
+        <label class="sr-only" for="messageInput">Escribe un mensaje</label>
+        <textarea id="messageInput" maxlength="300" rows="1" placeholder="Escribe un mensaje…" required></textarea>
+        <button id="sendButton" type="submit" aria-label="Enviar mensaje">
+          <span class="send-icon" aria-hidden="true">➤</span>
+          <span class="send-text">Enviar</span>
+        </button>
+      </form>
+
+      <div class="composer-info">
+        <span id="typingStatus"></span>
+        <span id="charCounter">0/300</span>
+      </div>
+    </footer>
   </main>
 
   <dialog id="messageActionsDialog" class="chat-dialog">
@@ -70,6 +78,6 @@
   </dialog>
 
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
-  <script type="module" src="js/chat.js"></script>
+  <script type="module" src="js/chat.js?v=2"></script>
 </body>
 </html>

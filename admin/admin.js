@@ -219,6 +219,7 @@ const togglePassword = document.getElementById("togglePassword");
 const viewNames = {
   overview: "Panel general",
   economia: "Economía",
+  cuentas: "Control de cuentas",
   analytics: "Analíticas",
   stripe: "Stripe",
   codigos: "Códigos",

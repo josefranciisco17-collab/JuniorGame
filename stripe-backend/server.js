@@ -15,6 +15,10 @@ const {
 } = require("firebase-admin/firestore");
 
 const {
+  getAuth
+} = require("firebase-admin/auth");
+
+const {
   STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET,
   GOOGLE_APPLICATION_CREDENTIALS,
@@ -191,6 +195,175 @@ app.post("/create-checkout-session", async (req, res) => {
     return res.status(500).json({
       error: "No se pudo iniciar el pago."
     });
+  }
+});
+
+
+
+async function requireAdmin(req, res, next) {
+  const authorization = req.headers.authorization || "";
+  const match = authorization.match(/^Bearer\s+(.+)$/i);
+
+  if (!match) {
+    return res.status(401).json({ error: "Falta el token administrativo." });
+  }
+
+  try {
+    const decoded = await getAuth().verifyIdToken(match[1], true);
+
+    if (decoded.admin !== true) {
+      return res.status(403).json({ error: "La cuenta no tiene permisos de administrador." });
+    }
+
+    req.admin = decoded;
+    return next();
+  } catch (error) {
+    console.error("Token administrativo inválido:", error.message);
+    return res.status(401).json({ error: "La sesión administrativa no es válida." });
+  }
+}
+
+function cleanText(value, maxLength = 240) {
+  return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
+}
+
+function displayName(data = {}) {
+  return data.nombre || data.customName || data.name || data.displayName || "Usuario sin nombre";
+}
+
+app.post("/admin/player-operation", requireAdmin, async (req, res) => {
+  const uid = cleanText(req.body.uid, 128);
+  const action = cleanText(req.body.action, 40);
+  const reason = cleanText(req.body.reason, 240);
+
+  if (!uid) return res.status(400).json({ error: "Falta el UID del jugador." });
+  if (reason.length < 5) return res.status(400).json({ error: "Escribe un motivo de al menos 5 caracteres." });
+  if (!["adjustBalance", "ban", "unban"].includes(action)) {
+    return res.status(400).json({ error: "La acción solicitada no es válida." });
+  }
+
+  const userRef = db.collection("users").doc(uid);
+  const auditRef = db.collection("adminAuditLogs").doc();
+
+  try {
+    const profileSnapshot = await userRef.get();
+    if (!profileSnapshot.exists) return res.status(404).json({ error: "No se encontró el perfil del jugador." });
+
+    const profile = profileSnapshot.data() || {};
+    let actionLabel = "";
+    let responseUser = {};
+
+    if (action === "adjustBalance") {
+      const resource = cleanText(req.body.resource, 20);
+      const direction = cleanText(req.body.direction, 10);
+      const amount = Number(req.body.amount);
+
+      if (!["monedas", "diamantes"].includes(resource)) {
+        return res.status(400).json({ error: "El recurso no es válido." });
+      }
+      if (!["add", "remove"].includes(direction)) {
+        return res.status(400).json({ error: "El tipo de movimiento no es válido." });
+      }
+      if (!Number.isSafeInteger(amount) || amount < 1 || amount > 1_000_000) {
+        return res.status(400).json({ error: "La cantidad debe estar entre 1 y 1,000,000." });
+      }
+
+      const result = await db.runTransaction(async (transaction) => {
+        const latestSnapshot = await transaction.get(userRef);
+        if (!latestSnapshot.exists) throw new Error("El perfil dejó de existir.");
+        const latest = latestSnapshot.data() || {};
+        const legacyField = resource === "monedas" ? "coins" : "diamonds";
+        const current = Number(latest[resource] ?? latest[legacyField] ?? 0);
+        const safeCurrent = Number.isFinite(current) ? Math.max(0, Math.trunc(current)) : 0;
+        const requestedDelta = direction === "add" ? amount : -amount;
+        const next = Math.max(0, safeCurrent + requestedDelta);
+        const appliedDelta = next - safeCurrent;
+
+        transaction.update(userRef, {
+          [resource]: next,
+          ultimaOperacionAdminAt: FieldValue.serverTimestamp(),
+          ultimaOperacionAdminPor: req.admin.uid
+        });
+        transaction.set(auditRef, {
+          action,
+          actionLabel: `${direction === "add" ? "Entrega" : "Retiro"} de ${resource}`,
+          targetUid: uid,
+          targetName: displayName(latest),
+          resource,
+          requestedAmount: amount,
+          appliedDelta,
+          previousBalance: safeCurrent,
+          newBalance: next,
+          reason,
+          adminUid: req.admin.uid,
+          adminEmail: req.admin.email || "",
+          createdAt: FieldValue.serverTimestamp()
+        });
+        return { next, safeCurrent, appliedDelta };
+      });
+
+      actionLabel = `${direction === "add" ? "Se agregaron" : "Se retiraron"} ${Math.abs(result.appliedDelta)} ${resource}.`;
+      responseUser = { [resource]: result.next };
+    }
+
+    if (action === "ban" || action === "unban") {
+      const disabled = action === "ban";
+      await getAuth().updateUser(uid, { disabled });
+      const update = disabled ? {
+        banned: true,
+        disabled: true,
+        banReason: reason,
+        bannedAt: FieldValue.serverTimestamp(),
+        bannedBy: req.admin.uid
+      } : {
+        banned: false,
+        disabled: false,
+        banReason: FieldValue.delete(),
+        bannedAt: FieldValue.delete(),
+        bannedBy: FieldValue.delete(),
+        unbannedAt: FieldValue.serverTimestamp(),
+        unbannedBy: req.admin.uid
+      };
+      await userRef.update(update);
+      actionLabel = disabled ? "Cuenta baneada" : "Cuenta desbaneada";
+      await auditRef.set({
+        action,
+        actionLabel,
+        targetUid: uid,
+        targetName: displayName(profile),
+        reason,
+        adminUid: req.admin.uid,
+        adminEmail: req.admin.email || "",
+        createdAt: FieldValue.serverTimestamp()
+      });
+      responseUser = { banned: disabled, disabled };
+    }
+
+    return res.json({ ok: true, message: actionLabel, user: responseUser });
+  } catch (error) {
+    console.error("Error en operación administrativa:", error);
+    if (error.code === "auth/user-not-found") {
+      return res.status(404).json({ error: "La cuenta no existe en Firebase Authentication." });
+    }
+    return res.status(500).json({ error: "No se pudo completar la operación administrativa." });
+  }
+});
+
+app.get("/admin/audit", requireAdmin, async (_req, res) => {
+  try {
+    const snapshot = await db.collection("adminAuditLogs").orderBy("createdAt", "desc").limit(20).get();
+    const items = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : null
+      };
+    });
+    return res.json({ items });
+  } catch (error) {
+    console.error("Error cargando auditoría:", error);
+    return res.status(500).json({ error: "No se pudo cargar el historial administrativo." });
   }
 });
 

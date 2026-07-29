@@ -23,6 +23,7 @@
         <button class="nav-item active" data-view="overview" type="button"><span>⌂</span><b>Panel general</b></button>
         <button class="nav-item" data-module="usuarios" type="button"><span>◎</span><b>Usuarios</b></button>
         <button class="nav-item" data-view="economia" type="button"><span>◇</span><b>Economía</b></button>
+        <button class="nav-item" data-view="cuentas" type="button"><span>◉</span><b>Control de cuentas</b></button>
         <button class="nav-item" data-view="analytics" type="button"><span>▥</span><b>Analíticas</b></button>
         <button class="nav-item" data-view="stripe" type="button"><span>▣</span><b>Stripe</b></button>
         <button class="nav-item" data-view="codigos" type="button"><span>⌁</span><b>Códigos</b></button>
@@ -43,6 +44,46 @@
         </section>
 
         <section id="economiaView" class="admin-view hidden"><div class="section-heading"><div><span class="eyebrow">ECONOMÍA DEL JUEGO</span><h2>Distribución de recursos</h2><p>Lectura consolidada de monedas, diamantes y vidas.</p></div></div><section class="metrics-grid"><article class="metric-card"><span>Promedio de monedas</span><strong id="avgCoins">—</strong><small>Por jugador</small></article><article class="metric-card"><span>Promedio de diamantes</span><strong id="avgDiamonds">—</strong><small>Por jugador</small></article><article class="metric-card"><span>Vidas acumuladas</span><strong id="totalLives">—</strong><small>Todos los perfiles</small></article><article class="metric-card warning"><span>Cuentas atípicas</span><strong id="economyOutliers">—</strong><small>Revisión recomendada</small></article></section><section class="two-column"><article class="panel-card"><div class="panel-title"><div><span class="eyebrow">RANKING</span><h3>Mayores saldos</h3></div></div><div id="economyRanking" class="data-list"></div></article><article class="panel-card"><div class="panel-title"><div><span class="eyebrow">INTEGRIDAD</span><h3>Salud económica</h3></div></div><div id="economyHealth" class="health-stack"></div></article></section></section>
+
+
+        <section id="cuentasView" class="admin-view hidden">
+          <div class="section-heading">
+            <div><span class="eyebrow">SEGURIDAD Y RECURSOS</span><h2>Control de cuentas</h2><p>Entrega o retira recursos y administra suspensiones con confirmación, permisos y registro de auditoría.</p></div>
+            <span class="healthy-badge">Acciones protegidas</span>
+          </div>
+          <section class="account-control-grid">
+            <article class="panel-card account-search-panel">
+              <div class="panel-title"><div><span class="eyebrow">1. SELECCIONAR JUGADOR</span><h3>Buscar cuenta</h3></div></div>
+              <label class="field-label" for="accountSearch">Nombre, correo, UID o ID JF</label>
+              <div class="account-search-row"><input id="accountSearch" type="search" autocomplete="off" placeholder="Escribe al menos 2 caracteres"><button id="accountSearchButton" class="secondary-button" type="button">Buscar</button></div>
+              <div id="accountSearchResults" class="account-search-results"><div class="empty-inline">Busca y selecciona un jugador.</div></div>
+            </article>
+            <article class="panel-card selected-account-panel">
+              <div class="panel-title"><div><span class="eyebrow">CUENTA SELECCIONADA</span><h3 id="selectedAccountName">Ninguna</h3></div><span id="selectedAccountStatus" class="account-state neutral">Sin seleccionar</span></div>
+              <div id="selectedAccountDetails" class="selected-account-details"><div class="empty-inline">Aquí aparecerán los saldos y el estado de la cuenta.</div></div>
+            </article>
+          </section>
+          <section class="account-actions-grid">
+            <article class="panel-card operation-card">
+              <div class="panel-title"><div><span class="eyebrow">2. OPERACIÓN</span><h3>Monedas y diamantes</h3></div></div>
+              <div class="operation-tabs" role="group" aria-label="Tipo de recurso"><button class="operation-tab active" data-resource="monedas" type="button">Monedas</button><button class="operation-tab" data-resource="diamantes" type="button">Diamantes</button></div>
+              <div class="operation-tabs" role="group" aria-label="Tipo de movimiento"><button class="operation-tab active" data-direction="add" type="button">Regalar</button><button class="operation-tab danger-tab" data-direction="remove" type="button">Quitar</button></div>
+              <label class="field-label" for="resourceAmount">Cantidad</label><input id="resourceAmount" type="number" min="1" max="1000000" step="1" inputmode="numeric" placeholder="Ej. 500">
+              <label class="field-label" for="resourceReason">Motivo obligatorio</label><textarea id="resourceReason" rows="3" maxlength="240" placeholder="Ej. Premio de evento, corrección de compra o sanción administrativa"></textarea>
+              <div id="operationPreview" class="operation-preview">Selecciona una cuenta y escribe una cantidad.</div>
+              <button id="executeResourceOperation" class="primary-button" type="button" disabled>Confirmar operación</button>
+            </article>
+            <article class="panel-card moderation-card">
+              <div class="panel-title"><div><span class="eyebrow">MODERACIÓN</span><h3>Banear o desbanear</h3></div></div>
+              <p class="muted-note">El baneo deshabilita el acceso en Firebase Authentication y guarda el motivo en el perfil. No elimina la cuenta ni sus compras.</p>
+              <label class="field-label" for="banReason">Motivo de la suspensión</label><textarea id="banReason" rows="4" maxlength="240" placeholder="Describe claramente el motivo"></textarea>
+              <label class="confirm-row"><input id="confirmModeration" type="checkbox"><span>Confirmo que revisé la cuenta y comprendo el impacto.</span></label>
+              <div class="moderation-buttons"><button id="banAccountButton" class="danger-button" type="button" disabled>Banear cuenta</button><button id="unbanAccountButton" class="success-button" type="button" disabled>Desbanear cuenta</button></div>
+            </article>
+          </section>
+          <article class="panel-card audit-panel"><div class="panel-title"><div><span class="eyebrow">AUDITORÍA</span><h3>Últimas acciones administrativas</h3></div><button id="refreshAudit" class="secondary-button" type="button">Actualizar</button></div><div id="accountAuditList" class="data-list"><div class="empty-inline">No se ha cargado el historial.</div></div></article>
+          <div id="accountOperationMessage" class="account-operation-message" aria-live="polite"></div>
+        </section>
 
         <section id="analyticsView" class="admin-view hidden"><div class="section-heading"><div><span class="eyebrow">ANALÍTICAS</span><h2>Progreso y comportamiento</h2><p>Indicadores construidos con los datos disponibles en Firestore.</p></div></div><section class="metrics-grid"><article class="metric-card"><span>Nivel promedio</span><strong id="avgLevel">—</strong><small>Todos los usuarios</small></article><article class="metric-card"><span>Nivel máximo</span><strong id="maxLevel">—</strong><small>Mayor progreso</small></article><article class="metric-card"><span>Con perfil completo</span><strong id="completeProfiles">—</strong><small>Nombre, correo e ID</small></article><article class="metric-card"><span>Jugadores con récord</span><strong id="playersWithRecord">—</strong><small>Registro mayor a cero</small></article></section><section class="two-column"><article class="panel-card"><div class="panel-title"><div><span class="eyebrow">DISTRIBUCIÓN</span><h3>Jugadores por rango de nivel</h3></div></div><div id="levelDistribution" class="bar-list"></div></article><article class="panel-card"><div class="panel-title"><div><span class="eyebrow">TOP PROGRESO</span><h3>Jugadores destacados</h3></div></div><div id="topProgress" class="data-list"></div></article></section></section>
 
@@ -68,5 +109,6 @@
   <script type="module" src="./users.js?v=42"></script>
   <script type="module" src="./assistant.js?v=2"></script>
   <script type="module" src="./operations.js?v=1"></script>
+  <script type="module" src="./accounts.js?v=1"></script>
 </body>
 </html>

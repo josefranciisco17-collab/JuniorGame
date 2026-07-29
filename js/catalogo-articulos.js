@@ -345,9 +345,8 @@ export const ARTICULOS = [
   },
 
   /* -----------------------------------------
-     RAZAS — PERSONAJES COLECCIONABLES
-     Todas cuestan 80 diamantes.
-     La habilidad se conectará al juego en la siguiente fase.
+     HABILIDADES — 3 USOS POR COMPRA
+     Cada compra entrega 3 usos. Los identificadores antiguos se conservan por compatibilidad.
   ----------------------------------------- */
   {
     id: "raza-chihuahua",
@@ -571,7 +570,7 @@ export const ARTICULOS = [
   },
 
   /* -----------------------------------------
-     PODERES
+     POTENCIADORES
   ----------------------------------------- */
   {
     id: "poder-escudo",

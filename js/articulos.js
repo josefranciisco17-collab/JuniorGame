@@ -80,8 +80,8 @@ const elementos = {
 
 const SECCIONES = Object.freeze({
   skins: ["SKINS", "Personaliza el pelaje del perro principal."],
-  razas: ["RAZAS", "Equipa una raza y activa su habilidad exclusiva."],
-  poderes: ["PODERES", "Compra y prepara un poder para la siguiente partida."],
+  razas: ["HABILIDADES", "Compra habilidades exclusivas. Cada compra incluye 3 usos."],
+  poderes: ["POTENCIADORES", "Compra mejoras temporales para la siguiente partida."],
   perritos: ["PERRITOS JR", "Compañeros que te siguen y ofrecen habilidades pasivas."]
 });
 
@@ -92,6 +92,38 @@ function numero(valor, defecto = 0) {
 
 function formatoNumero(valor) {
   return new Intl.NumberFormat("es-MX", { maximumFractionDigits: 0 }).format(numero(valor));
+}
+
+
+const CLAVE_USOS_HABILIDADES = "juniorGame.habilidadesUsos";
+const USOS_POR_COMPRA = 3;
+
+function leerUsosHabilidades() {
+  try {
+    const datos = JSON.parse(localStorage.getItem(CLAVE_USOS_HABILIDADES) || "{}");
+    return datos && typeof datos === "object" ? datos : {};
+  } catch {
+    return {};
+  }
+}
+
+function usosHabilidad(id) {
+  const inventario = leerUsosHabilidades();
+  const valor = Number(inventario[id]);
+  if (Number.isFinite(valor)) return Math.max(0, Math.min(USOS_POR_COMPRA, Math.trunc(valor)));
+  /* Migración para jugadores que ya tenían una raza comprada/equipada. */
+  if (estado.razaEquipada === id && (estado.razasCompradas[id] === true || estado.inventario[id] === true)) {
+    inventario[id] = USOS_POR_COMPRA;
+    localStorage.setItem(CLAVE_USOS_HABILIDADES, JSON.stringify(inventario));
+    return USOS_POR_COMPRA;
+  }
+  return 0;
+}
+
+function guardarUsosHabilidad(id, usos = USOS_POR_COMPRA) {
+  const inventario = leerUsosHabilidades();
+  inventario[id] = Math.max(0, Math.min(USOS_POR_COMPRA, Math.trunc(Number(usos) || 0)));
+  localStorage.setItem(CLAVE_USOS_HABILIDADES, JSON.stringify(inventario));
 }
 
 function mostrarMensaje(texto, tipo = "") {
@@ -160,12 +192,12 @@ function configurarDesdeFirestore(datos = {}) {
 
 function estadoArticulo(articulo) {
   const comprado = articulo.tipo === "raza"
-    ? razaComprada(articulo.id)
+    ? usosHabilidad(articulo.id) > 0
     : estado.inventario[articulo.id] === true;
   const equipado = articulo.tipo === "skin"
     ? estado.skinEquipada === articulo.id
     : articulo.tipo === "raza"
-      ? estado.razaEquipada === articulo.id
+      ? estado.razaEquipada === articulo.id && usosHabilidad(articulo.id) > 0
       : estado.poderSeleccionado === articulo.id;
   return { comprado, equipado };
 }
@@ -179,31 +211,43 @@ function visualArticulo(articulo) {
 
 function tarjetaArticulo(articulo) {
   const { comprado, equipado } = estadoArticulo(articulo);
+  const esHabilidad = articulo.tipo === "raza";
   let accion = "buy";
-  let textoBoton = `💎 Comprar por ${formatoNumero(articulo.precio)}`;
+  let textoBoton = esHabilidad
+    ? `💎 Comprar 3 usos por ${formatoNumero(articulo.precio)}`
+    : `💎 Comprar por ${formatoNumero(articulo.precio)}`;
   let claseBoton = "";
 
   if (comprado) {
     if (articulo.tipo === "skin") accion = "equip-skin";
-    if (articulo.tipo === "raza") accion = "equip-breed";
+    if (esHabilidad) accion = "equip-breed";
     if (articulo.tipo === "poder") accion = "select-power";
-    textoBoton = equipado ? "✔ Equipado" : articulo.tipo === "poder" ? "⚡ Seleccionar" : "✔ Equipar";
+    textoBoton = equipado
+      ? "✔ Activa"
+      : articulo.tipo === "poder"
+        ? "🚀 Preparar"
+        : esHabilidad
+          ? `⚡ Activar (${usosHabilidad(articulo.id)}/3)`
+          : "✔ Equipar";
     claseBoton = equipado ? "equipped" : "secondary";
   }
 
+  const titulo = esHabilidad ? articulo.habilidad : articulo.nombre;
   return `
     <article class="item-card">
       <div class="item-visual">${visualArticulo(articulo)}</div>
       <div class="item-copy">
-        <h3>${articulo.nombre}</h3>
-        ${articulo.habilidad ? `<p class="item-ability">✨ ${articulo.habilidad}</p>` : ""}
+        <h3>${titulo}</h3>
+        ${!esHabilidad && articulo.habilidad ? `<p class="item-ability">✨ ${articulo.habilidad}</p>` : ""}
         <p class="item-description">${articulo.descripcion || "Artículo especial de JuniorGame."}${articulo.duracion ? ` · ${articulo.duracion} s` : ""}</p>
+        ${esHabilidad ? `<span class="item-uses">⚡ ${usosHabilidad(articulo.id)}/3 usos disponibles</span>` : ""}
         <div class="item-meta">
           <span class="pill">⭐ ${articulo.rareza}</span>
           <span class="pill">💎 ${formatoNumero(articulo.precio)}</span>
-          ${comprado ? `<span class="pill">${equipado ? "Equipado" : "Comprado"}</span>` : ""}
+          ${comprado ? `<span class="pill">${equipado ? "Activa" : esHabilidad ? "Disponible" : "Comprado"}</span>` : ""}
         </div>
         <button class="item-button ${claseBoton}" type="button" data-action="${accion}" data-id="${articulo.id}" ${equipado ? "disabled" : ""}>${textoBoton}</button>
+        ${esHabilidad && comprado ? `<button class="item-button repurchase-button" type="button" data-action="buy" data-id="${articulo.id}">💎 Recargar a 3/3</button>` : ""}
       </div>
     </article>`;
 }
@@ -235,10 +279,10 @@ function renderCatalogos() {
 
 function renderSeleccionados() {
   const raza = obtenerArticulo(estado.razaEquipada);
-  elementos.selectedBreedName.textContent = raza?.nombre || "Perro original";
+  elementos.selectedBreedName.textContent = raza?.habilidad || "Ninguna";
   elementos.selectedBreedAbility.textContent = raza
-    ? `${raza.habilidad}: ${raza.descripcion}`
-    : "Compra y equipa una raza para activar su habilidad exclusiva.";
+    ? `${raza.descripcion} · ${usosHabilidad(raza.id)}/3 usos disponibles.`
+    : "Compra una habilidad para recibir 3 usos y activarla antes de jugar.";
 
   const poder = obtenerArticulo(estado.poderSeleccionado);
   elementos.selectedPowerName.textContent = poder?.nombre || "Ninguno";
@@ -330,7 +374,7 @@ async function confirmarCompra() {
       }
 
       const inventario = inventarioDesdeDatos(datos);
-      if (inventario[producto.id] === true) return;
+      if (producto.tipo !== "raza" && inventario[producto.id] === true) return;
       const cambios = {
         diamantes: saldo - precio,
         [`inventarioArticulos.${producto.id}`]: true,
@@ -338,6 +382,7 @@ async function confirmarCompra() {
       };
       if (producto.tipo === "raza") {
         cambios[`razasCompradas.${producto.id}`] = true;
+        cambios[`habilidadesUsos.${producto.id}`] = USOS_POR_COMPRA;
         cambios.razaEquipada = producto.id;
       }
       if (producto.tipo === "skin") cambios.skinEquipada = producto.id;
@@ -345,8 +390,16 @@ async function confirmarCompra() {
       transaccion.update(referencia, cambios);
     });
 
+    if (tipo === "articulo" && producto.tipo === "raza") {
+      guardarUsosHabilidad(producto.id, USOS_POR_COMPRA);
+      guardarLocal("juniorGame.razaEquipada", producto.id);
+      estado.razaEquipada = producto.id;
+      renderTodo();
+    }
     cerrarCompra();
-    mostrarMensaje(`¡${producto.nombre} comprado correctamente!`);
+    mostrarMensaje(tipo === "articulo" && producto.tipo === "raza"
+      ? `¡${producto.habilidad} lista con 3/3 usos!`
+      : `¡${producto.nombre} comprado correctamente!`);
   } catch (error) {
     console.error(error);
     mostrarMensaje(error.message || "No se pudo completar la compra.", "error");
@@ -411,11 +464,18 @@ function manejarAccion(accion, id) {
     return;
   }
   if (accion === "equip-breed") {
-    actualizarEquipado({ razaEquipada: id }, "Raza equipada correctamente.");
+    if (usosHabilidad(id) <= 0) {
+      mostrarMensaje("Esta habilidad no tiene usos. Cómprala nuevamente.", "error");
+      return;
+    }
+    estado.razaEquipada = id;
+    guardarLocal("juniorGame.razaEquipada", id);
+    actualizarEquipado({ razaEquipada: id }, "Habilidad activada para la siguiente partida.");
+    renderTodo();
     return;
   }
   if (accion === "select-power") {
-    actualizarEquipado({ poderSeleccionado: id }, "Poder seleccionado para la siguiente partida.");
+    actualizarEquipado({ poderSeleccionado: id }, "Potenciador preparado para la siguiente partida.");
     return;
   }
   if (accion === "equip-pet") {

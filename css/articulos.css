@@ -217,3 +217,36 @@ button { cursor: pointer; touch-action: manipulation; }
   .category-button { font-size: 10px; }
   .pets-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
+
+
+/* JuniorGame: protección táctil y categorías Habilidades/Potenciadores */
+html, body {
+  width: 100%;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  touch-action: pan-y;
+}
+button, a, [data-action], [data-section] {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+img { -webkit-user-drag: none; }
+.item-uses {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #fff5bf;
+  background: rgba(48, 17, 4, .52);
+  font-size: 13px;
+  font-weight: 900;
+}
+@media (max-width: 760px) {
+  .category-button { min-width: 0; }
+  .category-button > span:last-child { font-size: clamp(11px, 3.1vw, 16px); overflow-wrap: anywhere; }
+  .diamond-balance { min-width: 104px; }
+}

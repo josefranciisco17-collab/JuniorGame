@@ -221,7 +221,7 @@ function tarjetaPerrito(perrito) {
       <div class="pet-card-copy">
         <h3>${perrito.nombre}</h3>
         <span class="pet-rarity">${perrito.rareza.toUpperCase()}</span>
-        <button class="pet-price-button" type="button" data-action="${accion}" data-id="${perrito.id}" ${equipado ? "disabled" : ""}>${texto}</button>
+        <button class="pet-price-button ${equipado ? "is-equipped" : ""}" type="button" data-action="${accion}" data-id="${perrito.id}" aria-pressed="${equipado ? "true" : "false"}" ${equipado ? "disabled" : ""}>${texto}</button>
       </div>
     </article>`;
 }
@@ -356,16 +356,42 @@ async function confirmarCompra() {
 }
 
 async function actualizarEquipado(cambios, mensaje) {
-  if (!estado.usuario) return;
+  if (!estado.usuario) return false;
   try {
     await setDoc(doc(db, "users", estado.usuario.uid), {
       ...cambios,
       actualizadoEn: serverTimestamp()
     }, { merge: true });
-    mostrarMensaje(mensaje);
+    if (mensaje) mostrarMensaje(mensaje);
+    return true;
   } catch (error) {
     console.error(error);
     mostrarMensaje("No se pudo guardar la selección.", "error");
+    return false;
+  }
+}
+
+async function equiparPerrito(id) {
+  if (!perritoComprado(id)) {
+    mostrarMensaje("Primero debes comprar este Perrito Jr.", "error");
+    return;
+  }
+
+  const anterior = estado.perritoEquipado;
+  estado.perritoVisto = id;
+  estado.perritoEquipado = id;
+  guardarLocal("juniorGame.perritoJrEquipado", id);
+  renderTodo();
+
+  const guardado = await actualizarEquipado(
+    { perritoJrEquipado: id },
+    "Perrito Jr equipado correctamente."
+  );
+
+  if (!guardado) {
+    estado.perritoEquipado = anterior;
+    guardarLocal("juniorGame.perritoJrEquipado", anterior);
+    renderTodo();
   }
 }
 
@@ -393,7 +419,7 @@ function manejarAccion(accion, id) {
     return;
   }
   if (accion === "equip-pet") {
-    actualizarEquipado({ perritoJrEquipado: id }, "Perrito Jr equipado correctamente.");
+    equiparPerrito(id);
   }
 }
 
@@ -410,6 +436,10 @@ document.addEventListener("click", (evento) => {
   }
   const boton = evento.target.closest("[data-action][data-id]");
   if (!boton) return;
+  if (boton.dataset.action === "equip-pet" || boton.dataset.action === "buy-pet") {
+    estado.perritoVisto = boton.dataset.id;
+    renderSeleccionados();
+  }
   manejarAccion(boton.dataset.action, boton.dataset.id);
 });
 

@@ -108,7 +108,7 @@ button { cursor: pointer; touch-action: manipulation; }
 .selected-card strong { font-size: 22px; }
 .rule-card p { margin-top: 4px; }
 
-.pets-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(350px, .9fr); gap: 14px; }
+.pets-layout { display: flex; flex-direction: column; gap: 14px; }
 .pets-heading { margin-bottom: 12px; }
 .pets-heading h2 { color: var(--gold); font-size: 28px; }
 .pets-heading p { margin-top: 4px; }
@@ -126,9 +126,13 @@ button { cursor: pointer; touch-action: manipulation; }
 .pet-rarity { display: block; margin-top: 2px; font-size: 12px; font-weight: 1000; }
 .pet-price-button { width: 100%; margin-top: 7px; padding: 8px; border: 0; border-radius: 9px; color: white; background: linear-gradient(#25b8ef,#0875b8); font-weight: 1000; }
 .pet-card[data-rarity="Épico"] .pet-price-button { background: linear-gradient(#bd49ed,#6b1cab); }
-.pet-card.selected .pet-price-button { background: linear-gradient(#78c338,#397e18); }
+.pet-card.selected .pet-price-button { background: linear-gradient(#38aee0,#126b9d); }
+.pet-price-button.is-equipped { background: linear-gradient(#78c338,#397e18) !important; box-shadow: inset 0 0 0 2px rgba(255,255,255,.18); }
+.pet-price-button:not(:disabled) { cursor: pointer; touch-action: manipulation; }
+.pet-price-button:not(:disabled):active { transform: translateY(2px); filter: brightness(.95); }
 
-.pet-preview { border-radius: 18px; padding: 13px; position: sticky; top: 10px; }
+.pet-preview { border-radius: 18px; padding: 13px; position: static; order: 1; }
+.pets-catalog-block { order: 2; }
 .pet-preview h3 { text-align: center; color: var(--gold); font-size: 24px; }
 .preview-stage { position: relative; margin-top: 10px; aspect-ratio: 4/3; overflow: hidden; border: 4px solid var(--wood-border); border-radius: 15px; background: linear-gradient(#75c9f4 0 55%, #7eb643 55% 100%); }
 .preview-stage::before { content: ""; position: absolute; inset: 0; background: url("../Fondos-JuniorGame/granja.png") center/cover; opacity: .68; }
@@ -173,7 +177,7 @@ button { cursor: pointer; touch-action: manipulation; }
   .category-icon { font-size: 28px; }
   .category-dog-icon img { width: 34px; height: 34px; }
   .sidebar-note { display: none; }
-  .pets-layout { grid-template-columns: 1fr; }
+  .pets-layout { display: flex; flex-direction: column; }
   .pet-preview { position: static; }
 }
 

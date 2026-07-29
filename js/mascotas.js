@@ -251,8 +251,13 @@ window.SistemaMascotas = {
         const resultado = originalPuntos(...args);
         const despues = Number(juego.estado?.puntos) || 0;
         if (despues > antes) {
+          // Suma experiencia sin ladrar ni celebrar por cada hueso atrapado.
           this.agregarExperiencia(despues - antes);
-          this.cambiarEstado("celebrate", 420);
+          this.mascotaElemento?.classList.add("pet-catch-reaction");
+          window.clearTimeout(this.__catchReactionTimer);
+          this.__catchReactionTimer = window.setTimeout(() => {
+            this.mascotaElemento?.classList.remove("pet-catch-reaction");
+          }, 220);
         }
         return resultado;
       };

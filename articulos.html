@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#2b1609">
   <title>Tienda Oficial | JuniorGame</title>
-  <link rel="stylesheet" href="css/articulos.css?v=20260729-tienda-responsive1">
+  <link rel="stylesheet" href="css/articulos.css?v=20260729-tienda-jr-ajustes2">
 </head>
 <body>
   <main class="shop-shell">
@@ -80,20 +80,12 @@
 
         <section id="petsSection" class="shop-section hidden">
           <div class="pets-layout">
-            <div>
-              <div class="pets-heading">
-                <h2>PERRITOS JR 🐾</h2>
-                <p>Elige a tu compañero y mejoren juntos en cada partida.</p>
-              </div>
-              <div id="petsCatalog" class="pets-grid"></div>
-            </div>
-
-            <aside class="pet-preview wood-panel-soft">
+            <aside class="pet-preview wood-panel-soft" aria-label="Vista del Perrito Jr seleccionado">
               <h3>VISTA EN PARTIDA</h3>
               <div class="preview-stage">
                 <div class="preview-ground"></div>
                 <img id="previewMainDog" class="preview-main-dog" src="Fondos-JuniorGame/usuario1.png" alt="Perro principal">
-                <img id="previewPetImage" class="preview-pet" src="Fondos-JuniorGame/perritos-jr/junior.png" alt="Perrito Jr equipado">
+                <img id="previewPetImage" class="preview-pet" src="Fondos-JuniorGame/perritos-jr/junior.png" alt="Perrito Jr seleccionado">
               </div>
               <div class="pet-detail">
                 <img id="selectedPetImage" src="Fondos-JuniorGame/perritos-jr/junior.png" alt="">
@@ -115,6 +107,14 @@
                 </div>
               </div>
             </aside>
+
+            <div class="pets-catalog-block">
+              <div class="pets-heading">
+                <h2>ELIGE TU PERRITO JR</h2>
+                <p>Toca una tarjeta para verlo arriba y pulsa <strong>Equipar</strong> para usarlo en la partida.</p>
+              </div>
+              <div id="petsCatalog" class="pets-grid"></div>
+            </div>
           </div>
         </section>
 
@@ -140,6 +140,6 @@
   </div>
 
   <script src="js/audio.js?v=20260729-tienda-responsive1"></script>
-  <script type="module" src="js/articulos.js?v=20260729-tienda-responsive1"></script>
+  <script type="module" src="js/articulos.js?v=20260729-tienda-jr-ajustes2"></script>
 </body>
 </html>

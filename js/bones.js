@@ -298,6 +298,7 @@ window.SistemaHabilidades?.alAtraparHueso?.({
 });
 window.SistemaSupervivencia?.registrarCaptura?.({ dorado: esDorado });
 window.SistemaMisiones?.registrar?.("hueso_atrapado", 1, { dorado: esDorado, poder: esPoder });
+window.dispatchEvent(new CustomEvent("juniorgame:huesoAtrapado", { detail: { dorado: esDorado, poder: esPoder, puntos } }));
 if (esDorado) window.SistemaMisiones?.registrar?.("hueso_dorado", 1);
 if (this.huesoActual.objetoMundo) window.SistemaMundos?.registrarCapturaObjeto?.();
 

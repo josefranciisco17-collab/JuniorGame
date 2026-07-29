@@ -45,6 +45,7 @@ window.SistemaNiveles = {
     if (nuevoNivel > nivelAnterior) {
       this.nivelActual = nuevoNivel;
       this.mostrarAvisoNivel();
+      window.dispatchEvent(new CustomEvent("juniorgame:nivelSubido", { detail: { anterior: nivelAnterior, nivel: nuevoNivel } }));
 
       /*
         Avisamos cada nivel atravesado. Esto evita perder una

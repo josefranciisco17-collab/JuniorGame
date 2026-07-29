@@ -528,3 +528,112 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(iniciar, 80), { once: true });
   else setTimeout(iniciar, 80);
 })();
+
+/* =========================================================
+   JuniorGame - Expansión Biomas AAA
+   Álbum del Explorador, progreso por mundo y jefes de bioma.
+========================================================= */
+(function () {
+  "use strict";
+  const STORAGE = "juniorGame.biomeDiscoveries";
+  const BOSS_LEVELS = new Set([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
+  const jefes = {
+    granja: { nombre: "Toro Guardián", emoji: "🐂", vida: 6 },
+    bosque: { nombre: "Árbol Ancestral", emoji: "🌳", vida: 7 },
+    nieve: { nombre: "Rey del Hielo", emoji: "👑", vida: 8 },
+    desierto: { nombre: "Escorpión Solar", emoji: "🦂", vida: 9 },
+    espacio: { nombre: "Nave Alienígena", emoji: "🛸", vida: 10 }
+  };
+  const estadoBoss = { activo: false, vida: 0, maxima: 0, nivel: 0, datos: null };
+
+  function leerColeccion() {
+    try { return JSON.parse(localStorage.getItem(STORAGE) || "{}"); } catch (_) { return {}; }
+  }
+  function objetosBioma(id) { return window.SistemaBiomas?.BIOMAS?.[id]?.objetos || []; }
+  function progreso(id) {
+    const encontrados = new Set(leerColeccion()[id] || []);
+    const total = objetosBioma(id).length;
+    const hallados = objetosBioma(id).filter(o => encontrados.has(o.nombre)).length;
+    return { hallados, total, porcentaje: total ? Math.round(hallados / total * 100) : 0 };
+  }
+  function crearBotonAlbum() {
+    if (document.getElementById("biomeAlbumButton")) return;
+    const btn = document.createElement("button");
+    btn.id = "biomeAlbumButton";
+    btn.className = "biome-album-button";
+    btn.type = "button";
+    btn.innerHTML = "📖<span>Álbum</span>";
+    btn.addEventListener("click", abrirAlbum);
+    document.getElementById("game")?.appendChild(btn);
+  }
+  function abrirAlbum() {
+    let modal = document.getElementById("biomeAlbumModal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "biomeAlbumModal";
+      modal.className = "biome-album-modal";
+      modal.innerHTML = '<div class="biome-album-panel"><div class="biome-album-head"><div><small>COLECCIÓN PERMANENTE</small><h2>📖 Álbum del Explorador</h2></div><button type="button" aria-label="Cerrar">✕</button></div><div class="biome-album-worlds"></div></div>';
+      modal.addEventListener("click", e => { if (e.target === modal || e.target.closest(".biome-album-head button")) modal.classList.remove("open"); });
+      document.body.appendChild(modal);
+    }
+    const coleccion = leerColeccion();
+    const cont = modal.querySelector(".biome-album-worlds");
+    cont.innerHTML = Object.entries(window.SistemaBiomas?.BIOMAS || {}).map(([id,b]) => {
+      const p = progreso(id); const encontrados = new Set(coleccion[id] || []);
+      return `<section class="biome-album-card"><header><span>${b.emoji}</span><div><h3>${b.nombre}</h3><p>${p.hallados}/${p.total} objetos · ${p.porcentaje}%</p></div><b>${p.porcentaje}%</b></header><div class="biome-album-progress"><i style="width:${p.porcentaje}%"></i></div><div class="biome-album-grid">${b.objetos.map(o => `<div class="${encontrados.has(o.nombre)?'found':'locked'}"><span>${encontrados.has(o.nombre)?o.simbolo:'❔'}</span><small>${encontrados.has(o.nombre)?o.nombre:'Sin descubrir'}</small>${o.legendario?'<em>LEGENDARIO</em>':''}</div>`).join('')}</div></section>`;
+    }).join("");
+    modal.classList.add("open");
+  }
+  function actualizarColeccionCon(obj) {
+    if (!obj?.nombre || !obj?.mundo) return;
+    const d = leerColeccion(); d[obj.mundo] = Array.from(new Set([...(d[obj.mundo] || []), obj.nombre]));
+    localStorage.setItem(STORAGE, JSON.stringify(d));
+  }
+  function crearBossUI() {
+    if (document.getElementById("biomeBossHud")) return;
+    const hud = document.createElement("div"); hud.id="biomeBossHud"; hud.className="biome-boss-hud";
+    hud.innerHTML='<div class="biome-boss-avatar">👹</div><div><small>JEFE DE MUNDO</small><strong>Guardián</strong><div class="biome-boss-bar"><i></i></div><span class="biome-boss-life">0/0</span></div>';
+    document.getElementById("game")?.appendChild(hud);
+  }
+  function iniciarBoss(nivel) {
+    if (estadoBoss.activo || !BOSS_LEVELS.has(Number(nivel))) return;
+    const id = window.SistemaBiomas?.estado?.biomaId || "granja";
+    const base = jefes[id] || jefes.granja;
+    estadoBoss.activo=true; estadoBoss.nivel=nivel; estadoBoss.maxima=base.vida + Math.floor(nivel/20); estadoBoss.vida=estadoBoss.maxima; estadoBoss.datos=base;
+    const hud=document.getElementById("biomeBossHud");
+    hud?.classList.add("active");
+    if (hud) { hud.querySelector(".biome-boss-avatar").textContent=base.emoji; hud.querySelector("strong").textContent=base.nombre; }
+    actualizarBossUI();
+    window.SistemaMundos?.mostrarAviso?.({emoji:base.emoji,nombre:`¡${base.nombre}!`,mensaje:"Atrapa huesos para debilitar al jefe. Los dorados causan doble daño."});
+    document.body.classList.add("boss-event-active");
+  }
+  function actualizarBossUI() {
+    const hud=document.getElementById("biomeBossHud"); if(!hud) return;
+    const pct=Math.max(0,estadoBoss.vida/estadoBoss.maxima*100);
+    hud.querySelector(".biome-boss-bar i").style.width=`${pct}%`;
+    hud.querySelector(".biome-boss-life").textContent=`${Math.max(0,estadoBoss.vida)}/${estadoBoss.maxima}`;
+  }
+  function golpearBoss(detail={}) {
+    if(!estadoBoss.activo) return;
+    estadoBoss.vida -= detail.dorado ? 2 : 1; actualizarBossUI();
+    document.getElementById("biomeBossHud")?.classList.add("hit");
+    setTimeout(()=>document.getElementById("biomeBossHud")?.classList.remove("hit"),180);
+    if(estadoBoss.vida<=0) derrotarBoss();
+  }
+  function derrotarBoss() {
+    const base=estadoBoss.datos; estadoBoss.activo=false;
+    document.body.classList.remove("boss-event-active");
+    document.getElementById("biomeBossHud")?.classList.remove("active");
+    const juego=window.JuniorGame;
+    if(juego?.estado){ juego.actualizarRecursoHUD?.("monedas",(Number(juego.estado.monedas)||0)+25,{animar:true}); juego.actualizarRecursoHUD?.("diamantes",(Number(juego.estado.diamantes)||0)+1,{animar:true}); }
+    window.SistemaMundos?.mostrarAviso?.({emoji:"🏆",nombre:`¡${base?.nombre || 'Jefe'} derrotado!`,mensaje:"Recompensa: 25 monedas y 1 diamante."});
+  }
+  function initAAA() {
+    crearBotonAlbum(); crearBossUI();
+    window.addEventListener("juniorgame:objetoBioma",e=>{actualizarColeccionCon(e.detail);});
+    window.addEventListener("juniorgame:huesoAtrapado",e=>golpearBoss(e.detail));
+    window.addEventListener("juniorgame:nivelSubido",e=>iniciarBoss(e.detail?.nivel));
+  }
+  window.SistemaBiomasAAA={abrirAlbum,iniciarBoss,progreso,estadoBoss};
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",()=>setTimeout(initAAA,180),{once:true}); else setTimeout(initAAA,180);
+})();

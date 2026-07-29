@@ -80,6 +80,12 @@
       instancias: 2
     },
 
+    saltoAire: {
+      archivo: "salto_aire_sutil.wav",
+      volumen: 0.24,
+      instancias: 2
+    },
+
     gameOver: {
       archivo: "game_over.wav",
       volumen: 1.00,
@@ -884,6 +890,8 @@
       const clave = String(nombre || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
       reproducir(mapa[clave] || "bonus");
     },
+
+    salto() { reproducir("saltoAire"); },
 
     uiAbrir() { reproducir("uiAbrir"); },
     uiCerrar() { reproducir("uiCerrar"); },

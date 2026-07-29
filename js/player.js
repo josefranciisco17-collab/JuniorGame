@@ -18,6 +18,8 @@ window.JuniorPlayer = {
 
   sueloBase: 118,
   tiempoAnterior: performance.now(),
+  ultimoSonidoSalto: 0,
+  esperaSonidoSaltoMs: 260,
 
   obtenerPerro() {
     return window.JuniorGame?.elementos?.perro;
@@ -136,6 +138,14 @@ window.JuniorPlayer = {
     this.saltando = true;
     this.dobleSaltoUsado = false;
     this.velocidadVertical = this.fuerzaSalto;
+
+    // Sonido breve de aire solo para el perro principal.
+    // El tiempo de espera evita que se encime al tocar SALTAR repetidamente.
+    const ahora = performance.now();
+    if (ahora - this.ultimoSonidoSalto >= this.esperaSonidoSaltoMs) {
+      window.AudioFX?.salto?.();
+      this.ultimoSonidoSalto = ahora;
+    }
 
     if (
       this.moviendoDerecha ||

@@ -477,7 +477,6 @@ window.SistemaMascotas = {
 
     if (estado === "celebrate") this.reproducirSonido("happy", { minimoTipo: 1800, volumen: 0.72 });
     if (estado === "hurt") this.reproducirSonido("hurt", { minimoTipo: 1400, volumen: 0.75 });
-    if (estado === "jump" && Math.random() < 0.16) this.reproducirSonido("bark", { minimoTipo: 2500, volumen: 0.45, rate: 1.08 });
 
     clearTimeout(this.__estadoTimer);
     if (duracion > 0) {

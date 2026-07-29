@@ -202,7 +202,10 @@ function estadoArticulo(articulo) {
   return { comprado, equipado };
 }
 
-function visualArticulo(articulo) {
+function visualArticulo(articulo, esHabilidad = false) {
+  if (esHabilidad) {
+    return `<span class="emoji-fallback ability-symbol" aria-hidden="true">${articulo.icono || "⚡"}</span>`;
+  }
   if (articulo.imagen) {
     return `<img src="${articulo.imagen}" alt="${articulo.nombre}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'emoji-fallback',textContent:'${articulo.icono || "🐶"}'}))">`;
   }
@@ -235,7 +238,7 @@ function tarjetaArticulo(articulo) {
   const titulo = esHabilidad ? articulo.habilidad : articulo.nombre;
   return `
     <article class="item-card">
-      <div class="item-visual">${visualArticulo(articulo)}</div>
+      <div class="item-visual ${esHabilidad ? "ability-visual" : ""}">${visualArticulo(articulo, esHabilidad)}</div>
       <div class="item-copy">
         <h3>${titulo}</h3>
         ${!esHabilidad && articulo.habilidad ? `<p class="item-ability">✨ ${articulo.habilidad}</p>` : ""}

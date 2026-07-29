@@ -250,3 +250,78 @@ img { -webkit-user-drag: none; }
   .category-button > span:last-child { font-size: clamp(11px, 3.1vw, 16px); overflow-wrap: anywhere; }
   .diamond-balance { min-width: 104px; }
 }
+
+/* =========================================================
+   AJUSTE FINAL DE PESTAÑAS Y TARJETAS DE HABILIDADES
+   ========================================================= */
+.category-button {
+  min-width: 0 !important;
+  padding: 8px 5px !important;
+  gap: 4px !important;
+}
+.category-button > span:last-child {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  font-size: clamp(8px, 2.15vw, 12px) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.15px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+.category-icon {
+  font-size: clamp(22px, 6vw, 30px) !important;
+  line-height: 1 !important;
+}
+.category-dog-icon img {
+  width: 30px !important;
+  height: 30px !important;
+}
+.item-visual.ability-visual {
+  height: 142px !important;
+  background: radial-gradient(circle, #ffe49a 0%, #c77a28 50%, #71300c 100%) !important;
+}
+.item-visual.ability-visual .ability-symbol {
+  display: grid !important;
+  place-items: center !important;
+  width: 88px !important;
+  height: 88px !important;
+  border: 4px solid rgba(255, 240, 164, .72) !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 28%, #9169ee, #3d176e 72%) !important;
+  box-shadow: 0 6px 0 rgba(45, 13, 78, .72), 0 10px 20px rgba(0,0,0,.28) !important;
+  font-size: 48px !important;
+  line-height: 1 !important;
+}
+@media (max-width: 760px) {
+  .category-sidebar {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+  .category-button {
+    min-height: 64px !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 30px auto !important;
+    align-content: center !important;
+  }
+  .category-button > span:last-child {
+    font-size: clamp(7.5px, 2.05vw, 10px) !important;
+  }
+  .category-icon { font-size: 25px !important; }
+  .category-dog-icon img { width: 27px !important; height: 27px !important; }
+  .item-visual.ability-visual { height: 128px !important; }
+  .item-visual.ability-visual .ability-symbol {
+    width: 76px !important;
+    height: 76px !important;
+    font-size: 42px !important;
+  }
+}
+@media (max-width: 370px) {
+  .category-button > span:last-child {
+    font-size: 7px !important;
+    letter-spacing: -0.3px !important;
+  }
+}

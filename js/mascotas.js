@@ -22,18 +22,33 @@ window.SistemaMascotas = {
   yVisual: null,
   progreso: {},
   interfaz: {},
+  audioContexto: null,
+  ultimoSonidoEn: 0,
+
+  estilosRaza: {
+    "perrito-junior": { pelaje: "#b86b2d", claro: "#f2dfbd", oscuro: "#6f351c" },
+    "perrito-rocky":  { pelaje: "#4f4a45", claro: "#e7d7ba", oscuro: "#272523" },
+    "perrito-luna":   { pelaje: "#d59642", claro: "#f5dfad", oscuro: "#8b4f25" },
+    "perrito-max":    { pelaje: "#4f321f", claro: "#c98b4a", oscuro: "#24170f" },
+    "perrito-nala":   { pelaje: "#ece5d9", claro: "#fff9ed", oscuro: "#b8a997" },
+    "perrito-toby":   { pelaje: "#c57a2f", claro: "#f2ddae", oscuro: "#79431e" },
+    "perrito-bolt":   { pelaje: "#36241c", claro: "#9c5b2d", oscuro: "#17100d" },
+    "perrito-coco":   { pelaje: "#8c633b", claro: "#dfbd83", oscuro: "#4a321e" },
+    "perrito-milo":   { pelaje: "#f2efe8", claro: "#ffffff", oscuro: "#8f8478" },
+    "perrito-kira":   { pelaje: "#2d201b", claro: "#9b542f", oscuro: "#120d0b" }
+  },
 
   catalogo: {
-    "perrito-junior": { nombre: "Junior", rareza: "Común", imagen: "Fondos-JuniorGame/perritos-jr/game/junior.png", tarjeta: "Fondos-JuniorGame/perritos-jr/junior.png", habilidad: "+3% experiencia", descripcion: "Aumenta la experiencia obtenida en partida.", bonus: "experiencia", valor: 0.03 },
-    "perrito-rocky":  { nombre: "Rocky",  rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game/rocky.png",  tarjeta: "Fondos-JuniorGame/perritos-jr/rocky.png",  habilidad: "+5% monedas", descripcion: "Aumenta las monedas obtenidas al terminar la partida.", bonus: "monedas", valor: 0.05 },
-    "perrito-luna":   { nombre: "Luna",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game/luna.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/luna.png",   habilidad: "Diamantes extra", descripcion: "Puede encontrar diamantes adicionales.", bonus: "diamantes", valor: 0.04 },
-    "perrito-max":    { nombre: "Max",    rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game/max.png",    tarjeta: "Fondos-JuniorGame/perritos-jr/max.png",    habilidad: "Recarga rápida", descripcion: "Reduce ligeramente el tiempo de recarga de habilidades.", bonus: "recarga", valor: 0.05 },
-    "perrito-nala":   { nombre: "Nala",   rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game/nala.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/nala.png",   habilidad: "Atracción", descripcion: "Ayuda a acercar huesos próximos al jugador.", bonus: "iman", valor: 125 },
-    "perrito-toby":   { nombre: "Toby",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game/toby.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/toby.png",   habilidad: "+5% velocidad", descripcion: "Aumenta ligeramente la velocidad de movimiento.", bonus: "velocidad", valor: 0.05 },
-    "perrito-bolt":   { nombre: "Bolt",   rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game/bolt.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/bolt.png",   habilidad: "Huesos dorados", descripcion: "Mejora la probabilidad de recompensas doradas.", bonus: "dorado", valor: 0.06 },
-    "perrito-coco":   { nombre: "Coco",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game/coco.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/coco.png",   habilidad: "+3% experiencia", descripcion: "Aumenta la experiencia de progreso.", bonus: "experiencia", valor: 0.03 },
-    "perrito-milo":   { nombre: "Milo",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game/milo.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/milo.png",   habilidad: "Protector", descripcion: "Tiene una pequeña probabilidad de evitar una pérdida de vida.", bonus: "proteccion", valor: 0.10 },
-    "perrito-kira":   { nombre: "Kira",   rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game/kira.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/kira.png",   habilidad: "Imán prolongado", descripcion: "Extiende los efectos de atracción.", bonus: "imanDuracion", valor: 0.12 }
+    "perrito-junior": { nombre: "Junior", rareza: "Común", imagen: "Fondos-JuniorGame/perritos-jr/game-rig/junior.png", tarjeta: "Fondos-JuniorGame/perritos-jr/junior.png", habilidad: "+3% experiencia", descripcion: "Aumenta la experiencia obtenida en partida.", bonus: "experiencia", valor: 0.03 },
+    "perrito-rocky":  { nombre: "Rocky",  rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game-rig/rocky.png",  tarjeta: "Fondos-JuniorGame/perritos-jr/rocky.png",  habilidad: "+5% monedas", descripcion: "Aumenta las monedas obtenidas al terminar la partida.", bonus: "monedas", valor: 0.05 },
+    "perrito-luna":   { nombre: "Luna",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game-rig/luna.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/luna.png",   habilidad: "Diamantes extra", descripcion: "Puede encontrar diamantes adicionales.", bonus: "diamantes", valor: 0.04 },
+    "perrito-max":    { nombre: "Max",    rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game-rig/max.png",    tarjeta: "Fondos-JuniorGame/perritos-jr/max.png",    habilidad: "Recarga rápida", descripcion: "Reduce ligeramente el tiempo de recarga de habilidades.", bonus: "recarga", valor: 0.05 },
+    "perrito-nala":   { nombre: "Nala",   rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game-rig/nala.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/nala.png",   habilidad: "Atracción", descripcion: "Ayuda a acercar huesos próximos al jugador.", bonus: "iman", valor: 125 },
+    "perrito-toby":   { nombre: "Toby",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game-rig/toby.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/toby.png",   habilidad: "+5% velocidad", descripcion: "Aumenta ligeramente la velocidad de movimiento.", bonus: "velocidad", valor: 0.05 },
+    "perrito-bolt":   { nombre: "Bolt",   rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game-rig/bolt.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/bolt.png",   habilidad: "Huesos dorados", descripcion: "Mejora la probabilidad de recompensas doradas.", bonus: "dorado", valor: 0.06 },
+    "perrito-coco":   { nombre: "Coco",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game-rig/coco.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/coco.png",   habilidad: "+3% experiencia", descripcion: "Aumenta la experiencia de progreso.", bonus: "experiencia", valor: 0.03 },
+    "perrito-milo":   { nombre: "Milo",   rareza: "Raro",  imagen: "Fondos-JuniorGame/perritos-jr/game-rig/milo.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/milo.png",   habilidad: "Protector", descripcion: "Tiene una pequeña probabilidad de evitar una pérdida de vida.", bonus: "proteccion", valor: 0.10 },
+    "perrito-kira":   { nombre: "Kira",   rareza: "Épico", imagen: "Fondos-JuniorGame/perritos-jr/game-rig/kira.png",   tarjeta: "Fondos-JuniorGame/perritos-jr/kira.png",   habilidad: "Imán prolongado", descripcion: "Extiende los efectos de atracción.", bonus: "imanDuracion", valor: 0.12 }
   },
 
   iniciar() {
@@ -99,6 +114,7 @@ window.SistemaMascotas = {
   },
 
   configurarEventos() {
+    window.addEventListener("pointerdown", () => this.prepararAudio()?.resume?.().catch(() => {}), { once: true, passive: true });
     this.interfaz.boton?.addEventListener("click", () => this.abrirSelector());
     this.interfaz.cerrar?.addEventListener("click", () => this.cerrarSelector());
     this.interfaz.modal?.addEventListener("click", (e) => { if (e.target === this.interfaz.modal) this.cerrarSelector(); });
@@ -142,17 +158,41 @@ window.SistemaMascotas = {
     const area = window.JuniorGame?.elementos?.areaJuego || document.getElementById("gameArea");
     const mascota = this.catalogo[this.mascotaEquipada];
     if (!area || !mascota) return;
+
+    const colores = this.estilosRaza[this.mascotaEquipada] || this.estilosRaza["perrito-junior"];
     const elemento = document.createElement("div");
     elemento.id = "activePet";
     elemento.className = "active-pet pet-state-idle";
     elemento.dataset.pet = this.mascotaEquipada;
     elemento.setAttribute("aria-label", `${mascota.nombre}, Perrito Jr equipado`);
+    elemento.style.setProperty("--pet-fur", colores.pelaje);
+    elemento.style.setProperty("--pet-light", colores.claro);
+    elemento.style.setProperty("--pet-dark", colores.oscuro);
+
+    const sombra = document.createElement("span");
+    sombra.className = "active-pet-shadow";
+
+    const rig = document.createElement("span");
+    rig.className = "active-pet-rig";
+
     const imagen = document.createElement("img");
     imagen.className = "active-pet-image";
     imagen.src = mascota.imagen;
     imagen.alt = "";
     imagen.draggable = false;
-    elemento.appendChild(imagen);
+
+    const posiciones = ["front-near", "front-far", "back-near", "back-far"];
+    posiciones.forEach((posicion) => {
+      const pierna = document.createElement("span");
+      pierna.className = `active-pet-leg active-pet-leg-${posicion}`;
+      const pata = document.createElement("span");
+      pata.className = "active-pet-paw";
+      pierna.appendChild(pata);
+      rig.appendChild(pierna);
+    });
+
+    rig.appendChild(imagen);
+    elemento.append(sombra, rig);
     area.appendChild(elemento);
     this.mascotaElemento = elemento;
     this.mascotaImagen = imagen;
@@ -299,9 +339,52 @@ window.SistemaMascotas = {
     if (!["celebrate", "hurt"].includes(this.estadoAnimacion)) this.cambiarEstado("idle");
   },
 
+  prepararAudio() {
+    if (this.audioContexto) return this.audioContexto;
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    try {
+      this.audioContexto = new Ctx();
+      return this.audioContexto;
+    } catch {
+      return null;
+    }
+  },
+
+  reproducirSonido(tipo = "yip") {
+    const ahora = performance.now();
+    if (ahora - this.ultimoSonidoEn < 650) return;
+    this.ultimoSonidoEn = ahora;
+    const ctx = this.prepararAudio();
+    if (!ctx) return;
+    if (ctx.state === "suspended") ctx.resume().catch(() => {});
+
+    const inicio = ctx.currentTime;
+    const oscilador = ctx.createOscillator();
+    const ganancia = ctx.createGain();
+    const filtro = ctx.createBiquadFilter();
+    filtro.type = "bandpass";
+    filtro.frequency.value = tipo === "hurt" ? 900 : 1450;
+    filtro.Q.value = 1.2;
+    oscilador.type = tipo === "sleep" ? "sine" : "triangle";
+    const base = tipo === "hurt" ? 420 : tipo === "celebrate" ? 760 : 620;
+    oscilador.frequency.setValueAtTime(base, inicio);
+    oscilador.frequency.exponentialRampToValueAtTime(base * 1.65, inicio + 0.055);
+    oscilador.frequency.exponentialRampToValueAtTime(base * 0.82, inicio + 0.16);
+    ganancia.gain.setValueAtTime(0.0001, inicio);
+    ganancia.gain.exponentialRampToValueAtTime(0.055, inicio + 0.018);
+    ganancia.gain.exponentialRampToValueAtTime(0.0001, inicio + 0.19);
+    oscilador.connect(filtro).connect(ganancia).connect(ctx.destination);
+    oscilador.start(inicio);
+    oscilador.stop(inicio + 0.2);
+  },
+
   cambiarEstado(estado, duracion = 0) {
     if (!this.mascotaElemento || this.estadoAnimacion === estado) return;
     this.estadoAnimacion = estado;
+    if (estado === "celebrate") this.reproducirSonido("celebrate");
+    if (estado === "hurt") this.reproducirSonido("hurt");
+    if (estado === "jump" && Math.random() < 0.18) this.reproducirSonido("yip");
     const clases = [...this.mascotaElemento.classList].filter((c) => c.startsWith("pet-state-"));
     clases.forEach((c) => this.mascotaElemento.classList.remove(c));
     this.mascotaElemento.classList.add(`pet-state-${estado}`);

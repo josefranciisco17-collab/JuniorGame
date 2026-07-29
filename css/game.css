@@ -2680,3 +2680,129 @@ body.raza-fantasma-activa .dog{
 @media(prefers-reduced-motion:reduce){
   .active-pet-image,.active-pet.pet-recovering{animation:none!important}
 }
+
+/* ==========================================================
+   PERRITOS JR V3 — RIG DE PATAS ARTICULADAS
+   Las patas son elementos independientes para que sí alternen
+   al caminar/correr, en vez de mover una fotografía completa.
+========================================================= */
+.active-pet{
+  overflow:visible;
+  contain:layout style;
+}
+.active-pet-shadow{
+  position:absolute;
+  left:18%;
+  right:12%;
+  bottom:1%;
+  height:13%;
+  border-radius:50%;
+  background:rgba(28,18,12,.34);
+  filter:blur(2px);
+  transform-origin:center;
+  z-index:0;
+}
+.active-pet-rig{
+  position:absolute;
+  inset:0;
+  transform-origin:50% 86%;
+  z-index:1;
+}
+.active-pet-image{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center bottom;
+  clip-path:inset(0 0 22% 0 round 8%);
+  z-index:4;
+  animation:none!important;
+}
+.active-pet-leg{
+  position:absolute;
+  width:12%;
+  height:31%;
+  bottom:9%;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--pet-dark),var(--pet-fur) 35%,var(--pet-light));
+  border:1px solid color-mix(in srgb,var(--pet-dark) 68%,transparent);
+  transform-origin:50% 9%;
+  z-index:2;
+  box-shadow:inset -1px 0 1px rgba(0,0,0,.22);
+}
+.active-pet-paw{
+  position:absolute;
+  left:-18%;
+  bottom:-5%;
+  width:136%;
+  height:31%;
+  border-radius:55% 60% 48% 50%;
+  background:var(--pet-light);
+  box-shadow:inset 0 -1px 1px rgba(0,0,0,.2);
+}
+.active-pet-leg-front-near{left:59%;z-index:5}
+.active-pet-leg-front-far{left:49%;z-index:1;filter:brightness(.78)}
+.active-pet-leg-back-near{left:31%;z-index:5}
+.active-pet-leg-back-far{left:22%;z-index:1;filter:brightness(.78)}
+
+.pet-state-idle .active-pet-rig{animation:petRigBreathe 1.5s ease-in-out infinite}
+.pet-state-idle .active-pet-leg{transform:rotate(0deg)}
+.pet-state-walk .active-pet-rig{animation:petRigWalkBody .42s linear infinite}
+.pet-state-walk .active-pet-leg-front-near,
+.pet-state-walk .active-pet-leg-back-far{animation:petLegWalkA .42s ease-in-out infinite}
+.pet-state-walk .active-pet-leg-front-far,
+.pet-state-walk .active-pet-leg-back-near{animation:petLegWalkB .42s ease-in-out infinite}
+.pet-state-run .active-pet-rig{animation:petRigRunBody .25s linear infinite}
+.pet-state-run .active-pet-leg-front-near,
+.pet-state-run .active-pet-leg-back-far{animation:petLegRunA .25s ease-in-out infinite}
+.pet-state-run .active-pet-leg-front-far,
+.pet-state-run .active-pet-leg-back-near{animation:petLegRunB .25s ease-in-out infinite}
+.pet-state-jump .active-pet-rig{animation:petRigJump .34s ease-out infinite alternate}
+.pet-state-jump .active-pet-leg-front-near,
+.pet-state-jump .active-pet-leg-front-far{transform:rotate(-42deg) translateY(-7%)}
+.pet-state-jump .active-pet-leg-back-near,
+.pet-state-jump .active-pet-leg-back-far{transform:rotate(38deg) translateY(-5%)}
+.pet-state-fall .active-pet-rig{animation:petRigFall .32s ease-in infinite alternate}
+.pet-state-fall .active-pet-leg-front-near,
+.pet-state-fall .active-pet-leg-front-far{transform:rotate(24deg)}
+.pet-state-fall .active-pet-leg-back-near,
+.pet-state-fall .active-pet-leg-back-far{transform:rotate(-26deg)}
+.pet-state-celebrate .active-pet-rig{animation:petRigCelebrate .42s ease-in-out infinite}
+.pet-state-celebrate .active-pet-leg{animation:petLegCelebrate .42s ease-in-out infinite alternate}
+.pet-state-hurt .active-pet-rig{animation:petRigHurt .18s linear 4}
+.pet-state-sleep .active-pet-rig{animation:petRigSleep 2.1s ease-in-out infinite;filter:saturate(.82)}
+.pet-state-sleep .active-pet-leg{transform:rotate(76deg) scaleY(.72);bottom:7%}
+.pet-state-sad .active-pet-rig{animation:petRigSad 1.4s ease-in-out infinite;filter:saturate(.72)}
+.pet-state-sad .active-pet-leg{transform:rotate(18deg)}
+
+.pet-state-walk .active-pet-shadow{animation:petShadowWalk .42s ease-in-out infinite}
+.pet-state-run .active-pet-shadow{animation:petShadowRun .25s ease-in-out infinite}
+.pet-state-jump .active-pet-shadow,.pet-state-fall .active-pet-shadow{transform:scale(.72);opacity:.55}
+
+@keyframes petRigBreathe{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-1.5px) scaleY(1.015)}}
+@keyframes petRigWalkBody{0%,100%{transform:translateY(0) rotate(-.8deg)}25%,75%{transform:translateY(-2.8px) rotate(.8deg)}50%{transform:translateY(0) rotate(-.8deg)}}
+@keyframes petRigRunBody{0%,100%{transform:translateY(0) rotate(-2.5deg) scaleX(1.025)}50%{transform:translateY(-5px) rotate(2.5deg) scaleX(.985)}}
+@keyframes petLegWalkA{0%,100%{transform:rotate(25deg) translateY(0)}50%{transform:rotate(-28deg) translateY(-5%)}}
+@keyframes petLegWalkB{0%,100%{transform:rotate(-28deg) translateY(-5%)}50%{transform:rotate(25deg) translateY(0)}}
+@keyframes petLegRunA{0%,100%{transform:rotate(52deg) translateY(2%)}50%{transform:rotate(-48deg) translateY(-12%)}}
+@keyframes petLegRunB{0%,100%{transform:rotate(-48deg) translateY(-12%)}50%{transform:rotate(52deg) translateY(2%)}}
+@keyframes petRigJump{from{transform:translateY(1px) rotate(-5deg) scaleX(1.04)}to{transform:translateY(-5px) rotate(4deg) scaleX(.98)}}
+@keyframes petRigFall{from{transform:rotate(5deg) scaleY(1.03)}to{transform:rotate(-3deg) scaleY(.97)}}
+@keyframes petRigCelebrate{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-13px) rotate(5deg) scale(1.06)}}
+@keyframes petLegCelebrate{from{transform:rotate(-35deg)}to{transform:rotate(42deg)}}
+@keyframes petRigHurt{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-6px) rotate(-5deg)}75%{transform:translateX(6px) rotate(5deg)}}
+@keyframes petRigSleep{0%,100%{transform:translateY(5px) rotate(-3deg) scaleY(.9)}50%{transform:translateY(6px) rotate(-3deg) scaleY(.86)}}
+@keyframes petRigSad{0%,100%{transform:translateY(3px) rotate(-2deg)}50%{transform:translateY(5px) rotate(2deg)}}
+@keyframes petShadowWalk{0%,100%{transform:scaleX(1);opacity:.72}50%{transform:scaleX(.84);opacity:.55}}
+@keyframes petShadowRun{0%,100%{transform:scaleX(1.08);opacity:.75}50%{transform:scaleX(.7);opacity:.45}}
+
+@supports not (color:color-mix(in srgb,red,blue)){
+  .active-pet-leg{border-color:rgba(38,22,13,.48)}
+}
+@media(max-width:430px){
+  .active-pet-leg{height:29%;bottom:10%}
+}
+@media(prefers-reduced-motion:reduce){
+  .active-pet-rig,.active-pet-leg,.active-pet-shadow{animation:none!important}
+}

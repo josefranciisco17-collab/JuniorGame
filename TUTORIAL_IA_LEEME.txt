@@ -1,0 +1,28 @@
+ASISTENTE INTELIGENTE DE TUTORIAL - JUNIORGAME
+Fecha: 30 de julio de 2026
+
+ARCHIVOS NUEVOS
+- js/tutorial-ia.js
+- css/tutorial-ia.css
+
+ARCHIVOS MODIFICADOS
+- game.html
+- js/controls.js
+- js/obstaculos.js
+- js/enemigos.js
+- js/habilidades.js
+- js/cajas.js
+
+FUNCIONES INCLUIDAS
+- Invitación automática para jugadores que no han hecho el tutorial.
+- Tutorial paso a paso de movimiento, salto, huesos, peligros, habilidad, cajas y recursos.
+- Avance únicamente cuando el jugador realiza la acción solicitada en los pasos principales.
+- Protección de vidas mientras el tutorial está activo.
+- Consejos adaptativos después de recibir golpes.
+- Guardado local del paso actual.
+- Reanudación del tutorial si el jugador sale antes de terminar.
+- Botón ? en el HUD para repetirlo en cualquier momento.
+- Opción para omitir pasos que dependen de apariciones aleatorias.
+
+CLAVE LOCALSTORAGE
+juniorGame.tutorialIA.v1

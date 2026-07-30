@@ -532,6 +532,7 @@ const yBase = esPruebaNivel1
     }, 310);
 
     await this.entregarPremio(premio);
+    window.dispatchEvent(new CustomEvent("juniorgame:cajaAbierta", { detail: { premio: premio?.tipo || "premio", cantidad: premio?.cantidad || 0 } }));
 
     window.setTimeout(() => {
       this.eliminarCaja();

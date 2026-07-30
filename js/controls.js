@@ -44,6 +44,7 @@ window.JuniorControls = {
         this.botonSaltar.classList.add("pressed");
 
         window.JuniorPlayer.saltar();
+        window.dispatchEvent(new CustomEvent("juniorgame:control", { detail: { accion: "saltar" } }));
 
         window.setTimeout(() => {
           this.botonSaltar.classList.remove("pressed");
@@ -81,6 +82,8 @@ window.JuniorControls = {
       if (direccion === "derecha") {
         window.JuniorPlayer.activarDerecha(true);
       }
+
+      window.dispatchEvent(new CustomEvent("juniorgame:control", { detail: { accion: direccion } }));
     };
 
     const detenerMovimiento = (event) => {
@@ -135,6 +138,7 @@ window.JuniorControls = {
           event.code === "KeyA"
         ) {
           window.JuniorPlayer.activarIzquierda(true);
+          window.dispatchEvent(new CustomEvent("juniorgame:control", { detail: { accion: "izquierda" } }));
         }
 
         if (
@@ -142,6 +146,7 @@ window.JuniorControls = {
           event.code === "KeyD"
         ) {
           window.JuniorPlayer.activarDerecha(true);
+          window.dispatchEvent(new CustomEvent("juniorgame:control", { detail: { accion: "derecha" } }));
         }
 
         if (
@@ -151,6 +156,7 @@ window.JuniorControls = {
         ) {
           event.preventDefault();
           window.JuniorPlayer.saltar();
+          window.dispatchEvent(new CustomEvent("juniorgame:control", { detail: { accion: "saltar" } }));
         }
       }
     );

@@ -335,6 +335,7 @@ this.obstaculoActual = {
     obstaculo.golpeado = true;
 
     window.AudioFX?.golpePiedra?.();
+    window.dispatchEvent(new CustomEvent("juniorgame:obstaculoGolpe", { detail: { tipo: obstaculo.tipo || "roca" } }));
 
     juego.perderVida();
 

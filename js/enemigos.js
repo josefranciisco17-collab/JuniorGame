@@ -477,6 +477,7 @@ window.SistemaEnemigos = {
     }
 
     enemigo.golpeado = true;
+    window.dispatchEvent(new CustomEvent("juniorgame:enemigoGolpe", { detail: { tipo: enemigo.nombre || enemigo.tipo || "enemigo" } }));
     enemigo.elemento.classList.add("enemigo-golpe");
     this.aplicarEfecto(enemigo);
 
@@ -519,6 +520,7 @@ window.SistemaEnemigos = {
 
     juego?.actualizarPuntos?.(this.configuracion.puntosPorDerrotar, 0);
     window.SistemaMisiones?.registrar?.("enemigo_derrotado", 1, { metodo });
+    window.dispatchEvent(new CustomEvent("juniorgame:enemigoDerrotado", { detail: { metodo, tipo: enemigo.nombre || enemigo.tipo || "enemigo" } }));
 
     this.mostrarMensaje(
       metodo === "salto"

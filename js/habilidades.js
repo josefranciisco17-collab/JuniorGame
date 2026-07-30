@@ -627,6 +627,7 @@ window.SistemaHabilidades = {
         habilidad: this.razaEquipada || id,
         habilidadBase: id
       });
+      window.dispatchEvent(new CustomEvent("juniorgame:habilidadUsada", { detail: { habilidad: this.razaEquipada || id, habilidadBase: id } }));
     }
     return ejecutada;
   },

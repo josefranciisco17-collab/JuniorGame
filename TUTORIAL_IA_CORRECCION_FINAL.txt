@@ -1,0 +1,7 @@
+CORRECCIÓN FINAL DEL TUTORIAL IA
+
+- Paso 2: los controles permanecen anclados en la parte inferior.
+- Paso 6: el escenario ya no recibe transformaciones ni filtros que puedan volverlo negro.
+- El tutorial restaura el fondo normal si el navegador pierde la composición gráfica.
+- Todos los pasos conservan la pausa mientras se lee y reanudan al practicar.
+- Se actualizó la versión de caché de tutorial-ia.js y tutorial-ia.css.

@@ -59,7 +59,7 @@ window.AsistenteTutorial = {
       mensaje: "Las rocas y algunos enemigos pueden quitarte vidas. Otros pueden robar puntos. Durante la práctica Junior protegerá tus corazones.",
       tip: "Esquiva el peligro o utiliza el salto.",
       objetivo: "peligro",
-      selector: "#gameArea",
+      selector: null,
       omisible: true
     },
     {
@@ -188,6 +188,7 @@ window.AsistenteTutorial = {
     this.avanceBloqueado = false;
     this.limpiarResaltado();
     this.pausarJuego();
+    this.asegurarEscenarioVisible();
     this.mostrarRoot();
 
     this.root.querySelector(".tutorial-ia-title").textContent = etapaActual.titulo || "Asistente Junior";
@@ -220,6 +221,7 @@ window.AsistenteTutorial = {
     this.esperandoAccion = true;
     this.acciones.clear();
     this.ocultarRoot();
+    this.asegurarEscenarioVisible();
     this.resaltar(etapaActual.selector);
     this.reanudarJuego();
   },
@@ -490,10 +492,55 @@ window.AsistenteTutorial = {
   resaltar(selector) {
     this.limpiarResaltado();
     if (!selector) return;
+
     const elemento = document.querySelector(selector);
     if (!elemento) return;
-    elemento.classList.add("tutorial-highlight");
-    this.resaltado = elemento;
+
+    /*
+      Nunca se aplican transformaciones al escenario ni a los controles.
+      En móviles, transformar #gameArea o .controls puede desplazar botones
+      y provocar una pantalla negra por composición gráfica.
+    */
+    const objetivoSeguro =
+      elemento.id === "gameArea" ||
+      elemento.classList.contains("game-area")
+        ? null
+        : elemento;
+
+    if (!objetivoSeguro) return;
+
+    objetivoSeguro.classList.add("tutorial-highlight");
+    this.resaltado = objetivoSeguro;
+  },
+
+  asegurarEscenarioVisible() {
+    const area =
+      window.JuniorGame?.elementos?.areaJuego ||
+      document.getElementById("gameArea");
+
+    if (!area) return;
+
+    area.classList.remove("tutorial-highlight");
+
+    const mundo = window.SistemaMundos;
+    const fondoActual = String(area.style.backgroundImage || "").trim();
+    const esMundoSecreto = Boolean(mundo?.mundoSecretoActual);
+
+    if (!esMundoSecreto && (!fondoActual || fondoActual === "none")) {
+      const nivel = window.SistemaNiveles?.nivelActual || 1;
+      const mundoNormal = mundo?.obtenerMundoNormal?.(nivel);
+
+      if (mundoNormal) {
+        mundo.aplicarFondoNormal?.(mundoNormal, {
+          inmediato: true,
+          mostrarAviso: false
+        });
+      } else {
+        area.className = "game-area";
+        area.style.backgroundImage =
+          'linear-gradient(to bottom,rgba(0,0,0,.02),rgba(0,0,0,.12)),url("Fondos-JuniorGame/granja.png")';
+      }
+    }
   },
 
   limpiarResaltado() {

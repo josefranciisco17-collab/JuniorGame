@@ -134,10 +134,22 @@
 }
 
 .tutorial-highlight {
-  position: relative !important;
   z-index: 10010 !important;
   animation: tutorialPulse 1s infinite;
   filter: drop-shadow(0 0 12px rgba(255, 235, 116, 0.95));
+}
+
+/* El resaltado nunca debe cambiar el posicionamiento real de los controles. */
+.tutorial-highlight:not(.controls) {
+  position: relative !important;
+}
+
+.controls.tutorial-highlight {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: auto !important;
+  bottom: max(12px, env(safe-area-inset-bottom)) !important;
 }
 
 .tutorial-ia-toast {

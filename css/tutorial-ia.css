@@ -1,4 +1,238 @@
 /* Asistente Inteligente de Tutorial - JuniorGame */
-.tutorial-ia-root{position:fixed;inset:0;z-index:9998;pointer-events:none;font-family:inherit}.tutorial-ia-root.hidden{display:none}.tutorial-ia-backdrop{position:absolute;inset:0;background:rgba(4,8,20,.54);backdrop-filter:blur(1.5px);pointer-events:auto}.tutorial-ia-card{position:absolute;left:50%;bottom:max(112px,calc(env(safe-area-inset-bottom) + 100px));transform:translateX(-50%);width:min(92vw,520px);max-height:56vh;overflow:auto;background:linear-gradient(180deg,rgba(28,32,58,.98),rgba(15,18,35,.98));border:1px solid rgba(255,255,255,.2);border-radius:22px;padding:18px;color:#fff;box-shadow:0 18px 50px rgba(0,0,0,.42);pointer-events:auto}.tutorial-ia-head{display:flex;gap:12px;align-items:center}.tutorial-ia-avatar{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.12);font-size:28px}.tutorial-ia-title{margin:0;font-size:1.05rem}.tutorial-ia-step{display:block;margin-top:2px;color:#bfc7ff;font-size:.78rem}.tutorial-ia-message{margin:14px 0 8px;line-height:1.45}.tutorial-ia-tip{margin:0 0 14px;padding:10px 12px;border-radius:12px;background:rgba(114,134,255,.13);font-size:.88rem}.tutorial-ia-progress{height:7px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}.tutorial-ia-progress>span{display:block;height:100%;background:linear-gradient(90deg,#8ea0ff,#d29aff);transition:width .3s}.tutorial-ia-actions{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap;margin-top:14px}.tutorial-ia-btn{border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}.tutorial-ia-btn.primary{background:#fff;color:#171a32}.tutorial-ia-btn.secondary{background:rgba(255,255,255,.12);color:#fff}.tutorial-ia-btn.danger{background:transparent;color:#ffc2c2}.tutorial-highlight{position:relative!important;z-index:9999!important;animation:tutorialPulse 1s infinite;filter:drop-shadow(0 0 12px rgba(255,235,116,.95))}.tutorial-ia-toast{position:absolute;left:50%;top:88px;transform:translateX(-50%);max-width:88vw;padding:9px 14px;border-radius:999px;background:rgba(12,15,30,.92);color:#fff;text-align:center;pointer-events:none}.tutorial-ia-root.is-passive .tutorial-ia-backdrop{display:none}.tutorial-ia-root.is-passive .tutorial-ia-card{bottom:max(105px,calc(env(safe-area-inset-bottom) + 95px));width:min(88vw,460px);padding:14px}.tutorial-ia-root.is-passive .tutorial-ia-message{margin:9px 0}.tutorial-ia-root.is-passive .tutorial-ia-tip{display:none}@keyframes tutorialPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}@media(max-width:520px){.tutorial-ia-card{bottom:max(104px,calc(env(safe-area-inset-bottom) + 92px));border-radius:18px;padding:15px}.tutorial-ia-actions{justify-content:stretch}.tutorial-ia-btn{flex:1}}
+.tutorial-ia-root {
+  position: fixed;
+  inset: 0;
+  z-index: 10020;
+  pointer-events: none;
+  font-family: inherit;
+}
 
-.tutorial-help-button{width:42px;height:42px;border:1px solid rgba(255,255,255,.3);border-radius:14px;background:rgba(19,24,48,.78);color:#fff;font-size:1.15rem;font-weight:900;box-shadow:0 5px 16px rgba(0,0,0,.24);cursor:pointer}.tutorial-help-button:active{transform:scale(.94)}
+.tutorial-ia-root.hidden {
+  display: none;
+}
+
+.tutorial-ia-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 8, 20, 0.42);
+  backdrop-filter: blur(1px);
+  pointer-events: auto;
+}
+
+.tutorial-ia-card {
+  position: absolute;
+  top: max(78px, calc(env(safe-area-inset-top) + 62px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(92vw, 520px);
+  max-height: min(43vh, 340px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: linear-gradient(180deg, rgba(28, 32, 58, 0.985), rgba(15, 18, 35, 0.985));
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 20px;
+  padding: 15px 16px;
+  color: #fff;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.42);
+  pointer-events: auto;
+}
+
+.tutorial-ia-head {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+}
+
+.tutorial-ia-heading {
+  min-width: 0;
+}
+
+.tutorial-ia-avatar {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 25px;
+}
+
+.tutorial-ia-title {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.tutorial-ia-step {
+  display: block;
+  margin-top: 2px;
+  color: #c5ccff;
+  font-size: 0.76rem;
+}
+
+.tutorial-ia-message {
+  margin: 11px 0 7px;
+  line-height: 1.38;
+  font-size: 0.95rem;
+}
+
+.tutorial-ia-tip {
+  margin: 0 0 11px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  background: rgba(114, 134, 255, 0.14);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.tutorial-ia-progress {
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.tutorial-ia-progress > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #8ea0ff, #d29aff);
+  transition: width 0.3s;
+}
+
+.tutorial-ia-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 11px;
+}
+
+.tutorial-ia-btn {
+  min-height: 40px;
+  border: 0;
+  border-radius: 11px;
+  padding: 9px 13px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.tutorial-ia-btn.primary {
+  background: #fff;
+  color: #171a32;
+}
+
+.tutorial-ia-btn.secondary {
+  background: rgba(255, 255, 255, 0.13);
+  color: #fff;
+}
+
+.tutorial-ia-btn.danger {
+  background: transparent;
+  color: #ffc8c8;
+}
+
+.tutorial-highlight {
+  position: relative !important;
+  z-index: 10010 !important;
+  animation: tutorialPulse 1s infinite;
+  filter: drop-shadow(0 0 12px rgba(255, 235, 116, 0.95));
+}
+
+.tutorial-ia-toast {
+  display: none;
+}
+
+.tutorial-ia-global-toast {
+  position: fixed;
+  top: max(92px, calc(env(safe-area-inset-top) + 76px));
+  left: 50%;
+  z-index: 10030;
+  max-width: 88vw;
+  transform: translate(-50%, -12px);
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: rgba(12, 15, 30, 0.94);
+  color: #fff;
+  text-align: center;
+  font-size: 0.86rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.tutorial-ia-global-toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.tutorial-modal-abierto .controls,
+.tutorial-modal-abierto #pauseButton,
+.tutorial-modal-abierto #tutorialButton,
+.tutorial-modal-abierto #abilityButton {
+  pointer-events: none !important;
+}
+
+@keyframes tutorialPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.055); }
+}
+
+@media (max-width: 520px) {
+  .tutorial-ia-card {
+    top: max(72px, calc(env(safe-area-inset-top) + 56px));
+    width: min(94vw, 500px);
+    max-height: 45vh;
+    border-radius: 17px;
+    padding: 13px 14px;
+  }
+
+  .tutorial-ia-message {
+    font-size: 0.91rem;
+  }
+
+  .tutorial-ia-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tutorial-ia-btn.primary {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .tutorial-ia-btn {
+    width: 100%;
+    padding: 9px 8px;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-height: 700px) {
+  .tutorial-ia-card {
+    top: max(58px, calc(env(safe-area-inset-top) + 46px));
+    max-height: 52vh;
+  }
+
+  .tutorial-ia-tip {
+    padding: 6px 8px;
+  }
+}
+
+.tutorial-help-button {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
+  background: rgba(19, 24, 48, 0.78);
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 900;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.24);
+  cursor: pointer;
+}
+
+.tutorial-help-button:active {
+  transform: scale(0.94);
+}

@@ -325,7 +325,9 @@
         mensaje: `Objeto legendario encontrado · ${texto}`
       });
     } else {
-      window.SistemaMundos?.mostrarMensaje?.(`${objeto.simbolo} ${objeto.nombre} · ${texto}`);
+      // Fuente única de notificaciones: la cola verde de SistemaCajas.
+      // No se usa SistemaMundos para evitar el cartel marrón/amarillo legado.
+      window.SistemaCajas?.mostrarMensajeRapido?.(`${objeto.simbolo} ${objeto.nombre} · ${texto}`);
     }
     window.dispatchEvent(new CustomEvent("juniorgame:objetoBioma", { detail: objeto }));
   }

@@ -1,0 +1,8 @@
+CORRECCIÓN REAL DEL HUD Y AVISO ÚNICO
+
+- Vidas ya no invade el contador de monedas.
+- Monedas, diamantes y mascota usan columnas independientes.
+- 100K, 1.2M, 1B y 1T caben completos.
+- Biomas envía recompensas directamente a la cola verde.
+- Se elimina la llamada al sistema legado que producía el cartel marrón/amarillo.
+- Se renovaron las versiones de caché de CSS y JavaScript.

@@ -1,0 +1,12 @@
+JuniorGame — HUD compacto reacomodado
+Fecha: 2026-07-31
+
+Cambios:
+- Barra superior reducida y alineada en una sola fila.
+- Huesos y progreso colocados a la izquierda sin espacio desperdiciado.
+- Vidas, monedas, diamantes y mascota agrupados en cápsulas compactas.
+- Pausa, ayuda y casa alineados al extremo derecho.
+- Habilidad circular colocada debajo de la barra y dentro de la pantalla.
+- Clima centrado debajo del HUD y con tamaño menor.
+- Ajustes específicos para teléfonos angostos.
+- El HUD en reposo conserva suficiente visibilidad.

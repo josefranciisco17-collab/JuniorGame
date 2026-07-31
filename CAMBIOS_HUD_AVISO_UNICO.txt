@@ -1,9 +1,0 @@
-JUNIORGAME — CORRECCIÓN DEFINITIVA DEL HUD Y AVISOS
-
-1. Se eliminaron los solapes entre vidas, monedas y diamantes.
-2. Monedas y diamantes usan cápsulas independientes con ancho suficiente.
-3. Valores como 100K, 1.2M y 1B se muestran completos.
-4. Se eliminó el cartel antiguo amarillo/café de recompensas.
-5. Sólo permanece el aviso verde y se procesa uno por uno.
-6. El aviso verde aparece debajo del clima para no taparlo.
-7. En pantallas extremadamente angostas se oculta únicamente Ayuda; Pausa y Casa permanecen visibles.

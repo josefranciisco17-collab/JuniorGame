@@ -3,27 +3,73 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-  <meta name="theme-color" content="#2f67ae">
+  <meta name="theme-color" content="#3479b9">
   <title>Villa Junior · JuniorGame</title>
-  <link rel="stylesheet" href="css/mapa.css?v=4">
+  <link rel="stylesheet" href="css/mapa.css?v=5">
 </head>
 <body>
 <main id="mapViewport" class="map-viewport" aria-label="Villa Junior">
   <section id="mapWorld" class="map-world">
-    <div class="sky"></div><div class="mountains"></div><div class="forest-line"></div><div class="grass"></div>
-    <div class="river"></div><div class="pond"></div>
-    <div class="path path-main"></div><div class="path path-left"></div><div class="path path-right"></div>
+    <div class="sky-glow"></div>
+    <div class="far-mountains"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="tree-line"></div>
+    <div class="terrain"></div>
+    <div class="river"><span></span><span></span><span></span></div>
+    <div class="bridge"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="pond"><span></span></div>
+    <div class="road road-main"></div>
+    <div class="road road-left"></div>
+    <div class="road road-right"></div>
+    <div class="road road-loop"></div>
+    <div class="plaza"><span></span></div>
 
-    <div class="landmark shop-building" aria-label="Tienda"><span class="roof"></span><span class="awning"></span><span class="door"></span><b>TIENDA</b></div>
-    <div class="landmark mission-board"><span>📋</span><b>MISIONES</b></div>
-    <div class="landmark home-building"><span class="home-roof"></span><span class="home-door"></span><b>CASA</b></div>
-    <div class="landmark portal-building"><span class="portal-ring"><i></i></span><b>NIVEL 1</b><em>JUGAR</em></div>
-    <div class="landmark ranking-board"><span>🏆</span><b>RANKING</b><ol><li>Max 52,300</li><li>Luna 41,870</li><li>Rocky 35,620</li></ol></div>
-    <div class="landmark wheel-building"><span class="wheel-disc">🎡</span><b>RULETA</b></div>
-    <div class="landmark pets-building"><span>🐶</span><b>PERRITOS JR</b></div>
-    <div class="landmark event-building"><span>🎈</span><b>EVENTOS</b></div>
-    <div class="landmark chest-building"><span>🎁</span><b>COFRES<br>ESCONDIDOS</b></div>
-    <div class="landmark fountain"><span>⛲</span></div>
+    <div class="decor decor-trees" aria-hidden="true">
+      <i style="--x:80px;--y:290px;--s:1.15"></i><i style="--x:125px;--y:470px;--s:.9"></i><i style="--x:150px;--y:790px;--s:1.2"></i>
+      <i style="--x:1430px;--y:250px;--s:1.1"></i><i style="--x:1385px;--y:520px;--s:.95"></i><i style="--x:1450px;--y:820px;--s:1.25"></i>
+      <i style="--x:500px;--y:160px;--s:.85"></i><i style="--x:930px;--y:145px;--s:.9"></i><i style="--x:1210px;--y:160px;--s:.8"></i>
+    </div>
+    <div class="decor decor-rocks" aria-hidden="true"><i style="--x:470px;--y:760px"></i><i style="--x:1180px;--y:820px"></i><i style="--x:990px;--y:610px"></i><i style="--x:300px;--y:620px"></i></div>
+    <div class="decor decor-flowers" aria-hidden="true"><i style="--x:360px;--y:365px"></i><i style="--x:875px;--y:335px"></i><i style="--x:1260px;--y:465px"></i><i style="--x:750px;--y:820px"></i><i style="--x:1110px;--y:770px"></i></div>
+
+    <article class="landmark building shop-building" aria-label="Tienda">
+      <div class="building-shadow"></div><div class="building-base"></div><div class="building-roof"></div><div class="building-sign">TIENDA</div>
+      <div class="shop-awning"></div><div class="shop-window left"></div><div class="shop-window right"></div><div class="building-door"></div><div class="chimney"></div>
+      <span class="place-badge">OFERTAS</span>
+    </article>
+
+    <article class="landmark mission-board" aria-label="Misiones">
+      <div class="board-post"></div><div class="board-face"><span>📜</span><b>MISIONES</b><small>3 disponibles</small></div><div class="board-roof"></div>
+    </article>
+
+    <article class="landmark building home-building" aria-label="Casa">
+      <div class="building-shadow"></div><div class="building-base"></div><div class="home-roof"></div><div class="home-window left"></div><div class="home-window right"></div><div class="building-door"></div><div class="chimney"><i></i></div>
+      <div class="building-sign">CASA</div>
+    </article>
+
+    <article class="landmark portal-building" aria-label="Portal Nivel 1">
+      <div class="portal-platform"></div><div class="portal-ring"><i></i><b></b></div><div class="portal-spark one"></div><div class="portal-spark two"></div><div class="portal-spark three"></div>
+      <div class="portal-label"><strong>NIVEL 1</strong><small>JUGAR</small></div>
+    </article>
+
+    <article class="landmark ranking-board" aria-label="Ranking">
+      <div class="ranking-crown">★</div><div class="ranking-face"><b>RANKING</b><ol><li><span>1</span> Max <em>52,300</em></li><li><span>2</span> Luna <em>41,870</em></li><li><span>3</span> Rocky <em>35,620</em></li></ol></div><div class="ranking-feet"></div>
+    </article>
+
+    <article class="landmark wheel-building" aria-label="Ruleta">
+      <div class="wheel-stand"></div><div class="wheel-disc"><i></i><i></i><i></i><i></i><i></i><i></i><span>★</span></div><div class="wheel-pointer"></div><div class="building-sign">RULETA</div>
+    </article>
+
+    <article class="landmark building pets-building" aria-label="Perritos Junior">
+      <div class="building-shadow"></div><div class="building-base"></div><div class="pets-roof"></div><div class="kennel-door"></div><div class="pets-window left"></div><div class="pets-window right"></div><div class="building-sign">PERRITOS JR</div>
+      <span class="place-badge">NUEVO</span>
+    </article>
+
+    <article class="landmark event-building" aria-label="Eventos">
+      <div class="event-stage"></div><div class="balloon b1"></div><div class="balloon b2"></div><div class="balloon b3"></div><div class="event-banner">EVENTOS</div><div class="gift-box"></div>
+    </article>
+
+    <article class="landmark chest-building" aria-label="Cofre escondido"><div class="chest-lid"></div><div class="chest-body"></div><div class="chest-lock"></div><b>COFRE<br>DIARIO</b></article>
+    <article class="landmark fountain" aria-label="Fuente"><div class="fountain-basin"></div><div class="fountain-column"></div><div class="fountain-water"></div></article>
 
     <button class="hotspot" data-id="tienda" data-x="260" data-y="315" data-radius="150" aria-label="Entrar a Tienda"></button>
     <button class="hotspot" data-id="ruleta" data-x="420" data-y="545" data-radius="135" aria-label="Abrir Ruleta"></button>
@@ -32,63 +78,49 @@
     <button class="hotspot" data-id="portal" data-x="1080" data-y="350" data-radius="145" aria-label="Jugar Nivel 1"></button>
     <button class="hotspot" data-id="ranking" data-x="1325" data-y="300" data-radius="130" aria-label="Abrir Ranking"></button>
     <button class="hotspot" data-id="perritos" data-x="260" data-y="770" data-radius="130" aria-label="Abrir Perritos Junior"></button>
-    <button class="hotspot" data-id="cofre" data-x="650" data-y="810" data-radius="115" aria-label="Abrir cofre escondido"></button>
+    <button class="hotspot" data-id="cofre" data-x="650" data-y="810" data-radius="115" aria-label="Abrir cofre diario"></button>
     <button class="hotspot" data-id="eventos" data-x="1165" data-y="650" data-radius="135" aria-label="Abrir Eventos"></button>
     <button class="hotspot" data-id="ayuda" data-x="1330" data-y="835" data-radius="105" aria-label="Abrir Ayuda"></button>
 
     <div id="dayNightLayer" class="day-night-layer" aria-hidden="true"></div>
     <div id="weatherLayer" class="weather-layer" aria-hidden="true"></div>
-    <div class="ambient-cloud cloud-a">☁️</div><div class="ambient-cloud cloud-b">☁️</div><div class="ambient-cloud cloud-c">☁️</div>
-    <div class="ambient-butterflies"><span>🦋</span><span>🦋</span><span>🦋</span></div>
-    <div class="ambient-birds"><span>🕊️</span><span>🕊️</span></div>
+    <div class="ambient-cloud cloud-a"></div><div class="ambient-cloud cloud-b"></div><div class="ambient-cloud cloud-c"></div>
+    <div class="ambient-butterflies"><span>✦</span><span>✦</span><span>✦</span></div>
+    <div class="ambient-birds"><span>⌁</span><span>⌁</span></div>
 
     <div class="map-npc npc-profesor" data-npc="profesor" style="left:1300px;top:850px"><span class="npc-shadow"></span><span class="npc-body">🐕‍🦺</span><b>Profesor Junior</b><em>¡Tengo un consejo!</em></div>
     <div class="map-npc npc-vendedora" data-npc="vendedora" style="left:330px;top:410px"><span class="npc-shadow"></span><span class="npc-body">🐩</span><b>Luna</b><em>¡Ofertas nuevas!</em></div>
     <div class="map-npc npc-guardia" data-npc="guardia" style="left:1025px;top:475px"><span class="npc-shadow"></span><span class="npc-body">🐕</span><b>Max</b><em>El portal está listo</em></div>
 
     <div id="playerAvatar" class="map-player" aria-label="Junior"><span class="player-shadow"></span><img src="Fondos-JuniorGame/usuario1.png" alt="Junior"><span class="player-name">JUNIOR</span></div>
-    <div id="petAvatar" class="map-pet" aria-hidden="true"><img src="Fondos-JuniorGame/Estrella.png" alt=""></div>
-
+    <div id="petAvatar" class="map-pet" aria-hidden="true"><span class="pet-shadow"></span><img src="Fondos-JuniorGame/Estrella.png" alt=""></div>
     <div id="randomEvent" class="random-event hidden" aria-live="polite"><span id="randomEventIcon">🎈</span><strong id="randomEventTitle">Evento</strong><small id="randomEventText"></small></div>
   </section>
 
   <header class="map-hud">
     <button id="profileButton" class="hud-profile" type="button"><img id="hudPhoto" src="Fondos-JuniorGame/Estrella.png" alt="Foto"><span><strong id="hudName">Junior</strong><small>Nivel <b id="hudLevel">1</b></small><i><u id="hudXp">0</u>/1200</i></span></button>
-    <div class="hud-resources"><span>🪙 <b id="hudCoins">0</b><i>＋</i></span><span>💎 <b id="hudDiamonds">0</b><i>＋</i></span><span>❤️ <b id="hudLives">3/10</b><i>＋</i></span></div>
+    <div class="hud-resources"><span class="coin-chip"><i>●</i><b id="hudCoins">0</b><button type="button" aria-label="Comprar monedas">＋</button></span><span class="diamond-chip"><i>◆</i><b id="hudDiamonds">0</b><button type="button" aria-label="Comprar diamantes">＋</button></span><span class="life-chip"><i>♥</i><b id="hudLives">3/10</b><button type="button" aria-label="Obtener vidas">＋</button></span></div>
     <div class="hud-actions"><button id="chatButton" type="button"><span>💬</span><small>Chat</small></button><button id="eventsButton" type="button"><span>🔔</span><small>Eventos</small></button><button id="settingsButton" type="button"><span>⚙️</span><small>Ajustes</small></button></div>
   </header>
 
   <nav class="side-menu" aria-label="Accesos rápidos">
-    <button data-side="tienda"><span>🏪</span><small>Tienda</small></button>
-    <button data-side="perritos"><span>🐶</span><small>Perritos Jr</small></button>
-    <button data-side="misiones"><span>📋</span><small>Misiones</small></button>
-    <button data-side="ruleta"><span>🎡</span><small>Ruleta</small></button>
-    <button data-side="ranking"><span>🏆</span><small>Ranking</small></button>
+    <button data-side="tienda"><span>🏪</span><small>Tienda</small></button><button data-side="perritos"><span>🐶</span><small>Perritos Jr</small></button><button data-side="misiones"><span>📋</span><small>Misiones</small><i>3</i></button><button data-side="ruleta"><span>🎡</span><small>Ruleta</small><i>1</i></button><button data-side="ranking"><span>🏆</span><small>Ranking</small></button>
   </nav>
 
   <div id="worldStatus" class="world-status"><span id="worldClock">☀️ Día</span><small id="worldWeather">Clima agradable</small></div>
-
   <section id="interactionPanel" class="interaction-panel hidden" aria-live="polite"><span id="interactionIcon">🐾</span><div><strong id="interactionTitle">Lugar</strong><small id="interactionText">Acércate para interactuar</small></div><button id="interactionButton" type="button">ENTRAR</button></section>
-
-  <section class="bottom-hud">
-    <div class="ability-slot"><small>HABILIDAD</small><strong>0/3</strong><span>⚡</span></div>
-    <div class="shield-slot"><small>ESCUDO</small><strong>00:15:30</strong><span>🛡️</span></div>
-    <div class="locked-slot">🔒</div><div class="locked-slot">🔒</div>
-  </section>
-
+  <section class="bottom-hud"><div class="ability-slot"><small>HABILIDAD</small><strong>0/3</strong><span>⚡</span></div><div class="shield-slot"><small>ESCUDO</small><strong>00:15:30</strong><span>🛡️</span></div><div class="locked-slot">🔒</div><div class="locked-slot">🔒</div></section>
   <div class="map-controls"><div id="joystick" class="joystick"><span id="joystickKnob"></span></div><button id="interactButton" class="interact-button" type="button" disabled>🐾<small>ENTRAR</small></button></div>
   <button id="startLevelButton" class="start-level" type="button">🦴 <span>INICIAR NIVEL<small>x5</small></span></button>
   <button id="backButton" class="back-button" type="button">← MENÚ</button>
 
   <div id="mapModal" class="map-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><section><button id="modalClose" class="modal-close" type="button">×</button><span id="modalIcon" class="modal-icon">🐾</span><h2 id="modalTitle">JuniorGame</h2><p id="modalText"></p><div id="modalActions" class="modal-actions"></div></section></div>
-
   <div aria-hidden="true" aria-labelledby="dailyWheelTitle" aria-modal="true" class="daily-wheel-modal hidden" id="dailyWheelModal" role="dialog"><div class="daily-wheel-card"><button aria-label="Cerrar" class="daily-wheel-close" id="dailyWheelCloseButton" type="button">✕</button><h2 id="dailyWheelTitle">RULETA DIARIA</h2><p id="dailyWheelStatus">Preparando tu giro…</p><div class="daily-wheel-stage"><div aria-hidden="true" class="daily-wheel-pointer">▼</div><div class="daily-wheel-disc" id="dailyWheelDisc"><div class="daily-wheel-segments" id="dailyWheelSegments"></div><div aria-hidden="true" class="daily-wheel-center">🐶</div></div></div><div aria-live="polite" class="daily-wheel-result hidden" id="dailyWheelResult"></div><strong class="daily-wheel-countdown" id="dailyWheelCountdown">Disponible ahora</strong><button class="daily-wheel-spin" id="dailyWheelSpinButton" type="button">GIRAR AHORA</button><small class="daily-wheel-note">Un giro por día.</small></div></div>
   <div aria-hidden="true" aria-labelledby="missionsTitle" aria-modal="true" class="missions-modal hidden" id="missionsModal" role="dialog"><div class="missions-card"><button aria-label="Cerrar" class="missions-close" id="missionsCloseButton" type="button">✕</button><h2 id="missionsTitle">MISIONES Y LOGROS</h2><p class="missions-summary" id="missionsSummary">Tus desafíos</p><div class="missions-tabs"><button class="missions-tab active" data-missions-tab="diarias">DIARIAS</button><button class="missions-tab" data-missions-tab="semanales">SEMANALES</button><button class="missions-tab" data-missions-tab="logros">LOGROS</button></div><div class="missions-list" id="missionsList"></div></div></div>
   <button id="dailyWheelButton" hidden></button><span id="dailyWheelMenuStatus" hidden></span><button id="missionsButton" hidden></button><span id="missionsBadge" hidden></span>
-
   <div id="mapIntro" class="map-intro" aria-live="polite"><section><span>🐶</span><h1>VILLA JUNIOR</h1><p>Explora la villa con tu compañero.</p><button id="skipIntroButton" type="button">ENTRAR AL MAPA</button></section></div>
   <audio id="mapMusic" src="audio/mapa/villa-junior.wav" preload="auto" loop></audio>
   <div id="orientationHint" class="orientation-hint"><span>📱↔️</span><strong>Se disfruta mejor en horizontal</strong><small>Puedes seguir jugando en vertical.</small></div>
 </main>
-<script src="js/ruleta.js?v=4"></script><script src="js/misiones.js?v=4"></script><script type="module" src="js/mapa.js?v=4"></script>
+<script src="js/ruleta.js?v=5"></script><script src="js/misiones.js?v=5"></script><script type="module" src="js/mapa.js?v=5"></script>
 </body></html>

@@ -1,0 +1,18 @@
+JUNIORGAME · VILLA JUNIOR COMERCIAL
+
+Esta versión reconstruye el mapa con HTML y CSS, sin usar la imagen de referencia como fondo.
+
+Incluye:
+- Escenario por capas: cielo, montañas, árboles, césped, caminos, río, puente, plaza y decoración.
+- Edificios individuales de Tienda, Casa, Perritos Jr, Ruleta, Misiones, Ranking, Eventos y Portal.
+- HUD profesional adaptable.
+- Jugador y mascota grandes y visibles.
+- Mantiene la lógica funcional de la Fase 3 en js/mapa.js.
+
+Instalación:
+cd ~/JuniorGame
+unzip -o ~/storage/downloads/JuniorGame_Mapa_Comercial.zip
+
+git add mapa.html css/mapa.css js/mapa.js LEEME_MAPA_COMERCIAL.txt
+git commit -m "Reconstruye Villa Junior con calidad comercial"
+git push

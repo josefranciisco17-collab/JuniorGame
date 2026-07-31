@@ -811,15 +811,34 @@ const yBase = esPruebaNivel1
   },
 
   mostrarMensajeRapido(texto) {
-    document.querySelector(".surprise-toast")?.remove();
+    const mensaje = String(texto || "").trim();
+    if (!mensaje) return;
+
+    this.colaMensajes = Array.isArray(this.colaMensajes) ? this.colaMensajes : [];
+    this.colaMensajes.push(mensaje);
+    this.procesarColaMensajes();
+  },
+
+  procesarColaMensajes() {
+    if (this.mensajeMostrandose || !this.colaMensajes?.length) return;
+
+    this.mensajeMostrandose = true;
+    const texto = this.colaMensajes.shift();
+    document.querySelectorAll(".surprise-toast").forEach((nodo) => nodo.remove());
 
     const aviso = document.createElement("div");
     aviso.className = "surprise-toast";
+    aviso.setAttribute("role", "status");
+    aviso.setAttribute("aria-live", "polite");
     aviso.textContent = texto;
     document.body.appendChild(aviso);
 
-    window.setTimeout(() => aviso.classList.add("surprise-toast-out"), 1300);
-    window.setTimeout(() => aviso.remove(), 1750);
+    window.setTimeout(() => aviso.classList.add("surprise-toast-out"), 1150);
+    window.setTimeout(() => {
+      aviso.remove();
+      this.mensajeMostrandose = false;
+      window.setTimeout(() => this.procesarColaMensajes(), 100);
+    }, 1530);
   },
 
   eliminarCaja() {

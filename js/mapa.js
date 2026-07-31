@@ -17,10 +17,9 @@ const modal = document.getElementById("mapModal");
 const modalClose = document.getElementById("modalClose");
 const numberFormat = new Intl.NumberFormat("es-MX");
 
-const WORLD_W = 1256;
-const WORLD_H = 780;
-const MAP_LAYOUT_VERSION = 4;
-const state = { x: 620, y: 525, vx: 0, vy: 0, scale: 1, cameraX: 0, cameraY: 0, nearby: null, user: null, lastTime: performance.now(), saveTimer: null, petX: 565, petY: 550, idleSeconds: 0, worldMinutes: 540, weather: "clear", nextEventAt: performance.now() + 22000, introDone: false };
+const WORLD_W = 1536;
+const WORLD_H = 1024;
+const state = { x: 760, y: 690, vx: 0, vy: 0, scale: 1, cameraX: 0, cameraY: 0, nearby: null, user: null, lastTime: performance.now(), saveTimer: null, petX: 690, petY: 720, idleSeconds: 0, worldMinutes: 540, weather: "clear", nextEventAt: performance.now() + 22000, introDone: false };
 const keys = new Set();
 
 const places = {
@@ -92,9 +91,9 @@ function updateNearby() {
     if (d <= r && d < nearestDistance) { nearestDistance = d; nearest = el.dataset.id; }
   });
   const npcZones = [
-    { id: "npc-profesor", x: 1155, y: 725, radius: 115 },
-    { id: "npc-vendedora", x: 170, y: 275, radius: 105 },
-    { id: "npc-guardia", x: 885, y: 350, radius: 105 }
+    { id: "npc-profesor", x: 1300, y: 850, radius: 115 },
+    { id: "npc-vendedora", x: 330, y: 410, radius: 105 },
+    { id: "npc-guardia", x: 1025, y: 475, radius: 105 }
   ];
   npcZones.forEach((zone) => {
     const d = Math.hypot(state.x - zone.x, state.y - zone.y);
@@ -122,8 +121,8 @@ function walk(dt) {
   const mag = Math.hypot(x, y);
   if (mag > 1) { x /= mag; y /= mag; }
   const speed = 245;
-  state.x = clamp(state.x + x * speed * dt, 45, WORLD_W - 45);
-  state.y = clamp(state.y + y * speed * dt, 95, WORLD_H - 35);
+  state.x = clamp(state.x + x * speed * dt, 120, WORLD_W - 120);
+  state.y = clamp(state.y + y * speed * dt, 250, WORLD_H - 75);
   positionActors(dt);
   updateNearby();
   updateCamera();
@@ -407,7 +406,7 @@ function talkToNpc(id) {
 function scheduleSave(immediate = false) {
   if (!state.user) return;
   clearTimeout(state.saveTimer);
-  const save = () => setDoc(doc(db, "users", state.user.uid), { mapaPrincipal: { x: Math.round(state.x), y: Math.round(state.y), layoutVersion: MAP_LAYOUT_VERSION }, updatedAt: serverTimestamp() }, { merge: true }).catch(() => {});
+  const save = () => setDoc(doc(db, "users", state.user.uid), { mapaPrincipal: { x: Math.round(state.x), y: Math.round(state.y) }, updatedAt: serverTimestamp() }, { merge: true }).catch(() => {});
   if (immediate) save(); else state.saveTimer = setTimeout(save, 900);
 }
 
@@ -422,13 +421,9 @@ onAuthStateChanged(auth, (user) => {
     document.getElementById("hudCoins").textContent = numberFormat.format(safeInt(data.coins ?? data.monedas, 0));
     document.getElementById("hudDiamonds").textContent = numberFormat.format(safeInt(data.diamonds ?? data.diamantes, 0));
     document.getElementById("hudLives").textContent = `${clamp(safeInt(data.vidas ?? data.lives, 3), 0, 10)}/10`;
-    if (!state.loadedPosition) {
-      const saved = data.mapaPrincipal || {};
-      const compatible = Number(saved.layoutVersion) === MAP_LAYOUT_VERSION;
-      state.x = compatible ? clamp(safeInt(saved.x, 620), 45, WORLD_W - 45) : 620;
-      state.y = compatible ? clamp(safeInt(saved.y, 525), 95, WORLD_H - 35) : 525;
-      state.petX = state.x - 55;
-      state.petY = state.y + 25;
+    if (data.mapaPrincipal && !state.loadedPosition) {
+      state.x = clamp(safeInt(data.mapaPrincipal.x, 760), 120, WORLD_W - 120);
+      state.y = clamp(safeInt(data.mapaPrincipal.y, 650), 250, WORLD_H - 75);
       state.loadedPosition = true;
     }
   });
@@ -438,3 +433,13 @@ window.addEventListener("pagehide", () => scheduleSave(true));
 resizeWorld();
 positionActors();
 requestAnimationFrame(frame);
+
+
+// Accesos visuales de la Villa Junior
+document.querySelectorAll("[data-side]").forEach((button) => {
+  button.addEventListener("click", () => {
+    state.nearby = button.dataset.side;
+    interact();
+  });
+});
+document.getElementById("startLevelButton")?.addEventListener("click", () => { window.location.href = "game.html"; });

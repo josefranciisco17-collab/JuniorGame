@@ -1,0 +1,21 @@
+MAPA PROFESIONAL JUNIORGAME
+
+Esta actualización reconstruye la Villa Junior con elementos separados en HTML/CSS.
+No utiliza la imagen de referencia como fondo.
+
+Archivos incluidos:
+- mapa.html
+- css/mapa.css
+- js/mapa.js
+
+Conserva:
+- Movimiento del jugador y mascota
+- Cámara
+- Ruleta, misiones, ranking, eventos y cofres
+- Firestore y guardado de posición
+- NPC y clima dinámico
+- Accesos directos y portal de juego
+
+Instalación:
+cd ~/JuniorGame
+unzip -o ~/storage/downloads/JuniorGame_Mapa_Profesional.zip

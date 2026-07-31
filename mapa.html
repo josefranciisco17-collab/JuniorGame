@@ -2,164 +2,93 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#173d77">
-  <title>Mapa Principal · JuniorGame</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#2f67ae">
+  <title>Villa Junior · JuniorGame</title>
   <link rel="stylesheet" href="css/mapa.css?v=4">
 </head>
 <body>
-  <main id="mapViewport" class="map-viewport" aria-label="Mapa principal de JuniorGame">
-    <section id="mapWorld" class="map-world">
-      <img class="map-art" src="assets/mapa/mapa-principal.png" alt="Villa principal de JuniorGame con tienda, misiones, ruleta, casa, portal y ranking">
+<main id="mapViewport" class="map-viewport" aria-label="Villa Junior">
+  <section id="mapWorld" class="map-world">
+    <div class="sky"></div><div class="mountains"></div><div class="forest-line"></div><div class="grass"></div>
+    <div class="river"></div><div class="pond"></div>
+    <div class="path path-main"></div><div class="path path-left"></div><div class="path path-right"></div>
 
-      <div class="map-cleanup-patch" aria-hidden="true"></div>
+    <div class="landmark shop-building" aria-label="Tienda"><span class="roof"></span><span class="awning"></span><span class="door"></span><b>TIENDA</b></div>
+    <div class="landmark mission-board"><span>📋</span><b>MISIONES</b></div>
+    <div class="landmark home-building"><span class="home-roof"></span><span class="home-door"></span><b>CASA</b></div>
+    <div class="landmark portal-building"><span class="portal-ring"><i></i></span><b>NIVEL 1</b><em>JUGAR</em></div>
+    <div class="landmark ranking-board"><span>🏆</span><b>RANKING</b><ol><li>Max 52,300</li><li>Luna 41,870</li><li>Rocky 35,620</li></ol></div>
+    <div class="landmark wheel-building"><span class="wheel-disc">🎡</span><b>RULETA</b></div>
+    <div class="landmark pets-building"><span>🐶</span><b>PERRITOS JR</b></div>
+    <div class="landmark event-building"><span>🎈</span><b>EVENTOS</b></div>
+    <div class="landmark chest-building"><span>🎁</span><b>COFRES<br>ESCONDIDOS</b></div>
+    <div class="landmark fountain"><span>⛲</span></div>
 
-      <div id="playerAvatar" class="map-player" aria-label="Junior">
-        <span class="player-shadow"></span>
-        <img src="Fondos-JuniorGame/usuario1.png" alt="Junior">
-        <span class="player-name">JUNIOR</span>
-      </div>
+    <button class="hotspot" data-id="tienda" data-x="260" data-y="315" data-radius="150" aria-label="Entrar a Tienda"></button>
+    <button class="hotspot" data-id="ruleta" data-x="420" data-y="545" data-radius="135" aria-label="Abrir Ruleta"></button>
+    <button class="hotspot" data-id="misiones" data-x="590" data-y="285" data-radius="120" aria-label="Abrir Misiones"></button>
+    <button class="hotspot" data-id="casa" data-x="790" data-y="280" data-radius="130" aria-label="Entrar a Casa"></button>
+    <button class="hotspot" data-id="portal" data-x="1080" data-y="350" data-radius="145" aria-label="Jugar Nivel 1"></button>
+    <button class="hotspot" data-id="ranking" data-x="1325" data-y="300" data-radius="130" aria-label="Abrir Ranking"></button>
+    <button class="hotspot" data-id="perritos" data-x="260" data-y="770" data-radius="130" aria-label="Abrir Perritos Junior"></button>
+    <button class="hotspot" data-id="cofre" data-x="650" data-y="810" data-radius="115" aria-label="Abrir cofre escondido"></button>
+    <button class="hotspot" data-id="eventos" data-x="1165" data-y="650" data-radius="135" aria-label="Abrir Eventos"></button>
+    <button class="hotspot" data-id="ayuda" data-x="1330" data-y="835" data-radius="105" aria-label="Abrir Ayuda"></button>
 
-      <div id="petAvatar" class="map-pet" aria-hidden="true">
-        <img src="Fondos-JuniorGame/Estrella.png" alt="">
-      </div>
+    <div id="dayNightLayer" class="day-night-layer" aria-hidden="true"></div>
+    <div id="weatherLayer" class="weather-layer" aria-hidden="true"></div>
+    <div class="ambient-cloud cloud-a">☁️</div><div class="ambient-cloud cloud-b">☁️</div><div class="ambient-cloud cloud-c">☁️</div>
+    <div class="ambient-butterflies"><span>🦋</span><span>🦋</span><span>🦋</span></div>
+    <div class="ambient-birds"><span>🕊️</span><span>🕊️</span></div>
 
-      <button class="hotspot" data-id="tienda" data-x="130" data-y="185" data-radius="150" aria-label="Entrar a Tienda"></button>
-      <button class="hotspot" data-id="ruleta" data-x="235" data-y="400" data-radius="120" aria-label="Abrir Ruleta"></button>
-      <button class="hotspot" data-id="misiones" data-x="460" data-y="185" data-radius="115" aria-label="Abrir Misiones"></button>
-      <button class="hotspot" data-id="casa" data-x="660" data-y="170" data-radius="120" aria-label="Entrar a Casa"></button>
-      <button class="hotspot" data-id="portal" data-x="945" data-y="240" data-radius="140" aria-label="Jugar Nivel 1"></button>
-      <button class="hotspot" data-id="ranking" data-x="1190" data-y="205" data-radius="125" aria-label="Abrir Ranking"></button>
-      <button class="hotspot" data-id="perritos" data-x="110" data-y="650" data-radius="120" aria-label="Abrir Perritos Junior"></button>
-      <button class="hotspot" data-id="cofre" data-x="505" data-y="695" data-radius="105" aria-label="Abrir cofre escondido"></button>
-      <button class="hotspot" data-id="eventos" data-x="1020" data-y="510" data-radius="125" aria-label="Abrir Eventos"></button>
+    <div class="map-npc npc-profesor" data-npc="profesor" style="left:1300px;top:850px"><span class="npc-shadow"></span><span class="npc-body">🐕‍🦺</span><b>Profesor Junior</b><em>¡Tengo un consejo!</em></div>
+    <div class="map-npc npc-vendedora" data-npc="vendedora" style="left:330px;top:410px"><span class="npc-shadow"></span><span class="npc-body">🐩</span><b>Luna</b><em>¡Ofertas nuevas!</em></div>
+    <div class="map-npc npc-guardia" data-npc="guardia" style="left:1025px;top:475px"><span class="npc-shadow"></span><span class="npc-body">🐕</span><b>Max</b><em>El portal está listo</em></div>
 
+    <div id="playerAvatar" class="map-player" aria-label="Junior"><span class="player-shadow"></span><img src="Fondos-JuniorGame/usuario1.png" alt="Junior"><span class="player-name">JUNIOR</span></div>
+    <div id="petAvatar" class="map-pet" aria-hidden="true"><img src="Fondos-JuniorGame/Estrella.png" alt=""></div>
 
-      <!-- FASE 3 · MUNDO VIVO -->
-      <div id="dayNightLayer" class="day-night-layer" aria-hidden="true"></div>
-      <div id="weatherLayer" class="weather-layer" aria-hidden="true"></div>
-      <div class="ambient-cloud cloud-a" aria-hidden="true">☁️</div>
-      <div class="ambient-cloud cloud-b" aria-hidden="true">☁️</div>
-      <div class="ambient-cloud cloud-c" aria-hidden="true">☁️</div>
-      <div class="ambient-butterflies" aria-hidden="true"><span>🦋</span><span>🦋</span><span>🦋</span></div>
-      <div class="ambient-birds" aria-hidden="true"><span>🕊️</span><span>🕊️</span></div>
+    <div id="randomEvent" class="random-event hidden" aria-live="polite"><span id="randomEventIcon">🎈</span><strong id="randomEventTitle">Evento</strong><small id="randomEventText"></small></div>
+  </section>
 
-      <div class="map-npc npc-profesor" data-npc="profesor" style="left:1155px;top:725px">
-        <span class="npc-shadow"></span><span class="npc-body">🐕‍🦺</span><b>Profesor Junior</b><em>¡Tengo un consejo!</em>
-      </div>
-      <div class="map-npc npc-vendedora" data-npc="vendedora" style="left:170px;top:275px">
-        <span class="npc-shadow"></span><span class="npc-body">🐩</span><b>Luna</b><em>¡Ofertas nuevas!</em>
-      </div>
-      <div class="map-npc npc-guardia" data-npc="guardia" style="left:885px;top:350px">
-        <span class="npc-shadow"></span><span class="npc-body">🐕</span><b>Max</b><em>El portal está listo</em>
-      </div>
+  <header class="map-hud">
+    <button id="profileButton" class="hud-profile" type="button"><img id="hudPhoto" src="Fondos-JuniorGame/Estrella.png" alt="Foto"><span><strong id="hudName">Junior</strong><small>Nivel <b id="hudLevel">1</b></small><i><u id="hudXp">0</u>/1200</i></span></button>
+    <div class="hud-resources"><span>🪙 <b id="hudCoins">0</b><i>＋</i></span><span>💎 <b id="hudDiamonds">0</b><i>＋</i></span><span>❤️ <b id="hudLives">3/10</b><i>＋</i></span></div>
+    <div class="hud-actions"><button id="chatButton" type="button"><span>💬</span><small>Chat</small></button><button id="eventsButton" type="button"><span>🔔</span><small>Eventos</small></button><button id="settingsButton" type="button"><span>⚙️</span><small>Ajustes</small></button></div>
+  </header>
 
-      <div id="randomEvent" class="random-event hidden" aria-live="polite">
-        <span id="randomEventIcon">🎈</span><strong id="randomEventTitle">Evento</strong><small id="randomEventText"></small>
-      </div>
+  <nav class="side-menu" aria-label="Accesos rápidos">
+    <button data-side="tienda"><span>🏪</span><small>Tienda</small></button>
+    <button data-side="perritos"><span>🐶</span><small>Perritos Jr</small></button>
+    <button data-side="misiones"><span>📋</span><small>Misiones</small></button>
+    <button data-side="ruleta"><span>🎡</span><small>Ruleta</small></button>
+    <button data-side="ranking"><span>🏆</span><small>Ranking</small></button>
+  </nav>
 
-      <button class="hotspot" data-id="ayuda" data-x="1160" data-y="700" data-radius="110" aria-label="Abrir Ayuda"></button>
-    </section>
+  <div id="worldStatus" class="world-status"><span id="worldClock">☀️ Día</span><small id="worldWeather">Clima agradable</small></div>
 
-    <header class="map-hud">
-      <button id="profileButton" class="hud-profile" type="button">
-        <img id="hudPhoto" src="Fondos-JuniorGame/Estrella.png" alt="Foto del jugador">
-        <span><strong id="hudName">Jugador</strong><small>Nivel <b id="hudLevel">1</b></small></span>
-      </button>
-      <div class="hud-resources">
-        <span>🪙 <b id="hudCoins">0</b></span>
-        <span>💎 <b id="hudDiamonds">0</b></span>
-        <span>❤️ <b id="hudLives">3/10</b></span>
-      </div>
-      <div id="worldStatus" class="world-status"><span id="worldClock">☀️ Día</span><small id="worldWeather">Clima agradable</small></div>
-      <div class="hud-actions">
-        <button id="chatButton" type="button" aria-label="Chat">💬</button>
-        <button id="eventsButton" type="button" aria-label="Eventos">🔔</button>
-        <button id="settingsButton" type="button" aria-label="Ajustes">⚙️</button>
-      </div>
-    </header>
+  <section id="interactionPanel" class="interaction-panel hidden" aria-live="polite"><span id="interactionIcon">🐾</span><div><strong id="interactionTitle">Lugar</strong><small id="interactionText">Acércate para interactuar</small></div><button id="interactionButton" type="button">ENTRAR</button></section>
 
-    <section id="interactionPanel" class="interaction-panel hidden" aria-live="polite">
-      <span id="interactionIcon">🐾</span>
-      <div><strong id="interactionTitle">Lugar</strong><small id="interactionText">Acércate para interactuar</small></div>
-      <button id="interactionButton" type="button">ENTRAR</button>
-    </section>
+  <section class="bottom-hud">
+    <div class="ability-slot"><small>HABILIDAD</small><strong>0/3</strong><span>⚡</span></div>
+    <div class="shield-slot"><small>ESCUDO</small><strong>00:15:30</strong><span>🛡️</span></div>
+    <div class="locked-slot">🔒</div><div class="locked-slot">🔒</div>
+  </section>
 
-    <div class="map-controls" aria-label="Controles de movimiento">
-      <div id="joystick" class="joystick"><span id="joystickKnob"></span></div>
-      <button id="interactButton" class="interact-button" type="button" disabled>🐾<small>ENTRAR</small></button>
-    </div>
+  <div class="map-controls"><div id="joystick" class="joystick"><span id="joystickKnob"></span></div><button id="interactButton" class="interact-button" type="button" disabled>🐾<small>ENTRAR</small></button></div>
+  <button id="startLevelButton" class="start-level" type="button">🦴 <span>INICIAR NIVEL<small>x5</small></span></button>
+  <button id="backButton" class="back-button" type="button">← MENÚ</button>
 
-    <button id="backButton" class="back-button" type="button">← MENÚ</button>
+  <div id="mapModal" class="map-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><section><button id="modalClose" class="modal-close" type="button">×</button><span id="modalIcon" class="modal-icon">🐾</span><h2 id="modalTitle">JuniorGame</h2><p id="modalText"></p><div id="modalActions" class="modal-actions"></div></section></div>
 
-    <div id="mapModal" class="map-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <section>
-        <button id="modalClose" class="modal-close" type="button" aria-label="Cerrar">×</button>
-        <span id="modalIcon" class="modal-icon">🐾</span>
-        <h2 id="modalTitle">JuniorGame</h2>
-        <p id="modalText"></p>
-        <div id="modalActions" class="modal-actions"></div>
-      </section>
-    </div>
+  <div aria-hidden="true" aria-labelledby="dailyWheelTitle" aria-modal="true" class="daily-wheel-modal hidden" id="dailyWheelModal" role="dialog"><div class="daily-wheel-card"><button aria-label="Cerrar" class="daily-wheel-close" id="dailyWheelCloseButton" type="button">✕</button><h2 id="dailyWheelTitle">RULETA DIARIA</h2><p id="dailyWheelStatus">Preparando tu giro…</p><div class="daily-wheel-stage"><div aria-hidden="true" class="daily-wheel-pointer">▼</div><div class="daily-wheel-disc" id="dailyWheelDisc"><div class="daily-wheel-segments" id="dailyWheelSegments"></div><div aria-hidden="true" class="daily-wheel-center">🐶</div></div></div><div aria-live="polite" class="daily-wheel-result hidden" id="dailyWheelResult"></div><strong class="daily-wheel-countdown" id="dailyWheelCountdown">Disponible ahora</strong><button class="daily-wheel-spin" id="dailyWheelSpinButton" type="button">GIRAR AHORA</button><small class="daily-wheel-note">Un giro por día.</small></div></div>
+  <div aria-hidden="true" aria-labelledby="missionsTitle" aria-modal="true" class="missions-modal hidden" id="missionsModal" role="dialog"><div class="missions-card"><button aria-label="Cerrar" class="missions-close" id="missionsCloseButton" type="button">✕</button><h2 id="missionsTitle">MISIONES Y LOGROS</h2><p class="missions-summary" id="missionsSummary">Tus desafíos</p><div class="missions-tabs"><button class="missions-tab active" data-missions-tab="diarias">DIARIAS</button><button class="missions-tab" data-missions-tab="semanales">SEMANALES</button><button class="missions-tab" data-missions-tab="logros">LOGROS</button></div><div class="missions-list" id="missionsList"></div></div></div>
+  <button id="dailyWheelButton" hidden></button><span id="dailyWheelMenuStatus" hidden></span><button id="missionsButton" hidden></button><span id="missionsBadge" hidden></span>
 
-
-    <!-- RULETA DIARIA INTEGRADA -->
-    <div aria-hidden="true" aria-labelledby="dailyWheelTitle" aria-modal="true" class="daily-wheel-modal hidden" id="dailyWheelModal" role="dialog">
-      <div class="daily-wheel-card">
-        <button aria-label="Cerrar" class="daily-wheel-close" id="dailyWheelCloseButton" type="button">✕</button>
-        <h2 id="dailyWheelTitle">RULETA DIARIA</h2>
-        <p id="dailyWheelStatus">Preparando tu giro…</p>
-        <div class="daily-wheel-stage"><div aria-hidden="true" class="daily-wheel-pointer">▼</div><div class="daily-wheel-disc" id="dailyWheelDisc"><div class="daily-wheel-segments" id="dailyWheelSegments"></div><div aria-hidden="true" class="daily-wheel-center">🐶</div></div></div>
-        <div aria-live="polite" class="daily-wheel-result hidden" id="dailyWheelResult"></div>
-        <strong class="daily-wheel-countdown" id="dailyWheelCountdown">Disponible ahora</strong>
-        <button class="daily-wheel-spin" id="dailyWheelSpinButton" type="button">GIRAR AHORA</button>
-        <small class="daily-wheel-note">Un giro por día. El premio se guarda en tu cuenta.</small>
-      </div>
-    </div>
-
-    <!-- MISIONES Y LOGROS INTEGRADOS -->
-    <div aria-hidden="true" aria-labelledby="missionsTitle" aria-modal="true" class="missions-modal hidden" id="missionsModal" role="dialog">
-      <div class="missions-card">
-        <button aria-label="Cerrar" class="missions-close" id="missionsCloseButton" type="button">✕</button>
-        <h2 id="missionsTitle">MISIONES Y LOGROS</h2>
-        <p class="missions-summary" id="missionsSummary">Tus desafíos de JuniorGame</p>
-        <div class="missions-tabs" role="tablist">
-          <button class="missions-tab active" data-missions-tab="diarias" type="button">DIARIAS</button>
-          <button class="missions-tab" data-missions-tab="semanales" type="button">SEMANALES</button>
-          <button class="missions-tab" data-missions-tab="logros" type="button">LOGROS</button>
-        </div>
-        <div class="missions-list" id="missionsList"></div>
-      </div>
-    </div>
-
-    <button id="dailyWheelButton" type="button" hidden></button>
-    <span id="dailyWheelMenuStatus" hidden></span>
-    <button id="missionsButton" type="button" hidden></button>
-    <span id="missionsBadge" class="hidden" hidden></span>
-
-
-
-    <div id="mapIntro" class="map-intro" aria-live="polite">
-      <div class="intro-vignette"></div>
-      <section>
-        <span>🐶</span>
-        <h1>VILLA JUNIOR</h1>
-        <p>Un nuevo día comienza. Explora, cumple misiones y encuentra sorpresas.</p>
-        <button id="skipIntroButton" type="button">ENTRAR AL MAPA</button>
-      </section>
-    </div>
-
-    <audio id="mapMusic" src="audio/mapa/villa-junior.wav" preload="auto" loop></audio>
-
-    <div id="orientationHint" class="orientation-hint">
-      <span>📱↔️</span>
-      <strong>Se disfruta mejor en horizontal</strong>
-      <small>Puedes seguir jugando en vertical.</small>
-    </div>
-  </main>
-
-  <script src="js/ruleta.js?v=3"></script>
-  <script src="js/misiones.js?v=3"></script>
-  <script type="module" src="js/mapa.js?v=4"></script>
-</body>
-</html>
+  <div id="mapIntro" class="map-intro" aria-live="polite"><section><span>🐶</span><h1>VILLA JUNIOR</h1><p>Explora la villa con tu compañero.</p><button id="skipIntroButton" type="button">ENTRAR AL MAPA</button></section></div>
+  <audio id="mapMusic" src="audio/mapa/villa-junior.wav" preload="auto" loop></audio>
+  <div id="orientationHint" class="orientation-hint"><span>📱↔️</span><strong>Se disfruta mejor en horizontal</strong><small>Puedes seguir jugando en vertical.</small></div>
+</main>
+<script src="js/ruleta.js?v=4"></script><script src="js/misiones.js?v=4"></script><script type="module" src="js/mapa.js?v=4"></script>
+</body></html>

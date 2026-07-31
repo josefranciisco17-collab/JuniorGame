@@ -1,0 +1,18 @@
+JUNIORGAME · MAPA LIBRE FASE 3
+
+Incluye:
+- Cinemática breve de entrada a Villa Junior.
+- Ciclo visual de día, atardecer y noche.
+- Clima dinámico: lluvia ligera y brisa mágica.
+- Eventos ambientales aleatorios.
+- NPC interactivos: Profesor Junior, Luna y Max.
+- Mascota con seguimiento suave, descanso y celebración.
+- Nubes, aves y mariposas animadas.
+- Música original de Villa Junior con ajuste de música.
+- Conserva las funciones de Fase 1 y Fase 2.
+
+Archivos reemplazados/agregados:
+mapa.html
+css/mapa.css
+js/mapa.js
+audio/mapa/villa-junior.wav

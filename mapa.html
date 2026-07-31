@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#173d77">
   <title>Mapa Principal · JuniorGame</title>
-  <link rel="stylesheet" href="css/mapa.css?v=2">
+  <link rel="stylesheet" href="css/mapa.css?v=3">
 </head>
 <body>
   <main id="mapViewport" class="map-viewport" aria-label="Mapa principal de JuniorGame">
@@ -31,6 +31,31 @@
       <button class="hotspot" data-id="perritos" data-x="250" data-y="775" data-radius="120" aria-label="Abrir Perritos Junior"></button>
       <button class="hotspot" data-id="cofre" data-x="645" data-y="820" data-radius="105" aria-label="Abrir cofre escondido"></button>
       <button class="hotspot" data-id="eventos" data-x="1160" data-y="635" data-radius="125" aria-label="Abrir Eventos"></button>
+
+
+      <!-- FASE 3 · MUNDO VIVO -->
+      <div id="dayNightLayer" class="day-night-layer" aria-hidden="true"></div>
+      <div id="weatherLayer" class="weather-layer" aria-hidden="true"></div>
+      <div class="ambient-cloud cloud-a" aria-hidden="true">☁️</div>
+      <div class="ambient-cloud cloud-b" aria-hidden="true">☁️</div>
+      <div class="ambient-cloud cloud-c" aria-hidden="true">☁️</div>
+      <div class="ambient-butterflies" aria-hidden="true"><span>🦋</span><span>🦋</span><span>🦋</span></div>
+      <div class="ambient-birds" aria-hidden="true"><span>🕊️</span><span>🕊️</span></div>
+
+      <div class="map-npc npc-profesor" data-npc="profesor" style="left:1295px;top:850px">
+        <span class="npc-shadow"></span><span class="npc-body">🐕‍🦺</span><b>Profesor Junior</b><em>¡Tengo un consejo!</em>
+      </div>
+      <div class="map-npc npc-vendedora" data-npc="vendedora" style="left:310px;top:400px">
+        <span class="npc-shadow"></span><span class="npc-body">🐩</span><b>Luna</b><em>¡Ofertas nuevas!</em>
+      </div>
+      <div class="map-npc npc-guardia" data-npc="guardia" style="left:1025px;top:475px">
+        <span class="npc-shadow"></span><span class="npc-body">🐕</span><b>Max</b><em>El portal está listo</em>
+      </div>
+
+      <div id="randomEvent" class="random-event hidden" aria-live="polite">
+        <span id="randomEventIcon">🎈</span><strong id="randomEventTitle">Evento</strong><small id="randomEventText"></small>
+      </div>
+
       <button class="hotspot" data-id="ayuda" data-x="1300" data-y="825" data-radius="110" aria-label="Abrir Ayuda"></button>
     </section>
 
@@ -44,6 +69,7 @@
         <span>💎 <b id="hudDiamonds">0</b></span>
         <span>❤️ <b id="hudLives">3/10</b></span>
       </div>
+      <div id="worldStatus" class="world-status"><span id="worldClock">☀️ Día</span><small id="worldWeather">Clima agradable</small></div>
       <div class="hud-actions">
         <button id="chatButton" type="button" aria-label="Chat">💬</button>
         <button id="eventsButton" type="button" aria-label="Eventos">🔔</button>
@@ -109,6 +135,20 @@
     <button id="missionsButton" type="button" hidden></button>
     <span id="missionsBadge" class="hidden" hidden></span>
 
+
+
+    <div id="mapIntro" class="map-intro" aria-live="polite">
+      <div class="intro-vignette"></div>
+      <section>
+        <span>🐶</span>
+        <h1>VILLA JUNIOR</h1>
+        <p>Un nuevo día comienza. Explora, cumple misiones y encuentra sorpresas.</p>
+        <button id="skipIntroButton" type="button">ENTRAR AL MAPA</button>
+      </section>
+    </div>
+
+    <audio id="mapMusic" src="audio/mapa/villa-junior.wav" preload="auto" loop></audio>
+
     <div id="orientationHint" class="orientation-hint">
       <span>📱↔️</span>
       <strong>Se disfruta mejor en horizontal</strong>
@@ -116,8 +156,8 @@
     </div>
   </main>
 
-  <script src="js/ruleta.js?v=2"></script>
-  <script src="js/misiones.js?v=2"></script>
-  <script type="module" src="js/mapa.js?v=2"></script>
+  <script src="js/ruleta.js?v=3"></script>
+  <script src="js/misiones.js?v=3"></script>
+  <script type="module" src="js/mapa.js?v=3"></script>
 </body>
 </html>

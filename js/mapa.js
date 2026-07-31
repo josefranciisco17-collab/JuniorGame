@@ -19,7 +19,7 @@ const numberFormat = new Intl.NumberFormat("es-MX");
 
 const WORLD_W = 1536;
 const WORLD_H = 1024;
-const state = { x: 760, y: 650, vx: 0, vy: 0, scale: 1, cameraX: 0, cameraY: 0, nearby: null, user: null, lastTime: performance.now(), saveTimer: null };
+const state = { x: 760, y: 650, vx: 0, vy: 0, scale: 1, cameraX: 0, cameraY: 0, nearby: null, user: null, lastTime: performance.now(), saveTimer: null, petX: 705, petY: 675, idleSeconds: 0, worldMinutes: 540, weather: "clear", nextEventAt: performance.now() + 22000, introDone: false };
 const keys = new Set();
 
 const places = {
@@ -32,7 +32,10 @@ const places = {
   perritos: { icon: "🐶", title: "Perritos Jr", text: "Visita tu colección de mascotas.", href: "articulos.html#perritos-jr" },
   cofre: { icon: "🎁", title: "Cofre escondido", text: "Recompensa secreta del mapa. Solo una vez al día.", action: "cofre" },
   eventos: { icon: "🎈", title: "Eventos", text: "Temporadas, desafíos y recompensas especiales.", action: "eventos" },
-  ayuda: { icon: "📖", title: "Profesor Junior", text: "Consejos y explicación del mapa principal.", action: "ayuda" }
+  ayuda: { icon: "📖", title: "Profesor Junior", text: "Consejos y explicación del mapa principal.", action: "ayuda" },
+  "npc-profesor": { icon: "🐕‍🦺", title: "Profesor Junior", text: "Habla conmigo para recibir un consejo.", action: "npc-profesor" },
+  "npc-vendedora": { icon: "🐩", title: "Luna, la vendedora", text: "Conoce la oferta especial de hoy.", action: "npc-vendedora" },
+  "npc-guardia": { icon: "🐕", title: "Max, guardián del portal", text: "Te contará qué hay detrás del portal.", action: "npc-guardia" }
 };
 
 function safeInt(value, fallback = 0) { const n = Number(value); return Number.isFinite(n) ? Math.max(0, Math.floor(n)) : fallback; }
@@ -60,13 +63,21 @@ function updateCamera() {
   world.style.transform = `translate3d(${state.cameraX}px,${state.cameraY}px,0) scale(${state.scale})`;
 }
 
-function positionActors() {
+function positionActors(dt = 0.016) {
   player.style.left = `${state.x}px`;
   player.style.top = `${state.y}px`;
-  pet.style.left = `${state.x - (state.vx >= 0 ? 54 : -54)}px`;
-  pet.style.top = `${state.y + 20}px`;
-  player.classList.toggle("moving", Math.hypot(state.vx, state.vy) > .05);
+  const moving = Math.hypot(state.vx, state.vy) > .05 || [...keys].some((key) => ["arrowleft","arrowright","arrowup","arrowdown","w","a","s","d"].includes(key));
+  const followX = state.x - (state.vx >= 0 ? 58 : -58);
+  const followY = state.y + 22;
+  const petEase = moving ? Math.min(1, dt * 8.5) : Math.min(1, dt * 3.2);
+  state.petX += (followX - state.petX) * petEase;
+  state.petY += (followY - state.petY) * petEase;
+  pet.style.left = `${state.petX}px`;
+  pet.style.top = `${state.petY}px`;
+  player.classList.toggle("moving", moving);
   player.classList.toggle("facing-left", state.vx < -.05);
+  pet.classList.toggle("resting", !moving && state.idleSeconds > 4);
+  if (moving) state.idleSeconds = 0; else state.idleSeconds += dt;
 }
 
 function updateNearby() {
@@ -78,6 +89,15 @@ function updateNearby() {
     const d = Math.hypot(dx, dy);
     const r = Number(el.dataset.radius || 110);
     if (d <= r && d < nearestDistance) { nearestDistance = d; nearest = el.dataset.id; }
+  });
+  const npcZones = [
+    { id: "npc-profesor", x: 1295, y: 850, radius: 115 },
+    { id: "npc-vendedora", x: 310, y: 400, radius: 105 },
+    { id: "npc-guardia", x: 1025, y: 475, radius: 105 }
+  ];
+  npcZones.forEach((zone) => {
+    const d = Math.hypot(state.x - zone.x, state.y - zone.y);
+    if (d <= zone.radius && d < nearestDistance) { nearestDistance = d; nearest = zone.id; }
   });
   if (nearest === state.nearby) return;
   state.nearby = nearest;
@@ -103,7 +123,7 @@ function walk(dt) {
   const speed = 245;
   state.x = clamp(state.x + x * speed * dt, 120, WORLD_W - 120);
   state.y = clamp(state.y + y * speed * dt, 250, WORLD_H - 75);
-  positionActors();
+  positionActors(dt);
   updateNearby();
   updateCamera();
 }
@@ -112,6 +132,7 @@ function frame(now) {
   const dt = Math.min(.035, (now - state.lastTime) / 1000);
   state.lastTime = now;
   walk(dt);
+  updateLivingWorld(dt, now);
   requestAnimationFrame(frame);
 }
 
@@ -239,6 +260,7 @@ function openSettings() {
       vibration: document.getElementById("mapSettingVibration")?.checked !== false
     };
     localStorage.setItem("juniorGame.mapaAjustes", JSON.stringify(next));
+    if (mapMusic) { if (next.music) startMapMusic(); else mapMusic.pause(); }
     closeModal();
   } }, { label: "AJUSTES COMPLETOS", href: "index.html#ajustes" }], { html: true });
 }
@@ -263,6 +285,9 @@ function interact() {
   if (place.action === "misiones") openMissions();
   if (place.action === "ranking") openRanking();
   if (place.action === "eventos") openEvents();
+  if (place.action === "npc-profesor") talkToNpc("profesor");
+  if (place.action === "npc-vendedora") talkToNpc("vendedora");
+  if (place.action === "npc-guardia") talkToNpc("guardia");
   if (place.action === "ayuda") openModal(place.icon, place.title, "Usa el control circular para caminar. Acércate a un edificio y pulsa ENTRAR. También puedes usar WASD y la tecla E.");
 }
 interactButton.addEventListener("click", interact);
@@ -274,6 +299,109 @@ document.getElementById("chatButton").addEventListener("click", () => { window.l
 document.getElementById("eventsButton").addEventListener("click", openEvents);
 document.getElementById("settingsButton").addEventListener("click", openSettings);
 document.getElementById("profileButton").addEventListener("click", () => { window.location.href = "index.html#perfil"; });
+
+
+
+// FASE 3 · MUNDO VIVO
+const dayNightLayer = document.getElementById("dayNightLayer");
+const weatherLayer = document.getElementById("weatherLayer");
+const worldClock = document.getElementById("worldClock");
+const worldWeather = document.getElementById("worldWeather");
+const randomEvent = document.getElementById("randomEvent");
+const mapMusic = document.getElementById("mapMusic");
+const mapIntro = document.getElementById("mapIntro");
+const skipIntroButton = document.getElementById("skipIntroButton");
+
+function getMapSettings() {
+  try { return JSON.parse(localStorage.getItem("juniorGame.mapaAjustes") || "{}") || {}; }
+  catch { return {}; }
+}
+
+function startMapMusic() {
+  const settings = getMapSettings();
+  if (settings.music === false || !mapMusic) return;
+  mapMusic.volume = 0.28;
+  mapMusic.play().catch(() => {});
+}
+
+function finishIntro() {
+  if (state.introDone) return;
+  state.introDone = true;
+  mapIntro?.classList.add("hidden");
+  sessionStorage.setItem("juniorGame.mapaIntroVisto", "1");
+  startMapMusic();
+  setTimeout(() => player.classList.add("celebrate"), 250);
+  setTimeout(() => player.classList.remove("celebrate"), 2100);
+}
+
+skipIntroButton?.addEventListener("click", finishIntro);
+mapIntro?.addEventListener("click", (event) => { if (event.target === mapIntro) finishIntro(); });
+if (sessionStorage.getItem("juniorGame.mapaIntroVisto") === "1") {
+  state.introDone = true;
+  mapIntro?.classList.add("hidden");
+  window.addEventListener("pointerdown", startMapMusic, { once: true });
+} else {
+  setTimeout(finishIntro, 6500);
+}
+
+function updateDayNight(dt) {
+  state.worldMinutes = (state.worldMinutes + dt * 2.6) % 1440;
+  const hour = Math.floor(state.worldMinutes / 60);
+  const minute = Math.floor(state.worldMinutes % 60);
+  dayNightLayer.classList.toggle("sunset", hour >= 17 && hour < 20);
+  dayNightLayer.classList.toggle("night", hour >= 20 || hour < 6);
+  const icon = hour >= 20 || hour < 6 ? "🌙" : hour >= 17 ? "🌇" : "☀️";
+  worldClock.textContent = `${icon} ${String(hour).padStart(2,"0")}:${String(minute).padStart(2,"0")}`;
+}
+
+function setWeather(type, duration = 24000) {
+  state.weather = type;
+  weatherLayer.className = `weather-layer ${type === "rain" ? "rain" : type === "sparkle" ? "sparkle" : ""}`;
+  worldWeather.textContent = type === "rain" ? "Lluvia ligera" : type === "sparkle" ? "Brisa mágica" : "Clima agradable";
+  if (type !== "clear") setTimeout(() => setWeather("clear"), duration);
+}
+
+const worldEvents = [
+  { icon: "🎈", title: "¡Globo de premio!", text: "Una ráfaga festiva cruza Villa Junior.", action: () => pet.classList.add("excited") },
+  { icon: "🌦️", title: "Lluvia ligera", text: "El mapa cambia de ambiente durante unos segundos.", action: () => setWeather("rain", 18000) },
+  { icon: "✨", title: "Brisa mágica", text: "La villa brilla y la mascota se emociona.", action: () => { setWeather("sparkle", 16000); pet.classList.add("excited"); } },
+  { icon: "🦋", title: "Mariposas curiosas", text: "Sigue caminando: la villa está llena de vida.", action: () => {} }
+];
+
+function triggerRandomEvent() {
+  const item = worldEvents[Math.floor(Math.random() * worldEvents.length)];
+  document.getElementById("randomEventIcon").textContent = item.icon;
+  document.getElementById("randomEventTitle").textContent = item.title;
+  document.getElementById("randomEventText").textContent = item.text;
+  randomEvent.classList.remove("hidden");
+  item.action();
+  setTimeout(() => { randomEvent.classList.add("hidden"); pet.classList.remove("excited"); }, 5200);
+  state.nextEventAt = performance.now() + 38000 + Math.random() * 35000;
+}
+
+function updateNpcLife(now) {
+  document.querySelectorAll(".map-npc").forEach((npc, index) => {
+    const phase = Math.floor(now / 3800 + index) % 4;
+    npc.classList.toggle("talking", phase === 0);
+  });
+}
+
+function updateLivingWorld(dt, now) {
+  updateDayNight(dt);
+  updateNpcLife(now);
+  if (state.introDone && now >= state.nextEventAt && modal.classList.contains("hidden")) triggerRandomEvent();
+}
+
+function talkToNpc(id) {
+  document.querySelector(`[data-npc="${id}"]`)?.classList.add("talking");
+  if (id === "profesor") {
+    openModal("🐕‍🦺", "Profesor Junior", "Explora todos los edificios. El cofre escondido entrega una recompensa diaria y algunos eventos sólo aparecen mientras caminas.", [{ label: "VER MISIONES", onClick: () => { closeModal(); openMissions(); } }]);
+  } else if (id === "vendedora") {
+    openModal("🐩", "Luna, la vendedora", "Hoy la Tienda Oficial tiene tus skins, habilidades y Perritos Jr. equipables.", [{ label: "ENTRAR A LA TIENDA", href: "articulos.html" }]);
+  } else {
+    openModal("🐕", "Max, guardián del portal", "El portal conduce al primer mundo. Asegúrate de llevar una habilidad equipada antes de iniciar.", [{ label: "INICIAR NIVEL", href: "game.html" }]);
+  }
+}
 
 function scheduleSave(immediate = false) {
   if (!state.user) return;

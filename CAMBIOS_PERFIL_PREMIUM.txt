@@ -1,0 +1,12 @@
+PERFIL PREMIUM · IDEA 1
+
+- Foto de perfil ampliada a 148 px con marco dorado animado.
+- Botón de cámara integrado en la foto.
+- Placa superior dorada con el título PERFIL.
+- Nombre, nivel y barra de experiencia.
+- Tarjeta compacta para ID y botón Copiar ID.
+- Estadísticas en seis tarjetas de estilo premium.
+- Cantidades abreviadas en monedas, diamantes y huesos.
+- Datos personales y acciones rediseñados.
+- Diseño adaptable para teléfonos pequeños y pantallas bajas.
+- Se conservan las funciones existentes de foto, nombre, contraseña, copiar ID y cerrar sesión.

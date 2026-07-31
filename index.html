@@ -6,7 +6,7 @@
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
 <meta content="#2b1609" name="theme-color"/>
 <title>JuniorGame</title>
-<link href="css/menu-v2.css?v=5" rel="stylesheet"/>
+<link href="css/menu-v2.css?v=2?v=5" rel="stylesheet"/>
 <link href="css/configuracion.css?v=6" rel="stylesheet"/>
 </head>
 <body class="menu-redesign-v5">
@@ -82,88 +82,55 @@
 </section>
 <!-- PERFIL DEL JUGADOR -->
 <div aria-labelledby="profileTitle" aria-modal="true" class="profile-panel hidden" id="profilePanel" role="dialog">
-<div class="profile-backdrop"></div>
-<section class="profile-card">
-<button aria-label="Cerrar perfil" class="profile-close" id="closeProfileButton" type="button">
-      ×
-    </button>
-<header class="profile-header">
-<img alt="Foto del jugador" class="profile-photo" id="profilePhoto" src="Fondos-JuniorGame/Estrella.png"/>
-<h2 id="profileTitle">PERFIL</h2>
-<p id="profileName">Jugador</p>
-<div class="profile-id-box">
-<span>ID DEL JUGADOR</span>
-<strong id="profilePlayerId">
-          JF-XXXXX
-        </strong>
-<button class="profile-copy-button" id="copyPlayerIdButton" type="button">
-          COPIAR ID
-        </button>
-</div>
-</header>
-<div class="profile-stats">
-<div class="profile-stat">
-<span>❤️</span>
-<small>Vidas</small>
-<strong id="profileLives">3</strong>
-</div>
-<div class="profile-stat">
-<span>🪙</span>
-<small>Monedas</small>
-<strong id="profileCoins">0</strong>
-</div>
-<div class="profile-stat">
-<span>💎</span>
-<small>Diamantes</small>
-<strong id="profileDiamonds">0</strong>
-</div>
-<div class="profile-stat">
-<span>⭐</span>
-<small>Nivel</small>
-<strong id="profileLevel">1</strong>
-</div>
-<div class="profile-stat">
-<span>🏆</span>
-<small>Récord</small>
-<strong id="profileRecord">0</strong>
-</div>
-<div class="profile-stat">
-<span>🦴</span>
-<small>Huesos</small>
-<strong id="profileBones">0</strong>
-</div>
-</div>
-<div class="profile-details">
-<p>
-<span>Correo</span>
-<strong id="profileEmail">
-          Sin correo
-        </strong>
-</p>
-<p>
-<span>Registro</span>
-<strong id="profileRegistration">
-          Sin fecha
-        </strong>
-</p>
-</div>
-<div class="profile-actions">
-<button class="profile-action-button" id="changePhotoButton" type="button">
-        Cambiar foto
-      </button>
-<input accept="image/jpeg,image/png,image/webp" hidden="" id="profilePhotoInput" type="file"/>
-<button class="profile-action-button" id="changeNameButton" type="button">
-        Cambiar nombre
-      </button>
-<button class="profile-action-button" id="changePasswordButton" type="button">
-        Cambiar contraseña
-      </button>
-<button class="profile-action-button danger" id="logoutButton" type="button">
-        Cerrar sesión
-      </button>
-</div>
-<p aria-live="polite" class="profile-message" id="profileMessage"></p>
-</section>
+  <div class="profile-backdrop"></div>
+  <section class="profile-card profile-card-premium">
+    <button aria-label="Cerrar perfil" class="profile-close" id="closeProfileButton" type="button">×</button>
+
+    <div class="profile-title-plaque"><span>🐾</span><h2 id="profileTitle">PERFIL</h2><span>🐾</span></div>
+
+    <header class="profile-header">
+      <div class="profile-photo-wrap">
+        <div class="profile-photo-halo"></div>
+        <img alt="Foto del jugador" class="profile-photo" id="profilePhoto" src="Fondos-JuniorGame/Estrella.png"/>
+        <button aria-label="Cambiar foto" class="profile-photo-edit" id="changePhotoButton" type="button">📷</button>
+      </div>
+      <p class="profile-player-name" id="profileName">Jugador</p>
+      <div class="profile-level-row">
+        <span class="profile-level-badge" id="profileLevelBadge">NIVEL 1</span>
+        <span class="profile-progress-text" id="profileProgressText">0 / 300 XP</span>
+      </div>
+      <div aria-label="Progreso de experiencia" class="profile-progress-track">
+        <span id="profileProgressFill"></span>
+      </div>
+    </header>
+
+    <div class="profile-id-box">
+      <div><span>ID DEL JUGADOR</span><strong id="profilePlayerId">JF-XXXXX</strong></div>
+      <button class="profile-copy-button" id="copyPlayerIdButton" type="button">📋 COPIAR ID</button>
+    </div>
+
+    <div class="profile-stats">
+      <div class="profile-stat"><span>❤️</span><small>Vidas</small><strong id="profileLives">3</strong></div>
+      <div class="profile-stat"><span>🪙</span><small>Monedas</small><strong id="profileCoins">0</strong></div>
+      <div class="profile-stat"><span>💎</span><small>Diamantes</small><strong id="profileDiamonds">0</strong></div>
+      <div class="profile-stat"><span>⭐</span><small>Nivel</small><strong id="profileLevel">1</strong></div>
+      <div class="profile-stat"><span>🏆</span><small>Récord</small><strong id="profileRecord">0</strong></div>
+      <div class="profile-stat"><span>🦴</span><small>Huesos</small><strong id="profileBones">0</strong></div>
+    </div>
+
+    <div class="profile-details">
+      <p><span>📧 CORREO</span><strong id="profileEmail">Sin correo</strong></p>
+      <p><span>📅 REGISTRO</span><strong id="profileRegistration">Sin fecha</strong></p>
+    </div>
+
+    <div class="profile-actions">
+      <input accept="image/jpeg,image/png,image/webp" hidden id="profilePhotoInput" type="file"/>
+      <button class="profile-action-button" id="changeNameButton" type="button">✏️ Cambiar nombre</button>
+      <button class="profile-action-button" id="changePasswordButton" type="button">🔐 Contraseña</button>
+      <button class="profile-action-button danger" id="logoutButton" type="button">🚪 Cerrar sesión</button>
+    </div>
+    <p aria-live="polite" class="profile-message" id="profileMessage"></p>
+  </section>
 </div>
 <!-- RULETA DIARIA -->
 <div aria-hidden="true" aria-labelledby="dailyWheelTitle" aria-modal="true" class="daily-wheel-modal hidden" id="dailyWheelModal" role="dialog">
@@ -263,7 +230,7 @@
 
 </main>
 <script src="js/menu-auth.js?v=1" type="module"></script>
-<script src="js/profile.js?v=1" type="module"></script>
+<script src="js/profile.js?v=2" type="module"></script>
 <script src="js/audio.js"></script>
 <script src="js/ruleta.js?v=20260726-menu1"></script>
 <script src="js/misiones.js?v=20260726-menu1"></script>

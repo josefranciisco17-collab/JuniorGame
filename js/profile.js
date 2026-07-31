@@ -56,6 +56,15 @@ const profileDiamonds =
 const profileLevel =
   document.getElementById("profileLevel");
 
+const profileLevelBadge =
+  document.getElementById("profileLevelBadge");
+
+const profileProgressText =
+  document.getElementById("profileProgressText");
+
+const profileProgressFill =
+  document.getElementById("profileProgressFill");
+
 const profileRecord =
   document.getElementById("profileRecord");
 
@@ -334,6 +343,36 @@ async function asegurarCamposPerfil(
    MOSTRAR DATOS
 ========================================= */
 
+function formatearCantidadCompacta(valor) {
+  const numero = Math.max(0, obtenerNumero(valor, 0));
+  const unidades = [
+    { valor: 1e12, sufijo: "T" },
+    { valor: 1e9, sufijo: "B" },
+    { valor: 1e6, sufijo: "M" },
+    { valor: 1e3, sufijo: "K" }
+  ];
+
+  for (const unidad of unidades) {
+    if (numero >= unidad.valor) {
+      const resultado = numero / unidad.valor;
+      return `${resultado >= 100 ? Math.round(resultado) : resultado.toFixed(1).replace(/\.0$/, "")}${unidad.sufijo}`;
+    }
+  }
+
+  return String(Math.floor(numero));
+}
+
+function actualizarProgresoPerfil(datos, nivel) {
+  const experiencia = Math.max(0, Math.floor(obtenerNumero(datos.experiencia ?? datos.xp, 0)));
+  const meta = Math.max(300, Math.floor(obtenerNumero(datos.experienciaNecesaria ?? datos.xpSiguienteNivel, nivel * 300)));
+  const porcentaje = Math.min(100, (experiencia / meta) * 100);
+
+  if (profileLevelBadge) profileLevelBadge.textContent = `NIVEL ${nivel}`;
+  if (profileProgressText) profileProgressText.textContent = `${formatearCantidadCompacta(experiencia)} / ${formatearCantidadCompacta(meta)} XP`;
+  if (profileProgressFill) profileProgressFill.style.width = `${porcentaje}%`;
+}
+
+
 function colocarDatosEnPerfil(
   usuario,
   datos
@@ -365,32 +404,24 @@ function colocarDatosEnPerfil(
     String(obtenerNumero(datos.vidas, 3));
 
   profileCoins.textContent =
-    String(
-      obtenerNumero(
-        datos.coins ??
-        datos.monedas,
-        0
-      )
+    formatearCantidadCompacta(
+      datos.coins ?? datos.monedas
     );
 
   profileDiamonds.textContent =
-    String(
-      obtenerNumero(
-        datos.diamonds ??
-        datos.diamantes,
-        0
-      )
+    formatearCantidadCompacta(
+      datos.diamonds ?? datos.diamantes
     );
 
-  profileLevel.textContent =
-    String(
-      obtenerNumero(
-        datos.nivelActual ??
-        datos.progreso?.nivelActual ??
-        datos.nivel,
-        1
-      )
-    );
+  const nivelPerfil = obtenerNumero(
+    datos.nivelActual ??
+    datos.progreso?.nivelActual ??
+    datos.nivel,
+    1
+  );
+
+  profileLevel.textContent = String(nivelPerfil);
+  actualizarProgresoPerfil(datos, nivelPerfil);
 
   profileRecord.textContent =
     String(
@@ -402,11 +433,8 @@ function colocarDatosEnPerfil(
     );
 
   profileBones.textContent =
-    String(
-      obtenerNumero(
-        datos.huesosRecolectados,
-        0
-      )
+    formatearCantidadCompacta(
+      datos.huesosRecolectados
     );
 
   profileEmail.textContent =

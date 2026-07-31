@@ -542,6 +542,12 @@
     bosque: { nombre: "Árbol Ancestral", emoji: "🌳", vida: 7 },
     nieve: { nombre: "Rey del Hielo", emoji: "👑", vida: 8 },
     desierto: { nombre: "Escorpión Solar", emoji: "🦂", vida: 9 },
+    ciudad: { nombre: "Sabueso Mecánico", emoji: "🤖", vida: 10 },
+    atardecer: { nombre: "Águila Carmesí", emoji: "🦅", vida: 10 },
+    noche: { nombre: "Lobo de la Luna", emoji: "🐺", vida: 11 },
+    montanas: { nombre: "Cóndor del Viento", emoji: "🦅", vida: 11 },
+    lluvia: { nombre: "Guardián de la Tormenta", emoji: "⛈️", vida: 12 },
+    final: { nombre: "Titán de los Cien Niveles", emoji: "👹", vida: 14 },
     espacio: { nombre: "Nave Alienígena", emoji: "🛸", vida: 10 }
   };
   const estadoBoss = { activo: false, vida: 0, maxima: 0, nivel: 0, datos: null };

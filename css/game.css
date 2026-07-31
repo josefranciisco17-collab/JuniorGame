@@ -3577,3 +3577,27 @@ button, a {
   #game > .ability-control-wrap .ability-button{height:56px!important}
   #gameArea .dog{bottom:calc(var(--jg-safe-bottom) + 75px)}
 }
+
+/* =========================================================
+   JuniorGame - Pulido adaptable 2026-07-31
+========================================================= */
+#game{--jg-ui-scale:1}
+@media(max-width:430px){
+  .hud,.top-controls,.resource-stack,.ability-panel,.controls{transform-origin:top left}
+  .game-hud,.hud-top{padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+}
+@media(max-height:700px){
+  .climate-card,.world-announcement{scale:.88}
+  .controls{bottom:max(6px,env(safe-area-inset-bottom))}
+}
+.jg-low-performance .ambient-particle:nth-child(n+18),
+.jg-low-performance .weather-particle:nth-child(n+22),
+.jg-low-performance .sparkle:nth-child(n+12){display:none!important}
+.jg-low-performance *{text-shadow:none}
+.jg-reduced-motion *,
+.jg-reduced-motion *::before,
+.jg-reduced-motion *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+.jg-world-noche #gameArea{filter:saturate(.92) brightness(.92)}
+.jg-world-atardecer #gameArea{filter:saturate(1.08) sepia(.06)}
+.jg-world-lluvia #gameArea{filter:saturate(.9) contrast(1.03)}
+.jg-world-final #gameArea{box-shadow:inset 0 0 55px rgba(255,190,40,.16)}

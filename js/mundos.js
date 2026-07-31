@@ -25,10 +25,15 @@ window.SistemaMundos = {
 
   mundosNormales: [
     { id: "granja", nombre: "La Granja", emoji: "🌾", nivelMin: 1, nivelMax: 10, fondo: "Fondos-JuniorGame/granja.png" },
-    { id: "bosque", nombre: "Bosque", emoji: "🌲", nivelMin: 11, nivelMax: 20, fondo: "Fondos-JuniorGame/bosque.png" },
-    { id: "nieve", nombre: "Mundo Nevado", emoji: "❄️", nivelMin: 21, nivelMax: 30, fondo: "Fondos-JuniorGame/nieve.png" },
-    { id: "desierto", nombre: "Desierto", emoji: "🏜️", nivelMin: 31, nivelMax: 40, fondo: "Fondos-JuniorGame/desierto.png" },
-    { id: "espacio", nombre: "Espacio", emoji: "🌌", nivelMin: 41, nivelMax: 100, fondo: "Fondos-JuniorGame/espacio.png" }
+    { id: "bosque", nombre: "Bosque Esmeralda", emoji: "🌲", nivelMin: 11, nivelMax: 20, fondo: "Fondos-JuniorGame/bosque.png" },
+    { id: "nieve", nombre: "Reino Nevado", emoji: "❄️", nivelMin: 21, nivelMax: 30, fondo: "Fondos-JuniorGame/nieve.png" },
+    { id: "desierto", nombre: "Desierto Dorado", emoji: "🏜️", nivelMin: 31, nivelMax: 40, fondo: "Fondos-JuniorGame/desierto.png" },
+    { id: "ciudad", nombre: "Ciudad Junior", emoji: "🏙️", nivelMin: 41, nivelMax: 50, fondo: "Fondos-JuniorGame/ciudad.png" },
+    { id: "atardecer", nombre: "Valle del Atardecer", emoji: "🌇", nivelMin: 51, nivelMax: 60, fondo: "Fondos-JuniorGame/atardecer.png" },
+    { id: "noche", nombre: "Bosque Nocturno", emoji: "🌙", nivelMin: 61, nivelMax: 70, fondo: "Fondos-JuniorGame/noche.png" },
+    { id: "montanas", nombre: "Montañas del Viento", emoji: "⛰️", nivelMin: 71, nivelMax: 80, fondo: "Fondos-JuniorGame/monta#U00f1as.png" },
+    { id: "lluvia", nombre: "Tormenta Azul", emoji: "🌧️", nivelMin: 81, nivelMax: 90, fondo: "Fondos-JuniorGame/lluvia.png" },
+    { id: "final", nombre: "Desafío Final", emoji: "🏆", nivelMin: 91, nivelMax: 100, fondo: "Fondos-JuniorGame/jefe final.png" }
   ],
 
   secretos: {

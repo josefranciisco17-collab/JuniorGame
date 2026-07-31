@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#173d77">
   <title>Mapa Principal · JuniorGame</title>
-  <link rel="stylesheet" href="css/mapa.css?v=1">
+  <link rel="stylesheet" href="css/mapa.css?v=2">
 </head>
 <body>
   <main id="mapViewport" class="map-viewport" aria-label="Mapa principal de JuniorGame">
@@ -74,6 +74,41 @@
       </section>
     </div>
 
+
+    <!-- RULETA DIARIA INTEGRADA -->
+    <div aria-hidden="true" aria-labelledby="dailyWheelTitle" aria-modal="true" class="daily-wheel-modal hidden" id="dailyWheelModal" role="dialog">
+      <div class="daily-wheel-card">
+        <button aria-label="Cerrar" class="daily-wheel-close" id="dailyWheelCloseButton" type="button">✕</button>
+        <h2 id="dailyWheelTitle">RULETA DIARIA</h2>
+        <p id="dailyWheelStatus">Preparando tu giro…</p>
+        <div class="daily-wheel-stage"><div aria-hidden="true" class="daily-wheel-pointer">▼</div><div class="daily-wheel-disc" id="dailyWheelDisc"><div class="daily-wheel-segments" id="dailyWheelSegments"></div><div aria-hidden="true" class="daily-wheel-center">🐶</div></div></div>
+        <div aria-live="polite" class="daily-wheel-result hidden" id="dailyWheelResult"></div>
+        <strong class="daily-wheel-countdown" id="dailyWheelCountdown">Disponible ahora</strong>
+        <button class="daily-wheel-spin" id="dailyWheelSpinButton" type="button">GIRAR AHORA</button>
+        <small class="daily-wheel-note">Un giro por día. El premio se guarda en tu cuenta.</small>
+      </div>
+    </div>
+
+    <!-- MISIONES Y LOGROS INTEGRADOS -->
+    <div aria-hidden="true" aria-labelledby="missionsTitle" aria-modal="true" class="missions-modal hidden" id="missionsModal" role="dialog">
+      <div class="missions-card">
+        <button aria-label="Cerrar" class="missions-close" id="missionsCloseButton" type="button">✕</button>
+        <h2 id="missionsTitle">MISIONES Y LOGROS</h2>
+        <p class="missions-summary" id="missionsSummary">Tus desafíos de JuniorGame</p>
+        <div class="missions-tabs" role="tablist">
+          <button class="missions-tab active" data-missions-tab="diarias" type="button">DIARIAS</button>
+          <button class="missions-tab" data-missions-tab="semanales" type="button">SEMANALES</button>
+          <button class="missions-tab" data-missions-tab="logros" type="button">LOGROS</button>
+        </div>
+        <div class="missions-list" id="missionsList"></div>
+      </div>
+    </div>
+
+    <button id="dailyWheelButton" type="button" hidden></button>
+    <span id="dailyWheelMenuStatus" hidden></span>
+    <button id="missionsButton" type="button" hidden></button>
+    <span id="missionsBadge" class="hidden" hidden></span>
+
     <div id="orientationHint" class="orientation-hint">
       <span>📱↔️</span>
       <strong>Se disfruta mejor en horizontal</strong>
@@ -81,6 +116,8 @@
     </div>
   </main>
 
-  <script type="module" src="js/mapa.js?v=1"></script>
+  <script src="js/ruleta.js?v=2"></script>
+  <script src="js/misiones.js?v=2"></script>
+  <script type="module" src="js/mapa.js?v=2"></script>
 </body>
 </html>

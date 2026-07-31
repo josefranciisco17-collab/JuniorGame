@@ -2,7 +2,7 @@
 
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-import { doc, onSnapshot, getDoc, setDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import { doc, onSnapshot, getDoc, getDocs, setDoc, serverTimestamp, increment, collection, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 const viewport = document.getElementById("mapViewport");
 const world = document.getElementById("mapWorld");
@@ -28,10 +28,10 @@ const places = {
   misiones: { icon: "📋", title: "Misiones", text: "Consulta tus misiones y logros.", action: "misiones" },
   casa: { icon: "🏠", title: "Casa de Junior", text: "Perfil, colección y progreso del jugador.", href: "index.html#perfil" },
   portal: { icon: "🌀", title: "Portal del Nivel 1", text: "Comienza una partida en el mundo de la granja.", href: "game.html" },
-  ranking: { icon: "🏆", title: "Ranking", text: "Próxima fase: clasificación mundial en vivo.", action: "ranking" },
+  ranking: { icon: "🏆", title: "Ranking", text: "Consulta la clasificación mundial en vivo.", action: "ranking" },
   perritos: { icon: "🐶", title: "Perritos Jr", text: "Visita tu colección de mascotas.", href: "articulos.html#perritos-jr" },
   cofre: { icon: "🎁", title: "Cofre escondido", text: "Recompensa secreta del mapa. Solo una vez al día.", action: "cofre" },
-  eventos: { icon: "🎈", title: "Eventos", text: "Aquí aparecerán temporadas y desafíos especiales.", action: "eventos" },
+  eventos: { icon: "🎈", title: "Eventos", text: "Temporadas, desafíos y recompensas especiales.", action: "eventos" },
   ayuda: { icon: "📖", title: "Profesor Junior", text: "Consejos y explicación del mapa principal.", action: "ayuda" }
 };
 
@@ -138,10 +138,13 @@ window.addEventListener("keydown", (event) => { const key = event.key.toLowerCas
 window.addEventListener("keyup", (event) => keys.delete(event.key.toLowerCase()));
 window.addEventListener("resize", resizeWorld);
 
-function openModal(icon, title, text, actions = []) {
+function openModal(icon, title, text, actions = [], options = {}) {
   document.getElementById("modalIcon").textContent = icon;
   document.getElementById("modalTitle").textContent = title;
-  document.getElementById("modalText").textContent = text;
+  const textBox = document.getElementById("modalText");
+  if (options.html) textBox.innerHTML = text;
+  else textBox.textContent = text;
+  textBox.classList.toggle("map-rich-content", Boolean(options.html));
   const actionBox = document.getElementById("modalActions");
   actionBox.replaceChildren();
   actions.forEach(({ label, href, onClick }) => {
@@ -156,6 +159,89 @@ function openModal(icon, title, text, actions = []) {
 function closeModal() { modal.classList.add("hidden"); }
 modalClose.addEventListener("click", closeModal);
 modal.addEventListener("click", (event) => { if (event.target === modal) closeModal(); });
+
+
+function openWheel() {
+  window.SistemaRuleta?.abrir?.();
+}
+
+function openMissions() {
+  window.SistemaMisiones?.abrir?.();
+}
+
+function escapeHTML(value = "") {
+  return String(value).replace(/[&<>"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[char]));
+}
+
+async function openRanking() {
+  openModal("🏆", "Ranking mundial", "Cargando clasificación…");
+  try {
+    const candidates = [];
+    try {
+      const snap = await getDocs(query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(10)));
+      snap.forEach((item) => candidates.push({ id: item.id, ...item.data() }));
+    } catch (leaderboardError) {
+      console.warn("No se pudo consultar leaderboard:", leaderboardError);
+    }
+
+    if (!candidates.length && state.user) {
+      const userSnap = await getDoc(doc(db, "users", state.user.uid));
+      if (userSnap.exists()) candidates.push({ id: state.user.uid, ...userSnap.data(), current: true });
+    }
+
+    const normalized = candidates.map((data) => ({
+      id: data.id || data.uid || "",
+      name: data.customName || data.displayName || data.nombre || data.name || "Jugador",
+      photo: data.customPhoto || data.photoURL || data.foto || "Fondos-JuniorGame/Estrella.png",
+      score: safeInt(data.score ?? data.recordHuesos ?? data.record ?? data.huesosRecolectados, 0),
+      level: Math.max(1, safeInt(data.nivelActual ?? data.nivel ?? data.progreso?.nivelActual, 1))
+    })).sort((a,b) => b.score - a.score).slice(0,10);
+
+    const html = normalized.length ? normalized.map((entry, index) => `
+      <div class="rank-row${entry.id === state.user?.uid ? " me" : ""}">
+        <strong>${index + 1}</strong>
+        <img src="${escapeHTML(entry.photo)}" alt="">
+        <span><b>${escapeHTML(entry.name)}</b><small>Nivel ${entry.level}</small></span>
+        <span class="rank-score">🦴 ${numberFormat.format(entry.score)}</span>
+      </div>`).join("") : `<div class="event-card"><strong>El ranking está listo</strong><span>Todavía no hay puntuaciones públicas en la colección leaderboard.</span></div>`;
+    openModal("🏆", "Ranking mundial", html, [{ label: "JUGAR Y MEJORAR RÉCORD", href: "game.html" }], { html: true });
+  } catch (error) {
+    console.error(error);
+    openModal("⚠️", "Ranking no disponible", "No se pudo cargar la clasificación. Revisa tu conexión y vuelve a intentarlo.");
+  }
+}
+
+function openEvents() {
+  const today = new Date();
+  const end = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+  const days = Math.max(1, Math.ceil((end - today) / 86400000));
+  const level = safeInt(document.getElementById("hudLevel")?.textContent, 1);
+  const progress = clamp(level * 5, 5, 100);
+  const html = `
+    <div class="event-card"><strong>🌻 Festival de la Granja</strong><span>Completa partidas y recoge huesos dorados para avanzar.</span><div class="event-progress"><span style="width:${progress}%"></span></div><small>${progress}% completado · termina en ${days} días</small></div>
+    <div class="event-card"><strong>🎁 Cofre diario del mapa</strong><span>Encuentra el cofre escondido una vez al día para ganar monedas.</span></div>
+    <div class="event-card"><strong>🏁 Desafío de récord</strong><span>Supera tu mejor puntuación y sube en el ranking mundial.</span></div>`;
+  openModal("🎈", "Centro de eventos", html, [{ label: "INICIAR PARTIDA", href: "game.html" }], { html: true });
+}
+
+function openSettings() {
+  const settings = JSON.parse(localStorage.getItem("juniorGame.mapaAjustes") || "{}") || {};
+  const values = { music: settings.music !== false, effects: settings.effects !== false, vibration: settings.vibration !== false };
+  const html = `<div class="settings-grid">
+    <label class="setting-row"><span>🎵 Música del mapa</span><input id="mapSettingMusic" type="checkbox" ${values.music ? "checked" : ""}></label>
+    <label class="setting-row"><span>🔊 Efectos de sonido</span><input id="mapSettingEffects" type="checkbox" ${values.effects ? "checked" : ""}></label>
+    <label class="setting-row"><span>📳 Vibración</span><input id="mapSettingVibration" type="checkbox" ${values.vibration ? "checked" : ""}></label>
+  </div>`;
+  openModal("⚙️", "Ajustes del mapa", html, [{ label: "GUARDAR", onClick: () => {
+    const next = {
+      music: document.getElementById("mapSettingMusic")?.checked !== false,
+      effects: document.getElementById("mapSettingEffects")?.checked !== false,
+      vibration: document.getElementById("mapSettingVibration")?.checked !== false
+    };
+    localStorage.setItem("juniorGame.mapaAjustes", JSON.stringify(next));
+    closeModal();
+  } }, { label: "AJUSTES COMPLETOS", href: "index.html#ajustes" }], { html: true });
+}
 
 async function claimChest() {
   if (!state.user) return openModal("🔒", "Inicia sesión", "Necesitas iniciar sesión para reclamar el cofre.", [{ label: "IR AL LOGIN", href: "login.html" }]);
@@ -173,10 +259,10 @@ function interact() {
   if (!place) return;
   if (place.href) { window.location.href = place.href; return; }
   if (place.action === "cofre") { claimChest().catch(() => openModal("⚠️", "No se pudo abrir", "Revisa tu conexión e inténtalo nuevamente.")); return; }
-  if (place.action === "ruleta") openModal(place.icon, place.title, "La ruleta sigue funcionando desde el menú actual. En la siguiente fase quedará integrada dentro de este mapa.", [{ label: "ABRIR MENÚ", href: "index.html#ruleta" }]);
-  if (place.action === "misiones") openModal(place.icon, place.title, "Consulta las misiones diarias, semanales y logros desde el menú mientras conectamos su panel al mapa.", [{ label: "ABRIR MENÚ", href: "index.html#misiones" }]);
-  if (place.action === "ranking") openModal(place.icon, place.title, "Este edificio ya está preparado para conectar el ranking mundial de Firestore.");
-  if (place.action === "eventos") openModal(place.icon, place.title, "Próximamente mostrará temporadas, desafíos y recompensas especiales.");
+  if (place.action === "ruleta") openWheel();
+  if (place.action === "misiones") openMissions();
+  if (place.action === "ranking") openRanking();
+  if (place.action === "eventos") openEvents();
   if (place.action === "ayuda") openModal(place.icon, place.title, "Usa el control circular para caminar. Acércate a un edificio y pulsa ENTRAR. También puedes usar WASD y la tecla E.");
 }
 interactButton.addEventListener("click", interact);
@@ -185,8 +271,8 @@ document.querySelectorAll(".hotspot").forEach((el) => el.addEventListener("click
 
 document.getElementById("backButton").addEventListener("click", () => { scheduleSave(true); window.location.href = "index.html"; });
 document.getElementById("chatButton").addEventListener("click", () => { window.location.href = "chat.html"; });
-document.getElementById("eventsButton").addEventListener("click", () => openModal("🔔", "Eventos", "El centro de eventos se integrará en la siguiente fase del mapa."));
-document.getElementById("settingsButton").addEventListener("click", () => openModal("⚙️", "Ajustes", "Los ajustes completos permanecen disponibles en el menú principal.", [{ label: "ABRIR AJUSTES", href: "index.html#ajustes" }]));
+document.getElementById("eventsButton").addEventListener("click", openEvents);
+document.getElementById("settingsButton").addEventListener("click", openSettings);
 document.getElementById("profileButton").addEventListener("click", () => { window.location.href = "index.html#perfil"; });
 
 function scheduleSave(immediate = false) {

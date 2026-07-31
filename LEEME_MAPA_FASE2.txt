@@ -1,0 +1,17 @@
+JUNIORGAME · MAPA PRINCIPAL FASE 2
+
+Incluye:
+- Ruleta diaria integrada y funcional dentro del mapa.
+- Misiones diarias, semanales y logros integrados con reclamación de premios.
+- Ranking conectado a la colección pública leaderboard de Firestore, con respaldo del perfil actual.
+- Centro de eventos funcional con progreso y acceso directo a partida.
+- Ajustes rápidos del mapa guardados en el dispositivo.
+- Botones superiores de Eventos y Ajustes conectados.
+- Se conservan movimiento, cámara, cofre diario, tienda, mascota, perfil y portal del Nivel 1.
+
+Instalación:
+cd ~/JuniorGame
+unzip -o ~/storage/downloads/JuniorGame_Mapa_Libre_Fase2.zip
+git add mapa.html css/mapa.css js/mapa.js LEEME_MAPA_FASE2.txt
+git commit -m "Integra funciones del mapa principal fase 2"
+git push

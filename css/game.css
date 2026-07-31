@@ -3512,7 +3512,7 @@ button, a {
 .movement-button{width:clamp(64px,18vw,82px)!important;height:clamp(64px,18vw,82px)!important;font-size:clamp(27px,7vw,34px)!important}
 .jump-button{width:clamp(78px,22vw,100px)!important;height:clamp(78px,22vw,100px)!important;font-size:clamp(23px,7vw,31px)!important}
 .jump-button span{font-size:clamp(12px,3.5vw,17px)!important}
-.dog{bottom:calc(var(--jg-safe-bottom) + clamp(82px,23vw,112px))!important}
+.dog{bottom:calc(var(--jg-safe-bottom) + clamp(82px,23vw,112px))}
 
 /* Los avisos centrales nunca empujan el HUD ni los controles. */
 .climate-notification,.weather-notification,.biome-notification{
@@ -3531,6 +3531,49 @@ button, a {
   .resource-hud,.ability-control-wrap{top:calc(var(--jg-safe-top) + 82px)!important}
   .resource-counter{height:35px!important}.pet-button{height:48px!important}
   .ability-button{height:70px!important}
-  .dog{bottom:calc(var(--jg-safe-bottom) + 75px)!important}
+  .dog{bottom:calc(var(--jg-safe-bottom) + 75px)}
   .movement-button{width:60px!important;height:60px!important}.jump-button{width:74px!important;height:74px!important}
+}
+
+
+/* ============================================================
+   CORRECCIÓN 2026-07-31 — SALTO + UBICACIÓN DE HABILIDAD
+   ============================================================ */
+/* No usar !important en bottom del perro: el motor de player.js
+   necesita modificar este valor en cada cuadro para producir el salto. */
+#gameArea .dog{
+  bottom:calc(var(--jg-safe-bottom) + clamp(82px,23vw,112px));
+}
+
+/* La habilidad queda en la columna izquierda, debajo de la mascota. */
+#game > .ability-control-wrap{
+  left:clamp(8px,2.4vw,14px)!important;
+  right:auto!important;
+  top:calc(var(--jg-safe-top) + clamp(92px,25vw,122px) + clamp(142px,37vw,174px))!important;
+  width:clamp(92px,25vw,124px)!important;
+  z-index:46!important;
+}
+#game > .ability-control-wrap .ability-button{
+  height:clamp(58px,15vw,72px)!important;
+  min-height:0!important;
+  padding:6px!important;
+  border-radius:16px!important;
+}
+#game > .ability-control-wrap .ability-icon{font-size:clamp(18px,5vw,24px)!important}
+#game > .ability-control-wrap .ability-name{font-size:clamp(7px,2vw,9px)!important;max-width:82px!important}
+#game > .ability-control-wrap .ability-cooldown{font-size:clamp(17px,4.8vw,23px)!important}
+
+@media(max-width:390px){
+  #game > .ability-control-wrap{
+    left:max(8px,env(safe-area-inset-left))!important;
+    top:calc(var(--jg-safe-top) + 86px + 136px)!important;
+    width:clamp(88px,25vw,106px)!important;
+  }
+}
+@media(max-height:700px){
+  #game > .ability-control-wrap{
+    top:calc(var(--jg-safe-top) + 82px + 124px)!important;
+  }
+  #game > .ability-control-wrap .ability-button{height:56px!important}
+  #gameArea .dog{bottom:calc(var(--jg-safe-bottom) + 75px)}
 }

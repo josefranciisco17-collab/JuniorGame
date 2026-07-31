@@ -85,3 +85,75 @@ button{font:inherit;color:inherit}
 @keyframes introPan{from{transform:scale(1.16) translateX(-2%)}to{transform:scale(1.02) translateX(2%)}}
 @keyframes introDog{to{transform:translateY(-9px) rotate(3deg)}}
 @media(max-width:760px){.world-status{display:none}.random-event{top:82px}.map-npc em{display:none}}
+
+/* FASE 3.1 · MAPA LIMPIO SIN LOS PANELES IMPRESOS EN LA ILUSTRACIÓN */
+.map-world{
+  width:1256px;
+  height:780px;
+  overflow:hidden;
+}
+.map-art{
+  left:-140px;
+  top:-125px;
+  right:auto;
+  bottom:auto;
+  width:1536px;
+  height:1024px;
+  max-width:none;
+  object-fit:fill;
+}
+
+/* Oculta los dos perros que venían dibujados en el fondo. El jugador y su
+   mascota reales siguen apareciendo por encima y conservan su movimiento. */
+.map-cleanup-patch{
+  position:absolute;
+  z-index:3;
+  left:500px;
+  top:320px;
+  width:270px;
+  height:245px;
+  pointer-events:none;
+  border-radius:46% 54% 42% 58% / 52% 43% 57% 48%;
+  clip-path:polygon(8% 20%,28% 6%,60% 4%,88% 18%,98% 45%,89% 72%,66% 94%,31% 96%,8% 77%,0 48%);
+  background:
+    radial-gradient(circle at 25% 22%,rgba(242,196,104,.22) 0 4px,transparent 5px),
+    radial-gradient(circle at 72% 70%,rgba(255,224,132,.18) 0 3px,transparent 4px),
+    linear-gradient(150deg,rgba(120,142,52,.92) 0 18%,rgba(194,142,66,.97) 30% 76%,rgba(104,135,46,.94) 90% 100%);
+  filter:saturate(.92) brightness(1.03);
+  box-shadow:inset 0 0 24px rgba(74,94,35,.32);
+}
+.map-cleanup-patch::before,
+.map-cleanup-patch::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  opacity:.8;
+}
+.map-cleanup-patch::before{
+  width:18px;height:10px;left:54px;top:155px;
+  background:#7d8d3f;
+  box-shadow:38px -72px 0 -3px #d8aa58,104px 27px 0 -4px #7f9341,145px -43px 0 -5px #e4bd69;
+}
+.map-cleanup-patch::after{
+  width:9px;height:9px;right:48px;bottom:34px;
+  background:#ead076;
+  box-shadow:-118px -3px 0 -2px #f1d87f,-64px -112px 0 -2px #8da048;
+}
+
+/* HUD propio más discreto: sólo queda la información funcional, no los
+   recuadros que estaban impresos en el fondo. */
+.map-hud{gap:7px;top:calc(8px + var(--safe-top))}
+.hud-profile{min-width:150px;padding:5px 9px 5px 5px;border-radius:15px}
+.hud-profile img{width:40px;height:40px;border-radius:11px}
+.hud-profile strong{font-size:15px}
+.hud-resources span{min-height:40px;padding:6px 10px;border-radius:14px;font-size:15px}
+.hud-actions button{width:44px;height:44px;border-radius:14px}
+.world-status{transform:scale(.9);transform-origin:top center}
+
+@media (orientation:portrait) and (max-width:760px){
+  .map-cleanup-patch{left:500px;top:320px}
+  .map-hud{left:calc(7px + var(--safe-left));right:calc(7px + var(--safe-right))}
+  .hud-profile{padding:4px;min-width:0}
+  .hud-profile img{width:38px;height:38px}
+  .hud-resources span{min-height:38px;padding:5px 7px;font-size:13px}
+}

@@ -1,0 +1,11 @@
+JUNIORGAME · MAPA LIMPIO POR CÓDIGO
+
+Cambios:
+- Se recorta por CSS la franja superior, lateral y parte inferior de la imagen base.
+- Ya no aparecen los paneles impresos del contorno.
+- Se ocultan por CSS los dos perros dibujados en el centro del fondo.
+- Sólo quedan el jugador y la mascota reales controlados por JavaScript.
+- Se reajustaron zonas interactivas, NPC, cámara, límites y posición guardada.
+- El HUD funcional queda más compacto.
+
+No se generó una imagen nueva: la limpieza se realiza mediante HTML, CSS y JavaScript.

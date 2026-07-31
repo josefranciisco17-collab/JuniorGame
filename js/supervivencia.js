@@ -85,6 +85,9 @@ window.SistemaSupervivencia = {
     this.cuadroAnimacion = null;
     this.eliminarObjeto(false);
     document.body.classList.remove("tiempo-lento-activo", "perro-invulnerable");
+    document.querySelectorAll(
+      ".tiempo-lento-overlay, .slow-motion-overlay, #tiempoLentoOverlay, #slowMotionOverlay"
+    ).forEach((elemento) => elemento.remove());
   },
 
   obtenerNivel() {
@@ -109,12 +112,22 @@ window.SistemaSupervivencia = {
 
   activarTiempoLento() {
     this.tiempoLentoHasta = performance.now() + this.configuracion.duracionTiempoLento;
-    document.body.classList.add("tiempo-lento-activo");
-    this.mostrarMensaje("⏳ ¡Tiempo lento durante 8 segundos!");
+
+    // El efecto es solamente funcional: no debe cubrir la zona de juego.
+    document.body.classList.remove("tiempo-lento-activo");
+    document.querySelectorAll(
+      ".tiempo-lento-overlay, .slow-motion-overlay, #tiempoLentoOverlay, #slowMotionOverlay"
+    ).forEach((elemento) => elemento.remove());
+
+    this.mostrarMensaje("🌀 Tiempo lento activado · 8 s");
     window.AudioFX?.bonus?.();
+
     window.setTimeout(() => {
       if (performance.now() >= this.tiempoLentoHasta) {
         document.body.classList.remove("tiempo-lento-activo");
+        document.querySelectorAll(
+          ".tiempo-lento-overlay, .slow-motion-overlay, #tiempoLentoOverlay, #slowMotionOverlay"
+        ).forEach((elemento) => elemento.remove());
       }
     }, this.configuracion.duracionTiempoLento + 100);
   },

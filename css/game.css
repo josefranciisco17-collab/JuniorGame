@@ -4643,3 +4643,34 @@ body.portal-inner-active .secret-world-object{filter:drop-shadow(0 0 16px rgba(2
   .portal-ia-key,.portal-ia-risk{padding:4px 6px}
 }
 
+
+
+/* ==========================================================
+   CORRECCIÓN VISUAL — TIEMPO LENTO SIN ÓVALO/OVERLAY
+   El tiempo lento conserva su función, pero no tapa el juego.
+   ========================================================== */
+body.tiempo-lento-activo #gameArea::before,
+body.tiempo-lento-activo #gameArea::after,
+body.tiempo-lento-activo .game-area::before,
+body.tiempo-lento-activo .game-area::after {
+  content: none !important;
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.tiempo-lento-activo .game-area,
+body.tiempo-lento-activo #gameArea {
+  filter: none !important;
+}
+
+.tiempo-lento-overlay,
+.slow-motion-overlay,
+#tiempoLentoOverlay,
+#slowMotionOverlay {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

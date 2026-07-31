@@ -1,0 +1,9 @@
+CORRECCIÓN TIEMPO LENTO
+
+- Se eliminó el óvalo/panel transparente que cubría la pantalla.
+- Se eliminó el texto fijo "TIEMPO LENTO" sobre el escenario.
+- La habilidad conserva su función real de ralentizar objetos durante 8 segundos.
+- Ahora aparece únicamente un aviso breve: "Tiempo lento activado · 8 s".
+- Se limpian overlays antiguos u objetos residuales al activar o terminar el efecto.
+- Se actualizaron las versiones de caché de CSS y JavaScript.
+- No se modificó la IA ni las mecánicas nuevas del portal.

@@ -878,3 +878,93 @@ color:#ffe8bf;
     animation:none;
   }
 }
+
+/* =========================================================
+   RECARGAR DIAMANTES — ESTILO MADERA OSCURA PREMIUM
+   Inspirado en el perfil Idea 1
+   ========================================================= */
+:root{
+  --premium-bg:#160a03;
+  --premium-wood-1:#3d1807;
+  --premium-wood-2:#241005;
+  --premium-wood-3:#120703;
+  --premium-gold:#f7b83f;
+  --premium-gold-soft:#ffd978;
+  --premium-line:rgba(255,199,91,.44);
+  --premium-cream:#fff2cf;
+}
+
+body{ background:#0c0502; }
+.shop-page{
+  align-items:flex-start;
+  padding:max(18px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+  background:
+    radial-gradient(circle at 50% 12%,rgba(255,176,55,.12),transparent 36%),
+    linear-gradient(rgba(7,3,1,.58),rgba(7,3,1,.82)),
+    url("../Fondos-JuniorGame/granja.png") center/cover fixed;
+}
+.shop-overlay{background:rgba(0,0,0,.30);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.shop-card{
+  max-width:760px;
+  margin:auto;
+  padding:26px 22px 30px;
+  border:2px solid var(--premium-line);
+  border-radius:32px;
+  background:
+    radial-gradient(circle at 16% 2%,rgba(255,207,105,.08),transparent 23%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 2px,transparent 2px 31px),
+    linear-gradient(180deg,var(--premium-wood-1),var(--premium-wood-2) 56%,var(--premium-wood-3));
+  box-shadow:
+    inset 0 1px 0 rgba(255,230,174,.22),
+    inset 0 0 0 7px rgba(0,0,0,.18),
+    0 0 0 1px rgba(255,175,43,.14),
+    0 26px 70px rgba(0,0,0,.62);
+}
+.shop-card::before,.shop-card::after{
+  position:absolute;z-index:0;font-size:32px;filter:drop-shadow(0 3px 2px rgba(0,0,0,.55));opacity:.9;pointer-events:none
+}
+.shop-card::before{content:"🍃";left:11px;top:10px;transform:rotate(-28deg)}
+.shop-card::after{content:"🍃";right:12px;bottom:10px;transform:rotate(145deg)}
+.shop-card>*{position:relative;z-index:1}
+.shop-header{justify-content:center;position:relative;margin-bottom:22px;padding-top:2px}
+.shop-back{
+  position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:44px;height:44px;border:2px solid var(--premium-line);background:linear-gradient(#4b210c,#1c0b03);box-shadow:0 5px 12px rgba(0,0,0,.45)
+}
+.shop-title-wrap{
+  min-width:min(100%,500px);justify-content:center;text-align:center;padding:13px 30px;border:2px solid #8b4f13;border-radius:18px;
+  background:linear-gradient(#ffd46b,#ee9e1c 62%,#b75e08);box-shadow:inset 0 2px rgba(255,255,255,.45),0 7px 0 #4e2107,0 12px 22px rgba(0,0,0,.35)
+}
+.shop-title-wrap h1{color:#4a2108;font-size:clamp(24px,5vw,38px);text-shadow:0 1px rgba(255,255,255,.35)}
+.shop-title-wrap p{color:#62320b;font-weight:900;letter-spacing:.5px}
+.shop-icon{font-size:34px;filter:drop-shadow(0 2px 1px rgba(255,255,255,.4))}
+.shop-balances{gap:12px;margin:24px 0 24px}
+.balance-card{
+  border:1px solid var(--premium-line);background:linear-gradient(180deg,rgba(56,24,8,.96),rgba(20,8,3,.96));box-shadow:inset 0 1px rgba(255,255,255,.08),0 7px 16px rgba(0,0,0,.35);border-radius:18px;padding:14px 8px
+}
+.balance-card strong{color:var(--premium-gold-soft)}
+.section-heading{padding:15px 18px;border:1px solid var(--premium-line);border-radius:18px;background:rgba(22,9,3,.70);box-shadow:inset 0 1px rgba(255,255,255,.06)}
+.section-heading h2{color:var(--premium-gold);font-size:clamp(21px,4vw,30px)}
+.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:15px}
+.shop-item{
+  position:relative;overflow:hidden;padding:18px 14px;border:1px solid var(--premium-line);border-radius:20px;
+  background:linear-gradient(180deg,rgba(59,24,7,.98),rgba(19,7,2,.98));
+  box-shadow:inset 0 1px rgba(255,255,255,.08),0 8px 20px rgba(0,0,0,.40);transition:transform .18s ease,box-shadow .18s ease
+}
+.shop-item::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 10%,rgba(83,196,255,.13),transparent 38%);pointer-events:none}
+.shop-item:active{transform:scale(.985)}
+.shop-item-icon{font-size:46px;filter:drop-shadow(0 0 10px rgba(42,192,255,.35))}
+.shop-item h3{color:#fff5df;font-size:20px}.shop-item p{color:#dbc7aa}.shop-price{display:block;color:var(--premium-gold-soft);font-size:22px;margin-bottom:12px}
+.shop-item button,.buy-button{
+  border:1px solid #c77717!important;border-radius:14px!important;background:linear-gradient(#ffd45e,#e58b0a)!important;color:#421c05!important;box-shadow:inset 0 2px rgba(255,255,255,.45),0 5px 0 #6b3007!important;font-weight:1000!important
+}
+.shop-item button:active,.buy-button:active{transform:translateY(3px);box-shadow:inset 0 2px rgba(255,255,255,.35),0 2px 0 #6b3007!important}
+.shop-action-button{border:1px solid var(--premium-line);background:linear-gradient(#4b220d,#1b0a03);box-shadow:0 5px 12px rgba(0,0,0,.35)}
+.shop-footer{color:#c9b18f}
+.purchase-modal-card,.history-modal-card{
+  border:2px solid var(--premium-line)!important;background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 2px,transparent 2px 30px),linear-gradient(180deg,#3b1707,#1b0a03 60%,#0f0502)!important;box-shadow:inset 0 1px rgba(255,255,255,.12),0 22px 55px rgba(0,0,0,.62)!important
+}
+.purchase-modal-card h2{color:var(--premium-gold)}
+.purchase-modal-button{border:1px solid var(--premium-line);background:linear-gradient(#f6c451,#c8740b);color:#381704}
+@media(max-width:560px){
+  .shop-card{padding:20px 12px 24px;border-radius:24px}.shop-title-wrap{padding:11px 12px 11px 54px;justify-content:flex-start;text-align:left}.shop-title-wrap h1{font-size:22px}.shop-title-wrap p{font-size:11px}.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.shop-item{padding:14px 8px}.shop-item h3{font-size:16px}.shop-item p{min-height:28px}.shop-price{font-size:18px}.shop-item-icon{font-size:38px}.shop-balances{gap:7px}.balance-card{padding:10px 4px}.balance-card strong{font-size:17px}}

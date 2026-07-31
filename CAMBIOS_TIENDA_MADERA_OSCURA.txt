@@ -1,0 +1,17 @@
+JUNIORGAME — TIENDA Y RECARGA DE DIAMANTES
+
+Se aplicó el mismo lenguaje visual del Perfil Idea 1:
+- madera oscura premium;
+- marcos dorados finos;
+- mejor contraste y profundidad;
+- tarjetas de productos oscuras y elegantes;
+- encabezados tipo placa dorada;
+- modales de compra con el mismo estilo;
+- diseño adaptable para teléfonos;
+- no se modificó la lógica de compra, Firebase ni Stripe.
+
+Archivos:
+- shop.html
+- css/shop.css
+- articulos.html
+- css/articulos.css

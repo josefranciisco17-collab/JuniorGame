@@ -229,8 +229,8 @@
   };
 
   const CONFIGURACION_MUSICA = {
-    archivo: "sonido_fondo.mp3",
-    volumen: 0.20
+    archivo: "musica_granja_alegre.wav",
+    volumen: 0.18
   };
 
   const bancos = {};

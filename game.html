@@ -10,7 +10,7 @@
 
   <title>JuniorGame - Juego</title>
 
-  <link rel="stylesheet" href="css/game.css?v=20260729-fix-hud-pet-final">
+  <link rel="stylesheet" href="css/game.css?v=20260731-hud-vidas-profesional">
   <link rel="stylesheet" href="css/tutorial-ia.css?v=20260730-tutorial4">
 </head>
 
@@ -52,10 +52,12 @@
       </div>
 
       <div class="life-shield-group">
-        <div class="lives" id="lives">
-          <span>❤️</span>
-          <span>❤️</span>
-          <span>❤️</span>
+        <div class="lives" id="lives" role="status" aria-live="polite" aria-label="3 de 10 vidas">
+          <span class="lives-icon" aria-hidden="true">❤️</span>
+          <span class="lives-copy">
+            <small>VIDAS</small>
+            <strong><span class="lives-current">3</span><span class="lives-separator">/</span><span class="lives-max">10</span></strong>
+          </span>
         </div>
         <span
           id="shieldIndicator"
@@ -380,8 +382,8 @@
   </div>
 </div>
 
-  <script src="js/audio.js?v=20260729-audio-moderno2"></script>
-  <script src="js/game.js?v=20260726-mundos-secretos3"></script>
+  <script src="js/audio.js?v=20260731-musica-granja"></script>
+  <script src="js/game.js?v=20260731-contador-vidas"></script>
   <script src="js/mundos.js?v=20260726-mundos-secretos3"></script>
   <script src="js/biomas.js?v=20260729-biomas-aaa3"></script>
   <script src="js/niveles.js?v=20260729-biomas-aaa3"></script>
@@ -400,7 +402,7 @@
   <script src="js/mascotas.js?v=20260729-perritos-vivos3"></script>
   <script src="js/misiones.js?v=20260726-misiones5"></script>
   <script src="js/pause.js?v=20260722-caja4-github"></script>
-  <script src="js/ui.js?v=20260722-caja4-github"></script>
+  <script src="js/ui.js?v=20260731-contador-vidas"></script>
   <script src="js/tutorial-ia.js?v=20260730-tutorial2"></script>
 
 </body>

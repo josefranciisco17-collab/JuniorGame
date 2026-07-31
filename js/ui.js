@@ -18,29 +18,7 @@ window.JuniorUI = {
   },
 
   actualizarVidas() {
-    const juego = window.JuniorGame;
-
-    if (!juego?.elementos?.vidas) {
-      return;
-    }
-
-    let corazones = "";
-
-    const vidasVisibles = Math.max(
-      3,
-      Math.min(
-        juego.estado.vidasMaximas || 10,
-        juego.estado.vidas
-      )
-    );
-
-    for (let i = 0; i < vidasVisibles; i += 1) {
-      corazones += i < juego.estado.vidas
-        ? "<span>❤️</span>"
-        : "<span>🖤</span>";
-    }
-
-    juego.elementos.vidas.innerHTML = corazones;
+    window.JuniorGame?.actualizarVidas?.();
   }
 };
 

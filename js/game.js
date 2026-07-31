@@ -612,24 +612,31 @@ configurarBotonesModal() {
       return;
     }
 
-    let contenido = "";
+    const vidas = Math.max(0, Math.min(
+      Number(this.estado.vidasMaximas) || 10,
+      Math.floor(Number(this.estado.vidas) || 0)
+    ));
+    const maximo = Math.max(1, Math.floor(Number(this.estado.vidasMaximas) || 10));
+    const anterior = Number(contenedorVidas.dataset.vidas);
 
-    const vidasVisibles = Math.max(
-      3,
-      Math.min(
-        this.estado.vidasMaximas,
-        this.estado.vidas
-      )
-    );
+    contenedorVidas.innerHTML = `
+      <span class="lives-icon" aria-hidden="true">❤️</span>
+      <span class="lives-copy">
+        <small>VIDAS</small>
+        <strong><span class="lives-current">${vidas}</span><span class="lives-separator">/</span><span class="lives-max">${maximo}</span></strong>
+      </span>`;
 
-    for (let indice = 0; indice < vidasVisibles; indice += 1) {
-      contenido +=
-        indice < this.estado.vidas
-          ? "<span class=\"heart active\">❤️</span>"
-          : "<span class=\"heart empty\">🖤</span>";
+    contenedorVidas.dataset.vidas = String(vidas);
+    contenedorVidas.setAttribute("aria-label", `${vidas} de ${maximo} vidas`);
+    contenedorVidas.classList.toggle("is-full", vidas >= maximo);
+    contenedorVidas.classList.toggle("is-critical", vidas <= 1);
+
+    if (Number.isFinite(anterior) && anterior !== vidas) {
+      contenedorVidas.classList.remove("life-gained", "life-lost");
+      void contenedorVidas.offsetWidth;
+      contenedorVidas.classList.add(vidas > anterior ? "life-gained" : "life-lost");
+      window.setTimeout(() => contenedorVidas.classList.remove("life-gained", "life-lost"), 420);
     }
-
-    contenedorVidas.innerHTML = contenido;
   },
 
   pausar() {

@@ -1,0 +1,16 @@
+RESTAURACIÓN SELECTIVA DEL HUD
+
+Se restauró únicamente la configuración aprobada del HUD:
+- Perrito Jr. debajo del Álbum y alineado a la derecha.
+- Distribución centrada de vidas, monedas y diamantes.
+- Botón de pausa funcional.
+- Aviso del clima temporal: aparece y desaparece.
+
+Se conservaron todas las funciones nuevas del portal:
+- IA adaptativa.
+- Meteoritos.
+- Fragmentos de llave.
+- Cristales de energía.
+- Monedas vivas.
+- Lluvia de tesoros.
+- Portal secreto dentro del portal.

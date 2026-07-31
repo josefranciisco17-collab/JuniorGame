@@ -655,10 +655,14 @@
     window.SistemaMundos?.mostrarAviso?.({emoji:"🏆",nombre:`¡${base?.nombre || 'Jefe'} derrotado!`,mensaje:"Recompensa: 25 monedas y 1 diamante."});
   }
   function initAAA() {
-    crearBotonAlbum(); crearBossUI();
+    crearBotonAlbum();
     window.addEventListener("juniorgame:objetoBioma",e=>{actualizarColeccionCon(e.detail);});
-    window.addEventListener("juniorgame:huesoAtrapado",e=>golpearBoss(e.detail));
-    window.addEventListener("juniorgame:nivelSubido",e=>iniciarBoss(e.detail?.nivel));
+    /* El sistema 3D profesional reemplaza el HUD rectangular antiguo. */
+    if (!window.SistemaJefes3D) {
+      crearBossUI();
+      window.addEventListener("juniorgame:huesoAtrapado",e=>golpearBoss(e.detail));
+      window.addEventListener("juniorgame:nivelSubido",e=>iniciarBoss(e.detail?.nivel));
+    }
   }
   window.SistemaBiomasAAA={abrirAlbum,iniciarBoss,progreso,estadoBoss};
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",()=>setTimeout(initAAA,180),{once:true}); else setTimeout(initAAA,180);

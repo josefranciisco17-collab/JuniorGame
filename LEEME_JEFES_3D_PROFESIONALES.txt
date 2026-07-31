@@ -1,0 +1,30 @@
+JUNIORGAME — SISTEMA PROFESIONAL DE JEFES 3D
+
+Se integraron 10 jefes de mundo procedurales en 3D, uno por cada décimo nivel:
+10 Toro Guardián
+20 Árbol Ancestral
+30 Rey del Hielo
+40 Escorpión Solar
+50 Sabueso Mecánico
+60 Águila Carmesí
+70 Lobo de la Luna
+80 Cóndor del Viento
+90 Guardián de la Tormenta
+100 Titán de los Cien Niveles
+
+CARACTERÍSTICAS
+- Render 3D real mediante Three.js.
+- Modelos creados con geometría procedural y materiales independientes.
+- Animaciones continuas de respiración, cabeza, patas, alas, cola y energía.
+- Entrada cinematográfica, nombre, subtítulo, fases y barra de vida.
+- Tres fases de dificultad por jefe.
+- Ataques propios por mundo con colisión real contra el jugador.
+- Sonidos sintetizados para rugido, ataques, impactos y victoria.
+- Recompensas crecientes por nivel.
+- Fallback 2.5D si el navegador no puede cargar WebGL/Three.js.
+- El portal con IA, HUD, pausa, perfil, tienda y demás sistemas se conservan.
+
+IMPORTANTE
+Three.js se carga desde jsDelivr. La primera apertura necesita conexión a internet.
+Los modelos procedurales evitan depender de archivos GLB pesados. Más adelante se
+puede sustituir cada modelo por un GLB animado sin cambiar el sistema de combate.

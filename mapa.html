@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#173d77">
+  <title>Mapa Principal · JuniorGame</title>
+  <link rel="stylesheet" href="css/mapa.css?v=1">
+</head>
+<body>
+  <main id="mapViewport" class="map-viewport" aria-label="Mapa principal de JuniorGame">
+    <section id="mapWorld" class="map-world">
+      <img class="map-art" src="assets/mapa/mapa-principal.png" alt="Villa principal de JuniorGame con tienda, misiones, ruleta, casa, portal y ranking">
+
+      <div id="playerAvatar" class="map-player" aria-label="Junior">
+        <span class="player-shadow"></span>
+        <img src="Fondos-JuniorGame/usuario1.png" alt="Junior">
+        <span class="player-name">JUNIOR</span>
+      </div>
+
+      <div id="petAvatar" class="map-pet" aria-hidden="true">
+        <img src="Fondos-JuniorGame/Estrella.png" alt="">
+      </div>
+
+      <button class="hotspot" data-id="tienda" data-x="270" data-y="310" data-radius="150" aria-label="Entrar a Tienda"></button>
+      <button class="hotspot" data-id="ruleta" data-x="375" data-y="525" data-radius="120" aria-label="Abrir Ruleta"></button>
+      <button class="hotspot" data-id="misiones" data-x="600" data-y="310" data-radius="115" aria-label="Abrir Misiones"></button>
+      <button class="hotspot" data-id="casa" data-x="800" data-y="295" data-radius="120" aria-label="Entrar a Casa"></button>
+      <button class="hotspot" data-id="portal" data-x="1085" data-y="365" data-radius="140" aria-label="Jugar Nivel 1"></button>
+      <button class="hotspot" data-id="ranking" data-x="1330" data-y="330" data-radius="125" aria-label="Abrir Ranking"></button>
+      <button class="hotspot" data-id="perritos" data-x="250" data-y="775" data-radius="120" aria-label="Abrir Perritos Junior"></button>
+      <button class="hotspot" data-id="cofre" data-x="645" data-y="820" data-radius="105" aria-label="Abrir cofre escondido"></button>
+      <button class="hotspot" data-id="eventos" data-x="1160" data-y="635" data-radius="125" aria-label="Abrir Eventos"></button>
+      <button class="hotspot" data-id="ayuda" data-x="1300" data-y="825" data-radius="110" aria-label="Abrir Ayuda"></button>
+    </section>
+
+    <header class="map-hud">
+      <button id="profileButton" class="hud-profile" type="button">
+        <img id="hudPhoto" src="Fondos-JuniorGame/Estrella.png" alt="Foto del jugador">
+        <span><strong id="hudName">Jugador</strong><small>Nivel <b id="hudLevel">1</b></small></span>
+      </button>
+      <div class="hud-resources">
+        <span>🪙 <b id="hudCoins">0</b></span>
+        <span>💎 <b id="hudDiamonds">0</b></span>
+        <span>❤️ <b id="hudLives">3/10</b></span>
+      </div>
+      <div class="hud-actions">
+        <button id="chatButton" type="button" aria-label="Chat">💬</button>
+        <button id="eventsButton" type="button" aria-label="Eventos">🔔</button>
+        <button id="settingsButton" type="button" aria-label="Ajustes">⚙️</button>
+      </div>
+    </header>
+
+    <section id="interactionPanel" class="interaction-panel hidden" aria-live="polite">
+      <span id="interactionIcon">🐾</span>
+      <div><strong id="interactionTitle">Lugar</strong><small id="interactionText">Acércate para interactuar</small></div>
+      <button id="interactionButton" type="button">ENTRAR</button>
+    </section>
+
+    <div class="map-controls" aria-label="Controles de movimiento">
+      <div id="joystick" class="joystick"><span id="joystickKnob"></span></div>
+      <button id="interactButton" class="interact-button" type="button" disabled>🐾<small>ENTRAR</small></button>
+    </div>
+
+    <button id="backButton" class="back-button" type="button">← MENÚ</button>
+
+    <div id="mapModal" class="map-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <section>
+        <button id="modalClose" class="modal-close" type="button" aria-label="Cerrar">×</button>
+        <span id="modalIcon" class="modal-icon">🐾</span>
+        <h2 id="modalTitle">JuniorGame</h2>
+        <p id="modalText"></p>
+        <div id="modalActions" class="modal-actions"></div>
+      </section>
+    </div>
+
+    <div id="orientationHint" class="orientation-hint">
+      <span>📱↔️</span>
+      <strong>Se disfruta mejor en horizontal</strong>
+      <small>Puedes seguir jugando en vertical.</small>
+    </div>
+  </main>
+
+  <script type="module" src="js/mapa.js?v=1"></script>
+</body>
+</html>

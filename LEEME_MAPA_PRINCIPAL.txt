@@ -1,0 +1,20 @@
+JUNIORGAME · MAPA PRINCIPAL FASE 1
+
+Incluye:
+- mapa.html, css/mapa.css y js/mapa.js
+- escenario visual basado en el concepto aprobado
+- movimiento táctil con joystick y teclado WASD
+- cámara que sigue al jugador
+- mascota acompañante
+- zonas interactivas para Tienda, Ruleta, Misiones, Casa, Portal, Ranking,
+  Perritos Jr, Cofre, Eventos y Ayuda
+- portal conectado a game.html
+- tienda conectada a articulos.html
+- chat conectado a chat.html
+- HUD conectado al perfil de Firestore
+- guardado de posición del jugador
+- cofre diario con recompensa de 25 monedas
+- botón JUGAR del menú cambiado a MAPA PRINCIPAL
+
+Esta es la primera fase funcional. Los paneles internos de Ruleta, Misiones,
+Ranking y Eventos se conectarán directamente dentro del mapa en fases posteriores.

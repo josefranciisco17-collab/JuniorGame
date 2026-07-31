@@ -3601,3 +3601,284 @@ button, a {
 .jg-world-atardecer #gameArea{filter:saturate(1.08) sepia(.06)}
 .jg-world-lluvia #gameArea{filter:saturate(.9) contrast(1.03)}
 .jg-world-final #gameArea{box-shadow:inset 0 0 55px rgba(255,190,40,.16)}
+
+/* ============================================================
+   HUD COMPACTO DE PARTIDA — 2026-07-31
+   Una sola barra superior, cápsulas pequeñas y ocultamiento suave.
+   ============================================================ */
+:root{
+  --jg-compact-top:max(7px,env(safe-area-inset-top));
+  --jg-compact-side:clamp(7px,2vw,11px);
+  --jg-compact-height:clamp(48px,12.5vw,58px);
+  --jg-compact-bg:linear-gradient(180deg,rgba(27,45,63,.88),rgba(12,26,38,.82));
+  --jg-compact-border:rgba(255,210,104,.76);
+}
+
+/* Barra superior única */
+.game-hud{
+  top:var(--jg-compact-top)!important;
+  left:var(--jg-compact-side)!important;
+  right:var(--jg-compact-side)!important;
+  min-height:var(--jg-compact-height)!important;
+  display:grid!important;
+  grid-template-columns:minmax(90px,1.05fr) minmax(118px,1.35fr) auto auto!important;
+  align-items:center!important;
+  gap:clamp(4px,1.2vw,7px)!important;
+  padding:clamp(4px,1vw,6px)!important;
+  border:1px solid var(--jg-compact-border)!important;
+  border-radius:clamp(17px,4vw,22px)!important;
+  background:var(--jg-compact-bg)!important;
+  box-shadow:0 5px 14px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.14)!important;
+  backdrop-filter:blur(9px) saturate(1.15)!important;
+  -webkit-backdrop-filter:blur(9px) saturate(1.15)!important;
+  transition:opacity .35s ease,transform .35s ease,filter .35s ease!important;
+}
+
+/* Marcador compacto */
+.game-hud .score-box{
+  width:auto!important;
+  min-width:0!important;
+  height:auto!important;
+  padding:2px 6px!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.game-hud .score-main{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  min-height:25px!important;
+}
+.game-hud .score-main img{
+  width:clamp(23px,6vw,29px)!important;
+  height:clamp(23px,6vw,29px)!important;
+}
+.game-hud .score-main #score{
+  font-size:clamp(20px,5.4vw,28px)!important;
+  line-height:1!important;
+}
+.game-hud .level-progress-row{
+  margin-top:1px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+}
+.game-hud .level-caption{
+  font-size:clamp(8px,2.1vw,10px)!important;
+  white-space:nowrap!important;
+}
+.game-hud .level-bar{
+  height:5px!important;
+  min-width:28px!important;
+  flex:1!important;
+}
+
+/* Monedas + diamantes + mascota, todo dentro de la barra */
+.game-hud .resource-hud{
+  position:static!important;
+  width:auto!important;
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:minmax(53px,1fr) minmax(61px,1.1fr) 34px!important;
+  align-items:center!important;
+  gap:3px!important;
+  transform:none!important;
+}
+.game-hud .resource-counter,
+.game-hud .pet-button{
+  width:auto!important;
+  min-width:0!important;
+  height:clamp(31px,8.1vw,37px)!important;
+  padding:2px 5px!important;
+  border:1px solid rgba(255,255,255,.17)!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.09)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12)!important;
+}
+.game-hud .resource-counter{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+}
+.game-hud .resource-counter-icon{
+  font-size:clamp(14px,3.8vw,18px)!important;
+}
+.game-hud .resource-counter strong{
+  min-width:0!important;
+  max-width:62px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  font-size:clamp(10px,2.8vw,14px)!important;
+  line-height:1!important;
+}
+.game-hud .pet-button{
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  aspect-ratio:1!important;
+  overflow:visible!important;
+}
+.game-hud .pet-button-icon{
+  font-size:clamp(18px,5vw,23px)!important;
+  line-height:1!important;
+}
+.game-hud .pet-button strong{
+  position:absolute!important;
+  right:-2px!important;
+  bottom:-3px!important;
+  min-width:15px!important;
+  height:15px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0 3px!important;
+  border-radius:999px!important;
+  background:#2ea85d!important;
+  color:#fff!important;
+  font-size:8px!important;
+  border:1px solid #fff!important;
+}
+
+/* Vidas como cápsula pequeña */
+.game-hud .life-shield-group{
+  position:static!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  gap:2px!important;
+}
+.game-hud .lives{
+  min-width:0!important;
+  width:auto!important;
+  height:clamp(32px,8.3vw,38px)!important;
+  padding:2px 7px!important;
+  gap:3px!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.09)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12)!important;
+}
+.game-hud .lives-icon{font-size:clamp(17px,4.5vw,21px)!important}
+.game-hud .lives-copy small{display:none!important}
+.game-hud .lives-copy strong{margin:0!important;font-size:clamp(12px,3.4vw,16px)!important}
+.game-hud .lives-separator,.game-hud .lives-max{font-size:.78em!important}
+.game-hud .shield-indicator{position:absolute!important;top:100%!important;right:104px!important;min-height:0!important}
+
+/* Acciones pequeñas */
+.game-hud .hud-actions{
+  position:static!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,clamp(30px,7.8vw,37px))!important;
+  gap:3px!important;
+}
+.game-hud .pause-button,
+.game-hud .tutorial-help-button,
+.game-hud .home-button{
+  width:clamp(30px,7.8vw,37px)!important;
+  height:clamp(30px,7.8vw,37px)!important;
+  min-width:0!important;
+  min-height:0!important;
+  border-width:1px!important;
+  border-radius:50%!important;
+  font-size:clamp(14px,3.8vw,18px)!important;
+  box-shadow:0 2px 0 rgba(0,0,0,.42),0 4px 8px rgba(0,0,0,.22)!important;
+}
+
+/* Habilidad reducida a botón circular con contador */
+#game > .ability-control-wrap{
+  position:absolute!important;
+  top:calc(var(--jg-compact-top) + var(--jg-compact-height) + 9px)!important;
+  left:var(--jg-compact-side)!important;
+  right:auto!important;
+  width:clamp(48px,13vw,60px)!important;
+  height:clamp(48px,13vw,60px)!important;
+  z-index:46!important;
+  transition:opacity .35s ease,transform .35s ease!important;
+}
+#game > .ability-control-wrap .ability-button{
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  padding:0!important;
+  border-radius:50%!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+}
+#game > .ability-control-wrap .ability-icon{
+  font-size:clamp(22px,6.5vw,30px)!important;
+  z-index:2!important;
+}
+#game > .ability-control-wrap .ability-copy{
+  position:absolute!important;
+  right:-4px!important;
+  bottom:-4px!important;
+  z-index:4!important;
+}
+#game > .ability-control-wrap .ability-name{display:none!important}
+#game > .ability-control-wrap .ability-cooldown{
+  min-width:25px!important;
+  height:20px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0 4px!important;
+  border-radius:999px!important;
+  border:1px solid #fff!important;
+  background:#55328e!important;
+  font-size:10px!important;
+  line-height:1!important;
+}
+#game > .ability-control-wrap .ability-config-button{
+  width:19px!important;
+  height:19px!important;
+  top:-3px!important;
+  right:-3px!important;
+  font-size:10px!important;
+}
+
+/* El clima aparece como aviso temporal pequeño */
+.climate-notification,.weather-notification,.biome-notification{
+  top:calc(var(--jg-compact-top) + var(--jg-compact-height) + 8px)!important;
+  max-width:min(58vw,245px)!important;
+  transform:translateX(-50%) scale(.86)!important;
+}
+
+/* Auto-ocultamiento: baja la presencia del HUD sin quitar información */
+#game.hud-idle .game-hud{
+  opacity:.34!important;
+  transform:translateY(-3px)!important;
+  filter:saturate(.8)!important;
+}
+#game.hud-idle .ability-control-wrap{
+  opacity:.28!important;
+  transform:scale(.88)!important;
+}
+#game.hud-idle .game-hud:hover,
+#game.hud-idle .game-hud:focus-within,
+#game.hud-idle .ability-control-wrap:hover,
+#game.hud-idle .ability-control-wrap:focus-within{
+  opacity:1!important;
+  transform:none!important;
+  filter:none!important;
+}
+
+@media(max-width:410px){
+  .game-hud{
+    grid-template-columns:minmax(80px,.95fr) minmax(101px,1.2fr) auto auto!important;
+    gap:3px!important;
+    padding:4px!important;
+  }
+  .game-hud .resource-hud{grid-template-columns:minmax(45px,1fr) minmax(52px,1.08fr) 30px!important}
+  .game-hud .resource-counter{padding:2px 3px!important}
+  .game-hud .resource-counter strong{max-width:48px!important;font-size:10px!important}
+  .game-hud .hud-actions{grid-template-columns:repeat(3,29px)!important;gap:2px!important}
+  .game-hud .pause-button,.game-hud .tutorial-help-button,.game-hud .home-button{width:29px!important;height:29px!important;font-size:14px!important}
+  .game-hud .lives{padding:2px 5px!important}
+}
+@media(max-width:350px){
+  .game-hud{grid-template-columns:minmax(72px,.9fr) minmax(91px,1.15fr) auto 31px!important}
+  .game-hud .hud-actions{grid-template-columns:31px!important}
+  .game-hud .tutorial-help-button,.game-hud .home-button{display:none!important}
+}

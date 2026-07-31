@@ -1,0 +1,15 @@
+JUNIORGAME — HUD COMPACTO DE PARTIDA
+
+Cambios incluidos:
+- Una sola barra superior compacta.
+- Huesos, nivel, monedas, diamantes, mascota, vidas y controles superiores agrupados.
+- La habilidad ahora es un botón circular con contador de usos.
+- El clima permanece como aviso temporal pequeño.
+- Tras 5 segundos sin cambios, el HUD baja su opacidad para despejar el escenario.
+- Al tocar, mover, saltar, ganar recursos, perder vidas o cambiar de nivel, recupera la visibilidad completa.
+- Adaptación para pantallas pequeñas; en dispositivos extremadamente angostos se ocultan Ayuda y Casa, pero Pausa permanece disponible.
+
+Archivos modificados:
+- game.html
+- css/game.css
+- js/hud-compacto.js

@@ -1643,3 +1643,134 @@ transition:
 .profile-message{position:relative;z-index:2;margin-bottom:-4px}
 @media(max-width:390px){.profile-card.profile-card-premium{padding:22px 14px 18px}.profile-photo-wrap{width:146px;height:146px}.profile-photo{width:132px;height:132px}.profile-title-plaque{padding:7px 20px}.profile-title-plaque h2{font-size:21px}.profile-id-box{grid-template-columns:1fr}.profile-copy-button{width:100%}.profile-stats{gap:7px}.profile-stat{min-height:79px}.profile-actions{grid-template-columns:1fr}}
 @media(max-height:720px){.profile-panel{align-items:flex-start}.profile-card.profile-card-premium{margin:4px auto 18px}.profile-photo-wrap{width:132px;height:132px}.profile-photo{width:120px;height:120px}.profile-stats{margin-top:11px}.profile-stat{min-height:76px}.profile-details{margin-top:11px}.profile-actions{margin-top:11px}}
+
+/* =========================================
+   PERFIL PREMIUM IDEA 1 · MADERA OSCURA
+   Ajuste visual final inspirado en la referencia
+========================================= */
+.profile-backdrop{
+  background:
+    radial-gradient(circle at 50% 10%,rgba(255,190,70,.14),transparent 35%),
+    rgba(9,4,1,.91)!important;
+  backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px)
+}
+.profile-card.profile-card-premium{
+  position:relative;
+  width:min(420px,calc(100vw - 24px));
+  max-width:420px;
+  padding:26px 20px 22px;
+  border:2px solid #b87724;
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 8%,rgba(255,191,72,.10),transparent 30%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 2px,transparent 2px 34px),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.012) 0 1px,transparent 1px 58px),
+    linear-gradient(180deg,#3b1708 0%,#2b0f04 42%,#1b0903 100%)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,224,151,.18),
+    inset 0 14px 28px rgba(255,188,74,.035),
+    inset 0 -20px 35px rgba(0,0,0,.42),
+    0 0 0 5px rgba(71,29,7,.9),
+    0 26px 70px rgba(0,0,0,.72)!important;
+}
+.profile-card-premium::before{
+  inset:10px!important;
+  border:1px solid rgba(224,151,53,.38)!important;
+  border-radius:21px!important;
+  box-shadow:inset 0 0 24px rgba(255,186,59,.035)
+}
+.profile-card-premium::after{
+  content:"🍃"!important;
+  width:auto!important;height:auto!important;
+  right:12px!important;top:auto!important;bottom:8px!important;
+  background:none!important;border-radius:0!important;
+  font-size:31px;filter:drop-shadow(0 4px 3px rgba(0,0,0,.55));opacity:.88;
+  transform:rotate(-18deg)
+}
+.profile-header::before,.profile-header::after{
+  content:"🍃";position:absolute;z-index:0;pointer-events:none;
+  top:-12px;font-size:30px;opacity:.82;
+  filter:drop-shadow(0 4px 3px rgba(0,0,0,.55))
+}
+.profile-header::before{left:-3px;transform:rotate(28deg)}
+.profile-header::after{right:-2px;transform:scaleX(-1) rotate(28deg)}
+.profile-photo-wrap{width:178px!important;height:178px!important;margin:1px auto -2px!important}
+.profile-photo-halo{
+  background:conic-gradient(from 0deg,#ffe7a1,#ba6c15,#fff0bd,#7f3f09,#ffe7a1)!important;
+  box-shadow:0 0 0 3px #3b1605,0 0 24px rgba(255,182,53,.42)!important
+}
+.profile-photo{
+  width:160px!important;height:160px!important;
+  border:5px solid #2b0d02!important;
+  box-shadow:inset 0 0 0 4px #e4a94e,0 7px 0 #120400,0 15px 27px rgba(0,0,0,.58)!important
+}
+.profile-photo-edit{
+  right:1px!important;bottom:9px!important;
+  background:linear-gradient(180deg,#d99a35,#8a480d)!important;
+  border-color:#2f1003!important;color:#fff3ce!important
+}
+.profile-title-plaque{
+  margin:-1px auto 8px!important;
+  padding:8px 26px!important;
+  border:2px solid #3e1604!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#e9ad43 0%,#b76712 52%,#884006 100%)!important;
+  box-shadow:inset 0 2px 0 rgba(255,244,193,.45),0 4px 0 #2a0c01,0 10px 18px rgba(0,0,0,.4)!important;
+  clip-path:polygon(8% 0,92% 0,100% 20%,96% 50%,100% 80%,92% 100%,8% 100%,0 80%,4% 50%,0 20%)
+}
+.profile-title-plaque h2{color:#3f1604!important;font-size:24px!important;text-shadow:0 1px 0 #ffd77a!important}
+.profile-player-name{font-size:22px!important;margin:10px 0 7px!important;color:#fff4da!important}
+.profile-level-row{margin:0 5px 5px!important}
+.profile-level-badge{
+  background:linear-gradient(180deg,#9bcf32,#568c12)!important;
+  color:#fff!important;border-color:#294a06!important;box-shadow:0 3px 0 #173000!important
+}
+.profile-progress-track{background:#140500!important;border-color:#4b2308!important;height:12px!important;margin-bottom:15px!important}
+.profile-progress-track span{background:linear-gradient(90deg,#6aa715,#b7dd39)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 0 8px rgba(149,205,46,.4)!important}
+.profile-id-box{
+  border:1px solid #8a571d!important;
+  border-radius:15px!important;
+  background:linear-gradient(180deg,rgba(33,10,2,.95),rgba(18,5,1,.96))!important;
+  box-shadow:inset 0 0 20px rgba(255,175,55,.035),0 4px 0 #0d0300!important
+}
+.profile-id-box span{color:#d9b47d!important}.profile-id-box strong{color:#fff8e9!important}
+.profile-copy-button{
+  background:linear-gradient(180deg,#dca140,#9c560e)!important;
+  border-color:#3c1402!important;color:#2e0d01!important
+}
+.profile-stats{gap:9px!important}
+.profile-stat,
+.profile-stat:nth-child(1),.profile-stat:nth-child(2),.profile-stat:nth-child(3),
+.profile-stat:nth-child(4),.profile-stat:nth-child(5),.profile-stat:nth-child(6){
+  min-height:88px!important;
+  border:1px solid #8a571d!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#2a0d03,#160500)!important;
+  box-shadow:inset 0 1px 0 rgba(255,216,135,.10),0 4px 0 #0b0200!important
+}
+.profile-stat small{color:#d8b27c!important}.profile-stat strong{color:#fff!important}
+.profile-details{
+  border:1px solid #8a571d!important;
+  background:linear-gradient(180deg,rgba(34,10,2,.95),rgba(18,5,1,.97))!important;
+  box-shadow:inset 0 0 22px rgba(255,176,58,.03),0 4px 0 #0c0200!important
+}
+.profile-details span{color:#d6ae76!important}.profile-details strong{color:#fff5df!important}
+.profile-action-button{
+  border-color:#704016!important;
+  background:linear-gradient(180deg,#5b2508,#2b0c02)!important;
+  color:#ffe8bd!important;box-shadow:0 3px 0 #0e0300!important
+}
+.profile-action-button.danger{background:linear-gradient(180deg,#7b2d20,#3c100b)!important}
+.profile-close{
+  top:12px!important;right:14px!important;
+  background:linear-gradient(180deg,#6b330f,#351304)!important;
+  border-color:#b77b2d!important;color:#fff2d0!important
+}
+@media(max-width:390px){
+  .profile-card.profile-card-premium{padding:24px 14px 19px}
+  .profile-photo-wrap{width:158px!important;height:158px!important}
+  .profile-photo{width:142px!important;height:142px!important}
+  .profile-title-plaque{padding:7px 21px!important}
+}

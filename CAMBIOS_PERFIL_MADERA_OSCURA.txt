@@ -1,0 +1,12 @@
+PERFIL PREMIUM IDEA 1 - MADERA OSCURA
+
+- Fondo del perfil reconstruido en madera café oscura.
+- Se eliminó el fondo naranja cuadriculado.
+- Marco exterior dorado fino y profundidad sombreada.
+- Placa PERFIL colocada debajo de la fotografía.
+- Foto de perfil más grande con marco dorado.
+- Tarjetas de estadísticas oscuras con bordes dorados.
+- Tarjeta del ID y datos personales con contraste más elegante.
+- Nivel y barra de experiencia en verde, como la referencia.
+- Hojas decorativas en las esquinas hechas desde CSS.
+- Se conservan todas las funciones existentes del perfil.

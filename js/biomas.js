@@ -211,18 +211,6 @@
     setTimeout(() => p.remove(), 9000);
   }
 
-  let temporizadorBadgeClima = null;
-
-  function mostrarBadgeClimaTemporal() {
-    const badge = document.getElementById("biomeClimateBadge");
-    if (!badge) return;
-    clearTimeout(temporizadorBadgeClima);
-    badge.classList.add("is-visible");
-    temporizadorBadgeClima = setTimeout(() => {
-      badge.classList.remove("is-visible");
-    }, 3500);
-  }
-
   function aplicarClima(clima, anunciar = true) {
     estado.clima = clima;
     estado.eventoHasta = clima.evento ? Date.now() + 30000 : 0;
@@ -235,7 +223,6 @@
       badge.querySelector(".biome-climate-icon").textContent = clima.icono;
       badge.querySelector("strong").textContent = clima.nombre;
       badge.classList.toggle("event-active", Boolean(clima.evento));
-      mostrarBadgeClimaTemporal();
     }
     limpiarParticulas();
     const intervalo = Math.max(90, 520 - clima.intensidad * 400);
@@ -471,8 +458,10 @@
         if (h?.objetoMundo && h.elemento && !window.SistemaMundos?.mundoSecretoActual) {
           const bioma = BIOMAS[estado.biomaId];
           const dato = bioma?.objetos.find(o => o.simbolo === h.elemento.textContent);
-          h.datosObjeto = dato ? { ...dato, bioma: true, mundo: estado.biomaId } : null;
+          h.datosObjeto = dato ? { ...dato, bioma: true, mundo: estado.biomaId } : (h.objetoDatos ? { ...h.objetoDatos } : null);
+          h.objetoDatos = h.datosObjeto || h.objetoDatos || null;
           h.movimiento = h.datosObjeto?.movimiento || "suave";
+          if (h.objetoDatos?.portalTipo) h.elemento.dataset.portalType = h.objetoDatos.portalTipo;
           h.baseX = h.x;
           h.fase = Math.random() * Math.PI * 2;
           h.elemento.classList.add("biome-collectible", `biome-motion-${h.movimiento}`);
@@ -489,9 +478,12 @@
         const area = window.JuniorGame?.elementos?.areaJuego;
         const limite = Math.max(0, (area?.clientWidth || 360) - this.tamanoHueso);
         let desplazamiento = 0;
-        if (["zigzag", "hoja", "copo", "flotar", "orbita"].includes(h.movimiento)) {
-          const amplitud = h.movimiento === "hoja" ? 42 : h.movimiento === "orbita" ? 52 : 28;
-          desplazamiento = Math.sin(h.fase * (h.movimiento === "copo" ? 2.2 : 3.2)) * amplitud;
+        if (["zigzag", "hoja", "copo", "flotar", "orbita", "viva", "meteorito"].includes(h.movimiento)) {
+          const amplitud = h.movimiento === "hoja" ? 42 : h.movimiento === "orbita" ? 52 : h.movimiento === "viva" ? 78 : h.movimiento === "meteorito" ? 18 : 28;
+          const frecuencia = h.movimiento === "viva" ? 6.4 : h.movimiento === "meteorito" ? 1.8 : h.movimiento === "copo" ? 2.2 : 3.2;
+          desplazamiento = Math.sin(h.fase * frecuencia) * amplitud;
+          if (h.movimiento === "viva" && Math.sin(h.fase * 2.1) > .82) h.baseX = Math.max(0, Math.min(limite, (h.baseX ?? h.x) + (Math.random() > .5 ? 24 : -24)));
+          if (h.movimiento === "meteorito") h.elemento.style.transform = `rotate(${h.fase * 220}deg) scale(${1 + Math.sin(h.fase*5)*.05})`;
         } else if (h.movimiento === "diagonal") {
           desplazamiento = h.fase * 34;
         } else if (h.movimiento === "rebote") {

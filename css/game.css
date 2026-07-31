@@ -4522,91 +4522,34 @@ button, a {
   display:none!important;
 }
 
-
-/* ============================================================
-   AJUSTE FINAL HUD + PAUSA + CLIMA — 2026-07-31
-   ============================================================ */
-#game > .game-hud{
-  grid-template-columns:clamp(70px,18vw,82px) clamp(62px,16vw,72px) minmax(126px,1fr) auto!important;
-  justify-content:center!important;
-  column-gap:clamp(7px,1.8vw,12px)!important;
-  padding-inline:clamp(7px,1.8vw,11px)!important;
+/* =========================================================
+   PORTAL IA ADAPTATIVO
+========================================================= */
+.portal-ia-hud{
+  position:absolute;z-index:52;top:calc(max(8px,env(safe-area-inset-top)) + 90px);left:50%;
+  transform:translateX(-50%);display:flex;align-items:center;gap:8px;
+  width:min(92vw,430px);padding:7px 9px;border:1px solid rgba(126,230,255,.34);
+  border-radius:18px;background:rgba(8,12,28,.76);color:#fff;box-shadow:0 10px 28px rgba(0,0,0,.34);
+  backdrop-filter:blur(8px);pointer-events:none;transition:opacity .22s ease,transform .22s ease;
 }
-#game > .game-hud .resource-hud{
-  grid-template-columns:minmax(58px,auto) minmax(66px,auto)!important;
-  gap:clamp(9px,2.1vw,13px)!important;
-  justify-self:center!important;
-}
-#game > .game-hud .resource-counter-coins{min-width:58px!important}
-#game > .game-hud .resource-counter-diamonds{min-width:66px!important}
-
-/* Perrito Jr fuera de la fila: debajo del Álbum, a la derecha. */
-#game > .game-hud .pet-button{
-  position:absolute!important;
-  right:clamp(9px,2vw,13px)!important;
-  top:calc(max(7px,env(safe-area-inset-top)) + 132px)!important;
-  width:clamp(38px,10vw,45px)!important;
-  min-width:clamp(38px,10vw,45px)!important;
-  height:clamp(38px,10vw,45px)!important;
-  z-index:49!important;
-  overflow:visible!important;
-  pointer-events:auto!important;
-}
-#game > .game-hud .pet-button-icon{
-  width:100%!important;
-  height:100%!important;
-}
-#game > .game-hud .pet-button strong{
-  position:absolute!important;
-  right:-4px!important;
-  bottom:-8px!important;
-  min-width:26px!important;
-  padding:2px 5px!important;
-  border-radius:999px!important;
-  background:#33b96b!important;
-  border:2px solid #fff!important;
-  color:#fff!important;
-  font-size:10px!important;
-  line-height:1.1!important;
-  text-align:center!important;
-  box-shadow:0 3px 8px rgba(0,0,0,.28)!important;
-}
-
-/* Pausa siempre por encima y con área táctil real. */
-#game > .game-hud .pause-button{
-  position:relative!important;
-  z-index:90!important;
-  pointer-events:auto!important;
-  touch-action:manipulation!important;
-  cursor:pointer!important;
-}
-.pause-modal{z-index:12000!important}
-
-/* El clima sólo aparece unos segundos al iniciar o cambiar. */
-.biome-climate-badge{
-  opacity:0!important;
-  visibility:hidden!important;
-  transform:translate(-50%,-8px) scale(.96)!important;
-  transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s!important;
-}
-.biome-climate-badge.is-visible{
-  opacity:1!important;
-  visibility:visible!important;
-  transform:translate(-50%,0) scale(1)!important;
-  transition-delay:0s!important;
-}
-
-@media(max-width:380px){
-  #game > .game-hud{
-    grid-template-columns:62px 58px minmax(118px,1fr) auto!important;
-    column-gap:6px!important;
-  }
-  #game > .game-hud .resource-hud{
-    grid-template-columns:54px 62px!important;
-    gap:7px!important;
-  }
-  #game > .game-hud .pet-button{
-    right:7px!important;
-    top:calc(max(6px,env(safe-area-inset-top)) + 126px)!important;
-  }
+.portal-ia-hud.hidden{opacity:0;transform:translate(-50%,-10px);visibility:hidden}
+.portal-ia-key,.portal-ia-risk{display:flex;align-items:center;gap:4px;padding:5px 8px;border-radius:12px;background:rgba(255,255,255,.08);white-space:nowrap}
+.portal-ia-key span{font-size:19px}.portal-ia-key strong{font-size:12px}
+.portal-ia-energy{min-width:0;flex:1}.portal-ia-energy-head{display:flex;justify-content:space-between;gap:8px;font-size:9px;font-weight:900;letter-spacing:.06em}
+.portal-ia-energy-track{height:8px;margin-top:4px;border-radius:999px;background:rgba(255,255,255,.13);overflow:hidden}
+.portal-ia-energy-track i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#41d6ff,#9d62ff,#fff36c);box-shadow:0 0 12px rgba(89,221,255,.8);transition:width .24s ease}
+.portal-ia-risk{display:grid;gap:0;text-align:center}.portal-ia-risk span{font-size:7px;opacity:.72}.portal-ia-risk strong{font-size:14px;color:#ffd467}
+.portal-ia-hud.energy-active{border-color:#fff26e;box-shadow:0 0 28px rgba(99,225,255,.44),0 10px 28px rgba(0,0,0,.34)}
+.portal-event-hud{position:absolute;z-index:53;top:calc(max(8px,env(safe-area-inset-top)) + 142px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:9px;padding:8px 14px;border-radius:999px;color:#fff;background:linear-gradient(135deg,rgba(55,22,94,.94),rgba(10,72,105,.94));border:2px solid rgba(255,232,119,.76);box-shadow:0 8px 28px rgba(0,0,0,.4);pointer-events:none;transition:.22s ease}
+.portal-event-hud.hidden{opacity:0;transform:translate(-50%,-10px);visibility:hidden}.portal-event-icon{font-size:24px}.portal-event-hud div{display:grid;line-height:1}.portal-event-hud small{font-size:7px;letter-spacing:.12em;opacity:.72}.portal-event-hud strong{font-size:12px;margin-top:3px}
+.biome-climate-badge.portal-hidden,.biome-weather-layer.portal-hidden{display:none!important}
+.biome-climate-badge:not(.climate-return-visible){transition:opacity .25s ease,transform .25s ease}
+.secret-world-object[data-portal-type="meteorito"]{filter:drop-shadow(0 0 14px #ff5a36)!important}
+body.portal-energy-active .dog{filter:drop-shadow(0 0 22px #5de7ff) drop-shadow(0 0 32px #a666ff)!important}
+body.portal-inner-active .game-area{box-shadow:inset 0 0 90px rgba(173,70,255,.35)}
+body.portal-inner-active .secret-world-object{filter:drop-shadow(0 0 16px rgba(255,225,92,.92)) drop-shadow(0 0 28px rgba(170,69,255,.85))}
+@media(max-width:430px){
+  .portal-ia-hud{top:calc(max(6px,env(safe-area-inset-top)) + 82px);width:88vw;padding:6px 7px;gap:5px}
+  .portal-event-hud{top:calc(max(6px,env(safe-area-inset-top)) + 130px);max-width:82vw}
+  .portal-ia-key,.portal-ia-risk{padding:4px 6px}
 }

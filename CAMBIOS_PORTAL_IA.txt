@@ -1,0 +1,22 @@
+JUNIORGAME — PORTAL IA ADAPTATIVO
+
+Incluye:
+- IA por reglas que ajusta el riesgo de 1 a 5 según aciertos, fallos, golpes y vidas.
+- Meteoritos peligrosos: al atraparlos quitan una vida.
+- Estrellas y cristales de energía con barra 0-100%.
+- Modo Energía durante 9 segundos al llenar la barra.
+- Monedas vivas que se mueven y cambian de dirección.
+- Lluvia de tesoros temporal con aparición acelerada de premios y meteoritos.
+- Fragmentos de llave persistentes (0/5) guardados en el dispositivo.
+- Portal interior legendario durante 15 segundos al reunir 5 fragmentos.
+- Premios dobles en Modo Energía y Portal Interior; ambos juntos pueden dar x4.
+- El clima normal se oculta al entrar al portal y vuelve a mostrarse unos segundos al regresar.
+- HUD propio del portal para llaves, energía y riesgo.
+- Los objetos beneficiosos perdidos no restan vidas.
+
+Archivos modificados:
+- game.html
+- css/game.css
+- js/mundos.js
+- js/biomas.js
+- js/bones.js

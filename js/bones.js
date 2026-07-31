@@ -132,6 +132,8 @@ window.JuniorBones = {
       dorado: esDorado,
       poder: esPoder,
       objetoMundo: Boolean(objetoMundo),
+      objetoDatos: objetoMundo ? { ...objetoMundo } : null,
+      datosObjeto: objetoMundo ? { ...objetoMundo } : null,
       atrapado: false
     };
 
@@ -267,6 +269,16 @@ const colision =
 
 this.huesoActual.atrapado = true;
 
+/* Los objetos especiales del portal administran su propia recompensa o daño. */
+if (this.huesoActual.objetoMundo && this.huesoActual.objetoDatos?.portalTipo) {
+  const datosPortal = this.huesoActual.objetoDatos;
+  window.SistemaMundos?.registrarCapturaObjeto?.(datosPortal);
+  if (datosPortal.danino) window.AudioFX?.huesoCaido?.();
+  else window.AudioFX?.bonus?.();
+  this.eliminarHueso();
+  return;
+}
+
 const esDorado =
   this.huesoActual.dorado;
 
@@ -357,11 +369,14 @@ const eraDorado =
 
 const eraPoder =
   this.huesoActual.poder;
+const eraObjetoMundo = Boolean(this.huesoActual.objetoMundo);
+const datosObjetoPerdido = this.huesoActual.objetoDatos || this.huesoActual.datosObjeto || null;
 
 /*
   El hueso llegó al suelo sin ser atrapado.
 */
 window.AudioFX?.huesoCaido();
+if (eraObjetoMundo) window.SistemaMundos?.registrarObjetoPerdido?.(datosObjetoPerdido);
 
 this.eliminarHueso();
 
@@ -369,7 +384,7 @@ this.eliminarHueso();
   El hueso normal resta una vida.
   El hueso dorado solo desaparece.
 */
-if (!eraDorado && !eraPoder) {
+if (!eraDorado && !eraPoder && !eraObjetoMundo) {
   const protegido =
     window.SistemaHabilidades?.evitarHuesoPerdido?.() === true;
 

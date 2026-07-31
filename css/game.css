@@ -4246,3 +4246,140 @@ button, a {
     max-width:72vw!important;
   }
 }
+
+/* ============================================================
+   CORRECCIÓN DEFINITIVA — HUD SIN SOLAPES + UN SOLO AVISO
+   2026-07-31
+   ============================================================ */
+
+/* La barra usa medidas reales que caben en móvil; ningún bloque puede
+   invadir al siguiente. */
+#game > .game-hud{
+  gap:clamp(4px,1.15vw,7px)!important;
+  padding-inline:clamp(5px,1.25vw,8px)!important;
+}
+
+#game > .game-hud .score-box{
+  flex:0 1 clamp(58px,17vw,82px)!important;
+  width:clamp(58px,17vw,82px)!important;
+  min-width:58px!important;
+}
+
+#game > .game-hud .life-shield-group{
+  flex:0 0 auto!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+#game > .game-hud .lives{
+  width:clamp(49px,13.5vw,63px)!important;
+  min-width:clamp(49px,13.5vw,63px)!important;
+  padding-inline:4px!important;
+}
+
+/* Recursos sin flex negativo: se mantienen separados y completos. */
+#game > .game-hud .resource-hud{
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-width:0!important;
+  gap:clamp(5px,1.4vw,9px)!important;
+  overflow:visible!important;
+}
+
+#game > .game-hud .resource-counter{
+  flex:0 0 auto!important;
+  width:auto!important;
+  max-width:none!important;
+  height:clamp(29px,8vw,35px)!important;
+  padding:2px 5px!important;
+  overflow:visible!important;
+}
+
+#game > .game-hud .resource-counter-coins{
+  min-width:clamp(47px,13vw,62px)!important;
+}
+
+#game > .game-hud .resource-counter-diamonds{
+  min-width:clamp(54px,15vw,70px)!important;
+  padding-right:7px!important;
+}
+
+#game > .game-hud .resource-counter strong{
+  display:inline-block!important;
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
+  font-size:clamp(10px,2.75vw,12px)!important;
+  line-height:1!important;
+  letter-spacing:-.02em!important;
+}
+
+#game > .game-hud .pet-button{
+  flex:0 0 clamp(27px,7.5vw,33px)!important;
+  width:clamp(27px,7.5vw,33px)!important;
+  height:clamp(27px,7.5vw,33px)!important;
+}
+
+#game > .game-hud .hud-actions{
+  flex:0 0 auto!important;
+  gap:clamp(3px,.8vw,5px)!important;
+}
+
+/* El aviso antiguo (amarillo/café) se elimina para todos los premios.
+   Sólo queda la tarjeta verde de la cola de notificaciones. */
+.surprise-reward,
+.surprise-reward.show,
+.reward-banner,
+.reward-popup-old{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+/* Una sola notificación verde, siempre debajo del clima. */
+.surprise-toast{
+  top:calc(var(--jg-hud-top) + var(--jg-hud-h) + clamp(74px,19vw,92px))!important;
+  margin:0!important;
+  z-index:12050!important;
+}
+
+@media(max-width:390px){
+  #game > .game-hud{
+    gap:4px!important;
+    padding-inline:4px!important;
+  }
+  #game > .game-hud .score-box{
+    flex-basis:58px!important;
+    width:58px!important;
+  }
+  #game > .game-hud .lives{
+    width:49px!important;
+    min-width:49px!important;
+  }
+  #game > .game-hud .resource-hud{
+    gap:5px!important;
+  }
+  #game > .game-hud .resource-counter-coins{
+    min-width:47px!important;
+  }
+  #game > .game-hud .resource-counter-diamonds{
+    min-width:54px!important;
+  }
+  #game > .game-hud .resource-counter strong{
+    font-size:10px!important;
+  }
+  #game > .game-hud .hud-actions{
+    gap:3px!important;
+  }
+}
+
+/* En móviles muy angostos se conserva espacio ocultando sólo Ayuda;
+   Pausa y Casa siguen visibles. */
+@media(max-width:355px){
+  #game > .game-hud .tutorial-help-button{display:none!important}
+}

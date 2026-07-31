@@ -799,14 +799,8 @@ const yBase = esPruebaNivel1
   mostrarPremio(contenedor, premio) {
     if (!contenedor || !premio) return;
 
-    const elemento = document.createElement("div");
-    elemento.className = "surprise-reward";
-    elemento.innerHTML = `
-      <span class="surprise-reward-icon">${premio.icono}</span>
-      <strong>${premio.texto}</strong>
-    `;
-    contenedor.appendChild(elemento);
-
+    // Un solo aviso por recompensa. El antiguo cartel amarillo/café
+    // se eliminó para evitar mensajes duplicados y superpuestos.
     this.mostrarMensajeRapido(`${premio.icono} ${premio.texto}`);
   },
 

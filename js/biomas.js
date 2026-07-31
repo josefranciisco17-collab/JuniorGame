@@ -211,6 +211,18 @@
     setTimeout(() => p.remove(), 9000);
   }
 
+  let temporizadorBadgeClima = null;
+
+  function mostrarBadgeClimaTemporal() {
+    const badge = document.getElementById("biomeClimateBadge");
+    if (!badge) return;
+    clearTimeout(temporizadorBadgeClima);
+    badge.classList.add("is-visible");
+    temporizadorBadgeClima = setTimeout(() => {
+      badge.classList.remove("is-visible");
+    }, 3500);
+  }
+
   function aplicarClima(clima, anunciar = true) {
     estado.clima = clima;
     estado.eventoHasta = clima.evento ? Date.now() + 30000 : 0;
@@ -223,6 +235,7 @@
       badge.querySelector(".biome-climate-icon").textContent = clima.icono;
       badge.querySelector("strong").textContent = clima.nombre;
       badge.classList.toggle("event-active", Boolean(clima.evento));
+      mostrarBadgeClimaTemporal();
     }
     limpiarParticulas();
     const intervalo = Math.max(90, 520 - clima.intensidad * 400);

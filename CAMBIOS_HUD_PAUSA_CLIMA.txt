@@ -1,0 +1,8 @@
+JuniorGame — Ajuste HUD, pausa y clima
+
+- Centrado general del HUD.
+- Perrito Jr movido debajo del botón Álbum, a la derecha.
+- Nivel del Perrito Jr colocado como placa bajo su retrato.
+- Botón Pausa reforzado para pointerup/click en móviles.
+- El modal de pausa queda por encima del juego.
+- El aviso de clima aparece 3.5 segundos al iniciar o cambiar y luego se oculta.

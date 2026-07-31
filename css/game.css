@@ -4521,3 +4521,92 @@ button, a {
 .reward-popup-old{
   display:none!important;
 }
+
+
+/* ============================================================
+   AJUSTE FINAL HUD + PAUSA + CLIMA — 2026-07-31
+   ============================================================ */
+#game > .game-hud{
+  grid-template-columns:clamp(70px,18vw,82px) clamp(62px,16vw,72px) minmax(126px,1fr) auto!important;
+  justify-content:center!important;
+  column-gap:clamp(7px,1.8vw,12px)!important;
+  padding-inline:clamp(7px,1.8vw,11px)!important;
+}
+#game > .game-hud .resource-hud{
+  grid-template-columns:minmax(58px,auto) minmax(66px,auto)!important;
+  gap:clamp(9px,2.1vw,13px)!important;
+  justify-self:center!important;
+}
+#game > .game-hud .resource-counter-coins{min-width:58px!important}
+#game > .game-hud .resource-counter-diamonds{min-width:66px!important}
+
+/* Perrito Jr fuera de la fila: debajo del Álbum, a la derecha. */
+#game > .game-hud .pet-button{
+  position:absolute!important;
+  right:clamp(9px,2vw,13px)!important;
+  top:calc(max(7px,env(safe-area-inset-top)) + 132px)!important;
+  width:clamp(38px,10vw,45px)!important;
+  min-width:clamp(38px,10vw,45px)!important;
+  height:clamp(38px,10vw,45px)!important;
+  z-index:49!important;
+  overflow:visible!important;
+  pointer-events:auto!important;
+}
+#game > .game-hud .pet-button-icon{
+  width:100%!important;
+  height:100%!important;
+}
+#game > .game-hud .pet-button strong{
+  position:absolute!important;
+  right:-4px!important;
+  bottom:-8px!important;
+  min-width:26px!important;
+  padding:2px 5px!important;
+  border-radius:999px!important;
+  background:#33b96b!important;
+  border:2px solid #fff!important;
+  color:#fff!important;
+  font-size:10px!important;
+  line-height:1.1!important;
+  text-align:center!important;
+  box-shadow:0 3px 8px rgba(0,0,0,.28)!important;
+}
+
+/* Pausa siempre por encima y con área táctil real. */
+#game > .game-hud .pause-button{
+  position:relative!important;
+  z-index:90!important;
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  cursor:pointer!important;
+}
+.pause-modal{z-index:12000!important}
+
+/* El clima sólo aparece unos segundos al iniciar o cambiar. */
+.biome-climate-badge{
+  opacity:0!important;
+  visibility:hidden!important;
+  transform:translate(-50%,-8px) scale(.96)!important;
+  transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s!important;
+}
+.biome-climate-badge.is-visible{
+  opacity:1!important;
+  visibility:visible!important;
+  transform:translate(-50%,0) scale(1)!important;
+  transition-delay:0s!important;
+}
+
+@media(max-width:380px){
+  #game > .game-hud{
+    grid-template-columns:62px 58px minmax(118px,1fr) auto!important;
+    column-gap:6px!important;
+  }
+  #game > .game-hud .resource-hud{
+    grid-template-columns:54px 62px!important;
+    gap:7px!important;
+  }
+  #game > .game-hud .pet-button{
+    right:7px!important;
+    top:calc(max(6px,env(safe-area-inset-top)) + 126px)!important;
+  }
+}

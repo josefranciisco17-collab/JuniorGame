@@ -52,10 +52,16 @@ window.JuniorPause = {
   },
 
   configurarEventos() {
-    this.elementos.botonPausa?.addEventListener(
-      "click",
-      () => this.abrir()
-    );
+    const activarPausa = (evento) => {
+      evento?.preventDefault?.();
+      evento?.stopPropagation?.();
+      this.abrir();
+    };
+
+    // En móviles algunos controles del juego capturan el toque antes del click.
+    // Escuchamos pointerup y click en fase de captura para que Pausa siempre responda.
+    this.elementos.botonPausa?.addEventListener("pointerup", activarPausa, { capture: true });
+    this.elementos.botonPausa?.addEventListener("click", activarPausa, { capture: true });
 
     this.elementos.botonReanudar?.addEventListener(
       "click",
@@ -131,6 +137,10 @@ window.JuniorPause = {
   },
 
   abrir() {
+    const ahora = performance.now();
+    if (this.ultimoToquePausa && ahora - this.ultimoToquePausa < 350) return;
+    this.ultimoToquePausa = ahora;
+
     const juego = window.JuniorGame;
 
     if (

@@ -309,9 +309,29 @@ window.JuniorGame = {
 
 
   formatearRecurso(valor) {
+    const numero = Math.max(0, Math.floor(Number(valor) || 0));
+
+    // Abrevia cantidades grandes para que monedas y diamantes nunca
+    // desacomoden el HUD: 1K, 1.1K, 1M, 1B, 1T, etc.
+    const unidades = [
+      { limite: 1e15, sufijo: "Q" },
+      { limite: 1e12, sufijo: "T" },
+      { limite: 1e9,  sufijo: "B" },
+      { limite: 1e6,  sufijo: "M" },
+      { limite: 1e3,  sufijo: "K" }
+    ];
+
+    for (const unidad of unidades) {
+      if (numero >= unidad.limite) {
+        const reducido = numero / unidad.limite;
+        const decimales = reducido < 10 ? 1 : 0;
+        return `${Number(reducido.toFixed(decimales))}${unidad.sufijo}`;
+      }
+    }
+
     return new Intl.NumberFormat("es-MX", {
       maximumFractionDigits: 0
-    }).format(Math.max(0, Math.floor(Number(valor) || 0)));
+    }).format(numero);
   },
 
   actualizarRecursoHUD(tipo, total, opciones = {}) {
@@ -329,6 +349,12 @@ window.JuniorGame = {
     this.estado[clave] = valorFinal;
 
     if (!elementoNumero) return;
+
+    const cantidadCompleta = new Intl.NumberFormat("es-MX", {
+      maximumFractionDigits: 0
+    }).format(valorFinal);
+    elementoNumero.title = cantidadCompleta;
+    elementoNumero.setAttribute("aria-label", cantidadCompleta);
 
     if (!opciones.animar) {
       elementoNumero.textContent = this.formatearRecurso(valorFinal);

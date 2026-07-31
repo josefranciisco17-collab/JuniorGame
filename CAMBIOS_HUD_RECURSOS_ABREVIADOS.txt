@@ -1,0 +1,11 @@
+JUNIORGAME — AJUSTE DE HUD Y CANTIDADES
+
+- Se agregó separación visual entre el contador de vidas y las monedas.
+- Monedas y diamantes ahora usan formato compacto:
+  1,000 = 1K
+  1,100 = 1.1K
+  1,000,000 = 1M
+  1,000,000,000 = 1B
+  1,000,000,000,000 = 1T
+- Al mantener pulsado o inspeccionar el valor, el elemento conserva la cantidad completa en title/aria-label.
+- Se ampliaron ligeramente las cápsulas para que los valores se lean bien sin ocupar demasiado espacio.

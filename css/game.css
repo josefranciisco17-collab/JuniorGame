@@ -4126,3 +4126,48 @@ button, a {
   #game > .game-hud .resource-counter{min-width:38px!important;max-width:46px!important}
   #game > .game-hud .pet-button{width:27px!important;height:27px!important;flex-basis:27px!important}
 }
+
+
+/* ============================================================
+   AJUSTE FINAL DE RECURSOS — 2026-07-31
+   Separa vidas de monedas y mantiene legibles valores abreviados.
+   ============================================================ */
+#game > .game-hud .life-shield-group{
+  margin-right:clamp(5px,1.6vw,10px)!important;
+}
+#game > .game-hud .resource-hud{
+  gap:clamp(4px,1.1vw,7px)!important;
+}
+#game > .game-hud .resource-counter{
+  min-width:clamp(46px,12.5vw,60px)!important;
+  max-width:clamp(58px,16vw,76px)!important;
+  padding-left:5px!important;
+  padding-right:6px!important;
+}
+#game > .game-hud .resource-counter strong{
+  overflow:visible!important;
+  text-overflow:clip!important;
+  font-size:clamp(10px,2.9vw,13px)!important;
+  font-variant-numeric:tabular-nums!important;
+  letter-spacing:-.02em!important;
+}
+#game > .game-hud .resource-counter-icon{
+  margin-right:1px!important;
+}
+@media(max-width:380px){
+  #game > .game-hud .life-shield-group{
+    margin-right:4px!important;
+  }
+  #game > .game-hud .resource-hud{
+    gap:3px!important;
+  }
+  #game > .game-hud .resource-counter{
+    min-width:43px!important;
+    max-width:56px!important;
+    padding-left:3px!important;
+    padding-right:4px!important;
+  }
+  #game > .game-hud .resource-counter strong{
+    font-size:10px!important;
+  }
+}
